@@ -1,4 +1,4 @@
-package com.abhiek.ezrecipes
+package com.abhiek.ezrecipes.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
