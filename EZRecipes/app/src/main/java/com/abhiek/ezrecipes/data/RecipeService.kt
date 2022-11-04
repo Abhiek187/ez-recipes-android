@@ -9,6 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import java.util.concurrent.TimeUnit
 
 // The DataSource for the recipes API
 interface RecipeService {
@@ -32,8 +33,10 @@ interface RecipeService {
                 val loggingInterceptor = HttpLoggingInterceptor().setLevel(
                     HttpLoggingInterceptor.Level.BODY
                 )
+                // Extend the default timeout of 10 seconds to account for cold starts
                 val httpClient = OkHttpClient().newBuilder()
                     .addInterceptor(loggingInterceptor)
+                    .connectTimeout(30, TimeUnit.SECONDS)
                     .build()
 
                 // Convert responses to GSON (Google JSON)
