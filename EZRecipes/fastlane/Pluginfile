@@ -2,5 +2,4 @@
 #
 # Ensure this file is checked in to source control!
 
-gem 'fastlane-plugin-instrumented_tests'
-gem 'fastlane-plugin-automated_test_emulator_run'
+gem 'fastlane-plugin-automated_test_emulator_run_next'
