@@ -16,9 +16,18 @@
 default_platform(:android)
 
 platform :android do
-  desc "Runs all the tests"
+  desc "Run unit tests"
   lane :test do
     gradle(task: "test")
+  end
+
+  desc "Run instrumented tests"
+  lane :ui_test do
+    instrumented_tests(
+      avd_name: "Nexus_5_API_25_Test",
+      avd_package: "'system-images;android-19;google_apis;x86'",
+      avd_abi: "google_apis/x86",
+    )
   end
 
   desc "Submit a new Beta Build to Crashlytics Beta"

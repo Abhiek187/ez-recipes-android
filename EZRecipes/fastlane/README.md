@@ -21,7 +21,15 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane android test
 ```
 
-Runs all the tests
+Run unit tests
+
+### android ui_test
+
+```sh
+[bundle exec] fastlane android ui_test
+```
+
+Run instrumented tests
 
 ### android beta
 
