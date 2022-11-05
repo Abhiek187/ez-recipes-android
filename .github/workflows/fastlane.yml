@@ -1,0 +1,26 @@
+# Automate testing & deployment using Fastlane
+name: Fastlane
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    defaults:
+      run:
+        working-directory: './EZRecipes'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Fastlane
+        run: bundle install
+
+      - name: Run Unit Tests
+        run: bundle exec fastlane android test
