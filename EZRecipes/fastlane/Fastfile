@@ -18,15 +18,33 @@ default_platform(:android)
 platform :android do
   desc "Run unit tests"
   lane :test do
+    # Runs: gradlew test -p .
     gradle(task: "test")
   end
 
   desc "Run instrumented tests"
   lane :ui_test do
-    instrumented_tests(
-      avd_name: "Nexus_5_API_25_Test",
-      avd_package: "'system-images;android-19;google_apis;x86'",
-      avd_abi: "google_apis/x86",
+    # Accept licenses: yes | sdkmanager --licenses > /dev/null
+    # Install build tools, platform tools, and platform: sdkmanager --install 'build-tools;33.0.0' platform-tools 'platforms;android-32' > /dev/null
+    # Install emulator (channel 0 = stable packages): sdkmanager --install emulator --channel=0 > /dev/null
+    # Install system image: sdkmanager --install 'system-images;android-32;google_apis;x86_64' --channel=0 > /dev/null
+    # Create test AVD: echo no | avdmanager create avd --force -n test --abi 'google_apis/x86_64' --package 'system-images;android-32;google_apis;x86_64'
+    # Boot up the emulator: emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
+    # Check if the emulator has booted: adb shell getprop sys.boot_completed
+    # Press the menu button: adb shell input keyevent 82
+    # Disable animations: adb shell settings put global window_animation_scale 0.0
+    #                     adb shell settings put global transition_animation_scale 0.0
+    #                     adb shell settings put global animator_duration_scale 0.0
+    # Run instrumented tests: gradlew connectedAndroidTest
+    # Kill the emulator: adb -s emulator-5554 emu kill
+#     instrumented_tests(
+#       avd_name: "Nexus_5_API_25_Test",
+#       avd_package: "'system-images;android-19;google_apis;x86'",
+#       avd_abi: "google_apis/x86",
+#     )
+    automated_test_emulator_run(
+      AVD_setup_path: "fastlane/AVD_setup.json",
+      gradle_task: "connectedAndroidTest"
     )
   end
 
