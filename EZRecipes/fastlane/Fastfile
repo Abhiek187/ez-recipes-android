@@ -47,8 +47,8 @@ platform :android do
     ANDROID_CMD_PATH = "#{ANDROID_HOME}/cmdline-tools/latest/bin"
     ANDROID_EMULATOR_PATH = "#{ANDROID_HOME}/emulator"
     ADB_PATH = "#{ANDROID_HOME}/platform-tools"
-    ANDROID_APIS = [29, 31, 33]
-    AVD_PORTS = [5556, 5558, 5560]
+    ANDROID_APIS = [29]
+    AVD_PORTS = [5556]
 
     sh "yes | #{ANDROID_CMD_PATH}/sdkmanager --licenses > /dev/null"
     sh "#{ANDROID_CMD_PATH}/sdkmanager --install emulator --channel=0 > /dev/null"

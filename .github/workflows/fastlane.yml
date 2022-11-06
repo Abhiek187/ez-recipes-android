@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [ 29, 31, 33 ]
+        api-level: [ 29 ]
 
     defaults:
       run:
@@ -40,16 +40,16 @@ jobs:
       - name: Run unit tests
         run: bundle exec fastlane android test
 
-#      - name: Run instrumented tests
-#        run: bundle exec fastlane android ui_test
-      - name: Run instrumentation tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ matrix.api-level }}
-          arch: x86_64
-          target: google_apis
-          working-directory: "./EZRecipes"
-          script: ./gradlew connectedAndroidTest
+      - name: Run instrumented tests
+        run: bundle exec fastlane android ui_test
+#      - name: Run instrumentation tests
+#        uses: reactivecircus/android-emulator-runner@v2
+#        with:
+#          api-level: ${{ matrix.api-level }}
+#          arch: x86_64
+#          target: google_apis
+#          working-directory: "./EZRecipes"
+#          script: ./gradlew connectedAndroidTest
 
       # The test results are shown as a webpage instead of on the command line
       - name: Upload Reports
