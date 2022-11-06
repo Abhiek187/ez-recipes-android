@@ -1,19 +1,49 @@
 {
   "avd_list": [
     {
-      "avd_name": "Nexus_6P_API_27",
+      "avd_name": "test-29",
 
-      "create_avd_package": "system-images;android-27;google_apis_playstore;x86",
-      "create_avd_device": "Nexus 6P",
-      "create_avd_tag": "google_apis_playstore",
-      "create_avd_abi": "x86",
+      "create_avd_package": "system-images;android-29;google_apis;x86_64",
+      "create_avd_device": "",
+      "create_avd_tag": "",
+      "create_avd_abi": "google_apis/x86_64",
       "create_avd_additional_options": "",
       "create_avd_hardware_config_filepath": "",
 
       "launch_avd_port": "",
       "launch_avd_snapshot_filepath": "",
       "launch_avd_launch_binary_name": "emulator",
-      "launch_avd_additional_options": "-skin 1080x1920 -gpu on"
+      "launch_avd_additional_options": "-gpu on"
+    },
+    {
+      "avd_name": "test-31",
+
+      "create_avd_package": "system-images;android-31;google_apis;x86_64",
+      "create_avd_device": "",
+      "create_avd_tag": "",
+      "create_avd_abi": "google_apis/x86_64",
+      "create_avd_additional_options": "",
+      "create_avd_hardware_config_filepath": "",
+
+      "launch_avd_port": "",
+      "launch_avd_snapshot_filepath": "",
+      "launch_avd_launch_binary_name": "emulator",
+      "launch_avd_additional_options": "-gpu on"
+    },
+    {
+      "avd_name": "test-33",
+
+      "create_avd_package": "system-images;android-33;google_apis;x86_64",
+      "create_avd_device": "",
+      "create_avd_tag": "",
+      "create_avd_abi": "google_apis/x86_64",
+      "create_avd_additional_options": "",
+      "create_avd_hardware_config_filepath": "",
+
+      "launch_avd_port": "",
+      "launch_avd_snapshot_filepath": "",
+      "launch_avd_launch_binary_name": "emulator",
+      "launch_avd_additional_options": "-gpu on"
     }
   ]
 }
