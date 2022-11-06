@@ -44,6 +44,7 @@ platform :android do
 #     )
     automated_test_emulator_run(
       AVD_setup_path: "fastlane/AVD_setup.json",
+      install_missing_image: true,
       gradle_task: "connectedAndroidTest"
     )
   end
