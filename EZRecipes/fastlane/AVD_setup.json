@@ -8,7 +8,7 @@
       "create_avd_tag": "google_apis",
       "create_avd_abi": "google_apis/x86_64",
       "create_avd_additional_options": "",
-      "create_avd_hardware_config_filepath": "fastlane/config.ini",
+      "create_avd_hardware_config_filepath": "config.ini",
 
       "launch_avd_port": "",
       "launch_avd_snapshot_filepath": "",
@@ -23,7 +23,7 @@
       "create_avd_tag": "google_apis",
       "create_avd_abi": "google_apis/x86_64",
       "create_avd_additional_options": "",
-      "create_avd_hardware_config_filepath": "fastlane/config.ini",
+      "create_avd_hardware_config_filepath": "config.ini",
 
       "launch_avd_port": "",
       "launch_avd_snapshot_filepath": "",
@@ -38,7 +38,7 @@
       "create_avd_tag": "google_apis",
       "create_avd_abi": "google_apis/x86_64",
       "create_avd_additional_options": "",
-      "create_avd_hardware_config_filepath": "fastlane/config.ini",
+      "create_avd_hardware_config_filepath": "config.ini",
 
       "launch_avd_port": "",
       "launch_avd_snapshot_filepath": "",
