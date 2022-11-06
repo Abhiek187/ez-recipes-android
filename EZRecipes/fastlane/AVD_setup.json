@@ -13,7 +13,7 @@
       "launch_avd_port": "",
       "launch_avd_snapshot_filepath": "",
       "launch_avd_launch_binary_name": "emulator",
-      "launch_avd_additional_options": "-gpu on"
+      "launch_avd_additional_options": "-no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim"
     },
     {
       "avd_name": "test-31",
@@ -28,7 +28,7 @@
       "launch_avd_port": "",
       "launch_avd_snapshot_filepath": "",
       "launch_avd_launch_binary_name": "emulator",
-      "launch_avd_additional_options": "-gpu on"
+      "launch_avd_additional_options": "-no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim"
     },
     {
       "avd_name": "test-33",
@@ -43,7 +43,7 @@
       "launch_avd_port": "",
       "launch_avd_snapshot_filepath": "",
       "launch_avd_launch_binary_name": "emulator",
-      "launch_avd_additional_options": "-gpu on"
+      "launch_avd_additional_options": "-no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim"
     }
   ]
 }

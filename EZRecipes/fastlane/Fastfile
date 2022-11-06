@@ -37,11 +37,6 @@ platform :android do
     #                     adb shell settings put global animator_duration_scale 0.0
     # Run instrumented tests: gradlew connectedAndroidTest
     # Kill the emulator: adb -s emulator-5554 emu kill
-#     instrumented_tests(
-#       avd_name: "Nexus_5_API_25_Test",
-#       avd_package: "'system-images;android-19;google_apis;x86'",
-#       avd_abi: "google_apis/x86",
-#     )
     automated_test_emulator_run(
       AVD_setup_path: "fastlane/AVD_setup.json",
       install_missing_image: true,
