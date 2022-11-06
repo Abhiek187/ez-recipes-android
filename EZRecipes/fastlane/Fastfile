@@ -60,7 +60,7 @@ platform :android do
       sh "#{ANDROID_CMD_PATH}/sdkmanager --install 'system-images;android-#{api};google_apis;x86_64' --channel=0 > /dev/null"
       sh "echo no | #{ANDROID_CMD_PATH}/avdmanager create avd --force -n #{avd_name} --abi 'google_apis/x86_64' --package 'system-images;android-#{api};google_apis;x86_64'"
       sh "echo 'hw.cpu.ncore=2' >> ~/.android/avd/#{avd_name}.avd/config.ini"
-      sh "#{ANDROID_EMULATOR_PATH}/emulator -port #{AVD_PORTS[i]} -avd #{avd_name} -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &"
+      sh "#{ANDROID_EMULATOR_PATH}/emulator -port #{AVD_PORTS[i]} -avd #{avd_name} -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &> /dev/null &"
     end
 
     AVD_PORTS.each do |port|
