@@ -29,6 +29,7 @@ platform :android do
     # Install emulator (channel 0 = stable packages): sdkmanager --install emulator --channel=0 > /dev/null
     # Install system image: sdkmanager --install 'system-images;android-32;google_apis;x86_64' --channel=0 > /dev/null
     # Create test AVD: echo no | avdmanager create avd --force -n test --abi 'google_apis/x86_64' --package 'system-images;android-32;google_apis;x86_64'
+    # Configure AVD with 2 cores: echo 'hw.cpu.ncore=2' >> ~/.android/avd/test.avd/config.ini
     # Boot up the emulator: emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
     # Check if the emulator has booted: adb shell getprop sys.boot_completed
     # Press the menu button: adb shell input keyevent 82
