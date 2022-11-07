@@ -38,11 +38,6 @@ platform :android do
     #                     adb shell settings put global animator_duration_scale 0.0
     # Run instrumented tests: gradlew connectedAndroidTest
     # Kill the emulator: adb -s emulator-5554 emu kill
-#     automated_test_emulator_run(
-#       AVD_setup_path: "fastlane/AVD_setup.json",
-#       install_missing_image: true,
-#       gradle_task: "connectedAndroidTest"
-#     )
     ANDROID_HOME = ENV["ANDROID_SDK_ROOT"] || ENV["ANDROID_HOME"]
     ANDROID_CMD_PATH = "#{ANDROID_HOME}/cmdline-tools/latest/bin"
     ANDROID_EMULATOR_PATH = "#{ANDROID_HOME}/emulator"
