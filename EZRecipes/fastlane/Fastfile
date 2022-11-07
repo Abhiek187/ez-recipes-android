@@ -1,0 +1,87 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Run unit tests"
+  lane :test do
+    # Runs: gradlew test -p .
+    gradle(task: "test")
+  end
+
+  desc "Run instrumented tests"
+  lane :ui_test do |options|
+    # Accept licenses: yes | sdkmanager --licenses > /dev/null
+    # Install build tools, platform tools, and platform: sdkmanager --install 'build-tools;33.0.0' platform-tools 'platforms;android-32' > /dev/null
+    # Install emulator (channel 0 = stable packages): sdkmanager --install emulator --channel=0 > /dev/null
+    # Install system image: sdkmanager --install 'system-images;android-32;google_apis;x86_64' --channel=0 > /dev/null
+    # Create test AVD: echo no | avdmanager create avd --force -n test --abi 'google_apis/x86_64' --package 'system-images;android-32;google_apis;x86_64'
+    # Configure AVD with 2 cores: echo 'hw.cpu.ncore=2' >> ~/.android/avd/test.avd/config.ini
+    # Boot up the emulator: emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
+    # Check if the emulator has booted: adb shell getprop sys.boot_completed
+    # Press the menu button: adb shell input keyevent 82
+    # Disable animations: adb shell settings put global window_animation_scale 0.0
+    #                     adb shell settings put global transition_animation_scale 0.0
+    #                     adb shell settings put global animator_duration_scale 0.0
+    # Run instrumented tests: gradlew connectedAndroidTest
+    # Kill the emulator: adb -s emulator-5554 emu kill
+    ANDROID_HOME = ENV["ANDROID_SDK_ROOT"] || ENV["ANDROID_HOME"]
+    ANDROID_CMD_PATH = "#{ANDROID_HOME}/cmdline-tools/latest/bin"
+    ANDROID_EMULATOR_PATH = "#{ANDROID_HOME}/emulator"
+    ADB_PATH = "#{ANDROID_HOME}/platform-tools"
+    BUILD_TOOLS_VERSION = "33.0.0"
+
+    api_level = options[:api]
+    AVD_NAME = "test"
+    AVD_PORT = 5556
+    EMU_SERIAL = "emulator-#{AVD_PORT}"
+
+    # Install Android SDK
+    sh "yes | #{ANDROID_CMD_PATH}/sdkmanager --licenses > /dev/null"
+    sh "#{ANDROID_CMD_PATH}/sdkmanager --install 'build-tools;#{BUILD_TOOLS_VERSION}' platform-tools 'platforms;android-#{api_level}' > /dev/null"
+    sh "#{ANDROID_CMD_PATH}/sdkmanager --install emulator --channel=0 > /dev/null"
+    sh "#{ANDROID_CMD_PATH}/sdkmanager --install 'system-images;android-#{api_level};google_apis;x86_64' --channel=0 > /dev/null"
+
+    # Launch Emulator
+    sh "echo no | #{ANDROID_CMD_PATH}/avdmanager create avd --force -n #{AVD_NAME} --abi 'google_apis/x86_64' --package 'system-images;android-#{api_level};google_apis;x86_64'"
+    sh "echo 'hw.cpu.ncore=2' >> ~/.android/avd/#{AVD_NAME}.avd/config.ini"
+    sh "#{ANDROID_EMULATOR_PATH}/emulator -port #{AVD_PORT} -avd #{AVD_NAME} -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &> /dev/null &"
+
+    sh "#{ADB_PATH}/adb -s #{EMU_SERIAL} wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'"
+    sh "#{ADB_PATH}/adb -s #{EMU_SERIAL} shell settings put global window_animation_scale 0.0"
+    sh "#{ADB_PATH}/adb -s #{EMU_SERIAL} shell settings put global transition_animation_scale 0.0"
+    sh "#{ADB_PATH}/adb -s #{EMU_SERIAL} shell settings put global animator_duration_scale 0.0"
+
+    gradle(task: "connectedAndroidTest")
+
+    sh "#{ADB_PATH}/adb -s #{EMU_SERIAL} emu kill"
+  end
+
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :beta do
+    gradle(task: "clean assembleRelease")
+    crashlytics
+  
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
+  end
+
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
+  end
+end
