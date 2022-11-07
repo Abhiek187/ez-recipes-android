@@ -10,5 +10,5 @@ cd EZRecipes
 bundle config set --local path 'vendor/bundle'
 bundle install
 bundle exec fastlane android test
-bundle exec fastlane android ui_test
+bundle exec fastlane android ui_test api:API_LEVEL
 ```

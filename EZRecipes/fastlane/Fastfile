@@ -23,7 +23,7 @@ platform :android do
   end
 
   desc "Run instrumented tests"
-  lane :ui_test do
+  lane :ui_test do |options|
     # Accept licenses: yes | sdkmanager --licenses > /dev/null
     # Install build tools, platform tools, and platform: sdkmanager --install 'build-tools;33.0.0' platform-tools 'platforms;android-32' > /dev/null
     # Install emulator (channel 0 = stable packages): sdkmanager --install emulator --channel=0 > /dev/null
@@ -47,35 +47,32 @@ platform :android do
     ANDROID_CMD_PATH = "#{ANDROID_HOME}/cmdline-tools/latest/bin"
     ANDROID_EMULATOR_PATH = "#{ANDROID_HOME}/emulator"
     ADB_PATH = "#{ANDROID_HOME}/platform-tools"
-    ANDROID_APIS = [29]
-    AVD_PORTS = [5556]
+    BUILD_TOOLS_VERSION = "33.0.0"
 
+    api_level = options[:api]
+    AVD_NAME = "test"
+    AVD_PORT = 5556
+    EMU_SERIAL = "emulator-#{AVD_PORT}"
+
+    # Install Android SDK
     sh "yes | #{ANDROID_CMD_PATH}/sdkmanager --licenses > /dev/null"
+    sh "#{ANDROID_CMD_PATH}/sdkmanager --install 'build-tools;#{BUILD_TOOLS_VERSION}' platform-tools 'platforms;android-#{api_level}' > /dev/null"
     sh "#{ANDROID_CMD_PATH}/sdkmanager --install emulator --channel=0 > /dev/null"
+    sh "#{ANDROID_CMD_PATH}/sdkmanager --install 'system-images;android-#{api_level};google_apis;x86_64' --channel=0 > /dev/null"
 
-    ANDROID_APIS.each_with_index do |api, i|
-      avd_name = "test-#{api}"
+    # Launch Emulator
+    sh "echo no | #{ANDROID_CMD_PATH}/avdmanager create avd --force -n #{AVD_NAME} --abi 'google_apis/x86_64' --package 'system-images;android-#{api_level};google_apis;x86_64'"
+    sh "echo 'hw.cpu.ncore=2' >> ~/.android/avd/#{AVD_NAME}.avd/config.ini"
+    sh "#{ANDROID_EMULATOR_PATH}/emulator -port #{AVD_PORT} -avd #{AVD_NAME} -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &> /dev/null &"
 
-      sh "#{ANDROID_CMD_PATH}/sdkmanager --install 'build-tools;33.0.0' platform-tools 'platforms;android-#{api}' > /dev/null"
-      sh "#{ANDROID_CMD_PATH}/sdkmanager --install 'system-images;android-#{api};google_apis;x86_64' --channel=0 > /dev/null"
-      sh "echo no | #{ANDROID_CMD_PATH}/avdmanager create avd --force -n #{avd_name} --abi 'google_apis/x86_64' --package 'system-images;android-#{api};google_apis;x86_64'"
-      sh "echo 'hw.cpu.ncore=2' >> ~/.android/avd/#{avd_name}.avd/config.ini"
-      sh "#{ANDROID_EMULATOR_PATH}/emulator -port #{AVD_PORTS[i]} -avd #{avd_name} -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &> /dev/null &"
-    end
-
-    AVD_PORTS.each do |port|
-      emulator_serial = "emulator-#{port}"
-      sh "#{ADB_PATH}/adb -s #{emulator_serial} wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'"
-      sh "#{ADB_PATH}/adb -s #{emulator_serial} shell settings put global window_animation_scale 0.0"
-      sh "#{ADB_PATH}/adb -s #{emulator_serial} shell settings put global transition_animation_scale 0.0"
-      sh "#{ADB_PATH}/adb -s #{emulator_serial} shell settings put global animator_duration_scale 0.0"
-    end
+    sh "#{ADB_PATH}/adb -s #{EMU_SERIAL} wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'"
+    sh "#{ADB_PATH}/adb -s #{EMU_SERIAL} shell settings put global window_animation_scale 0.0"
+    sh "#{ADB_PATH}/adb -s #{EMU_SERIAL} shell settings put global transition_animation_scale 0.0"
+    sh "#{ADB_PATH}/adb -s #{EMU_SERIAL} shell settings put global animator_duration_scale 0.0"
 
     gradle(task: "connectedAndroidTest")
 
-    AVD_PORTS.each do |port|
-      sh "#{ADB_PATH}/adb -s emulator-#{port} emu kill"
-    end
+    sh "#{ADB_PATH}/adb -s #{EMU_SERIAL} emu kill"
   end
 
   desc "Submit a new Beta Build to Crashlytics Beta"
