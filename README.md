@@ -1,4 +1,7 @@
 # ez-recipes-android
+
+[![Fastlane](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/fastlane.yml/badge.svg)](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/fastlane.yml)
+
 Easy recipes finder Android app
 
 ## Fastlane
