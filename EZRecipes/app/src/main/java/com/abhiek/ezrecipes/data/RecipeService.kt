@@ -36,6 +36,7 @@ interface RecipeService {
                 // Extend the default timeout of 10 seconds to account for cold starts
                 val httpClient = OkHttpClient().newBuilder()
                     .addInterceptor(loggingInterceptor)
+                    .readTimeout(30, TimeUnit.SECONDS)
                     .connectTimeout(30, TimeUnit.SECONDS)
                     .build()
 

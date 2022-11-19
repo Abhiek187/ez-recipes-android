@@ -42,7 +42,7 @@ fun Greeting(
         factory = MainViewModelFactory()
     )) {
     val recipe by mainViewModel.recipe.observeAsState()
-    mainViewModel.getRandomRecipe()
+    //mainViewModel.getRandomRecipe()
 
     Text(text = "Hello $name!")
 }
