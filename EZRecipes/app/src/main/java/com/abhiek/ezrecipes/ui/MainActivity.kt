@@ -4,14 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -67,22 +65,22 @@ fun Home(
 
     Column(
         modifier = Modifier
-            .padding(all = 16.dp)
             .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
             onClick = { mainViewModel.getRandomRecipe() },
-            //modifier = Modifier.size(60.dp),
-            shape = RoundedCornerShape(10),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Yellow)
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = MaterialTheme.colors.secondary
+            )
         ) {
             Text(
                 text = "Find me a recipe!"
             )
         }
 
+        // Show a progress bar while the recipe is loading
         if (isLoading) {
             CircularProgressIndicator()
         }
