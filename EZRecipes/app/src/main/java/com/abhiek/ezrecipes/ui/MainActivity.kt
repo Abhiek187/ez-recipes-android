@@ -11,12 +11,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.MockRecipeService
 import com.abhiek.ezrecipes.data.RecipeRepository
+import com.abhiek.ezrecipes.ui.previews.DevicePreviews
+import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
+import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 class MainActivity : ComponentActivity() {
@@ -63,7 +65,9 @@ fun Greeting(
     Text(text = "Hello $name!")
 }
 
-@Preview(showBackground = true)
+@DisplayPreviews
+@OrientationPreviews
+@DevicePreviews
 @Composable
 fun DefaultPreview() {
     val viewModel = MainViewModel(RecipeRepository(MockRecipeService))
