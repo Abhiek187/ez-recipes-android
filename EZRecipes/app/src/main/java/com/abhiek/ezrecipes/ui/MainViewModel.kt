@@ -13,6 +13,8 @@ class MainViewModel(private val recipeRepository: RecipeRepository): ViewModel()
     // Only expose a read-only copy of the LiveData to the View
     private val _recipe = MutableLiveData<Recipe>()
     val recipe: LiveData<Recipe> = _recipe
+    private val _isLoading = MutableLiveData(true)
+    val isLoading: LiveData<Boolean> = _isLoading
 
     fun getRandomRecipe() {
         viewModelScope.launch {

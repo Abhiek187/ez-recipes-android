@@ -7,12 +7,12 @@ import androidx.compose.ui.tooling.preview.Preview
     name = "Light Mode",
     group = "Displays",
     uiMode = Configuration.UI_MODE_NIGHT_NO,
-    showBackground = true
+    showSystemUi = true
 )
 @Preview(
     name = "Dark Mode",
     group = "Displays",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true
+    showSystemUi = true
 )
 annotation class DisplayPreviews

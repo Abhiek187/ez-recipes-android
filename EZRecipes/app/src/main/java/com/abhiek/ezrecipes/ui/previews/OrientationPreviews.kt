@@ -7,7 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
     name = "Portrait",
     group = "Orientations",
     device = Devices.PHONE,
-    showBackground = true
+    showSystemUi = true
 )
 @Preview(
     name = "Landscape",
@@ -15,6 +15,6 @@ import androidx.compose.ui.tooling.preview.Preview
     device = Devices.AUTOMOTIVE_1024p,
     widthDp = 1920,
     heightDp = 1080,
-    showBackground = true
+    showSystemUi = true
 )
 annotation class OrientationPreviews
