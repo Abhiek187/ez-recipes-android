@@ -76,7 +76,7 @@ fun Home(
             )
         ) {
             Text(
-                text = "Find me a recipe!"
+                text = stringResource(R.string.find_recipe_button)
             )
         }
 
