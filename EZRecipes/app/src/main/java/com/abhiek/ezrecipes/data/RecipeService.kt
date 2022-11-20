@@ -18,7 +18,7 @@ interface RecipeService {
 
     @GET("{id}")
     suspend fun getRecipeById(
-        @Path("id") id: String
+        @Path("id") id: Int
     ): Response<Recipe>
 
     companion object {
