@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@ExtendWith(InstantExecutorExtension::class, MainDispatcherExtension::class)
+@ExtendWith(MainDispatcherExtension::class)
 internal class MainViewModelTest {
     private lateinit var sut: MainViewModel
 
@@ -25,7 +25,7 @@ internal class MainViewModelTest {
         // When the getRandomRecipe() method is called
         // Then the recipe property should match the mock recipe
         sut.getRandomRecipe()
-        assertEquals(sut.recipe.value, MockRecipeService.recipe)
+        assertEquals(sut.recipe, MockRecipeService.recipe)
     }
 
     @Test
@@ -33,7 +33,7 @@ internal class MainViewModelTest {
         // Given an instance of MainViewModel
         // When the getRecipeById() method is called
         // Then the recipe property should match the mock recipe
-        sut.getRecipeById("1")
-        assertEquals(sut.recipe.value, MockRecipeService.recipe)
+        sut.getRecipeById(1)
+        assertEquals(sut.recipe, MockRecipeService.recipe)
     }
 }

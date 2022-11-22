@@ -29,7 +29,7 @@ internal class RecipeRepositoryTest {
         // Given an instance of RecipeRepository
         // When the getRecipeById() method is called
         // Then it should return a successful response
-        val response = sut.getRecipeById("1")
+        val response = sut.getRecipeById(1)
         assert(response.isSuccess)
     }
 }
