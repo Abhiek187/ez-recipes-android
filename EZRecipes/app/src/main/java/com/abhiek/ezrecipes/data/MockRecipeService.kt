@@ -14,7 +14,7 @@ object MockRecipeService: RecipeService {
         return Response.success(recipe)
     }
 
-    override suspend fun getRecipeById(id: String): Response<Recipe> {
+    override suspend fun getRecipeById(id: Int): Response<Recipe> {
         return Response.success(recipe)
     }
 }

@@ -24,7 +24,7 @@ class RecipeRepository(private val recipeService: RecipeService) {
         }
     }
 
-    suspend fun getRecipeById(id: String): Result<Recipe> {
+    suspend fun getRecipeById(id: Int): Result<Recipe> {
         val response: Response<Recipe>
 
         try {

@@ -1,3 +1,43 @@
 <resources>
+    <!-- App Bar -->
     <string name="app_name">EZ Recipes</string>
+    <string name="home_nav">Home</string>
+
+    <!-- Home Screen -->
+    <string name="find_recipe_button">Find Me a Recipe!</string>
+
+    <!-- Recipe Screen -->
+    <string name="image_copyright">Image © %1$s</string>
+
+    <plurals name="recipe_time">
+        <item quantity="one">Time: %1$d minute</item>
+        <item quantity="other">Time: %1$d minutes</item>
+    </plurals>
+
+    <string name="made_button">I Made This!</string>
+    <string name="show_recipe_button">Show Me Another Recipe!</string>
+
+    <string name="nutrition_facts">Nutrition Facts</string>
+    <string name="health_score">Health Score: %1$d%%</string>
+
+    <plurals name="servings">
+        <item quantity="one">%1$d serving</item>
+        <item quantity="other">%1$d servings</item>
+    </plurals>
+
+    <string name="calories">Calories</string>
+    <string name="fat">Fat</string>
+    <string name="saturated_fat">Saturated Fat</string>
+    <string name="carbohydrates">Carbohydrates</string>
+    <string name="fiber">Fiber</string>
+    <string name="sugar">Sugar</string>
+    <string name="protein">Protein</string>
+    <string name="cholesterol">Cholesterol</string>
+    <string name="sodium">Sodium</string>
+
+    <string name="summary">Summary</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="steps">Steps</string>
+    <string name="equipment">Equipment</string>
+    <string name="attribution">Powered by spoonacular</string>
 </resources>
