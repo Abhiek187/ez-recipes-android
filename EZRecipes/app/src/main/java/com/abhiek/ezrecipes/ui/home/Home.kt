@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -62,9 +63,11 @@ fun Home(
         }
 
         // Show a progress bar while the recipe is loading
-        if (mainViewModel.isLoading) {
-            CircularProgressIndicator()
-        }
+        // Make it hidden so the button stays in place
+        CircularProgressIndicator(
+            modifier = Modifier
+                .alpha(if (mainViewModel.isLoading) 1f else 0f)
+        )
         
         // Show an alert if the recipe failed to load
         if (mainViewModel.showRecipeAlert) {
