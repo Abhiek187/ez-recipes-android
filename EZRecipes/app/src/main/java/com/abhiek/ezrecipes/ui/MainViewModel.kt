@@ -20,9 +20,8 @@ class MainViewModel(
         private set
     var recipeError by mutableStateOf<RecipeError?>(null)
         private set
+
     var isLoading by mutableStateOf(false)
-        private set
-    // Let the view change this property
     var isRecipeLoaded by mutableStateOf(false)
     var showRecipeAlert by mutableStateOf(false)
 

@@ -9,6 +9,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
@@ -63,7 +65,53 @@ fun Home(
         if (mainViewModel.isLoading) {
             CircularProgressIndicator()
         }
+        
+        // Show an alert if the recipe failed to load
+        if (mainViewModel.showRecipeAlert) {
+            AlertDialog(
+                onDismissRequest = {
+                    mainViewModel.showRecipeAlert = false
+                },
+                title = {
+                    Text(
+                        text = stringResource(R.string.error_title)
+                    )
+                },
+                text = {
+                       Text(
+                           text = mainViewModel.recipeError?.error ?:
+                           stringResource(R.string.unknown_error)
+                       )
+                },
+                buttons = {
+                    Button(
+                        onClick = {
+                            mainViewModel.showRecipeAlert = false
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.ok_button)
+                        )
+                    }
+                }
+            )
+        }
     }
+}
+
+// Show different previews for each possible state of the home screen
+private data class HomeState(
+    val isLoading: Boolean,
+    val showAlert: Boolean
+)
+
+private class HomePreviewParameterProvider: PreviewParameterProvider<HomeState> {
+    // Show previews of the default home screen, with the progress bar, and with an alert
+    override val values = sequenceOf(
+        HomeState(isLoading = false, showAlert = false),
+        HomeState(isLoading = true, showAlert = false),
+        HomeState(isLoading = false, showAlert = true)
+    )
 }
 
 @DevicePreviews
@@ -71,8 +119,13 @@ fun Home(
 @FontPreviews
 @OrientationPreviews
 @Composable
-fun HomePreview() {
+private fun HomePreview(
+    @PreviewParameter(HomePreviewParameterProvider::class) state: HomeState
+) {
     val viewModel = MainViewModel(RecipeRepository(MockRecipeService))
+    val (isLoading, showAlert) = state
+    viewModel.isLoading = isLoading
+    viewModel.showRecipeAlert = showAlert
 
     EZRecipesTheme {
         Surface {
