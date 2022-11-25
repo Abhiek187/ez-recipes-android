@@ -122,10 +122,15 @@ private class HomePreviewParameterProvider: PreviewParameterProvider<HomeState> 
 private fun HomePreview(
     @PreviewParameter(HomePreviewParameterProvider::class) state: HomeState
 ) {
-    val viewModel = MainViewModel(RecipeRepository(MockRecipeService))
+    val recipeService = MockRecipeService
+    val viewModel = MainViewModel(RecipeRepository(recipeService))
     val (isLoading, showAlert) = state
     viewModel.isLoading = isLoading
-    viewModel.showRecipeAlert = showAlert
+    //viewModel.showRecipeAlert = showAlert
+
+    if (showAlert) {
+        recipeService.isSuccess = false
+    }
 
     EZRecipesTheme {
         Surface {
