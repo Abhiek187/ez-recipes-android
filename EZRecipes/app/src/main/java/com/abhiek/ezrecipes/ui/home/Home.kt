@@ -1,8 +1,6 @@
 package com.abhiek.ezrecipes.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -87,14 +85,22 @@ fun Home(
                        )
                 },
                 buttons = {
-                    Button(
-                        onClick = {
-                            mainViewModel.showRecipeAlert = false
-                        }
+                    // Position the button at the bottom right of the alert
+                    Row(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        Text(
-                            text = stringResource(R.string.ok_button)
-                        )
+                        Button(
+                            onClick = {
+                                mainViewModel.showRecipeAlert = false
+                            }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.ok_button)
+                            )
+                        }
                     }
                 }
             )
@@ -129,11 +135,8 @@ private fun HomePreview(
     val viewModel = MainViewModel(RecipeRepository(recipeService))
     val (isLoading, showAlert) = state
     viewModel.isLoading = isLoading
-    //viewModel.showRecipeAlert = showAlert
-
-    if (showAlert) {
-        recipeService.isSuccess = false
-    }
+    viewModel.showRecipeAlert = showAlert // show the fallback alert in the preview
+    recipeService.isSuccess = !showAlert // show the alert after clicking the find recipe button
 
     EZRecipesTheme {
         Surface {
