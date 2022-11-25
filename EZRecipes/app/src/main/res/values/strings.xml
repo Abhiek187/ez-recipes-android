@@ -5,6 +5,12 @@
 
     <!-- Home Screen -->
     <string name="find_recipe_button">Find Me a Recipe!</string>
+    <string name="error_title">Error</string>
+    <string name="unknown_error">
+        Something went terribly wrong. Please submit a bug report to https://github.com/Abhiek187/ez-recipes-android/issues
+    </string>
+    <!-- Android strings: https://developer.android.com/reference/android/R.string -->
+    <string name="ok_button">@android:string/ok</string>
 
     <!-- Recipe Screen -->
     <string name="image_copyright">Image © %1$s</string>
