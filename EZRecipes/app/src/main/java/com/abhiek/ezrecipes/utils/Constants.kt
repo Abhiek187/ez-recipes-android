@@ -10,10 +10,4 @@ object Constants {
 
     // Error message to fallback on in case all fails
     val UNKNOWN_ERROR = Resources.getSystem().getString(R.string.unknown_error)
-
-    // Routes in the navigation graph
-    object Routes {
-        const val HOME = "home"
-        const val RECIPE = "recipe/{recipe}"
-    }
 }

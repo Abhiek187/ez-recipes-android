@@ -1,7 +1,7 @@
 <resources>
     <!-- App Bar -->
     <string name="app_name">EZ Recipes</string>
-    <string name="home_nav">Home</string>
+    <string name="app_logo_alt">Food cooking in a pot</string>
 
     <!-- Home Screen -->
     <string name="find_recipe_button">Find Me a Recipe!</string>
