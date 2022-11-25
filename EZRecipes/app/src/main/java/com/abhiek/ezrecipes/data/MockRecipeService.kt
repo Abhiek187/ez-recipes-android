@@ -15,7 +15,7 @@ object MockRecipeService: RecipeService {
     private const val recipeErrorString = "{\"error\":\"You are not authorized. Please read https://spoonacular.com/food-api/docs#Authentication\"}"
     val recipeError: RecipeError = Gson().fromJson(recipeErrorString, RecipeError::class.java)
 
-    var isSuccess = false // controls whether the mock API calls succeed or fail
+    var isSuccess = true // controls whether the mock API calls succeed or fail
 
     override suspend fun getRandomRecipe(): Response<Recipe> {
         return if (isSuccess) {
