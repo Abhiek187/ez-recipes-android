@@ -64,13 +64,11 @@ fun NavigationDrawer(
                 selected = currentRoute == item.route,
                 onItemClick = {
                     navController.navigate(item.route) {
+                        // Pop all previous routes from the back stack until the selected route is found
                         navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route) {
-                                saveState = true
-                            }
+                            popUpTo(route)
                         }
                         launchSingleTop = true
-                        restoreState = true
                     }
                     scope.launch {
                         scaffoldState.drawerState.close()

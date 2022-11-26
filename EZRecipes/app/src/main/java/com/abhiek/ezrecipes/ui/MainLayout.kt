@@ -18,7 +18,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
-fun MainLayout(initialDrawerState: DrawerValue = DrawerValue.Open) {
+fun MainLayout(initialDrawerState: DrawerValue = DrawerValue.Closed) {
     // Remember functions can only be called in a composable, not an activity
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState(rememberDrawerState(initialDrawerState))
