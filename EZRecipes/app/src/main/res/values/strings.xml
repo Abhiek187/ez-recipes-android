@@ -2,6 +2,10 @@
     <!-- App Bar -->
     <string name="app_name">EZ Recipes</string>
     <string name="app_logo_alt">Food cooking in a pot</string>
+    <string name="hamburger_menu_alt">Open menu</string>
+    <string name="favorite_alt">Favorite this recipe</string>
+    <string name="un_favorite_alt">Un-favorite this recipe</string>
+    <string name="share_alt">Share this recipe</string>
 
     <!-- Home Screen -->
     <string name="find_recipe_button">Find Me a Recipe!</string>
