@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui.navbar
 
+import android.content.Intent
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -7,6 +8,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
@@ -20,6 +22,19 @@ import kotlinx.coroutines.launch
 @Composable
 fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState) {
     var isFavorite by remember { mutableStateOf(false) }
+    // Get a context variable like in activities
+    val context = LocalContext.current
+
+    fun shareRecipe() {
+        // Create a Sharesheet to share the recipe with others
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, context.getString(R.string.share_body))
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        context.startActivity(shareIntent)
+    }
 
     TopAppBar(
         title = {
@@ -45,7 +60,7 @@ fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState) {
                     if (isFavorite) stringResource(R.string.un_favorite_alt) else stringResource(R.string.favorite_alt)
                 )
             }
-            IconButton(onClick = {}) {
+            IconButton(onClick = { shareRecipe() }) {
                 Icon(Icons.Filled.Share, stringResource(R.string.share_alt))
             }
         },
