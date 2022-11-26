@@ -8,28 +8,60 @@ import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class RecipeRepositoryTest {
-    private lateinit var sut: RecipeRepository // system under test
+    private lateinit var mockService: MockRecipeService
+    private lateinit var recipeRepository: RecipeRepository
 
     @BeforeEach
     fun setUp() {
-        sut = RecipeRepository(MockRecipeService)
+        mockService = MockRecipeService
+        recipeRepository = RecipeRepository(mockService)
     }
 
     @Test
-    fun getRandomRecipe() = runTest {
+    fun getRandomRecipeSuccess() = runTest {
         // Given an instance of RecipeRepository
         // When the getRandomRecipe() method is called
+        mockService.isSuccess = true
+        val response = recipeRepository.getRandomRecipe()
+
         // Then it should return a successful response
-        val response = sut.getRandomRecipe()
-        assert(response.isSuccess)
+        assertTrue(response is RecipeResult.Success)
+        assertEquals((response as RecipeResult.Success).recipe, mockService.recipe)
     }
 
     @Test
-    fun getRecipeById() = runTest {
+    fun getRandomRecipeError() = runTest {
+        // Given an instance of RecipeRepository
+        // When the getRandomRecipe() method is called with isSuccess = false
+        mockService.isSuccess = false
+        val response = recipeRepository.getRandomRecipe()
+
+        // Then it should return an error
+        assertTrue(response is RecipeResult.Error)
+        assertEquals((response as RecipeResult.Error).recipeError, mockService.recipeError)
+    }
+
+    @Test
+    fun getRecipeByIdSuccess() = runTest {
         // Given an instance of RecipeRepository
         // When the getRecipeById() method is called
+        mockService.isSuccess = true
+        val response = recipeRepository.getRecipeById(1)
+
         // Then it should return a successful response
-        val response = sut.getRecipeById(1)
-        assert(response.isSuccess)
+        assertTrue(response is RecipeResult.Success)
+        assertEquals((response as RecipeResult.Success).recipe, mockService.recipe)
+    }
+
+    @Test
+    fun getRecipeByIdError() = runTest {
+        // Given an instance of RecipeRepository
+        // When the getRecipeById() method is called with isSuccess = false
+        mockService.isSuccess = false
+        val response = recipeRepository.getRecipeById(1)
+
+        // Then it should return an error response
+        assertTrue(response is RecipeResult.Error)
+        assertEquals((response as RecipeResult.Error).recipeError, mockService.recipeError)
     }
 }

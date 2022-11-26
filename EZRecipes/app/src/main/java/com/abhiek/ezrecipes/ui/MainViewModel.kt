@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.abhiek.ezrecipes.data.RecipeRepository
+import com.abhiek.ezrecipes.data.RecipeResult
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.models.RecipeError
 import kotlinx.coroutines.launch
@@ -19,10 +20,10 @@ class MainViewModel(
         private set
     var recipeError by mutableStateOf<RecipeError?>(null)
         private set
+
     var isLoading by mutableStateOf(false)
-        private set
-    // Let the view change this property
     var isRecipeLoaded by mutableStateOf(false)
+    var showRecipeAlert by mutableStateOf(false)
 
     fun getRandomRecipe() {
         viewModelScope.launch {
@@ -30,20 +31,20 @@ class MainViewModel(
             val response = recipeRepository.getRandomRecipe()
             isLoading = false
 
-            response.fold(
-                onSuccess = { recipe ->
-                    this@MainViewModel.recipe = recipe
+            when (response) {
+                is RecipeResult.Success -> {
+                    recipe = response.recipe
                     recipeError = null
                     isRecipeLoaded = true
-                },
-                onFailure = { error ->
-                    recipe = null
-                    recipeError = RecipeError(
-                        error.localizedMessage ?:
-                        "Something went terribly wrong. Please submit a bug report to https://github.com/Abhiek187/ez-recipes-android/issues"
-                    )
+                    showRecipeAlert = false
                 }
-            )
+                is RecipeResult.Error -> {
+                    recipe = null
+                    recipeError = response.recipeError
+                    isRecipeLoaded = false
+                    showRecipeAlert = true
+                }
+            }
         }
     }
 
@@ -53,19 +54,20 @@ class MainViewModel(
             val response = recipeRepository.getRecipeById(id)
             isLoading = false
 
-            response.fold(
-                onSuccess = { recipe ->
-                    this@MainViewModel.recipe = recipe
+            when (response) {
+                is RecipeResult.Success -> {
+                    recipe = response.recipe
                     recipeError = null
-                },
-                onFailure = { error ->
-                    recipe = null
-                    recipeError = RecipeError(
-                        error.localizedMessage ?:
-                        "Something went terribly wrong. Please submit a bug report to https://github.com/Abhiek187/ez-recipes-android/issues"
-                    )
+                    isRecipeLoaded = true
+                    showRecipeAlert = false
                 }
-            )
+                is RecipeResult.Error -> {
+                    recipe = null
+                    recipeError = response.recipeError
+                    isRecipeLoaded = false
+                    showRecipeAlert = true
+                }
+            }
         }
     }
 }

@@ -1,10 +1,21 @@
 <resources>
     <!-- App Bar -->
     <string name="app_name">EZ Recipes</string>
-    <string name="home_nav">Home</string>
+    <string name="app_logo_alt">Food cooking in a pot</string>
+    <string name="hamburger_menu_alt">Open menu</string>
+    <string name="favorite_alt">Favorite this recipe</string>
+    <string name="un_favorite_alt">Un-favorite this recipe</string>
+    <string name="share_alt">Share this recipe</string>
+    <string name="share_body">Check out this low-effort recipe!</string>
 
     <!-- Home Screen -->
     <string name="find_recipe_button">Find Me a Recipe!</string>
+    <string name="error_title">Error</string>
+    <string name="unknown_error">
+        Something went terribly wrong. Please submit a bug report to https://github.com/Abhiek187/ez-recipes-android/issues
+    </string>
+    <!-- Android strings: https://developer.android.com/reference/android/R.string -->
+    <string name="ok_button">@android:string/ok</string>
 
     <!-- Recipe Screen -->
     <string name="image_copyright">Image © %1$s</string>

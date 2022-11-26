@@ -12,28 +12,72 @@ import org.junit.jupiter.api.extension.ExtendWith
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(MainDispatcherExtension::class)
 internal class MainViewModelTest {
-    private lateinit var sut: MainViewModel
+    private lateinit var mockService: MockRecipeService
+    private lateinit var viewModel: MainViewModel
 
     @BeforeEach
     fun setUp() {
-        sut = MainViewModel(RecipeRepository(MockRecipeService))
+        mockService = MockRecipeService
+        viewModel = MainViewModel(RecipeRepository(mockService))
     }
 
     @Test
-    fun getRandomRecipe() = runTest {
+    fun getRandomRecipeSuccess() = runTest {
         // Given an instance of MainViewModel
         // When the getRandomRecipe() method is called
+        mockService.isSuccess = true
+        viewModel.getRandomRecipe()
+
         // Then the recipe property should match the mock recipe
-        sut.getRandomRecipe()
-        assertEquals(sut.recipe, MockRecipeService.recipe)
+        assertEquals(viewModel.recipe, mockService.recipe)
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.isLoading)
+        assertTrue(viewModel.isRecipeLoaded)
+        assertFalse(viewModel.showRecipeAlert)
     }
 
     @Test
-    fun getRecipeById() = runTest {
+    fun getRandomRecipeError() = runTest {
+        // Given an instance of MainViewModel
+        // When the getRandomRecipe() method is called with isSuccess = false
+        mockService.isSuccess = false
+        viewModel.getRandomRecipe()
+
+        // Then the recipeError property should match the mock recipeError
+        assertNull(viewModel.recipe)
+        assertEquals(viewModel.recipeError, mockService.recipeError)
+        assertFalse(viewModel.isLoading)
+        assertFalse(viewModel.isRecipeLoaded)
+        assertTrue(viewModel.showRecipeAlert)
+    }
+
+    @Test
+    fun getRecipeByIdSuccess() = runTest {
         // Given an instance of MainViewModel
         // When the getRecipeById() method is called
+        mockService.isSuccess = true
+        viewModel.getRecipeById(1)
+
         // Then the recipe property should match the mock recipe
-        sut.getRecipeById(1)
-        assertEquals(sut.recipe, MockRecipeService.recipe)
+        assertEquals(viewModel.recipe, mockService.recipe)
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.isLoading)
+        assertTrue(viewModel.isRecipeLoaded)
+        assertFalse(viewModel.showRecipeAlert)
+    }
+
+    @Test
+    fun getRecipeByIdError() = runTest {
+        // Given an instance of MainViewModel
+        // When the getRecipeById() method is called with isSuccess = false
+        mockService.isSuccess = false
+        viewModel.getRecipeById(1)
+
+        // Then the recipeError property should match the mock recipeError
+        assertNull(viewModel.recipe)
+        assertEquals(viewModel.recipeError, mockService.recipeError)
+        assertFalse(viewModel.isLoading)
+        assertFalse(viewModel.isRecipeLoaded)
+        assertTrue(viewModel.showRecipeAlert)
     }
 }
