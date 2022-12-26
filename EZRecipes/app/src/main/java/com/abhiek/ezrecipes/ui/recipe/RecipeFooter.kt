@@ -5,11 +5,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.abhiek.ezrecipes.data.MockRecipeService
-import com.abhiek.ezrecipes.data.models.Recipe
+import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -17,13 +17,13 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
-fun RecipeFooter(recipe: Recipe) {
+fun RecipeFooter() {
     Text(
-        text = recipe.name,
-        fontSize = 24.sp,
+        text = stringResource(R.string.attribution),
+        fontSize = 10.sp,
         textAlign = TextAlign.Center,
         modifier = Modifier
-            .padding(top = 8.dp)
+            .padding(vertical = 8.dp)
     )
 }
 
@@ -35,7 +35,7 @@ fun RecipeFooter(recipe: Recipe) {
 fun RecipeFooterPreview() {
     EZRecipesTheme {
         Surface {
-            RecipeFooter(MockRecipeService.recipe)
+            RecipeFooter()
         }
     }
 }
