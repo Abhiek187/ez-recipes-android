@@ -17,7 +17,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
-fun Recipe(recipe: Recipe) {
+fun RecipeFooter(recipe: Recipe) {
     Text(
         text = recipe.name,
         fontSize = 24.sp,
@@ -32,10 +32,10 @@ fun Recipe(recipe: Recipe) {
 @FontPreviews
 @OrientationPreviews
 @Composable
-fun RecipePreview() {
+fun RecipeFooterPreview() {
     EZRecipesTheme {
         Surface {
-            Recipe(MockRecipeService.recipe)
+            RecipeFooter(MockRecipeService.recipe)
         }
     }
 }
