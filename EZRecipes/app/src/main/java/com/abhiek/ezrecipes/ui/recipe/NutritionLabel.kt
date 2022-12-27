@@ -18,6 +18,8 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import java.text.NumberFormat
+import kotlin.math.roundToInt
 
 @Composable
 fun NutritionLabel(recipe: Recipe) {
@@ -64,6 +66,10 @@ fun NutritionLabel(recipe: Recipe) {
             ) {
                 recipe.nutrients.forEach { nutrient ->
                     val isBold = nutrientHeadings.contains(nutrient.name)
+                    // Round each amount to a whole number and add commas
+                    val formattedAmount = NumberFormat.getIntegerInstance().format(
+                        nutrient.amount.roundToInt()
+                    )
 
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -75,7 +81,7 @@ fun NutritionLabel(recipe: Recipe) {
                             fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
                         )
                         Text(
-                            text = "${nutrient.amount} ${nutrient.unit}",
+                            text = "$formattedAmount ${nutrient.unit}",
                             fontSize = 18.sp,
                             fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
                         )
