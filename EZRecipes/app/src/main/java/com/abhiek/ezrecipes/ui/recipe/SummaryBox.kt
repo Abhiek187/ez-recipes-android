@@ -31,7 +31,6 @@ import com.abhiek.ezrecipes.utils.HTMLText
 fun SummaryBox(recipe: Recipe) {
     Box(
         modifier = Modifier
-            .width(300.dp)
             .background(MaterialTheme.colors.secondary)
     ) {
         Column(
