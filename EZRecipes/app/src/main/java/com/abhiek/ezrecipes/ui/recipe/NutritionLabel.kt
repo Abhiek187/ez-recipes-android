@@ -1,13 +1,16 @@
 package com.abhiek.ezrecipes.ui.recipe
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.MockRecipeService
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
@@ -18,13 +21,69 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
 fun NutritionLabel(recipe: Recipe) {
-    Text(
-        text = recipe.name,
-        fontSize = 24.sp,
-        textAlign = TextAlign.Center,
+    val context = LocalContext.current
+    // Nutrients that should be bolded on the nutrition label
+    val nutrientHeadings = listOf("Calories", "Fat", "Carbohydrates", "Protein")
+
+    Card(
         modifier = Modifier
-            .padding(top = 8.dp)
-    )
+            .width(300.dp)
+            .padding(16.dp),
+        elevation = 10.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp)
+        ) {
+            // Health score and servings
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.nutrition_facts),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = stringResource(R.string.health_score, recipe.healthScore)
+                )
+                Text(
+                    text = context.resources.getQuantityString(R.plurals.servings, recipe.servings, recipe.servings)
+                )
+            }
+
+            Divider(
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+
+            // Nutritional information
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(horizontal = 8.dp)
+            ) {
+                recipe.nutrients.forEach { nutrient ->
+                    val isBold = nutrientHeadings.contains(nutrient.name)
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = nutrient.name,
+                            fontSize = 18.sp,
+                            fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
+                        )
+                        Text(
+                            text = "${nutrient.amount} ${nutrient.unit}",
+                            fontSize = 18.sp,
+                            fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 @DevicePreviews
