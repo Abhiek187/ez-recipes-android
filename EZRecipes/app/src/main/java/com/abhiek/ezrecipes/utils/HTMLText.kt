@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.utils
 
+import android.text.method.LinkMovementMethod
 import android.util.TypedValue
 import android.widget.TextView
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,8 @@ fun HTMLText(
         modifier = modifier,
         update = { view ->
             view.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
+            // Make anchor tags clickable (autoLink doesn't work if the link text differs from its source)
+            view.movementMethod = LinkMovementMethod.getInstance()
 
             if (color != null) {
                 view.setTextColor(color)
