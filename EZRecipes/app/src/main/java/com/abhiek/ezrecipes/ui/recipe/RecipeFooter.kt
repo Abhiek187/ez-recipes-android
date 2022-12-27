@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui.recipe
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -20,10 +21,11 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 fun RecipeFooter() {
     Text(
         text = stringResource(R.string.attribution),
-        fontSize = 10.sp,
+        fontSize = 12.sp,
         textAlign = TextAlign.Center,
         modifier = Modifier
             .padding(vertical = 8.dp)
+            .fillMaxWidth()
     )
 }
 
