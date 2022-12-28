@@ -62,7 +62,9 @@ fun NutritionLabel(recipe: Recipe) {
             // Nutritional information
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .padding(bottom = 8.dp)
             ) {
                 recipe.nutrients.forEach { nutrient ->
                     val isBold = nutrientHeadings.contains(nutrient.name)

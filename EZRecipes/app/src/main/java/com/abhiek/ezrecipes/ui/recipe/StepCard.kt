@@ -27,7 +27,7 @@ fun StepCard(step: Step) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(8.dp),
         elevation = 10.dp
     ) {
         Column(
@@ -80,7 +80,8 @@ fun StepCard(step: Step) {
                             )
                             Text(
                                 text = ingredient.name,
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.width(100.dp)
                             )
                         }
                     }
@@ -109,7 +110,8 @@ fun StepCard(step: Step) {
                             )
                             Text(
                                 text = equipment.name,
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.width(100.dp)
                             )
                         }
                     }

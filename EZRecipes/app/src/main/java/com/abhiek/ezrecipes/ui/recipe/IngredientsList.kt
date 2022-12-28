@@ -48,8 +48,8 @@ fun IngredientsList(ingredients: List<Ingredient>) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .padding(bottom = 8.dp)
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp)
             ) {
                 ingredients.forEach { ingredient ->
                     Row(
