@@ -21,6 +21,8 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.google.accompanist.flowlayout.FlowRow
+import com.google.accompanist.flowlayout.SizeMode
 
 @Composable
 fun StepCard(step: Step) {
@@ -71,18 +73,26 @@ fun StepCard(step: Step) {
                         fontWeight = FontWeight.Bold
                     )
 
-                    step.ingredients.forEach { ingredient ->
-                        Column {
-                            AsyncImage(
-                                model = stringResource(R.string.ingredient_url, ingredient.image),
-                                contentDescription = ingredient.name,
-                                modifier = Modifier.size(100.dp)
-                            )
-                            Text(
-                                text = ingredient.name,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.width(100.dp)
-                            )
+                    // Wrap items if they can't fit in one row
+                    FlowRow(
+                        modifier = Modifier.padding(8.dp),
+                        mainAxisSize = SizeMode.Expand,
+                        crossAxisSpacing = 12.dp,
+                        mainAxisSpacing = 8.dp
+                    ) {
+                        step.ingredients.forEach { ingredient ->
+                            Column {
+                                AsyncImage(
+                                    model = stringResource(R.string.ingredient_url, ingredient.image),
+                                    contentDescription = ingredient.name,
+                                    modifier = Modifier.size(100.dp)
+                                )
+                                Text(
+                                    text = ingredient.name,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.width(100.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -101,18 +111,25 @@ fun StepCard(step: Step) {
                         fontWeight = FontWeight.Bold
                     )
 
-                    step.equipment.forEach { equipment ->
-                        Column {
-                            AsyncImage(
-                                model = stringResource(R.string.equipment_url, equipment.image),
-                                contentDescription = equipment.name,
-                                modifier = Modifier.size(100.dp)
-                            )
-                            Text(
-                                text = equipment.name,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.width(100.dp)
-                            )
+                    FlowRow(
+                        modifier = Modifier.padding(8.dp),
+                        mainAxisSize = SizeMode.Expand,
+                        crossAxisSpacing = 12.dp,
+                        mainAxisSpacing = 8.dp
+                    ) {
+                        step.equipment.forEach { equipment ->
+                            Column {
+                                AsyncImage(
+                                    model = stringResource(R.string.equipment_url, equipment.image),
+                                    contentDescription = equipment.name,
+                                    modifier = Modifier.size(100.dp)
+                                )
+                                Text(
+                                    text = equipment.name,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.width(100.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -129,7 +146,7 @@ fun StepCard(step: Step) {
 fun StepCardPreview() {
     EZRecipesTheme {
         Surface {
-            StepCard(MockRecipeService.recipe.instructions[0].steps[0])
+            StepCard(MockRecipeService.recipe.instructions[0].steps[3])
         }
     }
 }
