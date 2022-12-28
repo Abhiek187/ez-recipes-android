@@ -74,7 +74,7 @@ fun StepCard(step: Step) {
                     step.ingredients.forEach { ingredient ->
                         Column {
                             AsyncImage(
-                                model = "https://spoonacular.com/cdn/ingredients_100x100/${ingredient.image}",
+                                model = stringResource(R.string.ingredient_url, ingredient.image),
                                 contentDescription = ingredient.name,
                                 modifier = Modifier.size(100.dp)
                             )
@@ -103,7 +103,7 @@ fun StepCard(step: Step) {
                     step.equipment.forEach { equipment ->
                         Column {
                             AsyncImage(
-                                model = "https://spoonacular.com/cdn/equipment_100x100/${equipment.image}",
+                                model = stringResource(R.string.equipment_url, equipment.image),
                                 contentDescription = equipment.name,
                                 modifier = Modifier.size(100.dp)
                             )
