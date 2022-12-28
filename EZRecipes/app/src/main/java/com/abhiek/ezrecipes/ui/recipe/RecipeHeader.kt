@@ -32,6 +32,7 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.Blue300
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.capitalizeWords
 
 @Composable
 fun RecipeHeader(recipe: Recipe) {
@@ -91,7 +92,7 @@ fun RecipeHeader(recipe: Recipe) {
         ) {
             // Recipe name and source link
             Text(
-                text = recipe.name,
+                text = recipe.name.capitalizeWords(),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,

@@ -49,7 +49,9 @@
 
     <string name="summary">Summary</string>
     <string name="ingredients">Ingredients</string>
+    <string name="ingredient_url">https://spoonacular.com/cdn/ingredients_100x100/%1$s</string>
     <string name="steps">Steps</string>
     <string name="equipment">Equipment</string>
+    <string name="equipment_url">https://spoonacular.com/cdn/equipment_100x100/%1$s</string>
     <string name="attribution">Powered by spoonacular</string>
 </resources>
