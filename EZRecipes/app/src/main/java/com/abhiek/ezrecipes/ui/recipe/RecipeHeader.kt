@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -51,7 +52,6 @@ fun RecipeHeader(recipe: Recipe) {
         addStyle(
             style = SpanStyle(
                 color = Blue300,
-                fontSize = 12.sp,
                 textDecoration = TextDecoration.Underline
             ),
             start = startIndex,
@@ -88,7 +88,8 @@ fun RecipeHeader(recipe: Recipe) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             // Recipe name and source link
             Text(
@@ -98,6 +99,7 @@ fun RecipeHeader(recipe: Recipe) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(top = 8.dp)
+                    .fillMaxWidth(0.8f)
             )
 
             IconButton(
@@ -111,7 +113,10 @@ fun RecipeHeader(recipe: Recipe) {
         AsyncImage(
             model = recipe.image,
             contentDescription = recipe.name,
-            modifier = Modifier.size(300.dp)
+            modifier = Modifier
+                .size(width = 312.dp, height = 231.dp)
+                .padding(8.dp),
+            contentScale = ContentScale.Fit
         )
 
         if (recipe.credit != null) {
@@ -134,6 +139,7 @@ fun RecipeHeader(recipe: Recipe) {
         // Recipe time and buttons
         Text(
             text = timeAnnotatedString,
+            fontSize = 20.sp,
             modifier = Modifier.padding(vertical = 8.dp)
         )
         
