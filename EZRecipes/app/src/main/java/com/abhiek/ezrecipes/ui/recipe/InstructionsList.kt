@@ -40,7 +40,9 @@ fun InstructionsList(recipe: Recipe) {
             if (instruction.name.isNotEmpty()) {
                 Text(
                     text = instruction.name,
-                    fontSize = 18.sp
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
