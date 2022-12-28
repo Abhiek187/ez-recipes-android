@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.MockRecipeService
-import com.abhiek.ezrecipes.data.models.Recipe
+import com.abhiek.ezrecipes.data.models.Ingredient
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -23,7 +23,7 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.capitalizeWords
 
 @Composable
-fun IngredientsList(recipe: Recipe) {
+fun IngredientsList(ingredients: List<Ingredient>) {
     Card(
         modifier = Modifier
             .padding(16.dp),
@@ -51,7 +51,7 @@ fun IngredientsList(recipe: Recipe) {
                     .padding(horizontal = 8.dp)
                     .padding(bottom = 8.dp)
             ) {
-                recipe.ingredients.forEach { ingredient ->
+                ingredients.forEach { ingredient ->
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
@@ -79,7 +79,7 @@ fun IngredientsList(recipe: Recipe) {
 fun IngredientsListPreview() {
     EZRecipesTheme {
         Surface {
-            IngredientsList(MockRecipeService.recipe)
+            IngredientsList(MockRecipeService.recipe.ingredients)
         }
     }
 }

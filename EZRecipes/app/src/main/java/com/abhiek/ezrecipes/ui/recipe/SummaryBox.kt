@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.MockRecipeService
-import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -28,7 +27,7 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.HTMLText
 
 @Composable
-fun SummaryBox(recipe: Recipe) {
+fun SummaryBox(summary: String) {
     Box(
         modifier = Modifier
             .background(MaterialTheme.colors.secondary)
@@ -61,7 +60,7 @@ fun SummaryBox(recipe: Recipe) {
             }
 
             HTMLText(
-                html = recipe.summary,
+                html = summary,
                 color = Color.Black.toArgb(),
                 fontSize = 18f
             )
@@ -77,7 +76,7 @@ fun SummaryBox(recipe: Recipe) {
 fun SummaryBoxPreview() {
     EZRecipesTheme {
         Surface {
-            SummaryBox(MockRecipeService.recipe)
+            SummaryBox(MockRecipeService.recipe.summary)
         }
     }
 }

@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.MockRecipeService
-import com.abhiek.ezrecipes.data.models.Recipe
+import com.abhiek.ezrecipes.data.models.Instruction
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -22,7 +22,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
-fun InstructionsList(recipe: Recipe) {
+fun InstructionsList(instructions: List<Instruction>) {
     // Steps heading and cards
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -35,7 +35,7 @@ fun InstructionsList(recipe: Recipe) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        recipe.instructions.forEach { instruction ->
+        instructions.forEach { instruction ->
             // Split each step by instruction (if applicable)
             if (instruction.name.isNotEmpty()) {
                 Text(
@@ -61,7 +61,7 @@ fun InstructionsList(recipe: Recipe) {
 fun InstructionsListPreview() {
     EZRecipesTheme {
         Surface {
-            InstructionsList(MockRecipeService.recipe)
+            InstructionsList(MockRecipeService.recipe.instructions)
         }
     }
 }

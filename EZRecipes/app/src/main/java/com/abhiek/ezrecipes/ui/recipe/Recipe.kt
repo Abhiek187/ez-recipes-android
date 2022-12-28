@@ -33,9 +33,9 @@ fun Recipe(recipe: Recipe) {
     ) {
         RecipeHeader(recipe = recipe)
         NutritionLabel(recipe = recipe)
-        SummaryBox(recipe = recipe)
-        IngredientsList(recipe = recipe)
-        InstructionsList(recipe = recipe)
+        SummaryBox(summary = recipe.summary)
+        IngredientsList(ingredients = recipe.ingredients)
+        InstructionsList(instructions = recipe.instructions)
 
         Divider()
 
