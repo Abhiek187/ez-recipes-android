@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.MockRecipeService
 import com.abhiek.ezrecipes.data.RecipeRepository
-import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -25,14 +24,14 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 @Composable
 fun Home(
     mainViewModel: MainViewModel,
-    onNavigateToRecipe: (recipe: Recipe) -> Unit
+    onNavigateToRecipe: () -> Unit
 ) {
     // Go to the recipe screen after fetching it from the server
     // Don't call this when navigating back
     if (mainViewModel.isRecipeLoaded) {
         LaunchedEffect(mainViewModel.recipe) {
-            mainViewModel.recipe?.let { recipe ->
-                onNavigateToRecipe(recipe)
+            if (mainViewModel.recipe != null) {
+                onNavigateToRecipe()
                 mainViewModel.isRecipeLoaded = false
             }
         }
@@ -45,7 +44,7 @@ fun Home(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = { mainViewModel.getRandomRecipe() },
+            onClick = { mainViewModel.getRandomRecipe(fromHome = true) },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = MaterialTheme.colors.secondary
             ),

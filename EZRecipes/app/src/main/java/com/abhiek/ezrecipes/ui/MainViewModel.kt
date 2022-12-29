@@ -22,52 +22,48 @@ class MainViewModel(
         private set
 
     var isLoading by mutableStateOf(false)
+    // Alerts the home screen to navigate to the recipe screen
     var isRecipeLoaded by mutableStateOf(false)
     var showRecipeAlert by mutableStateOf(false)
 
-    fun getRandomRecipe() {
+    private fun updateRecipeProps(
+        response: RecipeResult,
+        fromHome: Boolean
+    ) {
+        // Set all the ViewModel properties based on the API result
+        when (response) {
+            is RecipeResult.Success -> {
+                recipe = response.recipe
+                recipeError = null
+                isRecipeLoaded = fromHome
+                showRecipeAlert = false
+            }
+            is RecipeResult.Error -> {
+                recipe = null
+                recipeError = response.recipeError
+                isRecipeLoaded = false
+                showRecipeAlert = true
+            }
+        }
+    }
+
+    fun getRandomRecipe(fromHome: Boolean = false) {
         viewModelScope.launch {
             isLoading = true
             val response = recipeRepository.getRandomRecipe()
             isLoading = false
 
-            when (response) {
-                is RecipeResult.Success -> {
-                    recipe = response.recipe
-                    recipeError = null
-                    isRecipeLoaded = true
-                    showRecipeAlert = false
-                }
-                is RecipeResult.Error -> {
-                    recipe = null
-                    recipeError = response.recipeError
-                    isRecipeLoaded = false
-                    showRecipeAlert = true
-                }
-            }
+            updateRecipeProps(response, fromHome)
         }
     }
 
-    fun getRecipeById(id: Int) {
+    fun getRecipeById(id: Int, fromHome: Boolean = false) {
         viewModelScope.launch {
             isLoading = true
             val response = recipeRepository.getRecipeById(id)
             isLoading = false
 
-            when (response) {
-                is RecipeResult.Success -> {
-                    recipe = response.recipe
-                    recipeError = null
-                    isRecipeLoaded = true
-                    showRecipeAlert = false
-                }
-                is RecipeResult.Error -> {
-                    recipe = null
-                    recipeError = response.recipeError
-                    isRecipeLoaded = false
-                    showRecipeAlert = true
-                }
-            }
+            updateRecipeProps(response, fromHome)
         }
     }
 }
