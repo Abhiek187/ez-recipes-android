@@ -3,6 +3,7 @@ package com.abhiek.ezrecipes.ui.recipe
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -29,9 +30,11 @@ fun InstructionsList(instructions: List<Instruction>) {
     ) {
         Text(
             text = stringResource(R.string.steps),
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h6.copy(
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            ),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -40,8 +43,10 @@ fun InstructionsList(instructions: List<Instruction>) {
             if (instruction.name.isNotEmpty()) {
                 Text(
                     text = instruction.name,
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.subtitle1.copy(
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center
+                    ),
                     modifier = Modifier.fillMaxWidth()
                 )
             }

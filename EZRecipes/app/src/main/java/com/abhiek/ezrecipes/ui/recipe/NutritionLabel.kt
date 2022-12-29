@@ -44,14 +44,17 @@ fun NutritionLabel(recipe: Recipe) {
             ) {
                 Text(
                     text = stringResource(R.string.nutrition_facts),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.h5.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
                 Text(
-                    text = stringResource(R.string.health_score, recipe.healthScore)
+                    text = stringResource(R.string.health_score, recipe.healthScore),
+                    style = MaterialTheme.typography.subtitle1
                 )
                 Text(
-                    text = context.resources.getQuantityString(R.plurals.servings, recipe.servings, recipe.servings)
+                    text = context.resources.getQuantityString(R.plurals.servings, recipe.servings, recipe.servings),
+                    style = MaterialTheme.typography.subtitle1
                 )
             }
 
@@ -79,13 +82,17 @@ fun NutritionLabel(recipe: Recipe) {
                     ) {
                         Text(
                             text = nutrient.name,
-                            fontSize = 18.sp,
-                            fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
+                            style = MaterialTheme.typography.body1.copy(
+                                fontSize = 18.sp,
+                                fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
+                            )
                         )
                         Text(
                             text = "$formattedAmount ${nutrient.unit}",
-                            fontSize = 18.sp,
-                            fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
+                            style = MaterialTheme.typography.body1.copy(
+                                fontSize = 18.sp,
+                                fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
+                            )
                         )
                     }
                 }

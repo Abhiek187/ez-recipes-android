@@ -1,10 +1,7 @@
 package com.abhiek.ezrecipes.ui.recipe
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,9 +31,10 @@ fun IngredientsList(ingredients: List<Ingredient>) {
         ) {
             Text(
                 text = stringResource(R.string.ingredients),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.h5.copy(
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
@@ -58,11 +56,15 @@ fun IngredientsList(ingredients: List<Ingredient>) {
                     ) {
                         Text(
                             text = "${ingredient.amount} ${ingredient.unit}",
-                            fontSize = 18.sp
+                            style = MaterialTheme.typography.body1.copy(
+                                fontSize = 18.sp
+                            )
                         )
                         Text(
                             text = ingredient.name.capitalizeWords(),
-                            fontSize = 18.sp
+                            style = MaterialTheme.typography.body1.copy(
+                                fontSize = 18.sp
+                            )
                         )
                     }
                 }
