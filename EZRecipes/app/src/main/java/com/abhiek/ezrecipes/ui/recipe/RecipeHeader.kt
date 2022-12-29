@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -20,6 +21,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -35,7 +38,7 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.capitalizeWords
 
 @Composable
-fun RecipeHeader(recipe: Recipe) {
+fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Unit) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val annotationTag = "URL"
@@ -51,7 +54,6 @@ fun RecipeHeader(recipe: Recipe) {
         addStyle(
             style = SpanStyle(
                 color = Blue300,
-                fontSize = 12.sp,
                 textDecoration = TextDecoration.Underline
             ),
             start = startIndex,
@@ -88,7 +90,8 @@ fun RecipeHeader(recipe: Recipe) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             // Recipe name and source link
             Text(
@@ -98,6 +101,7 @@ fun RecipeHeader(recipe: Recipe) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(top = 8.dp)
+                    .fillMaxWidth(0.8f)
             )
 
             IconButton(
@@ -111,7 +115,10 @@ fun RecipeHeader(recipe: Recipe) {
         AsyncImage(
             model = recipe.image,
             contentDescription = recipe.name,
-            modifier = Modifier.size(300.dp)
+            modifier = Modifier
+                .size(width = 312.dp, height = 231.dp)
+                .padding(8.dp),
+            contentScale = ContentScale.Fit
         )
 
         if (recipe.credit != null) {
@@ -134,6 +141,7 @@ fun RecipeHeader(recipe: Recipe) {
         // Recipe time and buttons
         Text(
             text = timeAnnotatedString,
+            fontSize = 20.sp,
             modifier = Modifier.padding(vertical = 8.dp)
         )
         
@@ -170,7 +178,8 @@ fun RecipeHeader(recipe: Recipe) {
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = MaterialTheme.colors.secondary
                     ),
-                    onClick = { println("Showing another recipe...") }
+                    onClick = { onClickFindRecipe() },
+                    enabled = !isLoading
                 ) {
                     Icon(Icons.Default.ReceiptLong, stringResource(R.string.show_recipe_button))
                 }
@@ -180,7 +189,16 @@ fun RecipeHeader(recipe: Recipe) {
                 )
             }
         }
+
+        if (isLoading) {
+            CircularProgressIndicator()
+        }
     }
+}
+
+private class RecipeHeaderPreviewParameterProvider: PreviewParameterProvider<Boolean> {
+    // Show a preview when the view is loading and not loading
+    override val values = sequenceOf(true, false)
 }
 
 @DevicePreviews
@@ -188,10 +206,16 @@ fun RecipeHeader(recipe: Recipe) {
 @FontPreviews
 @OrientationPreviews
 @Composable
-fun RecipeHeaderPreview() {
+private fun RecipeHeaderPreview(
+    @PreviewParameter(RecipeHeaderPreviewParameterProvider::class) isLoading: Boolean
+) {
     EZRecipesTheme {
         Surface {
-            RecipeHeader(MockRecipeService.recipe)
+            RecipeHeader(
+                recipe = MockRecipeService.recipe,
+                isLoading = isLoading,
+                onClickFindRecipe = {}
+            )
         }
     }
 }

@@ -26,13 +26,14 @@ internal class MainViewModelTest {
         // Given an instance of MainViewModel
         // When the getRandomRecipe() method is called
         mockService.isSuccess = true
-        viewModel.getRandomRecipe()
+        val fromHome = true
+        viewModel.getRandomRecipe(fromHome)
 
         // Then the recipe property should match the mock recipe
         assertEquals(viewModel.recipe, mockService.recipe)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.isLoading)
-        assertTrue(viewModel.isRecipeLoaded)
+        assertEquals(viewModel.isRecipeLoaded, fromHome)
         assertFalse(viewModel.showRecipeAlert)
     }
 
@@ -41,7 +42,8 @@ internal class MainViewModelTest {
         // Given an instance of MainViewModel
         // When the getRandomRecipe() method is called with isSuccess = false
         mockService.isSuccess = false
-        viewModel.getRandomRecipe()
+        val fromHome = true
+        viewModel.getRandomRecipe(fromHome)
 
         // Then the recipeError property should match the mock recipeError
         assertNull(viewModel.recipe)
@@ -62,7 +64,7 @@ internal class MainViewModelTest {
         assertEquals(viewModel.recipe, mockService.recipe)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.isLoading)
-        assertTrue(viewModel.isRecipeLoaded)
+        assertFalse(viewModel.isRecipeLoaded) // fromHome is false by default
         assertFalse(viewModel.showRecipeAlert)
     }
 
