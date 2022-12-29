@@ -70,6 +70,7 @@ fun Recipe(viewModel: MainViewModel) {
 @Composable
 fun RecipePreview() {
     val viewModel = MainViewModel(RecipeRepository(MockRecipeService))
+    viewModel.getRandomRecipe()
 
     EZRecipesTheme {
         Surface {
