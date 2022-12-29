@@ -11,13 +11,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.MockRecipeService
 import com.abhiek.ezrecipes.data.RecipeRepository
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.ui.MainViewModel
-import com.abhiek.ezrecipes.ui.MainViewModelFactory
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -26,9 +24,7 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
 fun Home(
-    mainViewModel: MainViewModel = viewModel(
-        factory = MainViewModelFactory()
-    ),
+    mainViewModel: MainViewModel,
     onNavigateToRecipe: (recipe: Recipe) -> Unit
 ) {
     // Go to the recipe screen after fetching it from the server

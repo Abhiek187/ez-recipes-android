@@ -21,6 +21,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -36,7 +38,7 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.capitalizeWords
 
 @Composable
-fun RecipeHeader(recipe: Recipe) {
+fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Unit) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val annotationTag = "URL"
@@ -176,7 +178,8 @@ fun RecipeHeader(recipe: Recipe) {
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = MaterialTheme.colors.secondary
                     ),
-                    onClick = { println("Showing another recipe...") }
+                    onClick = { onClickFindRecipe() },
+                    enabled = !isLoading
                 ) {
                     Icon(Icons.Default.ReceiptLong, stringResource(R.string.show_recipe_button))
                 }
@@ -186,7 +189,16 @@ fun RecipeHeader(recipe: Recipe) {
                 )
             }
         }
+
+        if (isLoading) {
+            CircularProgressIndicator()
+        }
     }
+}
+
+private class RecipeHeaderPreviewParameterProvider: PreviewParameterProvider<Boolean> {
+    // Show a preview when the view is loading and not loading
+    override val values = sequenceOf(true, false)
 }
 
 @DevicePreviews
@@ -194,10 +206,16 @@ fun RecipeHeader(recipe: Recipe) {
 @FontPreviews
 @OrientationPreviews
 @Composable
-fun RecipeHeaderPreview() {
+private fun RecipeHeaderPreview(
+    @PreviewParameter(RecipeHeaderPreviewParameterProvider::class) isLoading: Boolean
+) {
     EZRecipesTheme {
         Surface {
-            RecipeHeader(MockRecipeService.recipe)
+            RecipeHeader(
+                recipe = MockRecipeService.recipe,
+                isLoading = isLoading,
+                onClickFindRecipe = {}
+            )
         }
     }
 }
