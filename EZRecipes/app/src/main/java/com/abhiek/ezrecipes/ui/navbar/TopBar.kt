@@ -10,6 +10,9 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -20,10 +23,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState) {
+fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState, navController: NavController) {
     var isFavorite by remember { mutableStateOf(false) }
     // Get a context variable like in activities
     val context = LocalContext.current
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
     fun shareRecipe() {
         // Create a Sharesheet to share the recipe with others
@@ -54,14 +60,18 @@ fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState) {
         },
         // Add a favorite and share button on the right side if we're on the recipe screen
         actions = {
-            IconButton(onClick = { isFavorite = !isFavorite }) {
-                Icon(
-                    if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    if (isFavorite) stringResource(R.string.un_favorite_alt) else stringResource(R.string.favorite_alt)
-                )
-            }
-            IconButton(onClick = { shareRecipe() }) {
-                Icon(Icons.Filled.Share, stringResource(R.string.share_alt))
+            if (currentRoute == DrawerItem.Recipe.route) {
+                IconButton(onClick = { isFavorite = !isFavorite }) {
+                    Icon(
+                        if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        if (isFavorite) stringResource(R.string.un_favorite_alt) else stringResource(
+                            R.string.favorite_alt
+                        )
+                    )
+                }
+                IconButton(onClick = { shareRecipe() }) {
+                    Icon(Icons.Filled.Share, stringResource(R.string.share_alt))
+                }
             }
         },
         backgroundColor = MaterialTheme.colors.primary
@@ -76,8 +86,9 @@ fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState) {
 fun TopBarPreview() {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
+    val navController = rememberNavController()
 
     EZRecipesTheme {
-        TopBar(scope, scaffoldState)
+        TopBar(scope, scaffoldState, navController)
     }
 }
