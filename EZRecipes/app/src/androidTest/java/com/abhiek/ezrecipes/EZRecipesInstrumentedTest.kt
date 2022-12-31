@@ -46,17 +46,17 @@ internal class EZRecipesInstrumentedTest {
     fun homeScreenNavigation() {
         // Check that the hamburger menu and back button on the home screen work as expected
         // Check that the find recipe button is present
-        composeTestRule
+        val findRecipeButton = composeTestRule
             .onNodeWithText(activity.getString(R.string.find_recipe_button))
-            .assertExists()
+        findRecipeButton.assertExists()
 
         // The title and menu icons should be present on the top bar, but not the action buttons
         composeTestRule
             .onNodeWithText(activity.getString(R.string.app_name))
             .assertExists()
-        composeTestRule
+        val hamburgerMenu = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
-            .assertHasClickAction()
+        hamburgerMenu.assertHasClickAction()
 
         composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.favorite_alt))
@@ -66,23 +66,17 @@ internal class EZRecipesInstrumentedTest {
             .assertDoesNotExist()
 
         // The navigation drawer should show the app logo and home button
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
-            .performClick()
+        hamburgerMenu.performClick()
         composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.app_logo_alt))
             .assertExists()
-        composeTestRule
+        val homeDrawerButton = composeTestRule
             .onNodeWithText(DrawerItem.Home.title)
-            .assertHasClickAction()
+        homeDrawerButton.assertHasClickAction()
 
         // Clicking the home navigation item should show the same home page
-        composeTestRule
-            .onNodeWithText(DrawerItem.Home.title)
-            .performClick()
-        composeTestRule
-            .onNodeWithText(activity.getString(R.string.find_recipe_button))
-            .assertExists()
+        homeDrawerButton.performClick()
+        findRecipeButton.assertExists()
 
         // Pressing the back button should exit out of the app
         // Don't throw an exception when closing the app
@@ -96,21 +90,17 @@ internal class EZRecipesInstrumentedTest {
         // Click the find recipe button and check that the recipe page renders properly
         // Large test since it makes a network request and uses quota
         // When first launching the app, the find recipe button should be clickable
-        composeTestRule
+        val findRecipeButton = composeTestRule
             .onNodeWithText(activity.getString(R.string.find_recipe_button))
-            .assertIsEnabled()
+        findRecipeButton.assertIsEnabled()
 
         // After clicking the find recipe button, it should be disabled
-        composeTestRule
-            .onNodeWithText(activity.getString(R.string.find_recipe_button))
-            .performClick()
-        composeTestRule
-            .onNodeWithText(activity.getString(R.string.find_recipe_button))
-            .assertIsNotEnabled()
+        findRecipeButton.performClick()
+        findRecipeButton.assertIsNotEnabled()
 
         // Wait up to 30 seconds for the recipe to load
         // waitUntil defaults to 1 second before timeout
-        composeTestRule.waitUntil(30_000) {
+        composeTestRule.waitUntil(timeoutMillis = 30_000) {
             composeTestRule
                 .onAllNodesWithText(activity.getString(R.string.find_recipe_button))
                 .fetchSemanticsNodes()
@@ -118,37 +108,25 @@ internal class EZRecipesInstrumentedTest {
         }
 
         // Check that the favorite button toggles between filling and un-filling when tapped
-        composeTestRule
+        val favoriteButton = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.favorite_alt))
-            .assertExists()
-        composeTestRule
+        val unFavoriteButton = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.un_favorite_alt))
-            .assertDoesNotExist()
+        favoriteButton.assertExists()
+        unFavoriteButton.assertDoesNotExist()
 
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.favorite_alt))
-            .performClick()
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.favorite_alt))
-            .assertDoesNotExist()
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.un_favorite_alt))
-            .assertExists()
+        favoriteButton.performClick()
+        favoriteButton.assertDoesNotExist()
+        unFavoriteButton.assertExists()
 
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.un_favorite_alt))
-            .performClick()
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.favorite_alt))
-            .assertExists()
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.un_favorite_alt))
-            .assertDoesNotExist()
+        unFavoriteButton.performClick()
+        favoriteButton.assertExists()
+        unFavoriteButton.assertDoesNotExist()
 
         // Check that the share button is clickable
-        composeTestRule
+        val shareButton = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.share_alt))
-            .assertHasClickAction()
+        shareButton.assertHasClickAction()
 
         // Since the recipe loaded will be random, check all the elements that are guaranteed
         // to be there for all recipes
@@ -158,12 +136,12 @@ internal class EZRecipesInstrumentedTest {
             .assertHasClickAction()
 
         // Check that the two recipe buttons are clickable
-        composeTestRule
+        val madeButton = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.made_button))
-            .assertHasClickAction()
-        composeTestRule
+        madeButton.assertHasClickAction()
+        val showRecipeButton = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.show_recipe_button))
-            .assertHasClickAction()
+        showRecipeButton.assertHasClickAction()
 
         // Check that the nutrition label contains all the required nutritional properties
         for (label in listOf(
@@ -205,20 +183,14 @@ internal class EZRecipesInstrumentedTest {
             .assertExists()
 
         // Check that clicking the show another recipe button disables the button
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.show_recipe_button))
-            .performClick()
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.show_recipe_button))
-            .assertIsNotEnabled()
+        showRecipeButton.performClick()
+        showRecipeButton.assertIsNotEnabled()
         composeTestRule.waitForIdle()
 
         // Check that clicking the home button in the hamburger menu goes to the home screen
         composeTestRule
             .onNodeWithText(DrawerItem.Home.title)
             .performClick()
-        composeTestRule
-            .onNodeWithText(activity.getString(R.string.find_recipe_button))
-            .assertExists()
+        findRecipeButton.assertExists()
     }
 }
