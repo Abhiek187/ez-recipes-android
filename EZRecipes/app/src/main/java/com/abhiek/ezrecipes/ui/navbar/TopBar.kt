@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui.navbar
 
+import android.content.ClipDescription
 import android.content.Intent
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -36,7 +37,7 @@ fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState, navController: N
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, context.getString(R.string.share_body))
-            type = "text/plain"
+            type = ClipDescription.MIMETYPE_TEXT_PLAIN
         }
         val shareIntent = Intent.createChooser(sendIntent, null)
         context.startActivity(shareIntent)

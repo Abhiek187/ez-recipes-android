@@ -1,15 +1,25 @@
 package com.abhiek.ezrecipes
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.ClipDescription
+import android.content.Intent
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SmallTest
 import com.abhiek.ezrecipes.ui.MainActivity
 import com.abhiek.ezrecipes.ui.MainLayout
 import com.abhiek.ezrecipes.ui.navbar.DrawerItem
+import org.hamcrest.Matchers.allOf
+import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -33,12 +43,20 @@ internal class EZRecipesInstrumentedTest {
     }
 
     @Before
-    fun init() {
+    fun setUp() {
         activity = composeTestRule.activity
+        // Start tracking intents before each test
+        Intents.init()
 
         activity.setContent {
             MainLayout()
         }
+    }
+
+    @After
+    fun tearDown() {
+        // Clear intents state after each test
+        Intents.release()
     }
 
     @SmallTest
@@ -123,10 +141,27 @@ internal class EZRecipesInstrumentedTest {
         favoriteButton.assertExists()
         unFavoriteButton.assertDoesNotExist()
 
-        // Check that the share button is clickable
+        // Check that the share button opens the Sharesheet
         val shareButton = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.share_alt))
         shareButton.assertHasClickAction()
+
+        // Mock the Sharesheet intent (based on https://stackoverflow.com/a/60629289)
+        val sendIntent = allOf(
+            hasAction(Intent.ACTION_SEND),
+            hasExtra(Intent.EXTRA_TEXT, activity.getString(R.string.share_body)),
+            hasType(ClipDescription.MIMETYPE_TEXT_PLAIN)
+        )
+        val shareIntent = allOf(
+            hasAction(Intent.ACTION_CHOOSER),
+            hasExtra(Intent.EXTRA_INTENT, sendIntent)
+        )
+        // intending = mock intent result, intended = check if intent was performed
+        intending(shareIntent).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+        shareButton.performClick()
+        intended(shareIntent)
 
         // Since the recipe loaded will be random, check all the elements that are guaranteed
         // to be there for all recipes
