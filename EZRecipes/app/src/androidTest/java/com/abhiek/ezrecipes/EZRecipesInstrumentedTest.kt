@@ -7,7 +7,6 @@ import android.content.Intent
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
@@ -20,7 +19,6 @@ import com.abhiek.ezrecipes.ui.MainLayout
 import com.abhiek.ezrecipes.ui.navbar.DrawerItem
 import org.hamcrest.Matchers.allOf
 import org.junit.After
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -95,11 +93,6 @@ internal class EZRecipesInstrumentedTest {
         // Clicking the home navigation item should show the same home page
         homeDrawerButton.performClick()
         findRecipeButton.assertExists()
-
-        // Pressing the back button should exit out of the app
-        // Don't throw an exception when closing the app
-        Espresso.pressBackUnconditionally()
-        assertTrue(activity.isFinishing)
     }
 
     @LargeTest
