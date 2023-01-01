@@ -29,7 +29,7 @@ fun MainLayout(initialDrawerState: DrawerValue = DrawerValue.Closed) {
     EZRecipesTheme {
         Scaffold (
             scaffoldState = scaffoldState,
-            topBar = { TopBar(scope, scaffoldState) },
+            topBar = { TopBar(scope, scaffoldState, navController) },
             drawerContent = {
                 NavigationDrawer(scope, scaffoldState, navController)
             },

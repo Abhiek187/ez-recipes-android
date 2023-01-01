@@ -46,7 +46,9 @@ fun DrawerListItem(item: DrawerItem, selected: Boolean, onItemClick: () -> Unit)
         )
         Text(
             text = item.title,
-            fontSize = 18.sp,
+            style = MaterialTheme.typography.subtitle1.copy(
+                fontSize = 18.sp
+            ),
             color = if (selected) Color.Black else MaterialTheme.colors.onBackground
         )
     }

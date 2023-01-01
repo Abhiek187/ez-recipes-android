@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -96,9 +95,10 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
             // Recipe name and source link
             Text(
                 text = recipe.name.capitalizeWords(),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.h5.copy(
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                ),
                 modifier = Modifier
                     .padding(top = 8.dp)
                     .fillMaxWidth(0.8f)
@@ -124,7 +124,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
         if (recipe.credit != null) {
             ClickableText(
                 text = annotatedLinkString,
-                style = TextStyle(
+                style = MaterialTheme.typography.caption.copy(
                     color = MaterialTheme.colors.onBackground
                 ),
                 modifier = Modifier.padding(horizontal = 8.dp)
@@ -141,7 +141,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
         // Recipe time and buttons
         Text(
             text = timeAnnotatedString,
-            fontSize = 20.sp,
+            style = MaterialTheme.typography.h6,
             modifier = Modifier.padding(vertical = 8.dp)
         )
         
@@ -164,7 +164,10 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                 }
                 Text(
                     text = stringResource(R.string.made_button),
-                    textAlign = TextAlign.Center
+                    style = MaterialTheme.typography.button.copy(
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center
+                    )
                 )
             }
 
@@ -185,7 +188,10 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                 }
                 Text(
                     text = stringResource(R.string.show_recipe_button),
-                    textAlign = TextAlign.Center
+                    style = MaterialTheme.typography.button.copy(
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center
+                    )
                 )
             }
         }
