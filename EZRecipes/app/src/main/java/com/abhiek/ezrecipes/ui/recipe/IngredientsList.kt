@@ -63,7 +63,8 @@ fun IngredientsList(ingredients: List<Ingredient>) {
                         Text(
                             text = ingredient.name.capitalizeWords(),
                             style = MaterialTheme.typography.body1.copy(
-                                fontSize = 18.sp
+                                fontSize = 18.sp,
+                                textAlign = TextAlign.End
                             )
                         )
                     }
