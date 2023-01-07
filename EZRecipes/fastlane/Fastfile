@@ -25,9 +25,9 @@ platform :android do
   desc "Run instrumented tests"
   lane :ui_test do |options|
     # Accept licenses: yes | sdkmanager --licenses > /dev/null
-    # Install build tools, platform tools, and platform: sdkmanager --install 'build-tools;33.0.0' platform-tools 'platforms;android-32' > /dev/null
+    # Install build tools, platform tools, and platforms: sdkmanager --install 'build-tools;33.0.0' platform-tools 'platforms;android-32' > /dev/null
     # Install emulator (channel 0 = stable packages): sdkmanager --install emulator --channel=0 > /dev/null
-    # Install system image: sdkmanager --install 'system-images;android-32;google_apis;x86_64' --channel=0 > /dev/null
+    # Install system images: sdkmanager --install 'system-images;android-32;google_apis;x86_64' --channel=0 > /dev/null
     # Create test AVD: echo no | avdmanager create avd --force -n test --abi 'google_apis/x86_64' --package 'system-images;android-32;google_apis;x86_64'
     # Configure AVD with 2 cores: echo 'hw.cpu.ncore=2' >> ~/.android/avd/test.avd/config.ini
     # Boot up the emulator: emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
@@ -37,7 +37,7 @@ platform :android do
     #                     adb shell settings put global transition_animation_scale 0.0
     #                     adb shell settings put global animator_duration_scale 0.0
     # Run instrumented tests: gradlew connectedAndroidTest
-    # Kill the emulator: adb -s emulator-5554 emu kill
+    # Kill emulator: adb -s emulator-5554 emu kill
     ANDROID_HOME = ENV["ANDROID_SDK_ROOT"] || ENV["ANDROID_HOME"]
     ANDROID_CMD_PATH = "#{ANDROID_HOME}/cmdline-tools/latest/bin"
     ANDROID_EMULATOR_PATH = "#{ANDROID_HOME}/emulator"
