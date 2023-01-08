@@ -70,6 +70,35 @@ platform :android do
     sh "#{ADB_PATH}/adb -s #{EMU_SERIAL} emu kill"
   end
 
+  desc "Generate screenshots for the Play Store"
+  lane :screenshots do
+    # Clean build: gradlew clean -p .
+    gradle(task: "clean")
+    # Create app APK: gradlew assembleDebug -p .
+    build_android_app(
+        task: "assemble",
+        build_type: "Debug"
+    )
+    # Create tests APK: gradlew assembleAndroidTest -p .
+    build_android_app(
+        task: "assemble",
+        build_type: "AndroidTest"
+    )
+    # Clear screenshots on the device: adb -s emulator-5554 shell rm -rf /sdcard/Android/data/com.abhiek.ezrecipes/files/screengrab/en-US/images/screenshots
+    # Install app APK: adb -s emulator-5554 install -t -r app/build/outputs/apk/debug/app-debug.apk
+    # Install tests APK: adb -s emulator-5554 install -t -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+    # Grant permission to change the device's locale: adb -s emulator-5554 shell pm grant com.abhiek.ezrecipes android.permission.CHANGE_CONFIGURATION
+    # Grant permission to write to external storage: adb -s emulator-5554 shell pm grant com.abhiek.ezrecipes android.permission.WRITE_EXTERNAL_STORAGE
+    # Grant permission to read from external storage: adb -s emulator-5554 shell pm grant com.abhiek.ezrecipes android.permission.READ_EXTERNAL_STORAGE
+    # Grant permission to clean the status bar (by accessing system services): adb -s emulator-5554 shell pm grant com.abhiek.ezrecipes android.permission.DUMP
+    # Enable Demo Mode for the Android System UI: adb -s emulator-5554 shell settings put global sysui_demo_allowed 1
+    # Stop existing app & test processes: adb -s emulator-5554 shell am force-stop com.abhiek.ezrecipes[.test]
+    # Run instrumented tests for each locale: adb -s emulator-5554 shell am instrument --no-window-animation -w -e testLocale en-US --no-hidden-api-checks -e appendTimestamp false -e class com.abhiek.ezrecipes.EZRecipesInstrumentedTest com.abhiek.ezrecipes.test/androidx.test.runner.AndroidJUnitRunner
+    # Get captured screenshots from the device: adb -s emulator-5554 pull /sdcard/Android/data/com.abhiek.ezrecipes/files/screengrab/en-US/images/screenshots /tmp/d20230107-31863-xk272
+    # Extract tar archive: adb -s emulator-5554 shell run-as com.abhiek.ezrecipes "tar -cC /data/data/com.abhiek.ezrecipes/app_screengrab/en-US/images screenshots" | tar -xv -f- -C /tmp/d20230108-32165-9dm6e7
+    capture_android_screenshots
+  end
+
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
     gradle(task: "clean assembleRelease")

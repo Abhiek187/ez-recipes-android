@@ -92,6 +92,16 @@ bundle exec fastlane android ui_test api:API_LEVEL
 
 This [table](https://source.android.com/docs/setup/about/build-numbers#platform-code-names-versions-api-levels-and-ndk-releases) shows which API level corresponds with each Android release.
 
+### Screenshots
+
+Screenshots can be generated automatically using Fastlane. Run the following command to generate screenshots at `ez-recipes-android/EZRecipes/fastlane/screenshots` (ignored by git):
+
+```bash
+bundle exec fastlane android screenshots
+```
+
+Make sure a device is running by checking `adb devices`.
+
 ## Future Updates
 
 Check the [EZ Recipes web repo](https://github.com/Abhiek187/ez-recipes-web#future-updates) for a list of future updates.

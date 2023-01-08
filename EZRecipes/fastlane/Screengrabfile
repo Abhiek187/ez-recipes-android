@@ -1,0 +1,22 @@
+# remove the leading '#' to uncomment lines
+
+# app_package_name('your.app.package')
+# use_tests_in_packages(['your.screenshot.tests.package'])
+use_tests_in_classes(["com.abhiek.ezrecipes.EZRecipesInstrumentedTest"])
+
+app_apk_path("app/build/outputs/apk/debug/app-debug.apk")
+tests_apk_path("app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk")
+
+# locales(['en-US', 'fr-FR', 'it-IT'])
+
+# Clear all previously generated screenshots in your local output directory before creating new ones
+clear_previous_screenshots(true)
+
+# Use the same screenshots directory ignored on iOS
+output_directory("fastlane/screenshots")
+
+# Don't add a timestamp to each filename
+use_timestamp_suffix(false)
+
+# For more information about all available options run
+#   fastlane screengrab --help

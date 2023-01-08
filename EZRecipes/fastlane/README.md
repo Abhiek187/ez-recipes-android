@@ -31,6 +31,14 @@ Run unit tests
 
 Run instrumented tests
 
+### android screenshots
+
+```sh
+[bundle exec] fastlane android screenshots
+```
+
+Generate screenshots for the Play Store
+
 ### android beta
 
 ```sh

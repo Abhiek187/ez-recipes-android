@@ -23,6 +23,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import tools.fastlane.screengrab.Screengrab
+import tools.fastlane.screengrab.cleanstatusbar.CleanStatusBar
 
 // JUnit 5 isn't currently supported for instrumented tests
 @RunWith(AndroidJUnit4::class)
@@ -45,6 +47,8 @@ internal class EZRecipesInstrumentedTest {
         activity = composeTestRule.activity
         // Start tracking intents before each test
         Intents.init()
+        // Clear the status bar when taking screenshots
+        CleanStatusBar.enableWithDefaults()
 
         activity.setContent {
             MainLayout()
@@ -55,6 +59,8 @@ internal class EZRecipesInstrumentedTest {
     fun tearDown() {
         // Clear intents state after each test
         Intents.release()
+        // Restore the status bar
+        CleanStatusBar.disable()
     }
 
     @SmallTest
@@ -100,6 +106,8 @@ internal class EZRecipesInstrumentedTest {
     fun findMeARecipe() {
         // Click the find recipe button and check that the recipe page renders properly
         // Large test since it makes a network request and uses quota
+        // Take screenshots along the way
+        Screengrab.screenshot("home-screen")
         // When first launching the app, the find recipe button should be clickable
         val findRecipeButton = composeTestRule
             .onNodeWithText(activity.getString(R.string.find_recipe_button))
@@ -117,6 +125,10 @@ internal class EZRecipesInstrumentedTest {
                 .fetchSemanticsNodes()
                 .isEmpty()
         }
+
+        var shotNum = 1
+        Screengrab.screenshot("recipe-screen-$shotNum")
+        shotNum += 1
 
         // Check that the favorite button toggles between filling and un-filling when tapped
         val favoriteButton = composeTestRule
@@ -169,7 +181,11 @@ internal class EZRecipesInstrumentedTest {
         madeButton.assertHasClickAction()
         val showRecipeButton = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.show_recipe_button))
-        showRecipeButton.assertHasClickAction()
+        showRecipeButton
+            .performScrollTo()
+            .assertHasClickAction()
+        Screengrab.screenshot("recipe-screen-${shotNum}")
+        shotNum += 1
 
         // Check that the nutrition label contains all the required nutritional properties
         for (label in listOf(
@@ -197,25 +213,45 @@ internal class EZRecipesInstrumentedTest {
         // Check that the summary box, ingredients list, instructions list, and footer are present
         composeTestRule
             .onNodeWithText(activity.getString(R.string.summary))
+            .performScrollTo()
             .assertExists()
+        Screengrab.screenshot("recipe-screen-${shotNum}")
+        shotNum += 1
+
         // "Ingredients" appear in each step card
         composeTestRule
             .onAllNodesWithText(activity.getString(R.string.ingredients))
             .onFirst()
+            .performScrollTo()
             .assertExists()
+        Screengrab.screenshot("recipe-screen-${shotNum}")
+        shotNum += 1
+
         composeTestRule
             .onNodeWithText(activity.getString(R.string.steps))
+            .performScrollTo()
             .assertExists()
+        Screengrab.screenshot("recipe-screen-${shotNum}")
+        shotNum += 1
+
         composeTestRule
             .onNodeWithText(activity.getString(R.string.attribution))
             .assertExists()
 
         // Check that clicking the show another recipe button disables the button
-        showRecipeButton.performClick()
+        showRecipeButton
+            .performScrollTo()
+            .performClick()
         showRecipeButton.assertIsNotEnabled()
         composeTestRule.waitForIdle()
 
         // Check that clicking the home button in the hamburger menu goes to the home screen
+        composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
+            .performClick()
+        Screengrab.screenshot("recipe-screen-${shotNum}")
+        shotNum += 1
+
         composeTestRule
             .onNodeWithText(DrawerItem.Home.title)
             .performClick()
