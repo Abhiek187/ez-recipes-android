@@ -86,12 +86,15 @@ internal class EZRecipesInstrumentedTest {
         composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.share_alt))
             .assertDoesNotExist()
+        // Take screenshots along the way
+        Screengrab.screenshot("home-screen-1")
 
         // The navigation drawer should show the app logo and home button
         hamburgerMenu.performClick()
         composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.app_logo_alt))
             .assertExists()
+        Screengrab.screenshot("home-screen-2")
         val homeDrawerButton = composeTestRule
             .onNodeWithText(DrawerItem.Home.title)
         homeDrawerButton.assertHasClickAction()
@@ -106,8 +109,6 @@ internal class EZRecipesInstrumentedTest {
     fun findMeARecipe() {
         // Click the find recipe button and check that the recipe page renders properly
         // Large test since it makes a network request and uses quota
-        // Take screenshots along the way
-        Screengrab.screenshot("home-screen")
         // When first launching the app, the find recipe button should be clickable
         val findRecipeButton = composeTestRule
             .onNodeWithText(activity.getString(R.string.find_recipe_button))
@@ -125,10 +126,6 @@ internal class EZRecipesInstrumentedTest {
                 .fetchSemanticsNodes()
                 .isEmpty()
         }
-
-        var shotNum = 1
-        Screengrab.screenshot("recipe-screen-$shotNum")
-        shotNum += 1
 
         // Check that the favorite button toggles between filling and un-filling when tapped
         val favoriteButton = composeTestRule
@@ -168,6 +165,10 @@ internal class EZRecipesInstrumentedTest {
         shareButton.performClick()
         intended(shareIntent)
 
+        var shotNum = 1
+        Screengrab.screenshot("recipe-screen-$shotNum")
+        shotNum += 1
+
         // Since the recipe loaded will be random, check all the elements that are guaranteed
         // to be there for all recipes
         // Check that the recipe source link is clickable
@@ -181,11 +182,7 @@ internal class EZRecipesInstrumentedTest {
         madeButton.assertHasClickAction()
         val showRecipeButton = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.show_recipe_button))
-        showRecipeButton
-            .performScrollTo()
-            .assertHasClickAction()
-        Screengrab.screenshot("recipe-screen-${shotNum}")
-        shotNum += 1
+        showRecipeButton.assertHasClickAction()
 
         // Check that the nutrition label contains all the required nutritional properties
         for (label in listOf(
@@ -236,7 +233,10 @@ internal class EZRecipesInstrumentedTest {
 
         composeTestRule
             .onNodeWithText(activity.getString(R.string.attribution))
+            .performScrollTo()
             .assertExists()
+        Screengrab.screenshot("recipe-screen-${shotNum}")
+        shotNum += 1
 
         // Check that clicking the show another recipe button disables the button
         showRecipeButton
@@ -249,8 +249,6 @@ internal class EZRecipesInstrumentedTest {
         composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
             .performClick()
-        Screengrab.screenshot("recipe-screen-${shotNum}")
-        shotNum += 1
 
         composeTestRule
             .onNodeWithText(DrawerItem.Home.title)

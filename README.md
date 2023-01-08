@@ -3,11 +3,13 @@
 [![Fastlane](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/fastlane.yml/badge.svg)](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/fastlane.yml)
 
 <div>
-    <img src="screenshots/home-screen.png" alt="home screen" width="300">
-    <img src="screenshots/recipe-screen-2.png" alt="recipe header" width="300">
-    <img src="screenshots/recipe-screen-3.png" alt="nutrition label" width="300">
-    <img src="screenshots/recipe-screen-4.png" alt="summary box" width="300">
-    <img src="screenshots/recipe-screen-5.png" alt="ingredients list" width="300">
+    <img src="screenshots/home-screen-1.png" alt="find recipe button" width="300">
+    <img src="screenshots/home-screen-2.png" alt="navigation drawer" width="300">
+    <img src="screenshots/recipe-screen-1.png" alt="recipe header" width="300">
+    <img src="screenshots/recipe-screen-2.png" alt="nutrition label" width="300">
+    <img src="screenshots/recipe-screen-3.png" alt="summary box" width="300">
+    <img src="screenshots/recipe-screen-4.png" alt="ingredients list" width="300">
+    <img src="screenshots/recipe-screen-5.png" alt="step cards & footer" width="300">
 </div>
 
 ## Overview
