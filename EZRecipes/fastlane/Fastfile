@@ -94,8 +94,8 @@ platform :android do
     # Enable Demo Mode for the Android System UI: adb -s emulator-5554 shell settings put global sysui_demo_allowed 1
     # Stop existing app & test processes: adb -s emulator-5554 shell am force-stop com.abhiek.ezrecipes[.test]
     # Run instrumented tests for each locale: adb -s emulator-5554 shell am instrument --no-window-animation -w -e testLocale en-US --no-hidden-api-checks -e appendTimestamp false -e class com.abhiek.ezrecipes.EZRecipesInstrumentedTest com.abhiek.ezrecipes.test/androidx.test.runner.AndroidJUnitRunner
-    # Get captured screenshots from the device: adb -s emulator-5554 pull /sdcard/Android/data/com.abhiek.ezrecipes/files/screengrab/en-US/images/screenshots /tmp/d20230107-31863-xk272
-    # Extract tar archive: adb -s emulator-5554 shell run-as com.abhiek.ezrecipes "tar -cC /data/data/com.abhiek.ezrecipes/app_screengrab/en-US/images screenshots" | tar -xv -f- -C /tmp/d20230108-32165-9dm6e7
+    # Get captured screenshots from external storage: adb -s emulator-5554 pull /sdcard/Android/data/com.abhiek.ezrecipes/files/screengrab/en-US/images/screenshots /tmp/d20230107-31863-xk272
+    # Get screenshots from internal storage (using run-as for root access): adb -s emulator-5554 shell run-as com.abhiek.ezrecipes "tar -cC /data/data/com.abhiek.ezrecipes/app_screengrab/en-US/images screenshots" | tar -xv -f- -C /tmp/d20230108-32165-9dm6e7
     capture_android_screenshots
   end
 
