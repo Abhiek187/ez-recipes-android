@@ -84,6 +84,7 @@ Unit and instrumented tests can be run directly from Android Studio or through t
 
 ```bash
 cd EZRecipes
+chmod u+x gradlew
 bundle config set --local path 'vendor/bundle'
 bundle install
 ```
