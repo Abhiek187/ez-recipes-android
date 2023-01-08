@@ -2,6 +2,14 @@
 
 [![Fastlane](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/fastlane.yml/badge.svg)](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/fastlane.yml)
 
+<div>
+    <img src="screenshots/home-screen.png" alt="home screen" width="300">
+    <img src="screenshots/recipe-screen-2.png" alt="recipe header" width="300">
+    <img src="screenshots/recipe-screen-3.png" alt="nutrition label" width="300">
+    <img src="screenshots/recipe-screen-4.png" alt="summary box" width="300">
+    <img src="screenshots/recipe-screen-5.png" alt="ingredients list" width="300">
+</div>
+
 ## Overview
 
 Cooking food at home is an essential skill for anyone looking to save money and eat healthily. However, learning how to cook can be daunting, since there are so many recipes to choose from. And even when meal prepping, knowing what ingredients to buy, what equipment is required, and the order of steps to make the meal can be hard to remember for many different recipes. Plus, during busy days, it's nice to be able to cook up something quick and tasty.
