@@ -67,14 +67,15 @@ jobs:
 
 #      - name: Run instrumented tests
 #        run: bundle exec fastlane android ui_test api:${{ matrix.api-level }}
-      - name: Run instrumentation tests
+      - name: Run instrumented tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           arch: x86_64
           target: google_apis
           working-directory: "./EZRecipes"
-          script: ./gradlew connectedAndroidTest
+          # GITHUB_ACTIONS = true if running in a workflow
+          script: ./gradlew -Pandroid.testInstrumentationRunnerArguments.ci=$GITHUB_ACTIONS connectedAndroidTest
 
       # The test results are shown as a webpage instead of on the command line
       - name: Upload reports

@@ -14,6 +14,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SmallTest
+import androidx.test.platform.app.InstrumentationRegistry
 import com.abhiek.ezrecipes.ui.MainActivity
 import com.abhiek.ezrecipes.ui.MainLayout
 import com.abhiek.ezrecipes.ui.navbar.DrawerItem
@@ -34,6 +35,7 @@ internal class EZRecipesInstrumentedTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     private lateinit var activity: MainActivity
+    private val extras = InstrumentationRegistry.getArguments()
 
     private fun printTree() {
         // Print the Semantics tree
@@ -48,20 +50,27 @@ internal class EZRecipesInstrumentedTest {
         // Start tracking intents before each test
         Intents.init()
 
+        // CleanStatusBar times out on GitHub Actions
+        // It's only possible to pass strings as arguments
+        if (extras.getString("ci") != "true") {
+            // Clear the status bar when taking screenshots
+            CleanStatusBar.enableWithDefaults()
+        }
+
         activity.setContent {
             MainLayout()
         }
-
-        // Clear the status bar when taking screenshots
-        CleanStatusBar.enableWithDefaults()
     }
 
     @After
     fun tearDown() {
         // Clear intents state after each test
         Intents.release()
-        // Restore the status bar
-        CleanStatusBar.disable()
+
+        if (extras.getString("ci") != "true") {
+            // Restore the status bar
+            CleanStatusBar.disable()
+        }
     }
 
     @SmallTest
