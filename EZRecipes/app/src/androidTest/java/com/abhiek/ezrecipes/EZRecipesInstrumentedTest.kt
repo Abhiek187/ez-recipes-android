@@ -47,12 +47,13 @@ internal class EZRecipesInstrumentedTest {
         activity = composeTestRule.activity
         // Start tracking intents before each test
         Intents.init()
-        // Clear the status bar when taking screenshots
-        CleanStatusBar.enableWithDefaults()
 
         activity.setContent {
             MainLayout()
         }
+
+        // Clear the status bar when taking screenshots
+        CleanStatusBar.enableWithDefaults()
     }
 
     @After
