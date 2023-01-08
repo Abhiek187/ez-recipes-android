@@ -25,9 +25,9 @@ platform :android do
   desc "Run instrumented tests"
   lane :ui_test do |options|
     # Accept licenses: yes | sdkmanager --licenses > /dev/null
-    # Install build tools, platform tools, and platform: sdkmanager --install 'build-tools;33.0.0' platform-tools 'platforms;android-32' > /dev/null
+    # Install build tools, platform tools, and platforms: sdkmanager --install 'build-tools;33.0.0' platform-tools 'platforms;android-32' > /dev/null
     # Install emulator (channel 0 = stable packages): sdkmanager --install emulator --channel=0 > /dev/null
-    # Install system image: sdkmanager --install 'system-images;android-32;google_apis;x86_64' --channel=0 > /dev/null
+    # Install system images: sdkmanager --install 'system-images;android-32;google_apis;x86_64' --channel=0 > /dev/null
     # Create test AVD: echo no | avdmanager create avd --force -n test --abi 'google_apis/x86_64' --package 'system-images;android-32;google_apis;x86_64'
     # Configure AVD with 2 cores: echo 'hw.cpu.ncore=2' >> ~/.android/avd/test.avd/config.ini
     # Boot up the emulator: emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
@@ -37,7 +37,7 @@ platform :android do
     #                     adb shell settings put global transition_animation_scale 0.0
     #                     adb shell settings put global animator_duration_scale 0.0
     # Run instrumented tests: gradlew connectedAndroidTest
-    # Kill the emulator: adb -s emulator-5554 emu kill
+    # Kill emulator: adb -s emulator-5554 emu kill
     ANDROID_HOME = ENV["ANDROID_SDK_ROOT"] || ENV["ANDROID_HOME"]
     ANDROID_CMD_PATH = "#{ANDROID_HOME}/cmdline-tools/latest/bin"
     ANDROID_EMULATOR_PATH = "#{ANDROID_HOME}/emulator"
@@ -68,6 +68,35 @@ platform :android do
     gradle(task: "connectedAndroidTest")
 
     sh "#{ADB_PATH}/adb -s #{EMU_SERIAL} emu kill"
+  end
+
+  desc "Generate screenshots for the Play Store"
+  lane :screenshots do
+    # Clean build: gradlew clean -p .
+    gradle(task: "clean")
+    # Create app APK: gradlew assembleDebug -p .
+    build_android_app(
+        task: "assemble",
+        build_type: "Debug"
+    )
+    # Create tests APK: gradlew assembleAndroidTest -p .
+    build_android_app(
+        task: "assemble",
+        build_type: "AndroidTest"
+    )
+    # Clear screenshots on the device: adb -s emulator-5554 shell rm -rf /sdcard/Android/data/com.abhiek.ezrecipes/files/screengrab/en-US/images/screenshots
+    # Install app APK: adb -s emulator-5554 install -t -r app/build/outputs/apk/debug/app-debug.apk
+    # Install tests APK: adb -s emulator-5554 install -t -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+    # Grant permission to change the device's locale: adb -s emulator-5554 shell pm grant com.abhiek.ezrecipes android.permission.CHANGE_CONFIGURATION
+    # Grant permission to write to external storage: adb -s emulator-5554 shell pm grant com.abhiek.ezrecipes android.permission.WRITE_EXTERNAL_STORAGE
+    # Grant permission to read from external storage: adb -s emulator-5554 shell pm grant com.abhiek.ezrecipes android.permission.READ_EXTERNAL_STORAGE
+    # Grant permission to clean the status bar (by accessing system services): adb -s emulator-5554 shell pm grant com.abhiek.ezrecipes android.permission.DUMP
+    # Enable Demo Mode for the Android System UI: adb -s emulator-5554 shell settings put global sysui_demo_allowed 1
+    # Stop existing app & test processes: adb -s emulator-5554 shell am force-stop com.abhiek.ezrecipes[.test]
+    # Run instrumented tests for each locale: adb -s emulator-5554 shell am instrument --no-window-animation -w -e testLocale en-US --no-hidden-api-checks -e appendTimestamp false -e class com.abhiek.ezrecipes.EZRecipesInstrumentedTest com.abhiek.ezrecipes.test/androidx.test.runner.AndroidJUnitRunner
+    # Get captured screenshots from external storage: adb -s emulator-5554 pull /sdcard/Android/data/com.abhiek.ezrecipes/files/screengrab/en-US/images/screenshots /tmp/d20230107-31863-xk272
+    # Get screenshots from internal storage (using run-as for root access): adb -s emulator-5554 shell run-as com.abhiek.ezrecipes "tar -cC /data/data/com.abhiek.ezrecipes/app_screengrab/en-US/images screenshots" | tar -xv -f- -C /tmp/d20230108-32165-9dm6e7
+    capture_android_screenshots
   end
 
   desc "Submit a new Beta Build to Crashlytics Beta"

@@ -14,6 +14,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SmallTest
+import androidx.test.platform.app.InstrumentationRegistry
 import com.abhiek.ezrecipes.ui.MainActivity
 import com.abhiek.ezrecipes.ui.MainLayout
 import com.abhiek.ezrecipes.ui.navbar.DrawerItem
@@ -23,6 +24,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import tools.fastlane.screengrab.Screengrab
+import tools.fastlane.screengrab.cleanstatusbar.CleanStatusBar
 
 // JUnit 5 isn't currently supported for instrumented tests
 @RunWith(AndroidJUnit4::class)
@@ -32,6 +35,7 @@ internal class EZRecipesInstrumentedTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     private lateinit var activity: MainActivity
+    private val extras = InstrumentationRegistry.getArguments()
 
     private fun printTree() {
         // Print the Semantics tree
@@ -46,6 +50,13 @@ internal class EZRecipesInstrumentedTest {
         // Start tracking intents before each test
         Intents.init()
 
+        // CleanStatusBar times out on GitHub Actions
+        // It's only possible to pass strings as arguments
+        if (extras.getString("ci") != "true") {
+            // Clear the status bar when taking screenshots
+            CleanStatusBar.enableWithDefaults()
+        }
+
         activity.setContent {
             MainLayout()
         }
@@ -55,6 +66,11 @@ internal class EZRecipesInstrumentedTest {
     fun tearDown() {
         // Clear intents state after each test
         Intents.release()
+
+        if (extras.getString("ci") != "true") {
+            // Restore the status bar
+            CleanStatusBar.disable()
+        }
     }
 
     @SmallTest
@@ -80,12 +96,15 @@ internal class EZRecipesInstrumentedTest {
         composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.share_alt))
             .assertDoesNotExist()
+        // Take screenshots along the way
+        Screengrab.screenshot("home-screen-1")
 
         // The navigation drawer should show the app logo and home button
         hamburgerMenu.performClick()
         composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.app_logo_alt))
             .assertExists()
+        Screengrab.screenshot("home-screen-2")
         val homeDrawerButton = composeTestRule
             .onNodeWithText(DrawerItem.Home.title)
         homeDrawerButton.assertHasClickAction()
@@ -156,6 +175,10 @@ internal class EZRecipesInstrumentedTest {
         shareButton.performClick()
         intended(shareIntent)
 
+        var shotNum = 1
+        Screengrab.screenshot("recipe-screen-$shotNum")
+        shotNum += 1
+
         // Since the recipe loaded will be random, check all the elements that are guaranteed
         // to be there for all recipes
         // Check that the recipe source link is clickable
@@ -197,25 +220,46 @@ internal class EZRecipesInstrumentedTest {
         // Check that the summary box, ingredients list, instructions list, and footer are present
         composeTestRule
             .onNodeWithText(activity.getString(R.string.summary))
+            .performScrollTo()
             .assertExists()
+        Screengrab.screenshot("recipe-screen-${shotNum}")
+        shotNum += 1
+
         // "Ingredients" appear in each step card
         composeTestRule
             .onAllNodesWithText(activity.getString(R.string.ingredients))
             .onFirst()
+            .performScrollTo()
             .assertExists()
+        Screengrab.screenshot("recipe-screen-${shotNum}")
+        shotNum += 1
+
         composeTestRule
             .onNodeWithText(activity.getString(R.string.steps))
+            .performScrollTo()
             .assertExists()
+        Screengrab.screenshot("recipe-screen-${shotNum}")
+        shotNum += 1
+
         composeTestRule
             .onNodeWithText(activity.getString(R.string.attribution))
+            .performScrollTo()
             .assertExists()
+        Screengrab.screenshot("recipe-screen-${shotNum}")
+        shotNum += 1
 
         // Check that clicking the show another recipe button disables the button
-        showRecipeButton.performClick()
+        showRecipeButton
+            .performScrollTo()
+            .performClick()
         showRecipeButton.assertIsNotEnabled()
         composeTestRule.waitForIdle()
 
         // Check that clicking the home button in the hamburger menu goes to the home screen
+        composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
+            .performClick()
+
         composeTestRule
             .onNodeWithText(DrawerItem.Home.title)
             .performClick()
