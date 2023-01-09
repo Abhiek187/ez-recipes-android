@@ -74,8 +74,7 @@ jobs:
           arch: x86_64
           target: google_apis
           working-directory: "./EZRecipes"
-          # GITHUB_ACTIONS = true if running in a workflow
-          script: ./gradlew -Pandroid.testInstrumentationRunnerArguments.ci=$GITHUB_ACTIONS connectedAndroidTest
+          script: ./gradlew connectedAndroidTest
 
       # The test results are shown as a webpage instead of on the command line
       - name: Upload reports
