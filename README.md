@@ -23,7 +23,7 @@ Introducing EZ Recipes, an app that lets chefs find low-effort recipes that can 
 - Android app created using Jetpack Compose and MVVM architecture
 - Material Design UI
 - Responsive and accessible mobile design
-- REST APIs to a custom [server](https://github.com/Abhiek187/ez-recipes-server), which fetches recipe information from [spoonacular](https://spoonacular.com/food-api)
+- REST APIs to a custom [server](https://github.com/Abhiek187/ez-recipes-server) using Retrofit, which fetches recipe information from [spoonacular](https://spoonacular.com/food-api)
 - Automated testing and deployment using CI/CD pipelines in GitHub Actions and Fastlane
 - Mermaid to write diagrams as code
 
