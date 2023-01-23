@@ -38,6 +38,7 @@ fun Recipe(viewModel: MainViewModel) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            RecipeTitle(recipe = recipe)
             RecipeHeader(
                 recipe = recipe,
                 isLoading = viewModel.isLoading
