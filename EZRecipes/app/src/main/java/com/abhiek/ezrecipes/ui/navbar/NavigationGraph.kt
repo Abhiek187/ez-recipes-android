@@ -12,7 +12,7 @@ import com.abhiek.ezrecipes.ui.recipe.Recipe
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
-    val viewModel: MainViewModel = viewModel(
+    val viewModel = viewModel<MainViewModel>(
         factory = MainViewModelFactory()
     )
 
