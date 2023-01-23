@@ -27,8 +27,10 @@ fun RecipeTitle(recipe: Recipe) {
     val uriHandler = LocalUriHandler.current
 
     Row(
-        modifier = Modifier.padding(top = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Recipe name and source link
@@ -38,7 +40,9 @@ fun RecipeTitle(recipe: Recipe) {
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             ),
-            modifier = Modifier.fillMaxWidth(0.8f)
+            // Keep the recipe name and link next to each other
+            // If the width is too small, wrap the text around the link
+            modifier = Modifier.weight(1f, false)
         )
 
         IconButton(
@@ -47,7 +51,6 @@ fun RecipeTitle(recipe: Recipe) {
             Icon(
                 imageVector = Icons.Default.Link,
                 contentDescription = stringResource(R.string.recipe_link),
-                //modifier = Modifier.size(50.dp)
             )
         }
     }
