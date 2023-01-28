@@ -46,7 +46,7 @@ fun MainLayout(
                     modifier = Modifier.padding(padding),
                     color = MaterialTheme.colors.background
                 ) {
-                    NavigationGraph(navController)
+                    NavigationGraph(navController, widthSizeClass)
                 }
             }
         )

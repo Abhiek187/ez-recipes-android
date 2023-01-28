@@ -23,6 +23,7 @@ import com.abhiek.ezrecipes.utils.capitalizeWords
 fun IngredientsList(ingredients: List<Ingredient>) {
     Card(
         modifier = Modifier
+            .width(400.dp)
             .padding(16.dp),
         elevation = 10.dp
     ) {
