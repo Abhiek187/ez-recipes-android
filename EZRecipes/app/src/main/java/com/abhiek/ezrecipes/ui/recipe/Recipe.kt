@@ -125,80 +125,8 @@ private fun RecipePreview(
 
     EZRecipesTheme {
         Surface {
-            //Recipe(viewModel)
-            val recipe = MockRecipeService.recipe
-
-            // Make the column scrollable
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                RecipeTitle(recipe = recipe)
-
-                // Show the recipe components side-by-side if there's enough screen space
-                if (isWideScreen) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RecipeHeader(
-                            recipe = recipe,
-                            isLoading = viewModel.isLoading
-                        ) {
-                            // Load another recipe in the same view
-                            viewModel.getRandomRecipe()
-                        }
-                        NutritionLabel(recipe = recipe)
-                    }
-                } else {
-                    RecipeHeader(
-                        recipe = recipe,
-                        isLoading = viewModel.isLoading
-                    ) {
-                        viewModel.getRandomRecipe()
-                    }
-                    NutritionLabel(recipe = recipe)
-                }
-
-                if (isWideScreen) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            SummaryBox(summary = recipe.summary)
-                        }
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            IngredientsList(ingredients = recipe.ingredients)
-                        }
-                    }
-                } else {
-                    SummaryBox(summary = recipe.summary)
-                    IngredientsList(ingredients = recipe.ingredients)
-                }
-
-                InstructionsList(instructions = recipe.instructions)
-
-                Divider()
-
-                RecipeFooter()
-            }
+            // Copy the Recipe composable so the ViewModel loads in the preview
+            Recipe(viewModel, isWideScreen)
         }
     }
 }
