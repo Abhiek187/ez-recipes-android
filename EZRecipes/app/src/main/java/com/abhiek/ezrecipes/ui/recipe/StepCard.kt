@@ -28,7 +28,7 @@ import com.google.accompanist.flowlayout.SizeMode
 fun StepCard(step: Step) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
+            .width(600.dp)
             .padding(8.dp),
         elevation = 10.dp
     ) {
@@ -82,8 +82,8 @@ fun StepCard(step: Step) {
                     FlowRow(
                         modifier = Modifier.padding(8.dp),
                         mainAxisSize = SizeMode.Expand,
-                        crossAxisSpacing = 12.dp,
-                        mainAxisSpacing = 8.dp
+                        mainAxisSpacing = 12.dp,
+                        crossAxisSpacing = 12.dp
                     ) {
                         step.ingredients.forEach { ingredient ->
                             Column {
@@ -123,8 +123,8 @@ fun StepCard(step: Step) {
                     FlowRow(
                         modifier = Modifier.padding(8.dp),
                         mainAxisSize = SizeMode.Expand,
-                        crossAxisSpacing = 12.dp,
-                        mainAxisSpacing = 8.dp
+                        mainAxisSpacing = 12.dp,
+                        crossAxisSpacing = 12.dp
                     ) {
                         step.equipment.forEach { equipment ->
                             Column {

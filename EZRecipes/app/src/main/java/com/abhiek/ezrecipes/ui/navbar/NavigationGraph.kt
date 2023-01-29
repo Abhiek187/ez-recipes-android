@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui.navbar
 
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -11,10 +12,11 @@ import com.abhiek.ezrecipes.ui.home.Home
 import com.abhiek.ezrecipes.ui.recipe.Recipe
 
 @Composable
-fun NavigationGraph(navController: NavHostController) {
-    val viewModel: MainViewModel = viewModel(
+fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidthSizeClass) {
+    val viewModel = viewModel<MainViewModel>(
         factory = MainViewModelFactory()
     )
+    val isWideScreen = widthSizeClass == WindowWidthSizeClass.Expanded
 
     // Show the appropriate composable based on the current route, starting at the home screen
     // NavHostController is a subclass of NavController
@@ -31,7 +33,7 @@ fun NavigationGraph(navController: NavHostController) {
             }
         }
         composable(DrawerItem.Recipe.route) {
-            Recipe(viewModel)
+            Recipe(viewModel, isWideScreen)
         }
     }
 }

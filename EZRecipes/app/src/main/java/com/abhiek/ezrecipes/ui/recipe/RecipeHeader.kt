@@ -5,7 +5,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.runtime.Composable
@@ -34,7 +33,6 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.Blue300
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
-import com.abhiek.ezrecipes.utils.capitalizeWords
 
 @Composable
 fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Unit) {
@@ -88,29 +86,6 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Recipe name and source link
-            Text(
-                text = recipe.name.capitalizeWords(),
-                style = MaterialTheme.typography.h5.copy(
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                ),
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .fillMaxWidth(0.8f)
-            )
-
-            IconButton(
-                onClick = { uriHandler.openUri(recipe.url) }
-            ) {
-                Icon(Icons.Default.Link, stringResource(R.string.recipe_link))
-            }
-        }
-
         // Recipe image and caption
         AsyncImage(
             model = recipe.image,

@@ -5,6 +5,8 @@ import android.app.Instrumentation
 import android.content.ClipDescription
 import android.content.Intent
 import androidx.activity.compose.setContent
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.espresso.intent.Intents
@@ -44,6 +46,7 @@ internal class EZRecipesInstrumentedTest {
             .printToLog("Tree")
     }
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Before
     fun setUp() {
         activity = composeTestRule.activity
@@ -58,7 +61,8 @@ internal class EZRecipesInstrumentedTest {
         }
 
         activity.setContent {
-            MainLayout()
+            val widthSizeClass = calculateWindowSizeClass(activity).widthSizeClass
+            MainLayout(widthSizeClass)
         }
     }
 

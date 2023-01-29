@@ -3,6 +3,7 @@ package com.abhiek.ezrecipes.ui.recipe
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -21,6 +22,9 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
+import com.google.accompanist.flowlayout.SizeMode
 
 @Composable
 fun InstructionsList(instructions: List<Instruction>) {
@@ -51,8 +55,19 @@ fun InstructionsList(instructions: List<Instruction>) {
                 )
             }
 
-            instruction.steps.forEach { step ->
-                StepCard(step)
+            // Show step cards side-by-side if there's enough room
+            FlowRow(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+                mainAxisSize = SizeMode.Expand,
+                mainAxisAlignment = FlowMainAxisAlignment.Center,
+                mainAxisSpacing = 8.dp,
+                crossAxisSpacing = 8.dp
+            ) {
+                instruction.steps.forEach { step ->
+                    StepCard(step)
+                }
             }
         }
     }
