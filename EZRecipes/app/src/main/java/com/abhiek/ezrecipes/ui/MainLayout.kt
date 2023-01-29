@@ -35,7 +35,9 @@ fun MainLayout(
         // Great resource for setting up the navigation drawer: https://stackoverflow.com/a/73295465
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = { TopBar(scope, scaffoldState, navController) },
+            topBar = {
+                TopBar(scope, scaffoldState, navController)
+            },
             drawerContent = {
                 NavigationDrawer(scope, scaffoldState, navController)
             },
