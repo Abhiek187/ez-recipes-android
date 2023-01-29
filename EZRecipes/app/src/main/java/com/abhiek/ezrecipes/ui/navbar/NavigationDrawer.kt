@@ -29,7 +29,8 @@ import kotlinx.coroutines.launch
 fun NavigationDrawer(
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
-    navController: NavController
+    navController: NavController,
+    width: Int
 ) {
     /* Using sealedSubclasses requires reflection, which will make the app slower,
      * so list each drawer item manually
@@ -41,15 +42,18 @@ fun NavigationDrawer(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    // Keep the logo centered within the drawer (left padding <-> logo <-> right padding)
+    val logoWidth = 100
+    val logoHorizontalPadding = (width - logoWidth) / 2
+
     Column {
         // Show the app logo at the top
         Image(
             painter = painterResource(R.mipmap.ic_launcher_foreground),
             contentDescription = stringResource(R.string.app_logo_alt),
             modifier = Modifier
-                .height(100.dp)
-                .fillMaxWidth()
-                .padding(8.dp)
+                .height(logoWidth.dp)
+                .padding(horizontal = logoHorizontalPadding.dp, vertical = 8.dp)
         )
         Spacer(
             modifier = Modifier
@@ -90,6 +94,6 @@ fun NavigationDrawerPreview() {
     val navController = rememberNavController()
 
     EZRecipesTheme {
-        NavigationDrawer(scope, scaffoldState, navController)
+        NavigationDrawer(scope, scaffoldState, navController, 300)
     }
 }
