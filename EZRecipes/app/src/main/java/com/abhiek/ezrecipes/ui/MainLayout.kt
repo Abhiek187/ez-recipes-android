@@ -6,8 +6,14 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.ui.navbar.NavigationDrawer
 import com.abhiek.ezrecipes.ui.navbar.NavigationGraph
@@ -17,6 +23,7 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.toPx
 
 @Composable
 fun MainLayout(
@@ -28,6 +35,7 @@ fun MainLayout(
     val scaffoldState = rememberScaffoldState(rememberDrawerState(initialDrawerState))
     // The navigation controller shouldn't be recreated in other composables
     val navController = rememberNavController()
+    val drawerWidth = 300
 
     // Material Design layout guidelines:
     // https://developer.android.com/guide/topics/large-screens/navigation-for-responsive-uis#responsive_ui_navigation
@@ -39,7 +47,17 @@ fun MainLayout(
                 TopBar(scope, scaffoldState, navController)
             },
             drawerContent = {
-                NavigationDrawer(scope, scaffoldState, navController)
+                NavigationDrawer(scope, scaffoldState, navController, drawerWidth)
+            },
+            // Limit the width of the navigation drawer so there isn't much whitespace
+            drawerShape = object : Shape {
+                override fun createOutline(
+                    size: Size,
+                    layoutDirection: LayoutDirection,
+                    density: Density
+                ) = Outline.Rectangle(
+                    Rect(left = 0f, top = 0f, right = drawerWidth.toPx, bottom = size.height)
+                )
             },
             // Content padding parameter is required: https://stackoverflow.com/a/72085218
             content = { padding ->
