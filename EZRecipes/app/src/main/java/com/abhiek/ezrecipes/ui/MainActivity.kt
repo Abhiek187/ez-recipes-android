@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
 
         if (appLinkAction == Intent.ACTION_VIEW) {
             appLinkData?.lastPathSegment?.also { recipeId ->
+                // The navigation graph will take care of the deep link ;)
                 println("recipe ID = $recipeId")
             }
         }

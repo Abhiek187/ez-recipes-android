@@ -6,10 +6,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.MainViewModelFactory
 import com.abhiek.ezrecipes.ui.home.Home
 import com.abhiek.ezrecipes.ui.recipe.Recipe
+import com.abhiek.ezrecipes.utils.Constants
 
 @Composable
 fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidthSizeClass) {
@@ -32,8 +34,13 @@ fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidt
                 }
             }
         }
-        composable(DrawerItem.Recipe.route) {
-            Recipe(viewModel, isWideScreen)
+        composable(
+            DrawerItem.Recipe.route,
+            deepLinks = listOf(
+                navDeepLink { uriPattern = "${Constants.RECIPE_WEB_ORIGIN}/recipe/{id}" }
+            )
+        ) { backStackEntry ->
+            Recipe(viewModel, isWideScreen, backStackEntry.arguments?.getString("id"))
         }
     }
 }
