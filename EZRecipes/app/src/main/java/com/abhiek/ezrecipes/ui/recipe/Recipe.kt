@@ -3,6 +3,7 @@ package com.abhiek.ezrecipes.ui.recipe
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -24,7 +25,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
-fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean) {
+fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: String? = null) {
     if (viewModel.recipe != null) {
         val recipe = viewModel.recipe!!
 
@@ -100,11 +101,22 @@ fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean) {
             RecipeFooter()
         }
     } else {
+        // If this composable was opened due to a deep link, use the recipeId to load the recipe
+        recipeIdString?.toIntOrNull()?.let { recipeId ->
+            viewModel.getRecipeById(recipeId)
+        }
+
         // Shouldn't be seen normally
-        Text(
-            text = stringResource(R.string.no_recipe),
-            modifier = Modifier.padding(8.dp)
-        )
+        Column {
+            Text(
+                text = stringResource(R.string.no_recipe),
+                modifier = Modifier.padding(8.dp)
+            )
+
+            if (viewModel.isLoading) {
+                CircularProgressIndicator()
+            }
+        }
     }
 }
 

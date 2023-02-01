@@ -8,6 +8,8 @@ object Constants {
     const val RECIPE_BASE_URL = "https://ez-recipes-server.onrender.com/api/recipes/"
     const val RANDOM_RECIPE_PATH = "random"
 
+    const val RECIPE_WEB_ORIGIN = "https://ez-recipes-web.onrender.com"
+
     // Error message to fallback on in case all fails
     val UNKNOWN_ERROR = Resources.getSystem().getString(R.string.unknown_error)
 }
