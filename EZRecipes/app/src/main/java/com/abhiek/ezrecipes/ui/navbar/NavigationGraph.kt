@@ -28,7 +28,9 @@ fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidt
     ) {
         composable(DrawerItem.Home.route) {
             Home(viewModel) {
-                navController.navigate(DrawerItem.Recipe.route) {
+                navController.navigate(
+                    DrawerItem.Recipe.route.replace("{id}", viewModel.recipe?.id.toString())
+                ) {
                     // Only have one copy of the recipe destination in the back stack
                     launchSingleTop = true
                 }

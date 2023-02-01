@@ -165,7 +165,7 @@ internal class EZRecipesInstrumentedTest {
         // Mock the Sharesheet intent (based on https://stackoverflow.com/a/60629289)
         val sendIntent = allOf(
             hasAction(Intent.ACTION_SEND),
-            hasExtra(Intent.EXTRA_TEXT, activity.getString(R.string.share_body)),
+            hasExtra(Intent.EXTRA_SUBJECT, activity.getString(R.string.share_body)),
             hasType(ClipDescription.MIMETYPE_TEXT_PLAIN)
         )
         val shareIntent = allOf(

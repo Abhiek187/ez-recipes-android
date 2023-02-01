@@ -9,5 +9,5 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class DrawerItem(val route: String, val title: String, val icon: ImageVector) {
     // Icons: https://fonts.google.com/icons (some require material-icons-extended)
     object Home: DrawerItem("home", "Home", Icons.Filled.Home)
-    object Recipe: DrawerItem("recipe", "Recipe", Icons.Filled.MenuBook)
+    object Recipe: DrawerItem("recipe/{id}", "Recipe", Icons.Filled.MenuBook)
 }

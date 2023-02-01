@@ -20,6 +20,7 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -32,11 +33,12 @@ fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState, navController: N
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    fun shareRecipe() {
+    fun shareRecipe(id: String) {
         // Create a Sharesheet to share the recipe with others
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, context.getString(R.string.share_body))
+            putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.share_body))
+            putExtra(Intent.EXTRA_TEXT, "${Constants.RECIPE_WEB_ORIGIN}/recipe/$id")
             type = ClipDescription.MIMETYPE_TEXT_PLAIN
         }
         val shareIntent = Intent.createChooser(sendIntent, null)
@@ -70,7 +72,11 @@ fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState, navController: N
                         )
                     )
                 }
-                IconButton(onClick = { shareRecipe() }) {
+                IconButton(onClick = {
+                    navBackStackEntry?.arguments?.getString("id")?.let { recipeId ->
+                        shareRecipe(recipeId)
+                    }
+                }) {
                     Icon(Icons.Filled.Share, stringResource(R.string.share_alt))
                 }
             }
