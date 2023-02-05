@@ -8,6 +8,7 @@ android {
     compileSdk 33
 
     defaultConfig {
+        // GITHUB_ACTIONS = true if running in a workflow
         testInstrumentationRunnerArguments ci: System.getenv("GITHUB_ACTIONS") ?: "null"
         applicationId "com.abhiek.ezrecipes"
         minSdk 23
@@ -16,7 +17,6 @@ android {
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        // GITHUB_ACTIONS = true if running in a workflow
         vectorDrawables {
             useSupportLibrary true
         }
