@@ -24,6 +24,7 @@ Introducing EZ Recipes, an app that lets chefs find low-effort recipes that can 
 - Material Design UI
 - Responsive and accessible mobile design
 - REST APIs to a custom [server](https://github.com/Abhiek187/ez-recipes-server) using Retrofit, which fetches recipe information from [spoonacular](https://spoonacular.com/food-api)
+- App Links to open recipes from the web app to the mobile app
 - Automated testing and deployment using CI/CD pipelines in GitHub Actions and Fastlane
 - Mermaid to write diagrams as code
 
@@ -116,3 +117,9 @@ Make sure a device is running by checking `adb devices`.
 ## Future Updates
 
 Check the [EZ Recipes web repo](https://github.com/Abhiek187/ez-recipes-web#future-updates) for a list of future updates.
+
+## Related Repos
+
+- [Web app](https://github.com/Abhiek187/ez-recipes-web)
+- [iOS app](https://github.com/Abhiek187/ez-recipes-ios)
+- [Server](https://github.com/Abhiek187/ez-recipes-server)
