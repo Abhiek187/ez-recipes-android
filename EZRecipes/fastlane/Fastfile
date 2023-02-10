@@ -99,18 +99,64 @@ platform :android do
     capture_android_screenshots
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
+  desc "Submit a new internal build to the Play Store"
+  lane :internal do |options|
+    # Get the latest version name and code from Google Play
+    version_names = google_play_track_release_names
+    version_codes = google_play_track_version_codes
+
+    if version_names.empty? or version_codes.empty?
+      UI.user_error!("No version names or codes found on Google Play")
+    end
+
+    latest_version_name = version_names[0]
+    major, minor, patch = latest_version_name.split(".")
+    latest_version_code = version_codes[0]
+
+    # Check what type of update this is to determine how to update the version name
+    update_type = UI.select(
+        "What type of update is this? (major.minor.patch)",
+        ["major", "minor", "patch"]
+    )
+
+    case update_type
+    when "major"
+      # Make the lower versions 0 when the upper version is incremented
+      new_version_name = (major.to_i + 1).to_s + ".0.0"
+    when "minor"
+      new_version_name = "#{major}." + (minor.to_i + 1).to_s + ".0"
+    else
+      new_version_name = "#{major}.#{minor}." + (patch.to_i + 1).to_s
+    end
+
+    new_version_code = latest_version_code + 1
+
+    # Check if the release notes have been created for the new version code
+    changelog_path = "fastlane/metadata/android/en-US/changelogs/#{new_version_code}.txt"
+    unless File.file?(changelog_path)
+      UI.user_error!("No release notes written for version code #{new_version_code}")
+    end
+
+    # Update the version name using semver: "MAJOR.MINOR.PATCH"
+    UI.message "Updating the version name: #{latest_version_name} --> #{new_version_name}"
+    # Auto-increment the version code
+    UI.message "Updating the version code: #{latest_version_code} --> #{new_version_code}"
+
     gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
+    upload_to_play_store(
+      track: "internal",
+      validate_only: true,
+      changes_not_sent_for_review: true
+    )
   end
 
-  desc "Deploy a new version to the Google Play"
+  desc "Deploy a new version to the Play Store"
   lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+    # Promote the build from internal to production
+    upload_to_play_store(
+      track_promote_to: "production",
+      validate_only: true,
+      changes_not_sent_for_review: true
+    )
   end
 end

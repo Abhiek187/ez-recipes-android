@@ -39,13 +39,13 @@ Run instrumented tests
 
 Generate screenshots for the Play Store
 
-### android beta
+### android internal
 
 ```sh
-[bundle exec] fastlane android beta
+[bundle exec] fastlane android internal
 ```
 
-Submit a new Beta Build to Crashlytics Beta
+Submit a new internal build to the Play Store
 
 ### android deploy
 
@@ -53,7 +53,7 @@ Submit a new Beta Build to Crashlytics Beta
 [bundle exec] fastlane android deploy
 ```
 
-Deploy a new version to the Google Play
+Deploy a new version to the Play Store
 
 ----
 
