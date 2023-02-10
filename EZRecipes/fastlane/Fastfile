@@ -149,9 +149,9 @@ platform :android do
 
     gradle(task: "clean assembleRelease")
     upload_to_play_store(
-      track: "internal",
-      validate_only: true,
-      changes_not_sent_for_review: true
+        track: "internal",
+        validate_only: true,
+        changes_not_sent_for_review: true
     )
   end
 
@@ -159,9 +159,9 @@ platform :android do
   lane :deploy do
     # Promote the build from internal to production
     upload_to_play_store(
-      track_promote_to: "production",
-      validate_only: true,
-      changes_not_sent_for_review: true
+        track_promote_to: "production",
+        validate_only: true,
+        changes_not_sent_for_review: true
     )
   end
 end
