@@ -12,9 +12,6 @@ tests_apk_path("app/build/outputs/apk/androidTest/debug/app-debug-androidTest.ap
 # Clear all previously generated screenshots in your local output directory before creating new ones
 clear_previous_screenshots(true)
 
-# Use the same screenshots directory ignored on iOS
-output_directory("fastlane/screenshots")
-
 # Don't add a timestamp to each filename
 use_timestamp_suffix(false)
 
