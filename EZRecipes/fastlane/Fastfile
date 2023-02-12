@@ -168,6 +168,7 @@ platform :android do
     # sed -i 's/versionCode [0-9a-zA-Z -_]*/versionCode '$new_version_code'/' ../app/build.gradle
     sh "sed #{sed_opts} 's/versionCode [0-9a-zA-Z -_]*/versionCode '#{new_version_code}'/' ../app/build.gradle"
 
+    # Clean build cache and generate an AAB: gradlew clean assembleRelease -p .
     gradle(task: "clean assembleRelease")
     upload_to_play_store(
         track: "internal",
