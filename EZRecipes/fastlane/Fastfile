@@ -103,12 +103,9 @@ platform :android do
   lane :sync_metadata do
     # Delete the metadata folder first before fetching new metadata
     # Interactive shell commands don't work
-    rm_response = UI.select(
-        "Deleting the metadata folder is required to sync with Google Play. Is this ok?",
-        ["yes", "no"]
-    )
+    can_rm = UI.confirm("Deleting the metadata folder is required to sync with Google Play. Is this ok?")
 
-    unless rm_response == "no"
+    if can_rm
       # Shell commands run in the fastlane directory
       sh("rm", "-rf", "metadata/")
       download_from_play_store(track: "internal")
@@ -168,21 +165,55 @@ platform :android do
     # sed -i 's/versionCode [0-9a-zA-Z -_]*/versionCode '$new_version_code'/' ../app/build.gradle
     sh "sed #{sed_opts} 's/versionCode [0-9a-zA-Z -_]*/versionCode '#{new_version_code}'/' ../app/build.gradle"
 
-    # Clean build cache and generate an AAB: gradlew clean assembleRelease -p .
-    gradle(task: "clean assembleRelease")
+    # Clean build cache: gradlew clean -p .
+    gradle(task: "clean")
+
+    # Ask for the key store password (which should be the same as the key password)
+    key_password = UI.password("Enter your key store password: ")
+    # Generate a signed AAB:
+    # gradlew assembleRelease -p . -Pandroid.injected.signing.store.file=../../keystore.jks -Pandroid.injected.signing.store.password=*** -Pandroid.injected.signing.key.alias=key1 -Pandroid.injected.signing.key.password=***
+    gradle(
+        "task": "assemble",
+        build_type: "Release",
+        print_command: false, # don't show the password
+        properties: {
+            "android.injected.signing.store.file" => "../../keystore.jks",
+            "android.injected.signing.store.password" => key_password,
+            "android.injected.signing.key.alias" => "key1",
+            "android.injected.signing.key.password" => key_password
+        }
+    )
     upload_to_play_store(
         track: "internal",
-        validate_only: true,
-        changes_not_sent_for_review: true
+        version_name: "#{latest_version_code} (#{latest_version_name})",
+        # By default, supply uses SharedValues::GRADLE_AAB_OUTPUT_PATH from the gradle action
+        # Uncomment below if the above gradle command fails
+        #aab: "app/release/app-release.aab",
+        # Change the skip_* parameters to false if updating the main store listing
+        skip_upload_metadata: true,
+        skip_upload_images: true,
+        skip_upload_screenshots: true,
+        # Set to true to test the API without changing anything in the Play Console
+        validate_only: false
     )
   end
 
   desc "Deploy a new version to the Play Store"
   lane :deploy do
     # Promote the build from internal to production
+    versions = google_play_track_version_codes(track: "internal")
+    version_code = versions[0]
+
     upload_to_play_store(
+        track: "internal",
         track_promote_to: "production",
-        validate_only: true,
+        version_code: version_code,
+        skip_upload_aab: true,
+        skip_upload_metadata: true,
+        skip_upload_changelogs: true,
+        skip_upload_images: true,
+        skip_upload_screenshots: true,
+        validate_only: false,
         changes_not_sent_for_review: true
     )
   end
