@@ -39,6 +39,14 @@ Run instrumented tests
 
 Generate screenshots for the Play Store
 
+### android sync_metadata
+
+```sh
+[bundle exec] fastlane android sync_metadata
+```
+
+Sync metadata with the Play Store
+
 ### android internal
 
 ```sh
