@@ -66,6 +66,37 @@ O --> P(Kill emulator)
 end
 ```
 
+### Deployment
+
+```mermaid
+flowchart LR
+
+A --> B
+B --> C
+
+subgraph A [Package App]
+direction TB
+D(Sync local metadata from Google Play) --> E(Write release notes for the next version code)
+E --> F{Major, minor, or patch update?}
+F --> G(Update the version name and increment the version code)
+G --> H(Clean cache)
+H --> I(Build app & generate an AAB)
+I --> J(Sign AAB using the upload key)
+end
+
+subgraph B [Play App Signing]
+direction TB
+K(Verify signer's identity using the upload certificate) --> L(Generate APKs optimized for each device configuration)
+L --> M(Sign APK using the signing key)
+end
+
+subgraph C [Distribute on Google Play]
+direction TB
+N(Test app in the internal track) --> O(Promote release to production)
+O --> P(Await approval from Google)
+end
+```
+
 ## Installing Locally
 
 Android Studio and Java are required to run Android apps locally.
@@ -113,6 +144,22 @@ bundle exec fastlane android screenshots
 ```
 
 Make sure a device is running by checking `adb devices`.
+
+### Deployment
+
+Follow the steps on [Fastlane's docs](https://docs.fastlane.tools/getting-started/android/setup/#setting-up-supply) to generate a private key to connect to the Google Play Developer API. Validate the connection by running:
+
+```bash
+bundle exec fastlane run validate_play_store_json_key json_key:JSON_KEY_PATH
+```
+
+Then follow these steps to create a new release for select testers in the internal track:
+
+1. Make sure the `fastlane/metadata` directory is up-to-date by running `bundle exec fastlane android sync_metadata`
+2. Write the release notes for the next version code in `fastlane/metadata/android/en-US/changelogs`, where the filename is `VERSION_CODE.txt`. `VERSION_CODE` is the latest version code + 1.
+3. Run `bundle exec fastlane android internal` and select whether this is a major, minor, or patch update. The version name and code will be adjusted in the app's `build.gradle` file accordingly.
+
+Once the internal build is tested and ready for production, run `bundle exec fastlane android deploy` to promote the internal release to the production track. Send the changes for approval on the Google Play Console and wait for Google to approve the app (usually a few days to a week on average).
 
 ## Future Updates
 
