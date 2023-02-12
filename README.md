@@ -79,8 +79,8 @@ direction TB
 D(Sync local metadata from Google Play) --> E(Write release notes for the next version code)
 E --> F{Major, minor, or patch update?}
 F --> G(Update the version name and increment the version code)
-G --> H(Clean cache)
-H --> I(Build app & generate an AAB)
+G --> H(Clean cache:\ngradlew clean)
+H --> I(Build app & generate an AAB:\ngradlew assembleRelease)
 I --> J(Sign AAB using the upload key)
 end
 
