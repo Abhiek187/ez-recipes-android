@@ -101,7 +101,18 @@ platform :android do
 
   desc "Sync metadata with the Play Store"
   lane :sync_metadata do
-    download_from_play_store(track: "internal")
+    # Delete the metadata folder first before fetching new metadata
+    # Interactive shell commands don't work
+    rm_response = UI.select(
+        "Deleting the metadata folder is required to sync with Google Play. Is this ok?",
+        ["yes", "no"]
+    )
+
+    unless rm_response == "no"
+      # Shell commands run in the fastlane directory
+      sh("rm", "-rf", "metadata/")
+      download_from_play_store(track: "internal")
+    end
   end
 
   desc "Submit a new internal build to the Play Store"
