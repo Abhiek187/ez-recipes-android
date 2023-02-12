@@ -185,7 +185,7 @@ platform :android do
     )
     upload_to_play_store(
         track: "internal",
-        version_name: "#{latest_version_code} (#{latest_version_name})",
+        version_name: "#{new_version_code} (#{new_version_name})",
         # By default, supply uses SharedValues::GRADLE_AAB_OUTPUT_PATH from the gradle action
         # Uncomment below if the above gradle command fails
         #aab: "app/release/app-release.aab",
