@@ -26,9 +26,26 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
 fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: String? = null) {
-    if (viewModel.recipe != null) {
-        val recipe = viewModel.recipe!!
+    if (viewModel.recipe == null) {
+        // If this composable was opened due to a deep link, use the recipeId to load the recipe
+        recipeIdString?.toIntOrNull()?.let { recipeId ->
+            viewModel.getRecipeById(recipeId)
+        }
 
+        // Shouldn't be seen normally
+        Column {
+            Text(
+                text = stringResource(R.string.no_recipe),
+                modifier = Modifier.padding(8.dp)
+            )
+
+            if (viewModel.isLoading) {
+                CircularProgressIndicator()
+            }
+        }
+    }
+
+    viewModel.recipe?.let { recipe ->
         // Make the column scrollable
         Column(
             modifier = Modifier
@@ -99,23 +116,6 @@ fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: Stri
             Divider()
 
             RecipeFooter()
-        }
-    } else {
-        // If this composable was opened due to a deep link, use the recipeId to load the recipe
-        recipeIdString?.toIntOrNull()?.let { recipeId ->
-            viewModel.getRecipeById(recipeId)
-        }
-
-        // Shouldn't be seen normally
-        Column {
-            Text(
-                text = stringResource(R.string.no_recipe),
-                modifier = Modifier.padding(8.dp)
-            )
-
-            if (viewModel.isLoading) {
-                CircularProgressIndicator()
-            }
         }
     }
 }
