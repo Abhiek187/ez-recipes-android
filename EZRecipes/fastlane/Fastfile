@@ -99,18 +99,122 @@ platform :android do
     capture_android_screenshots
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
+  desc "Sync metadata with the Play Store"
+  lane :sync_metadata do
+    # Delete the metadata folder first before fetching new metadata
+    # Interactive shell commands don't work
+    can_rm = UI.confirm("Deleting the metadata folder is required to sync with Google Play. Is this ok?")
+
+    if can_rm
+      # Shell commands run in the fastlane directory
+      sh("rm", "-rf", "metadata/")
+      download_from_play_store(track: "internal")
+    end
   end
 
-  desc "Deploy a new version to the Google Play"
+  desc "Submit a new internal build to the Play Store"
+  lane :internal do
+    # Get the latest version name and code from Google Play
+    release_names = google_play_track_release_names(track: "internal")
+    version_codes = google_play_track_version_codes(track: "internal")
+
+    if release_names.empty? or version_codes.empty?
+      UI.user_error!("No releases or version codes found on Google Play")
+    end
+
+    # The release name will be of the form "versionCode (versionName)"
+    release_name = release_names[0]
+    latest_version_name = release_name[(release_name.index("(") + 1)...release_name.index(")")]
+    major, minor, patch = latest_version_name.split(".")
+    latest_version_code = version_codes[0]
+
+    # Check what type of update this is to determine how to update the version name
+    update_type = UI.select(
+        "What type of update is this? (major.minor.patch)",
+        ["major", "minor", "patch"]
+    )
+
+    case update_type
+    when "major"
+      # Make the lower versions 0 when the upper version is incremented
+      new_version_name = (major.to_i + 1).to_s + ".0.0"
+    when "minor"
+      new_version_name = "#{major}." + (minor.to_i + 1).to_s + ".0"
+    else
+      new_version_name = "#{major}.#{minor}." + (patch.to_i + 1).to_s
+    end
+
+    new_version_code = latest_version_code + 1
+    UI.message "Updating the version name: #{latest_version_name} --> #{new_version_name}"
+    UI.message "Updating the version code: #{latest_version_code} --> #{new_version_code}"
+
+    # Check if the release notes have been created for the new version code
+    changelog_path = "metadata/android/en-US/changelogs/#{new_version_code}.txt"
+    unless File.file?(changelog_path)
+      UI.user_error!("No release notes for version code #{new_version_code} found in fastlane/#{changelog_path}")
+    end
+
+    # Update the version name using semver: "MAJOR.MINOR.PATCH"
+    # sed's -i flag on Mac expects an extension instead of a pattern
+    sed_opts = FastlaneCore::Helper.mac? ? "-i '' -e" : "-i"
+
+    # sed -i 's/versionName [0-9a-zA-Z -_]*/versionName "'"$new_version_name"'"/' ../app/build.gradle
+    sh "sed #{sed_opts} 's/versionName [0-9a-zA-Z -_]*/versionName \"\'\"#{new_version_name}\"\'\"/' ../app/build.gradle"
+
+    # Auto-increment the version code
+    # sed -i 's/versionCode [0-9a-zA-Z -_]*/versionCode '$new_version_code'/' ../app/build.gradle
+    sh "sed #{sed_opts} 's/versionCode [0-9a-zA-Z -_]*/versionCode '#{new_version_code}'/' ../app/build.gradle"
+
+    # Clean build cache: gradlew clean -p .
+    gradle(task: "clean")
+
+    # Ask for the key store password (which should be the same as the key password)
+    key_password = UI.password("Enter your key store password: ")
+    # Generate a signed AAB:
+    # gradlew assembleRelease -p . -Pandroid.injected.signing.store.file=../../keystore.jks -Pandroid.injected.signing.store.password=*** -Pandroid.injected.signing.key.alias=key1 -Pandroid.injected.signing.key.password=***
+    gradle(
+        task: "assemble",
+        build_type: "Release",
+        print_command: false, # don't show the password
+        properties: {
+            "android.injected.signing.store.file" => "../../keystore.jks",
+            "android.injected.signing.store.password" => key_password,
+            "android.injected.signing.key.alias" => "key1",
+            "android.injected.signing.key.password" => key_password
+        }
+    )
+    upload_to_play_store(
+        track: "internal",
+        version_name: "#{new_version_code} (#{new_version_name})",
+        # By default, supply uses SharedValues::GRADLE_AAB_OUTPUT_PATH from the gradle action
+        # Uncomment below if the above gradle command fails
+        #aab: "app/release/app-release.aab",
+        # Change the skip_* parameters to false if updating the main store listing
+        skip_upload_metadata: true,
+        skip_upload_images: true,
+        skip_upload_screenshots: true,
+        # Set to true to test the API without changing anything in the Play Console
+        validate_only: false
+    )
+  end
+
+  desc "Deploy a new version to the Play Store"
   lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+    # Promote the build from internal to production
+    versions = google_play_track_version_codes(track: "internal")
+    version_code = versions[0]
+
+    upload_to_play_store(
+        track: "internal",
+        track_promote_to: "production",
+        version_code: version_code,
+        skip_upload_aab: true,
+        skip_upload_metadata: true,
+        skip_upload_changelogs: true,
+        skip_upload_images: true,
+        skip_upload_screenshots: true,
+        validate_only: false,
+        changes_not_sent_for_review: true
+    )
   end
 end
