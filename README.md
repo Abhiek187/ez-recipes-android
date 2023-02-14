@@ -66,6 +66,16 @@ O --> P(Kill emulator)
 end
 ```
 
+### CodeQL
+
+```mermaid
+flowchart LR
+
+A(Checkout repository) -->|Java, Ruby| B(Initialize CodeQL)
+B --> C(Build code)
+C --> D(Perform CodeQL analysis)
+```
+
 ### Deployment
 
 ```mermaid
