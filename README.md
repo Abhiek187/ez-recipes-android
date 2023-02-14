@@ -1,6 +1,7 @@
 # EZ Recipes Android App
 
 [![Fastlane](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/fastlane.yml/badge.svg)](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/fastlane.yml)
+[![CodeQL](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/codeql.yml/badge.svg)](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/codeql.yml)
 
 <div>
     <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png" alt="find recipe button" width="300">
@@ -64,6 +65,16 @@ M --> N(Disable animations)
 N --> O(Run instrumented tests:\ngradlew connectedAndroidTest)
 O --> P(Kill emulator)
 end
+```
+
+### CodeQL
+
+```mermaid
+flowchart LR
+
+A(Checkout repository) -->|Java, Ruby| B(Initialize CodeQL)
+B --> C(Build code)
+C --> D(Perform CodeQL analysis)
 ```
 
 ### Deployment
