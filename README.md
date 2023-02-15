@@ -3,6 +3,10 @@
 [![Fastlane](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/fastlane.yml/badge.svg)](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/fastlane.yml)
 [![CodeQL](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/codeql.yml/badge.svg)](https://github.com/Abhiek187/ez-recipes-android/actions/workflows/codeql.yml)
 
+<a target="_blank" rel="noopener noreferrer" href='https://play.google.com/store/apps/details?id=com.abhiek.ezrecipes&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+    <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width="250" />
+</a>
+
 <div>
     <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png" alt="find recipe button" width="300">
     <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png" alt="navigation drawer" width="300">
@@ -181,3 +185,6 @@ Check the [EZ Recipes web repo](https://github.com/Abhiek187/ez-recipes-web#futu
 - [Web app](https://github.com/Abhiek187/ez-recipes-web)
 - [iOS app](https://github.com/Abhiek187/ez-recipes-ios)
 - [Server](https://github.com/Abhiek187/ez-recipes-server)
+
+---
+<sup>Google Play and the Google Play logo are trademarks of Google LLC.</sup>
