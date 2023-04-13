@@ -64,7 +64,7 @@ dependencies {
     // AsyncImage
     implementation 'io.coil-kt:coil-compose:2.2.2'
     // Experimental utils for Jetpack Compose
-    implementation 'com.google.accompanist:accompanist-flowlayout:0.28.0'
+    implementation 'com.google.accompanist:accompanist-flowlayout:0.30.1'
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
