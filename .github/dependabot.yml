@@ -10,10 +10,6 @@ updates:
     directory: "/EZRecipes" # Location of package manifests
     schedule:
       interval: "monthly"
-  - package-ecosystem: "gradle"
-    directory: "/EZRecipes/app"
-    schedule:
-      interval: "monthly"
   # Check Gemfile
   - package-ecosystem: "bundler"
     directory: "/EZRecipes"
