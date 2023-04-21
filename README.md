@@ -40,7 +40,7 @@ Introducing EZ Recipes, an app that lets chefs find low-effort recipes that can 
 ```mermaid
 flowchart LR
 
-A(Checkout repository) --> B(Install Java 11)
+A(Checkout repository) --> B(Install Java 17)
 B --> C(Make gradlew executable:\nchmod u+x gradlew)
 C --> D(Install Fastlane)
 D --> E(Run unit tests:\ngradlew test -p .)
@@ -51,7 +51,7 @@ D --> E(Run unit tests:\ngradlew test -p .)
 ```mermaid
 flowchart LR
 
-A(Checkout repository) --> B(Install Java 11)
+A(Checkout repository) --> B(Install Java 17)
 B --> C(Make gradlew executable:\nchmod u+x gradlew)
 C -->|API 29, 31, 33| D
 D --> E(Upload build reports)
@@ -76,9 +76,10 @@ end
 ```mermaid
 flowchart LR
 
-A(Checkout repository) -->|Java, Ruby| B(Initialize CodeQL)
-B --> C(Build code)
-C --> D(Perform CodeQL analysis)
+A(Checkout repository) -->|Java, Ruby| B(Install Java 17)
+B --> C(Initialize CodeQL)
+C --> D(Build code)
+D --> E(Perform CodeQL analysis)
 ```
 
 ### Deployment
