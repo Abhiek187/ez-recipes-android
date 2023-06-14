@@ -97,6 +97,7 @@ platform :android do
     # Get captured screenshots from external storage: adb -s emulator-5554 pull /sdcard/Android/data/com.abhiek.ezrecipes/files/screengrab/en-US/images/screenshots /tmp/d20230107-31863-xk272
     # Get screenshots from internal storage (using run-as for root access): adb -s emulator-5554 shell run-as com.abhiek.ezrecipes "tar -cC /data/data/com.abhiek.ezrecipes/app_screengrab/en-US/images screenshots" | tar -xv -f- -C /tmp/d20230108-32165-9dm6e7
     capture_android_screenshots
+    frame_screenshots
   end
 
   desc "Sync metadata with the Play Store"

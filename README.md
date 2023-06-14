@@ -153,7 +153,14 @@ This [table](https://source.android.com/docs/setup/about/build-numbers#platform-
 
 ### Screenshots
 
-Screenshots can be generated automatically using Fastlane. Run the following command to generate screenshots at `ez-recipes-android/EZRecipes/fastlane/screenshots` (ignored by git):
+Screenshots can be generated automatically using Fastlane. In addition to the Fastlane installation steps above, ImageMagick is required to add the device frames:
+
+```bash
+brew install libpng jpeg imagemagick # if on Mac
+sudo apt install imagemagick # if on Linux
+```
+
+Then run the following command to generate screenshots at `ez-recipes-android/EZRecipes/fastlane/screenshots` (ignored by git):
 
 ```bash
 bundle exec fastlane android screenshots
