@@ -8,13 +8,13 @@
 </a>
 
 <div>
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png" alt="find recipe button" width="300">
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png" alt="navigation drawer" width="300">
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png" alt="recipe header" width="300">
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.png" alt="nutrition label" width="300">
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US.png" alt="summary box" width="300">
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/6_en-US.png" alt="ingredients list" width="300">
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/7_en-US.png" alt="step cards & footer" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US_framed.png" alt="find recipe button" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US_framed.png" alt="navigation drawer" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US_framed.png" alt="recipe header" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US_framed.png" alt="nutrition label" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US_framed.png" alt="summary box" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/6_en-US_framed.png" alt="ingredients list" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/7_en-US_framed.png" alt="step cards & footer" width="300">
 </div>
 
 ## Overview
