@@ -59,7 +59,7 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
     implementation 'androidx.compose.material:material:1.4.3'
     implementation 'androidx.compose.material:material-icons-extended:1.4.3'
-    implementation 'androidx.compose.material3:material3-window-size-class:1.1.0'
+    implementation 'androidx.compose.material3:material3-window-size-class:1.1.1'
     implementation 'androidx.navigation:navigation-compose:2.6.0'
     // AsyncImage
     implementation 'io.coil-kt:coil-compose:2.4.0'
@@ -86,7 +86,7 @@ dependencies {
 }
 
 // Log Gradle test results
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     useJUnitPlatform() // enable JUnit 5 (Jupiter)
     testLogging {
         exceptionFormat "full"
