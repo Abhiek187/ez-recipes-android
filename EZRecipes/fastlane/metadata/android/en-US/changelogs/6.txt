@@ -1,0 +1,2 @@
+- Target Android 14
+- Minor UI fixes
