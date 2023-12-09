@@ -42,7 +42,7 @@ platform :android do
     ANDROID_CMD_PATH = "#{ANDROID_HOME}/cmdline-tools/latest/bin"
     ANDROID_EMULATOR_PATH = "#{ANDROID_HOME}/emulator"
     ADB_PATH = "#{ANDROID_HOME}/platform-tools"
-    BUILD_TOOLS_VERSION = "33.0.0"
+    BUILD_TOOLS_VERSION = "34.0.0"
 
     api_level = options[:api]
     AVD_NAME = "test"

@@ -21,9 +21,8 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
-import com.google.accompanist.flowlayout.FlowRow
-import com.google.accompanist.flowlayout.SizeMode
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun StepCard(step: Step) {
     Card(
@@ -81,9 +80,8 @@ fun StepCard(step: Step) {
                     // Wrap items if they can't fit in one row
                     FlowRow(
                         modifier = Modifier.padding(8.dp),
-                        mainAxisSize = SizeMode.Expand,
-                        mainAxisSpacing = 12.dp,
-                        crossAxisSpacing = 12.dp
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         step.ingredients.forEach { ingredient ->
                             Column {
@@ -122,9 +120,8 @@ fun StepCard(step: Step) {
 
                     FlowRow(
                         modifier = Modifier.padding(8.dp),
-                        mainAxisSize = SizeMode.Expand,
-                        mainAxisSpacing = 12.dp,
-                        crossAxisSpacing = 12.dp
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         step.equipment.forEach { equipment ->
                             Column {
