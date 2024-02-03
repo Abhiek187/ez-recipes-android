@@ -38,6 +38,13 @@ internal class EZRecipesInstrumentedTest {
 
     private lateinit var activity: MainActivity
     private val extras = InstrumentationRegistry.getArguments()
+    private val isLocal = extras.getString("ci") != "true"
+
+    private fun screenshot(name: String) {
+        if (isLocal) {
+            Screengrab.screenshot(name)
+        }
+    }
 
     private fun printTree() {
         // Print the Semantics tree
@@ -55,7 +62,7 @@ internal class EZRecipesInstrumentedTest {
 
         // CleanStatusBar times out on GitHub Actions
         // It's only possible to pass strings as arguments
-        if (extras.getString("ci") != "true") {
+        if (isLocal) {
             // Clear the status bar when taking screenshots
             CleanStatusBar.enableWithDefaults()
         }
@@ -71,7 +78,7 @@ internal class EZRecipesInstrumentedTest {
         // Clear intents state after each test
         Intents.release()
 
-        if (extras.getString("ci") != "true") {
+        if (isLocal) {
             // Restore the status bar
             CleanStatusBar.disable()
         }
@@ -101,14 +108,14 @@ internal class EZRecipesInstrumentedTest {
             .onNodeWithContentDescription(activity.getString(R.string.share_alt))
             .assertDoesNotExist()
         // Take screenshots along the way
-        Screengrab.screenshot("home-screen-1")
+        screenshot("home-screen-1")
 
         // The navigation drawer should show the app logo and home button
         hamburgerMenu.performClick()
         composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.app_logo_alt))
             .assertExists()
-        Screengrab.screenshot("home-screen-2")
+        screenshot("home-screen-2")
         val homeDrawerButton = composeTestRule
             .onNodeWithText(DrawerItem.Home.title)
         homeDrawerButton.assertHasClickAction()
@@ -180,7 +187,7 @@ internal class EZRecipesInstrumentedTest {
         intended(shareIntent)
 
         var shotNum = 1
-        Screengrab.screenshot("recipe-screen-$shotNum")
+        screenshot("recipe-screen-$shotNum")
         shotNum += 1
 
         // Since the recipe loaded will be random, check all the elements that are guaranteed
@@ -226,7 +233,7 @@ internal class EZRecipesInstrumentedTest {
             .onNodeWithText(activity.getString(R.string.summary))
             .performScrollTo()
             .assertExists()
-        Screengrab.screenshot("recipe-screen-${shotNum}")
+        screenshot("recipe-screen-${shotNum}")
         shotNum += 1
 
         // "Ingredients" appear in each step card
@@ -235,21 +242,21 @@ internal class EZRecipesInstrumentedTest {
             .onFirst()
             .performScrollTo()
             .assertExists()
-        Screengrab.screenshot("recipe-screen-${shotNum}")
+        screenshot("recipe-screen-${shotNum}")
         shotNum += 1
 
         composeTestRule
             .onNodeWithText(activity.getString(R.string.steps))
             .performScrollTo()
             .assertExists()
-        Screengrab.screenshot("recipe-screen-${shotNum}")
+        screenshot("recipe-screen-${shotNum}")
         shotNum += 1
 
         composeTestRule
             .onNodeWithText(activity.getString(R.string.attribution))
             .performScrollTo()
             .assertExists()
-        Screengrab.screenshot("recipe-screen-${shotNum}")
+        screenshot("recipe-screen-${shotNum}")
         shotNum += 1
 
         // Check that clicking the show another recipe button disables the button
