@@ -5,7 +5,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ReceiptLong
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -159,7 +159,10 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     onClick = { onClickFindRecipe() },
                     enabled = !isLoading
                 ) {
-                    Icon(Icons.Default.ReceiptLong, stringResource(R.string.show_recipe_button))
+                    Icon(
+                        Icons.AutoMirrored.Filled.ReceiptLong,
+                        stringResource(R.string.show_recipe_button)
+                    )
                 }
                 Text(
                     text = stringResource(R.string.show_recipe_button),

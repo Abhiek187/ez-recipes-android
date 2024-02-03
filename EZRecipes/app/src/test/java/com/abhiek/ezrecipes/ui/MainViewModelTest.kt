@@ -2,14 +2,12 @@ package com.abhiek.ezrecipes.ui
 
 import com.abhiek.ezrecipes.data.MockRecipeService
 import com.abhiek.ezrecipes.data.RecipeRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(MainDispatcherExtension::class)
 internal class MainViewModelTest {
     private lateinit var mockService: MockRecipeService

@@ -1,12 +1,10 @@
 package com.abhiek.ezrecipes.data
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class RecipeRepositoryTest {
     private lateinit var mockService: MockRecipeService
     private lateinit var recipeRepository: RecipeRepository
