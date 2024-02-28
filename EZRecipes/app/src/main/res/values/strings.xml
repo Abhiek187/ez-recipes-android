@@ -8,6 +8,10 @@
     <string name="share_alt">Share this recipe</string>
     <string name="share_body">Check out this low-effort recipe!</string>
 
+    <!-- Tabs -->
+    <string name="home_tab">Home</string>
+    <string name="search_tab">Search</string>
+
     <!-- Home Screen -->
     <string name="find_recipe_button">Find Me a Recipe!</string>
     <string name="error_title">Error</string>
@@ -16,6 +20,22 @@
     </string>
     <!-- Android strings: https://developer.android.com/reference/android/R.string -->
     <string name="ok_button">@android:string/ok</string>
+    <string-array name="loading_messages">
+        <item>Prepping the ingredients… 🍱</item>
+        <item>Preheating the oven… ⏲️</item>
+        <item>Going grocery shopping… 🛒</item>
+        <item>Drying the meat… 🥩</item>
+        <item>Chopping onions… 😭</item>
+        <item>Dicing fruit… 🍎</item>
+        <item>Steaming veggies… 🥗</item>
+        <item>Applying condiments… 🧂</item>
+        <item>Spicing things up… 🌶️</item>
+        <item>Melting the butter… 🧈</item>
+        <item>Mashing the potatoes… 🥔</item>
+        <item>Fluffing some rice… 🍚</item>
+        <item>Mixing things up… 🥘</item>
+        <item>Shaking things up… 🍲</item>
+    </string-array>
 
     <!-- Recipe Screen -->
     <string name="no_recipe">No recipe loaded</string>
@@ -27,6 +47,8 @@
         <item quantity="other">Time: %1$d minutes</item>
     </plurals>
 
+    <string name="recipe_meal_types">Great for: %1$s</string>
+    <string name="recipe_cuisines">Cuisines: %1$s</string>
     <string name="made_button">I Made This!</string>
     <string name="show_recipe_button">Show Me Another Recipe!</string>
 
@@ -55,4 +77,33 @@
     <string name="equipment">Equipment</string>
     <string name="equipment_url">https://spoonacular.com/cdn/equipment_100x100/%1$s</string>
     <string name="attribution">Powered by spoonacular</string>
+
+    <!-- Search Screen -->
+    <string name="search_title">Search</string>
+
+    <string name="query_section">Query</string>
+    <string name="query_placeholder">food</string>
+
+    <string name="filter_section">Filters</string>
+    <string name="min_cals_placeholder">0</string>
+    <string name="max_cals_placeholder">2000</string>
+    <string name="calorie_label">≤ Calories ≤</string>
+    <string name="calorie_unit">kcal</string>
+    <string name="calorie_exceed_max_error">Error: Calories must be ≤ 2000</string>
+    <string name="calorie_invalid_range_error">Error: Max calories cannot exceed min calories</string>
+
+    <string name="vegetarian_label">Vegetarian</string>
+    <string name="vegan_label">Vegan</string>
+    <string name="gluten_free_label">Gluten-Free</string>
+    <string name="healthy_label">Healthy</string>
+    <string name="cheap_label">Cheap</string>
+    <string name="sustainable_label">Sustainable</string>
+
+    <string name="spice_label">Spice Level</string>
+    <string name="type_label">Meal Type</string>
+    <string name="culture_label">Cuisine</string>
+    <string name="submit_button">Apply</string>
+    <string name="no_results">No recipes found</string>
+
+    <string name="results_title">Results</string>
 </resources>
