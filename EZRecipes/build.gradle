@@ -2,7 +2,7 @@ buildscript {
     ext {
         // Check compatibility table before updating:
         // https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-        compose_ui_version = '1.5.4'
+        compose_ui_version = '1.6.2'
         kotlin_compiler_version = '1.5.4'
     }
 }
