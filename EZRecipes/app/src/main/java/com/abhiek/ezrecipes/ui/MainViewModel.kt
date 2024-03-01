@@ -5,10 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.abhiek.ezrecipes.data.RecipeRepository
-import com.abhiek.ezrecipes.data.RecipeResult
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.recipe.RecipeResult
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.models.RecipeError
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 // Connects the View to the Repository
@@ -16,6 +17,8 @@ class MainViewModel(
     private val recipeRepository: RecipeRepository
 ): ViewModel() {
     // Only expose a read-only copy of the state to the View
+    var job by mutableStateOf<Job?>(null)
+        private set
     var recipe by mutableStateOf<Recipe?>(null)
         private set
     var recipeError by mutableStateOf<RecipeError?>(null)
@@ -27,20 +30,20 @@ class MainViewModel(
     var showRecipeAlert by mutableStateOf(false)
 
     private fun updateRecipeProps(
-        response: RecipeResult,
+        result: RecipeResult<Recipe>,
         fromHome: Boolean
     ) {
         // Set all the ViewModel properties based on the API result
-        when (response) {
+        when (result) {
             is RecipeResult.Success -> {
-                recipe = response.recipe
+                recipe = result.response
                 recipeError = null
                 isRecipeLoaded = fromHome
                 showRecipeAlert = false
             }
             is RecipeResult.Error -> {
                 recipe = null
-                recipeError = response.recipeError
+                recipeError = result.recipeError
                 isRecipeLoaded = false
                 showRecipeAlert = true
             }
@@ -48,7 +51,7 @@ class MainViewModel(
     }
 
     fun getRandomRecipe(fromHome: Boolean = false) {
-        viewModelScope.launch {
+        job = viewModelScope.launch {
             isLoading = true
             val response = recipeRepository.getRandomRecipe()
             isLoading = false
@@ -58,7 +61,7 @@ class MainViewModel(
     }
 
     fun getRecipeById(id: Int, fromHome: Boolean = false) {
-        viewModelScope.launch {
+        job = viewModelScope.launch {
             isLoading = true
             val response = recipeRepository.getRecipeById(id)
             isLoading = false

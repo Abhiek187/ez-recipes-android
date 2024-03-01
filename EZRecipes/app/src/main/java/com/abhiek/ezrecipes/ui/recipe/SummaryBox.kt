@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
-import com.abhiek.ezrecipes.data.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -76,7 +76,7 @@ fun SummaryBox(summary: String) {
 fun SummaryBoxPreview() {
     EZRecipesTheme {
         Surface {
-            SummaryBox(MockRecipeService.recipe.summary)
+            SummaryBox(MockRecipeService.recipes[1].summary)
         }
     }
 }

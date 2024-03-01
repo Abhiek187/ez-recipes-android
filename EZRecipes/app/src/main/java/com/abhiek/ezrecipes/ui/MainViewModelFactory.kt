@@ -2,8 +2,8 @@ package com.abhiek.ezrecipes.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.abhiek.ezrecipes.data.RecipeRepository
-import com.abhiek.ezrecipes.data.RecipeService
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.recipe.RecipeService
 
 // Required to initialize a ViewModel with a non-empty constructor
 class MainViewModelFactory: ViewModelProvider.Factory {

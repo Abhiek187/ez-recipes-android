@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
-import com.abhiek.ezrecipes.data.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -65,9 +65,9 @@ fun HTMLTextPreview() {
     EZRecipesTheme {
         Surface {
             Column {
-                HTMLText(MockRecipeService.recipe.summary)
+                HTMLText(MockRecipeService.recipes[1].summary)
                 HTMLText(
-                    html = MockRecipeService.recipe.summary,
+                    html = MockRecipeService.recipes[1].summary,
                     color = Color.Red.toArgb(),
                     fontSize = 30f
                 )

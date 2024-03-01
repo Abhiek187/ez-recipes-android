@@ -1,5 +1,8 @@
 package com.abhiek.ezrecipes.data
 
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.recipe.RecipeResult
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -24,7 +27,7 @@ internal class RecipeRepositoryTest {
 
         // Then it should return a successful response
         assertTrue(response is RecipeResult.Success)
-        assertEquals((response as RecipeResult.Success).recipe, mockService.recipe)
+        assertEquals((response as RecipeResult.Success).response, mockService.recipes[1])
     }
 
     @Test
@@ -48,7 +51,7 @@ internal class RecipeRepositoryTest {
 
         // Then it should return a successful response
         assertTrue(response is RecipeResult.Success)
-        assertEquals((response as RecipeResult.Success).recipe, mockService.recipe)
+        assertEquals((response as RecipeResult.Success).response, mockService.recipes[1])
     }
 
     @Test

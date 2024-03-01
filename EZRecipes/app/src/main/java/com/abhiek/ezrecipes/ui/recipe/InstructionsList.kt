@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.abhiek.ezrecipes.R
-import com.abhiek.ezrecipes.data.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.models.Instruction
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -80,7 +80,7 @@ fun InstructionsList(instructions: List<Instruction>) {
 fun InstructionsListPreview() {
     EZRecipesTheme {
         Surface {
-            InstructionsList(MockRecipeService.recipe.instructions)
+            InstructionsList(MockRecipeService.recipes[1].instructions)
         }
     }
 }

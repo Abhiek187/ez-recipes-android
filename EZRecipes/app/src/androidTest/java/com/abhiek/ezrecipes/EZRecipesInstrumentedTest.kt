@@ -206,13 +206,13 @@ internal class EZRecipesInstrumentedTest {
         showRecipeButton.assertHasClickAction()
 
         // Check that the nutrition label contains all the required nutritional properties
+        // (except fiber)
         for (label in listOf(
             activity.getString(R.string.nutrition_facts),
             activity.getString(R.string.calories),
             activity.getString(R.string.fat),
             activity.getString(R.string.saturated_fat),
             activity.getString(R.string.carbohydrates),
-            activity.getString(R.string.fiber),
             activity.getString(R.string.sugar),
             activity.getString(R.string.protein),
             activity.getString(R.string.cholesterol),

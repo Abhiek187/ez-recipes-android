@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.abhiek.ezrecipes.R
-import com.abhiek.ezrecipes.data.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -196,7 +196,7 @@ private fun RecipeHeaderPreview(
     EZRecipesTheme {
         Surface {
             RecipeHeader(
-                recipe = MockRecipeService.recipe,
+                recipe = MockRecipeService.recipes[1],
                 isLoading = isLoading,
                 onClickFindRecipe = {}
             )

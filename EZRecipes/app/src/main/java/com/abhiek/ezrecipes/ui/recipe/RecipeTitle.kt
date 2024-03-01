@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
-import com.abhiek.ezrecipes.data.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -64,7 +64,7 @@ fun RecipeTitle(recipe: Recipe) {
 fun RecipeTitlePreview() {
     EZRecipesTheme {
         Surface {
-            RecipeTitle(MockRecipeService.recipe)
+            RecipeTitle(MockRecipeService.recipes[1])
         }
     }
 }

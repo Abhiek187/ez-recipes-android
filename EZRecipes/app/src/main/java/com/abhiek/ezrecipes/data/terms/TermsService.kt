@@ -1,6 +1,6 @@
-package com.abhiek.ezrecipes.data
+package com.abhiek.ezrecipes.data.terms
 
-import com.abhiek.ezrecipes.data.models.Recipe
+import com.abhiek.ezrecipes.data.models.Term
 import com.abhiek.ezrecipes.utils.Constants
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -8,26 +8,19 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
-// The DataSource for the recipes API
-interface RecipeService {
-    @GET(Constants.RANDOM_RECIPE_PATH)
-    suspend fun getRandomRecipe(): Response<Recipe>
-
-    @GET("{id}")
-    suspend fun getRecipeById(
-        @Path("id") id: Int
-    ): Response<Recipe>
+interface TermsService {
+    @GET("")
+    suspend fun getTerms(): Response<List<Term>>
 
     companion object {
-        private lateinit var recipeService: RecipeService
+        private lateinit var termsService: TermsService
 
         // Initialize the Retrofit service when first referencing the singleton
-        val instance: RecipeService
+        val instance: TermsService
             get() {
-                if (::recipeService.isInitialized) return recipeService
+                if (Companion::termsService.isInitialized) return termsService
 
                 // Log request and response lines and their respective headers and bodies
                 val loggingInterceptor = HttpLoggingInterceptor().setLevel(
@@ -42,13 +35,13 @@ interface RecipeService {
 
                 // Convert responses to GSON (Google JSON)
                 val retrofit = Retrofit.Builder()
-                    .baseUrl(Constants.RECIPE_BASE_URL)
+                    .baseUrl(Constants.SERVER_BASE_URL + Constants.TERMS_PATH)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(httpClient)
                     .build()
 
-                recipeService = retrofit.create(RecipeService::class.java)
-                return recipeService
+                termsService = retrofit.create(TermsService::class.java)
+                return termsService
             }
     }
 }

@@ -28,7 +28,7 @@ Introducing EZ Recipes, an app that lets chefs find low-effort recipes that can 
 - Android app created using Jetpack Compose and MVVM architecture
 - Material Design UI
 - Responsive and accessible mobile design
-- REST APIs to a custom [server](https://github.com/Abhiek187/ez-recipes-server) using Retrofit, which fetches recipe information from [spoonacular](https://spoonacular.com/food-api)
+- REST APIs to a custom [server](https://github.com/Abhiek187/ez-recipes-server) using Retrofit, which fetches recipe information from [spoonacular](https://spoonacular.com/food-api) and MongoDB
 - App Links to open recipes from the web app to the mobile app
 - Automated testing and deployment using CI/CD pipelines in GitHub Actions and Fastlane
 - Mermaid to write diagrams as code
@@ -122,7 +122,7 @@ Android Studio and Java are required to run Android apps locally.
 3. Build the project using Gradle.
 4. Run the **app** configuration.
 
-The recipes will be fetched from the EZ Recipes server hosted on https://ez-recipes-server.onrender.com/api/recipes. To connect to the server locally, follow the directions in the [EZ Recipes server repo](https://github.com/Abhiek187/ez-recipes-server#installing-locally) and change `RECIPE_BASE_URL` under `Constants.kt` to `http://10.0.2.2:5000/api/recipes/`. (`10.0.2.2` points to `localhost` on the development machine. Since the Android emulator is a virtual machine, `127.0.0.1` points to `localhost` on the emulator instead of the development machine.)
+The recipes will be fetched from the EZ Recipes server hosted on https://ez-recipes-server.onrender.com. To connect to the server locally, follow the directions in the [EZ Recipes server repo](https://github.com/Abhiek187/ez-recipes-server#installing-locally) and change `SERVER_BASE_URL` under `Constants.kt` to `http://10.0.2.2:5000`. (`10.0.2.2` points to `localhost` on the development machine. Since the Android emulator is a virtual machine, `127.0.0.1` points to `localhost` on the emulator instead of the development machine.)
 
 To allow `http://` connections, add `android:usesCleartextTraffic="true"` to the `<application>` tag in `AndroidManifest.xml`. Make sure not to keep this enabled since it will make the Android app insecure.
 
