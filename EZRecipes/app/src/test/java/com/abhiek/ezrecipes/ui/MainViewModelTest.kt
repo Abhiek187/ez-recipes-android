@@ -1,7 +1,7 @@
 package com.abhiek.ezrecipes.ui
 
-import com.abhiek.ezrecipes.data.MockRecipeService
-import com.abhiek.ezrecipes.data.RecipeRepository
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -28,7 +28,7 @@ internal class MainViewModelTest {
         viewModel.getRandomRecipe(fromHome)
 
         // Then the recipe property should match the mock recipe
-        assertEquals(viewModel.recipe, mockService.recipe)
+        assertEquals(viewModel.recipe, mockService.recipes[1])
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.isLoading)
         assertEquals(viewModel.isRecipeLoaded, fromHome)
@@ -59,7 +59,7 @@ internal class MainViewModelTest {
         viewModel.getRecipeById(1)
 
         // Then the recipe property should match the mock recipe
-        assertEquals(viewModel.recipe, mockService.recipe)
+        assertEquals(viewModel.recipe, mockService.recipes[1])
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.isLoading)
         assertFalse(viewModel.isRecipeLoaded) // fromHome is false by default

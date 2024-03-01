@@ -6,8 +6,9 @@ import com.abhiek.ezrecipes.data.models.*
 
 object Constants {
     // In Retrofit, base URLs must end with a /
-    const val RECIPE_BASE_URL = "https://ez-recipes-server.onrender.com/api/recipes/"
-    const val RANDOM_RECIPE_PATH = "random"
+    const val SERVER_BASE_URL = "https://ez-recipes-server.onrender.com"
+    const val RECIPE_PATH = "/api/recipes/"
+    const val TERMS_PATH = "/api/terms/"
 
     const val RECIPE_WEB_ORIGIN = "https://ez-recipes-web.onrender.com"
 

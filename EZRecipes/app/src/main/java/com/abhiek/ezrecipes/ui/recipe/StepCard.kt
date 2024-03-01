@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.abhiek.ezrecipes.R
-import com.abhiek.ezrecipes.data.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.models.Step
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -154,7 +154,7 @@ fun StepCard(step: Step) {
 fun StepCardPreview() {
     EZRecipesTheme {
         Surface {
-            StepCard(MockRecipeService.recipe.instructions[0].steps[3])
+            StepCard(MockRecipeService.recipes[1].instructions[0].steps[3])
         }
     }
 }
