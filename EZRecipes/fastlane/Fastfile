@@ -159,12 +159,12 @@ platform :android do
     # sed's -i flag on Mac expects an extension instead of a pattern
     sed_opts = FastlaneCore::Helper.mac? ? "-i '' -e" : "-i"
 
-    # sed -i 's/versionName [0-9a-zA-Z -_]*/versionName "'"$new_version_name"'"/' ../app/build.gradle
-    sh "sed #{sed_opts} 's/versionName [0-9a-zA-Z -_]*/versionName \"\'\"#{new_version_name}\"\'\"/' ../app/build.gradle"
+    # sed -i 's/versionName = [0-9a-zA-Z -_]*/versionName = "'"$new_version_name"'"/' ../app/build.gradle.kts
+    sh "sed #{sed_opts} 's/versionName = [0-9a-zA-Z -_]*/versionName = \"\'\"#{new_version_name}\"\'\"/' ../app/build.gradle.kts"
 
     # Auto-increment the version code
-    # sed -i 's/versionCode [0-9a-zA-Z -_]*/versionCode '$new_version_code'/' ../app/build.gradle
-    sh "sed #{sed_opts} 's/versionCode [0-9a-zA-Z -_]*/versionCode '#{new_version_code}'/' ../app/build.gradle"
+    # sed -i 's/versionCode = [0-9a-zA-Z -_]*/versionCode = '$new_version_code'/' ../app/build.gradle.kts
+    sh "sed #{sed_opts} 's/versionCode = [0-9a-zA-Z -_]*/versionCode = '#{new_version_code}'/' ../app/build.gradle.kts"
 
     # Clean build cache: gradlew clean -p .
     gradle(task: "clean")
