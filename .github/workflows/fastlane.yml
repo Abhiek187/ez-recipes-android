@@ -12,6 +12,9 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
 
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/EZRecipes/Gemfile
+
     defaults:
       run:
         working-directory: "./EZRecipes"
@@ -52,6 +55,9 @@ jobs:
       fail-fast: false
       matrix:
         api-level: [ 29, 31, 33 ]
+
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/EZRecipes/Gemfile
 
     defaults:
       run:
