@@ -9,6 +9,7 @@ object Constants {
     const val SERVER_BASE_URL = "https://ez-recipes-server.onrender.com"
     const val RECIPE_PATH = "/api/recipes/"
     const val TERMS_PATH = "/api/terms/"
+    const val TIMEOUT_SECONDS = 60L
 
     const val RECIPE_WEB_ORIGIN = "https://ez-recipes-web.onrender.com"
 
