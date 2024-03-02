@@ -39,6 +39,7 @@ jobs:
       - name: Install Ruby & Fastlane
         uses: ruby/setup-ruby@v1
         with:
+          ruby-version: '3.3'
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
       - name: Run unit tests
@@ -79,6 +80,7 @@ jobs:
 #      - name: Install Ruby & Fastlane
 #        uses: ruby/setup-ruby@v1
 #        with:
+#          ruby-version: '3.3'
 #          bundler-cache: true
 #
 #      - name: Run instrumented tests
