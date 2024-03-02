@@ -43,7 +43,7 @@ flowchart LR
 A(Checkout repository) --> B(Enable Kernel-based Virtual Machine)
 B --> C(Install Java 17)
 C --> D(Make gradlew executable:\nchmod u+x gradlew)
-D --> E(Install Fastlane)
+D --> E(Install Ruby & Fastlane)
 E --> F(Run unit tests:\ngradlew test -p .)
 ```
 
