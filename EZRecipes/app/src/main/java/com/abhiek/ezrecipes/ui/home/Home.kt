@@ -4,9 +4,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -20,12 +25,27 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun Home(
     mainViewModel: MainViewModel,
     onNavigateToRecipe: () -> Unit
 ) {
+    val context = LocalContext.current
+    val defaultLoadingMessage = ""
+    var loadingMessage by remember { mutableStateOf(defaultLoadingMessage) }
+
+    LaunchedEffect(mainViewModel.isLoading) {
+        // Don't show any messages initially if the recipe loads quickly
+        loadingMessage = defaultLoadingMessage
+
+        while (mainViewModel.isLoading) {
+            delay(3000) // 3 seconds
+            loadingMessage = context.resources.getStringArray(R.array.loading_messages).random()
+        }
+    }
+
     // Go to the recipe screen after fetching it from the server
     // Don't call this when navigating back
     if (mainViewModel.isRecipeLoaded) {
@@ -58,6 +78,11 @@ fun Home(
         // Show a progress bar while the recipe is loading
         // Make it hidden so the button stays in place
         CircularProgressIndicator(
+            modifier = Modifier
+                .alpha(if (mainViewModel.isLoading) 1f else 0f)
+        )
+        Text(
+            text = loadingMessage,
             modifier = Modifier
                 .alpha(if (mainViewModel.isLoading) 1f else 0f)
         )
