@@ -3,7 +3,7 @@ buildscript {
         // Check compatibility table before updating:
         // https://developer.android.com/jetpack/androidx/releases/compose-kotlin
         compose_ui_version = '1.6.2'
-        kotlin_compiler_version = '1.5.4'
+        kotlin_compiler_version = '1.5.10'
     }
 }
 
@@ -11,5 +11,5 @@ buildscript {
 plugins {
     id 'com.android.application' version '8.3.0' apply false
     id 'com.android.library' version '8.3.0' apply false
-    id 'org.jetbrains.kotlin.android' version '1.9.20' apply false
+    id 'org.jetbrains.kotlin.android' version '1.9.22' apply false
 }

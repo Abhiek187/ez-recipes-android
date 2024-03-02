@@ -40,10 +40,11 @@ Introducing EZ Recipes, an app that lets chefs find low-effort recipes that can 
 ```mermaid
 flowchart LR
 
-A(Checkout repository) --> B(Install Java 17)
-B --> C(Make gradlew executable:\nchmod u+x gradlew)
-C --> D(Install Fastlane)
-D --> E(Run unit tests:\ngradlew test -p .)
+A(Checkout repository) --> B(Enable Kernel-based Virtual Machine)
+B --> C(Install Java 17)
+C --> D(Make gradlew executable:\nchmod u+x gradlew)
+D --> E(Install Ruby & Fastlane)
+E --> F(Run unit tests:\ngradlew test -p .)
 ```
 
 ### Instrumented Tests
@@ -51,23 +52,24 @@ D --> E(Run unit tests:\ngradlew test -p .)
 ```mermaid
 flowchart LR
 
-A(Checkout repository) --> B(Install Java 17)
-B --> C(Make gradlew executable:\nchmod u+x gradlew)
-C -->|API 29, 31, 33| D
-D --> E(Upload build reports)
+A(Checkout repository) --> B(Enable Kernel-based Virtual Machine)
+B --> C(Install Java 17)
+C --> D(Make gradlew executable:\nchmod u+x gradlew)
+D -->|API 29, 31, 33| E
+E --> F(Upload build reports)
 
-subgraph D [Run instrumented tests]
+subgraph E [Run instrumented tests]
 direction TB
-F(Accept licenses) --> G(Install build tools, platform tools, and platforms)
-G --> H(Install emulator)
-H --> I(Install system images)
-I --> J(Create test AVD)
-J --> K(Configure AVD with 2 cores)
-K --> L(Boot up the emulator)
-L --> M(Press the menu button)
-M --> N(Disable animations)
-N --> O(Run instrumented tests:\ngradlew connectedAndroidTest)
-O --> P(Kill emulator)
+G(Accept licenses) --> H(Install build tools, platform tools, and platforms)
+H --> I(Install emulator)
+I --> J(Install system images)
+J --> K(Create test AVD)
+K --> L(Configure AVD with 2 cores)
+L --> M(Boot up the emulator)
+M --> N(Press the menu button)
+N --> O(Disable animations)
+O --> P(Run instrumented tests:\ngradlew connectedAndroidTest)
+P --> Q(Kill emulator)
 end
 ```
 
