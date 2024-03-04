@@ -1,8 +1,11 @@
 package com.abhiek.ezrecipes.data.recipe
 
-import com.abhiek.ezrecipes.data.models.Recipe
-import com.abhiek.ezrecipes.data.models.RecipeFilter
+import com.abhiek.ezrecipes.data.adapters.CuisineTypeAdapter
+import com.abhiek.ezrecipes.data.adapters.MealTypeAdapter
+import com.abhiek.ezrecipes.data.adapters.SpiceLevelTypeAdapter
+import com.abhiek.ezrecipes.data.models.*
 import com.abhiek.ezrecipes.utils.Constants
+import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
@@ -48,9 +51,14 @@ interface RecipeService {
                     .build()
 
                 // Convert responses to GSON (Google JSON)
+                val gsonBuilder = GsonBuilder()
+                    .registerTypeAdapter(Cuisine::class.java, CuisineTypeAdapter())
+                    .registerTypeAdapter(MealType::class.java, MealTypeAdapter())
+                    .registerTypeAdapter(SpiceLevel::class.java, SpiceLevelTypeAdapter())
+                    .create()
                 val retrofit = Retrofit.Builder()
                     .baseUrl(Constants.SERVER_BASE_URL + Constants.RECIPE_PATH)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
                     .client(httpClient)
                     .build()
 

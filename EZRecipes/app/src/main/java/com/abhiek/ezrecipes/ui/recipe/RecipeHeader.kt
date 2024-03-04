@@ -34,6 +34,23 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.Blue300
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
+private fun boldAnnotatedString(
+    text: String,
+    startIndex: Int = 0,
+    endIndex: Int
+) = buildAnnotatedString {
+    append(text)
+
+    // Bold only the portion: [startIndex, endIndex)
+    addStyle(
+        style = SpanStyle(
+            fontWeight = FontWeight.Bold
+        ),
+        start = startIndex,
+        end = endIndex
+    )
+}
+
 @Composable
 fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Unit) {
     val context = LocalContext.current
@@ -66,25 +83,11 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
         )
     }
 
-    val timeAnnotatedString = buildAnnotatedString {
-        val str = context.resources.getQuantityString(R.plurals.recipe_time, recipe.time, recipe.time)
-        val startIndex = 0
-        val endIndex = 5 // "Time:".length = 5
-        append(str)
-
-        // Bold only the time portion of the string
-        addStyle(
-            style = SpanStyle(
-                fontWeight = FontWeight.Bold
-            ),
-            start = startIndex,
-            end = endIndex
-        )
-    }
-
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        // Allow content to take up the full width if needed
+        modifier = Modifier.width(IntrinsicSize.Max)
     ) {
         // Recipe image and caption
         AsyncImage(
@@ -113,15 +116,60 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
             }
         }
 
+        // Recipe info
+        RecipePills(
+            spiceLevel = recipe.spiceLevel,
+            isVegetarian = recipe.isVegetarian,
+            isVegan = recipe.isVegan,
+            isGlutenFree = recipe.isGlutenFree,
+            isHealthy = recipe.isHealthy,
+            isCheap = recipe.isCheap,
+            isSustainable = recipe.isSustainable
+        )
+
         // Recipe time and buttons
         Text(
-            text = timeAnnotatedString,
+            text = boldAnnotatedString(
+                // 2nd arg = count, 3rd arg = formatter args
+                text = context.resources.getQuantityString(R.plurals.recipe_time, recipe.time, recipe.time),
+                endIndex = 5 // "Time:".length = 5
+            ),
             style = MaterialTheme.typography.h6,
             modifier = Modifier.padding(vertical = 8.dp)
         )
+
+        if (recipe.types.isNotEmpty()) {
+            Text(
+                text = boldAnnotatedString(
+                    text = stringResource(
+                        R.string.recipe_meal_types,
+                        recipe.types.joinToString(", ")
+                    ),
+                    endIndex = 10 // "Great for:".length = 10
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
+        }
+        if (recipe.culture.isNotEmpty()) {
+            Text(
+                text = boldAnnotatedString(
+                    text = stringResource(
+                        R.string.recipe_cuisines,
+                        recipe.culture.joinToString(", ")
+                    ),
+                    endIndex = 9 // "Cuisines:".length = 9
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
+        }
         
         Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(top = 8.dp)
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -196,7 +244,7 @@ private fun RecipeHeaderPreview(
     EZRecipesTheme {
         Surface {
             RecipeHeader(
-                recipe = MockRecipeService.recipes[1],
+                recipe = MockRecipeService.recipes[2],
                 isLoading = isLoading,
                 onClickFindRecipe = {}
             )

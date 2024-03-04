@@ -1,5 +1,7 @@
 package com.abhiek.ezrecipes.data.models
 
+import com.abhiek.ezrecipes.utils.capitalizeWords
+
 enum class Cuisine {
     AFRICAN,
     ASIAN,
@@ -30,5 +32,7 @@ enum class Cuisine {
     VIETNAMESE,
     ENGLISH,
     SCOTTISH,
-    UNKNOWN
+    UNKNOWN;
+
+    override fun toString() = name.replace("_", " ").lowercase().capitalizeWords()
 }
