@@ -18,7 +18,7 @@ class CuisineTypeAdapter: TypeAdapter<Cuisine>() {
         return try {
             Cuisine.valueOf(stringValue ?: "")
         } catch (error: IllegalArgumentException) {
-            Log.w(CuisineTypeAdapter::class.simpleName, "Encountered an unknown cuisine: $stringValue")
+            Log.w("CuisineTypeAdapter", "Encountered an unknown cuisine: $stringValue")
             Cuisine.UNKNOWN
         }
     }

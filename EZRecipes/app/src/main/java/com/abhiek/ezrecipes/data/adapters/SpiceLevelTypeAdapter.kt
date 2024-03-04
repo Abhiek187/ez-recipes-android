@@ -21,7 +21,7 @@ class SpiceLevelTypeAdapter: TypeAdapter<SpiceLevel>() {
             SpiceLevel.valueOf(stringValue ?: "")
         } catch (error: IllegalArgumentException) {
             // Default to unknown if spoonacular returns a value that's undocumented
-            Log.w(SpiceLevelTypeAdapter::class.simpleName, "Encountered an unknown spice level: $stringValue")
+            Log.w("SpiceLevelTypeAdapter", "Encountered an unknown spice level: $stringValue")
             SpiceLevel.UNKNOWN
         }
     }
