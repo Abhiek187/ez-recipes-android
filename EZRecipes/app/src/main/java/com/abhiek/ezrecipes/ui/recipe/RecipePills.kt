@@ -37,9 +37,7 @@ fun RecipePills(
     isSustainable: Boolean
 ) {
     FlowRow(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
+        modifier = Modifier.padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

@@ -85,7 +85,9 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        // Allow content to take up the full width if needed
+        modifier = Modifier.width(IntrinsicSize.Max)
     ) {
         // Recipe image and caption
         AsyncImage(
