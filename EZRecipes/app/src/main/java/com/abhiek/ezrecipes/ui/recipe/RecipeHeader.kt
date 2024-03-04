@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -53,6 +53,7 @@ private fun boldAnnotatedString(
 
 @Composable
 fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Unit) {
+    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val annotationTag = "URL"
 
@@ -127,7 +128,8 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
         // Recipe time and buttons
         Text(
             text = boldAnnotatedString(
-                text = pluralStringResource(id = R.plurals.recipe_time, count = recipe.time),
+                // 2nd arg = count, 3rd arg = formatter args
+                text = context.resources.getQuantityString(R.plurals.recipe_time, recipe.time, recipe.time),
                 endIndex = 5 // "Time:".length = 5
             ),
             style = MaterialTheme.typography.h6,
