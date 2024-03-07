@@ -11,6 +11,7 @@ import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.MainViewModelFactory
 import com.abhiek.ezrecipes.ui.home.Home
 import com.abhiek.ezrecipes.ui.recipe.Recipe
+import com.abhiek.ezrecipes.ui.search.Search
 import com.abhiek.ezrecipes.utils.Constants
 
 @Composable
@@ -43,6 +44,9 @@ fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidt
             )
         ) { backStackEntry ->
             Recipe(viewModel, isWideScreen, backStackEntry.arguments?.getString("id"))
+        }
+        composable(Constants.Routes.SEARCH) {
+            Search()
         }
     }
 }
