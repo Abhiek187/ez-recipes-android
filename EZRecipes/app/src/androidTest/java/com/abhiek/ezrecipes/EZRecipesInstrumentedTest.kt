@@ -19,7 +19,7 @@ import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.abhiek.ezrecipes.ui.MainActivity
 import com.abhiek.ezrecipes.ui.MainLayout
-import com.abhiek.ezrecipes.ui.navbar.DrawerItem
+import com.abhiek.ezrecipes.ui.navbar.Tab
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -117,7 +117,7 @@ internal class EZRecipesInstrumentedTest {
             .assertExists()
         screenshot("home-screen-2")
         val homeDrawerButton = composeTestRule
-            .onNodeWithText(DrawerItem.Home.title)
+            .onNodeWithText(activity.getString(Tab.Home.resourceId))
         homeDrawerButton.assertHasClickAction()
 
         // Clicking the home navigation item should show the same home page
@@ -272,7 +272,7 @@ internal class EZRecipesInstrumentedTest {
             .performClick()
 
         composeTestRule
-            .onNodeWithText(DrawerItem.Home.title)
+            .onNodeWithText(activity.getString(Tab.Home.resourceId))
             .performClick()
         findRecipeButton.assertExists()
     }

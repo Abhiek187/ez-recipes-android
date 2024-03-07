@@ -63,7 +63,7 @@ fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState, navController: N
         },
         // Add a favorite and share button on the right side if we're on the recipe screen
         actions = {
-            if (currentRoute == DrawerItem.Recipe.route) {
+            if (currentRoute == Constants.Routes.RECIPE) {
                 IconButton(onClick = { isFavorite = !isFavorite }) {
                     Icon(
                         if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,

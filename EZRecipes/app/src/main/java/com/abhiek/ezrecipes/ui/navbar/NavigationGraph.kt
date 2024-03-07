@@ -24,12 +24,12 @@ fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidt
     // NavHostController is a subclass of NavController
     NavHost(
         navController = navController,
-        startDestination = DrawerItem.Home.route
+        startDestination = Constants.Routes.HOME
     ) {
-        composable(DrawerItem.Home.route) {
+        composable(Constants.Routes.HOME) {
             Home(viewModel) {
                 navController.navigate(
-                    DrawerItem.Recipe.route.replace("{id}", viewModel.recipe?.id.toString())
+                    Constants.Routes.RECIPE.replace("{id}", viewModel.recipe?.id.toString())
                 ) {
                     // Only have one copy of the recipe destination in the back stack
                     launchSingleTop = true
@@ -37,7 +37,7 @@ fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidt
             }
         }
         composable(
-            DrawerItem.Recipe.route,
+            Constants.Routes.RECIPE,
             deepLinks = listOf(
                 navDeepLink { uriPattern = "${Constants.RECIPE_WEB_ORIGIN}/recipe/{id}" }
             )

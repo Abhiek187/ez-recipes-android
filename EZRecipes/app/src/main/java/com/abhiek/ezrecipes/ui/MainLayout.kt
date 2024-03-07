@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.compose.rememberNavController
+import com.abhiek.ezrecipes.ui.navbar.BottomBar
 import com.abhiek.ezrecipes.ui.navbar.NavigationDrawer
 import com.abhiek.ezrecipes.ui.navbar.NavigationGraph
 import com.abhiek.ezrecipes.ui.navbar.TopBar
@@ -45,6 +46,9 @@ fun MainLayout(
             scaffoldState = scaffoldState,
             topBar = {
                 TopBar(scope, scaffoldState, navController)
+            },
+            bottomBar = {
+                BottomBar(navController)
             },
             drawerContent = {
                 NavigationDrawer(scope, scaffoldState, navController, drawerWidth)

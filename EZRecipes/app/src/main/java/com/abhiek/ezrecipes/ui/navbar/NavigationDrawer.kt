@@ -35,9 +35,7 @@ fun NavigationDrawer(
     /* Using sealedSubclasses requires reflection, which will make the app slower,
      * so list each drawer item manually
      */
-    val drawerItems = listOf(
-        DrawerItem.Home
-    )
+    val drawerItems = listOf(Tab.Home, Tab.Search)
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -60,7 +58,7 @@ fun NavigationDrawer(
                 .fillMaxWidth()
                 .height(8.dp)
         )
-        // Loop through all the subclasses of the sealed DrawerItem class
+        // Loop through all the subclasses of the sealed Tab class
         drawerItems.forEach { item ->
             DrawerListItem(
                 item = item,
