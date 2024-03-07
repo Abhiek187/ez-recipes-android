@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -25,7 +26,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState, navController: NavController) {
+fun TopBar(
+    scope: CoroutineScope,
+    scaffoldState: ScaffoldState,
+    navController: NavController,
+    widthSizeClass: WindowWidthSizeClass
+) {
     var isFavorite by remember { mutableStateOf(false) }
     // Get a context variable like in activities
     val context = LocalContext.current
@@ -50,15 +56,17 @@ fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState, navController: N
             Text(text = stringResource(R.string.app_name))
         },
         navigationIcon = {
-            // Show a hamburger menu in the top left
-            IconButton(
-                onClick = {
-                    scope.launch {
-                        scaffoldState.drawerState.open()
+            if (widthSizeClass == WindowWidthSizeClass.Expanded) {
+                // Show a hamburger menu in the top left
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            scaffoldState.drawerState.open()
+                        }
                     }
+                ) {
+                    Icon(Icons.Filled.Menu, stringResource(R.string.hamburger_menu_alt))
                 }
-            ) {
-                Icon(Icons.Filled.Menu, stringResource(R.string.hamburger_menu_alt))
             }
         },
         // Add a favorite and share button on the right side if we're on the recipe screen
@@ -94,8 +102,9 @@ fun TopBarPreview() {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val navController = rememberNavController()
+    val windowWidthSizeClass = WindowWidthSizeClass.Expanded
 
     EZRecipesTheme {
-        TopBar(scope, scaffoldState, navController)
+        TopBar(scope, scaffoldState, navController, windowWidthSizeClass)
     }
 }

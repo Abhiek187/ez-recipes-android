@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -15,10 +16,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.compose.rememberNavController
-import com.abhiek.ezrecipes.ui.navbar.BottomBar
-import com.abhiek.ezrecipes.ui.navbar.NavigationDrawer
-import com.abhiek.ezrecipes.ui.navbar.NavigationGraph
-import com.abhiek.ezrecipes.ui.navbar.TopBar
+import com.abhiek.ezrecipes.ui.navbar.*
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -45,13 +43,19 @@ fun MainLayout(
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
-                TopBar(scope, scaffoldState, navController)
+                TopBar(scope, scaffoldState, navController, widthSizeClass)
             },
+            // Show the navigation bar on small screens
             bottomBar = {
-                BottomBar(navController)
+                if (widthSizeClass == WindowWidthSizeClass.Compact) {
+                    BottomBar(navController)
+                }
             },
+            // Show the navigation drawer on large screens
             drawerContent = {
-                NavigationDrawer(scope, scaffoldState, navController, drawerWidth)
+                if (widthSizeClass == WindowWidthSizeClass.Expanded) {
+                    NavigationDrawer(scope, scaffoldState, navController, drawerWidth)
+                }
             },
             // Limit the width of the navigation drawer so there isn't much whitespace
             drawerShape = object : Shape {
@@ -70,7 +74,14 @@ fun MainLayout(
                     modifier = Modifier.padding(padding),
                     color = MaterialTheme.colors.background
                 ) {
-                    NavigationGraph(navController, widthSizeClass)
+                    Row {
+                        // Show the navigation rail on medium screens
+                        if (widthSizeClass == WindowWidthSizeClass.Medium) {
+                            NavRail(navController)
+                        }
+
+                        NavigationGraph(navController, widthSizeClass)
+                    }
                 }
             }
         )
