@@ -40,7 +40,9 @@ fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidt
         composable(
             Constants.Routes.RECIPE,
             deepLinks = listOf(
-                navDeepLink { uriPattern = "${Constants.RECIPE_WEB_ORIGIN}/recipe/{id}" }
+                navDeepLink {
+                    uriPattern = "${Constants.RECIPE_WEB_ORIGIN}/${Constants.Routes.RECIPE}"
+                }
             )
         ) { backStackEntry ->
             Recipe(viewModel, isWideScreen, backStackEntry.arguments?.getString("id"))

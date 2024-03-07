@@ -19,13 +19,15 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 fun BottomBar(navController: NavController) {
     val bottomNavBarItems = listOf(Tab.Home, Tab.Search)
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
     BottomNavigation {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
         bottomNavBarItems.forEach { item ->
             BottomNavigationItem(
                 icon = { Icon(item.icon, contentDescription = null) },
                 label = { Text(stringResource(item.resourceId)) },
+                // Keep the tab selected as long as it matches one of the parent routes
                 selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
                 onClick = {
                     navController.navigate(item.route) {
