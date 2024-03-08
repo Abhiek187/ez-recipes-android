@@ -15,7 +15,6 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.abhiek.ezrecipes.ui.MainActivity
 import com.abhiek.ezrecipes.ui.MainLayout
@@ -84,47 +83,6 @@ internal class EZRecipesInstrumentedTest {
         }
     }
 
-    @SmallTest
-    @Test
-    fun homeScreenNavigation() {
-        // Check that the hamburger menu and back button on the home screen work as expected
-        // Check that the find recipe button is present
-        val findRecipeButton = composeTestRule
-            .onNodeWithText(activity.getString(R.string.find_recipe_button))
-        findRecipeButton.assertExists()
-
-        // The title and menu icons should be present on the top bar, but not the action buttons
-        composeTestRule
-            .onNodeWithText(activity.getString(R.string.app_name))
-            .assertExists()
-        val hamburgerMenu = composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
-        hamburgerMenu.assertHasClickAction()
-
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.favorite_alt))
-            .assertDoesNotExist()
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.share_alt))
-            .assertDoesNotExist()
-        // Take screenshots along the way
-        screenshot("home-screen-1")
-
-        // The navigation drawer should show the app logo and home button
-        hamburgerMenu.performClick()
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.app_logo_alt))
-            .assertExists()
-        screenshot("home-screen-2")
-        val homeDrawerButton = composeTestRule
-            .onNodeWithText(activity.getString(Tab.Home.resourceId))
-        homeDrawerButton.assertHasClickAction()
-
-        // Clicking the home navigation item should show the same home page
-        homeDrawerButton.performClick()
-        findRecipeButton.assertExists()
-    }
-
     @LargeTest
     @Test
     fun findMeARecipe() {
@@ -134,6 +92,21 @@ internal class EZRecipesInstrumentedTest {
         val findRecipeButton = composeTestRule
             .onNodeWithText(activity.getString(R.string.find_recipe_button))
         findRecipeButton.assertIsEnabled()
+
+        // The title and menu icons should be present on the top bar, but not the action buttons
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.app_name))
+            .assertExists()
+        composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.favorite_alt))
+            .assertDoesNotExist()
+        composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.share_alt))
+            .assertDoesNotExist()
+        // Take screenshots along the way
+        var shotNum = 1
+        screenshot("home-screen-$shotNum")
+        shotNum += 1
 
         // After clicking the find recipe button, it should be disabled
         findRecipeButton.performClick()
@@ -186,7 +159,7 @@ internal class EZRecipesInstrumentedTest {
         shareButton.performClick()
         intended(shareIntent)
 
-        var shotNum = 1
+        shotNum = 1
         screenshot("recipe-screen-$shotNum")
         shotNum += 1
 
@@ -266,14 +239,10 @@ internal class EZRecipesInstrumentedTest {
         showRecipeButton.assertIsNotEnabled()
         composeTestRule.waitForIdle()
 
-        // Check that clicking the home button in the hamburger menu goes to the home screen
-        composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
-            .performClick()
-
-        composeTestRule
-            .onNodeWithText(activity.getString(Tab.Home.resourceId))
-            .performClick()
+        // Check that pressing the back button goes to the home screen
+        composeTestRule.activityRule.scenario.onActivity { activity ->
+            activity.onBackPressedDispatcher.onBackPressed()
+        }
         findRecipeButton.assertExists()
     }
 }
