@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
@@ -33,6 +34,13 @@ fun MainLayout(
     // The navigation controller shouldn't be recreated in other composables
     val navController = rememberNavController()
     val drawerWidth = 300
+
+    LaunchedEffect(widthSizeClass) {
+        // Close the navigation drawer if the screen is too small
+        if (widthSizeClass != WindowWidthSizeClass.Expanded && scaffoldState.drawerState.isOpen) {
+            scaffoldState.drawerState.close()
+        }
+    }
 
     // Material Design layout guidelines:
     // https://developer.android.com/guide/topics/large-screens/navigation-for-responsive-uis#responsive_ui_navigation
