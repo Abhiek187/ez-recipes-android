@@ -22,6 +22,7 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
+import com.abhiek.ezrecipes.utils.currentWindowSize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -102,9 +103,9 @@ fun TopBarPreview() {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val navController = rememberNavController()
-    val windowWidthSizeClass = WindowWidthSizeClass.Expanded
+    val windowSize = currentWindowSize()
 
     EZRecipesTheme {
-        TopBar(scope, scaffoldState, navController, windowWidthSizeClass)
+        TopBar(scope, scaffoldState, navController, windowSize.widthSizeClass)
     }
 }

@@ -11,8 +11,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.compose.rememberNavController
@@ -22,16 +20,16 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.currentWindowSize
 import com.abhiek.ezrecipes.utils.toPx
 
 @Composable
 fun MainLayout(
-    widthSizeClass: WindowWidthSizeClass,
-    initialDrawerState: DrawerValue = DrawerValue.Closed
+    widthSizeClass: WindowWidthSizeClass
 ) {
     // Remember functions can only be called in a composable, not an activity
     val scope = rememberCoroutineScope()
-    val scaffoldState = rememberScaffoldState(rememberDrawerState(initialDrawerState))
+    val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     // The navigation controller shouldn't be recreated in other composables
     val navController = rememberNavController()
     val drawerWidth = 300
@@ -88,29 +86,16 @@ fun MainLayout(
     }
 }
 
-private data class MainLayoutState(
-    val widthSizeClass: WindowWidthSizeClass,
-    val drawerState: DrawerValue
-)
-
-private class MainLayoutPreviewParameterProvider: PreviewParameterProvider<MainLayoutState> {
-    // Show a preview of the drawer when opened and closed based on the screen width
-    override val values = sequenceOf(
-        MainLayoutState(widthSizeClass = WindowWidthSizeClass.Compact, drawerState = DrawerValue.Closed),
-        MainLayoutState(widthSizeClass = WindowWidthSizeClass.Medium, drawerState = DrawerValue.Closed),
-        MainLayoutState(widthSizeClass = WindowWidthSizeClass.Expanded, drawerState = DrawerValue.Open)
-    )
-}
-
 @DevicePreviews
 @DisplayPreviews
 @FontPreviews
 @OrientationPreviews
 @Composable
-private fun MainLayoutPreview(
-    @PreviewParameter(MainLayoutPreviewParameterProvider::class) state: MainLayoutState
-) {
+private fun MainLayoutPreview() {
+    // Use the actual size of the device to show accurate previews
+    val windowSize = currentWindowSize()
+
     EZRecipesTheme {
-        MainLayout(state.widthSizeClass, state.drawerState)
+        MainLayout(windowSize.widthSizeClass)
     }
 }

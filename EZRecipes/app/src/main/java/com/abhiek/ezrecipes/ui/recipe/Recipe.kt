@@ -7,12 +7,11 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
@@ -23,6 +22,7 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.currentWindowSize
 
 @Composable
 fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: String? = null) {
@@ -120,25 +120,20 @@ fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: Stri
     }
 }
 
-private class RecipePreviewParameterProvider: PreviewParameterProvider<Boolean> {
-    override val values = sequenceOf(true, false)
-}
-
 @DevicePreviews
 @DisplayPreviews
 @FontPreviews
 @OrientationPreviews
 @Composable
-private fun RecipePreview(
-    @PreviewParameter(RecipePreviewParameterProvider::class) isWideScreen: Boolean
-) {
+private fun RecipePreview() {
     val viewModel = MainViewModel(RecipeRepository(MockRecipeService))
     viewModel.getRandomRecipe()
+    val windowSize = currentWindowSize()
 
     EZRecipesTheme {
         Surface {
             // Copy the Recipe composable so the ViewModel loads in the preview
-            Recipe(viewModel, isWideScreen)
+            Recipe(viewModel, windowSize.widthSizeClass == WindowWidthSizeClass.Expanded)
         }
     }
 }
