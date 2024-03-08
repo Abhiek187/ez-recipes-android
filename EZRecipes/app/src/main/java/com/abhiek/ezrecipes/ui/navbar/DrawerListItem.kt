@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
@@ -19,7 +20,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
-fun DrawerListItem(item: DrawerItem, selected: Boolean, onItemClick: () -> Unit) {
+fun DrawerListItem(item: Tab, selected: Boolean, onItemClick: () -> Unit) {
     // Highlight the selected drawer item
     val backgroundColor = if (selected) MaterialTheme.colors.secondary else Color.Transparent
 
@@ -34,7 +35,7 @@ fun DrawerListItem(item: DrawerItem, selected: Boolean, onItemClick: () -> Unit)
     ) {
         Icon(
             imageVector = item.icon,
-            contentDescription = item.title,
+            contentDescription = null,
             modifier = Modifier
                 .height(32.dp)
                 .width(32.dp),
@@ -45,7 +46,7 @@ fun DrawerListItem(item: DrawerItem, selected: Boolean, onItemClick: () -> Unit)
             modifier = Modifier.width(16.dp)
         )
         Text(
-            text = item.title,
+            text = stringResource(item.resourceId),
             style = MaterialTheme.typography.subtitle1.copy(
                 fontSize = 18.sp
             ),
@@ -62,8 +63,8 @@ fun DrawerListItem(item: DrawerItem, selected: Boolean, onItemClick: () -> Unit)
 fun DrawerListItemPreview() {
     EZRecipesTheme {
         Column {
-            DrawerListItem(item = DrawerItem.Home, selected = true) {}
-            DrawerListItem(item = DrawerItem.Recipe, selected = false) {}
+            DrawerListItem(item = Tab.Home, selected = true) {}
+            DrawerListItem(item = Tab.Search, selected = false) {}
         }
     }
 }

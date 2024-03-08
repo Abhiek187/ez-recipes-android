@@ -16,6 +16,14 @@ object Constants {
     // Error message to fallback on in case all fails
     val UNKNOWN_ERROR = Resources.getSystem().getString(R.string.unknown_error)
 
+    object Routes {
+        // tabs = user-facing labels, routes = internal "pretend" URL paths
+        // All tabs have routes, but not all routes have tabs
+        const val HOME = "home"
+        const val RECIPE = "recipe/{id}"
+        const val SEARCH = "search"
+    }
+
     object Mocks {
         //region Normal, no culture
         val PINEAPPLE_SALAD = Recipe(

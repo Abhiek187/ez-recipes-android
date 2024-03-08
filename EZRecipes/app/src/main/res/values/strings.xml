@@ -79,8 +79,6 @@
     <string name="attribution">Powered by spoonacular</string>
 
     <!-- Search Screen -->
-    <string name="search_title">Search</string>
-
     <string name="query_section">Query</string>
     <string name="query_placeholder">food</string>
 
