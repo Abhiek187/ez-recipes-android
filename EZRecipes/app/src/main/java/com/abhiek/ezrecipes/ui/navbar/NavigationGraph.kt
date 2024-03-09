@@ -11,13 +11,18 @@ import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.MainViewModelFactory
 import com.abhiek.ezrecipes.ui.home.Home
 import com.abhiek.ezrecipes.ui.recipe.Recipe
-import com.abhiek.ezrecipes.ui.search.Search
+import com.abhiek.ezrecipes.ui.search.FilterForm
+import com.abhiek.ezrecipes.ui.search.SearchViewModel
+import com.abhiek.ezrecipes.ui.search.SearchViewModelFactory
 import com.abhiek.ezrecipes.utils.Constants
 
 @Composable
 fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidthSizeClass) {
-    val viewModel = viewModel<MainViewModel>(
+    val mainViewModel = viewModel<MainViewModel>(
         factory = MainViewModelFactory()
+    )
+    val searchViewModel = viewModel<SearchViewModel>(
+        factory = SearchViewModelFactory()
     )
     val isWideScreen = widthSizeClass == WindowWidthSizeClass.Expanded
 
@@ -28,9 +33,11 @@ fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidt
         startDestination = Constants.Routes.HOME
     ) {
         composable(Constants.Routes.HOME) {
-            Home(viewModel) {
+            Home(mainViewModel) {
                 navController.navigate(
-                    Constants.Routes.RECIPE.replace("{id}", viewModel.recipe?.id.toString())
+                    Constants.Routes.RECIPE.replace(
+                        "{id}", mainViewModel.recipe?.id.toString()
+                    )
                 ) {
                     // Only have one copy of the recipe destination in the back stack
                     launchSingleTop = true
@@ -45,10 +52,10 @@ fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidt
                 }
             )
         ) { backStackEntry ->
-            Recipe(viewModel, isWideScreen, backStackEntry.arguments?.getString("id"))
+            Recipe(mainViewModel, isWideScreen, backStackEntry.arguments?.getString("id"))
         }
         composable(Constants.Routes.SEARCH) {
-            Search()
+            FilterForm(searchViewModel)
         }
     }
 }
