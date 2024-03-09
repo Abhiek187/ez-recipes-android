@@ -2,20 +2,18 @@ package com.abhiek.ezrecipes.ui.home
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
@@ -25,6 +23,7 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.getActivity
 import kotlinx.coroutines.delay
 
 @Composable
@@ -33,6 +32,8 @@ fun Home(
     onNavigateToRecipe: () -> Unit
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     val defaultLoadingMessage = ""
     var loadingMessage by remember { mutableStateOf(defaultLoadingMessage) }
 
@@ -54,6 +55,24 @@ fun Home(
                 onNavigateToRecipe()
                 mainViewModel.isRecipeLoaded = false
             }
+        }
+    }
+
+    // Listen to lifecycle changes
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP &&
+                context.getActivity()?.isChangingConfigurations != true) {
+                // Stop any network calls while switching tabs,
+                // except when rotating or folding the screen
+                mainViewModel.job?.cancel()
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 

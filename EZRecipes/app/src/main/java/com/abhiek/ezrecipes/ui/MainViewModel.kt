@@ -45,7 +45,8 @@ class MainViewModel(
                 recipe = null
                 recipeError = result.recipeError
                 isRecipeLoaded = false
-                showRecipeAlert = true
+                // Don't show an alert if the request was intentionally cancelled
+                showRecipeAlert = job?.isCancelled == false
             }
         }
     }
