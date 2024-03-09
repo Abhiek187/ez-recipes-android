@@ -32,7 +32,7 @@ class RecipeRepository(private val recipeService: RecipeService) {
 
     suspend fun getRecipesByFilter(filter: RecipeFilter): RecipeResult<List<Recipe>> {
         return try {
-            val response = recipeService.getRecipesByFilter(filter)
+            val response = recipeService.getRecipesByFilter(filter.toMap())
             parseResponse(response)
         } catch (error: Exception) {
             // Catch ConnectExceptions, UnknownHostExceptions, etc.

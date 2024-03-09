@@ -18,9 +18,10 @@ import java.util.concurrent.TimeUnit
 
 // The DataSource for the recipes API
 interface RecipeService {
-    @GET("")
+    @GET(".") // same as the base URL
+    @JvmSuppressWildcards // allow Any map value
     suspend fun getRecipesByFilter(
-        @QueryMap filter: RecipeFilter
+        @QueryMap filter: Map<String, Any>
     ): Response<List<Recipe>>
 
     @GET("random")

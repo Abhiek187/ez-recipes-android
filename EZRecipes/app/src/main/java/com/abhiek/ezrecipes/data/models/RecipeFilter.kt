@@ -1,5 +1,8 @@
 package com.abhiek.ezrecipes.data.models
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+
 data class RecipeFilter(
     var query: String = "",
     var minCals: Int? = null,
@@ -13,4 +16,10 @@ data class RecipeFilter(
     var spiceLevel: List<SpiceLevel> = listOf(),
     var type: List<String> = listOf(),
     var culture: List<String> = listOf()
-)
+) {
+    fun toMap(): Map<String, Any> {
+        val gson = Gson()
+        val json = gson.toJson(this)
+        return gson.fromJson(json, object: TypeToken<Map<String, Any>>() {}.type)
+    }
+}
