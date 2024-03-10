@@ -1,11 +1,15 @@
 package com.abhiek.ezrecipes.data.models
 
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 
 data class RecipeFilter(
     var query: String = "",
+    // FieldNamingPolicy.LOWER_CASE_WITH_DASHES doesn't work in a QueryMap
+    @SerializedName("min-cals")
     var minCals: Int? = null,
+    @SerializedName("max-cals")
     var maxCals: Int? = null,
     var vegetarian: Boolean = false,
     var vegan: Boolean = false,

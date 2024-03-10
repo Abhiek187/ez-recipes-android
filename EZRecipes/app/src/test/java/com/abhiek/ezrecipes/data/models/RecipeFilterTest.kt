@@ -28,6 +28,7 @@ class RecipeFilterTest {
         // Then it should omit certain keys
         assertEquals(mapOf(
             "query" to recipeFilter.query,
+            // GSON automatically converts ints to doubles
             "minCals" to recipeFilter.minCals?.toDouble(),
             "maxCals" to recipeFilter.maxCals?.toDouble()
         ), recipeFilterMap)

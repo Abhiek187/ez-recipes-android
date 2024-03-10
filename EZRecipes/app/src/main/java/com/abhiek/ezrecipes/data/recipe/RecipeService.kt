@@ -5,7 +5,6 @@ import com.abhiek.ezrecipes.data.adapters.MealTypeAdapter
 import com.abhiek.ezrecipes.data.adapters.SpiceLevelTypeAdapter
 import com.abhiek.ezrecipes.data.models.*
 import com.abhiek.ezrecipes.utils.Constants
-import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -68,7 +67,6 @@ interface RecipeService {
 
                 // Convert responses to GSON (Google JSON)
                 val gson = GsonBuilder()
-                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
                     .registerTypeAdapter(Cuisine::class.java, CuisineTypeAdapter())
                     .registerTypeAdapter(MealType::class.java, MealTypeAdapter())
                     .registerTypeAdapter(SpiceLevel::class.java, SpiceLevelTypeAdapter())
