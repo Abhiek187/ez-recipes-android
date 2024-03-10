@@ -1,15 +1,12 @@
 package com.abhiek.ezrecipes.data.models
 
-import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 
 data class RecipeFilter(
     var query: String = "",
-    // FieldNamingPolicy.LOWER_CASE_WITH_DASHES doesn't work in a QueryMap
-    @SerializedName("min-cals")
     var minCals: Int? = null,
-    @SerializedName("max-cals")
     var maxCals: Int? = null,
     var vegetarian: Boolean = false,
     var vegan: Boolean = false,
@@ -23,9 +20,12 @@ data class RecipeFilter(
 ) {
     fun toMap(): Map<String, Any> {
         // Filter all the keys that aren't defined separately in the service
-        val omittedKeys = listOf("vegetarian", "vegan", "glutenFree", "healthy", "cheap",
-            "sustainable", "spiceLevel", "type", "culture")
-        val gson = Gson()
+        val omittedKeys = listOf("vegetarian", "vegan", "gluten-free", "healthy", "cheap",
+            "sustainable", "spice-level", "type", "culture")
+        // Convert all the keys to kebab-case
+        val gson = GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
+            .create()
         val json = gson.toJson(this)
         val map = gson.fromJson<Map<String, Any>>(json, object: TypeToken<Map<String, Any>>() {}.type)
         return map.filter { (key, _) -> !omittedKeys.contains(key) }

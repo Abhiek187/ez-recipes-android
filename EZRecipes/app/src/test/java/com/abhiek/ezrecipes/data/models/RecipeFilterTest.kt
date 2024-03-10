@@ -29,8 +29,8 @@ class RecipeFilterTest {
         assertEquals(mapOf(
             "query" to recipeFilter.query,
             // GSON automatically converts ints to doubles
-            "minCals" to recipeFilter.minCals?.toDouble(),
-            "maxCals" to recipeFilter.maxCals?.toDouble()
+            "min-cals" to recipeFilter.minCals?.toDouble(),
+            "max-cals" to recipeFilter.maxCals?.toDouble()
         ), recipeFilterMap)
     }
 }
