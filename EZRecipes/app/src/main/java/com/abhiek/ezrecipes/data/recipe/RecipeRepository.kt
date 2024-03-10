@@ -32,7 +32,18 @@ class RecipeRepository(private val recipeService: RecipeService) {
 
     suspend fun getRecipesByFilter(filter: RecipeFilter): RecipeResult<List<Recipe>> {
         return try {
-            val response = recipeService.getRecipesByFilter(filter.toMap())
+            val response = recipeService.getRecipesByFilter(
+                vegetarian = if (filter.vegetarian) "vegetarian" else null,
+                vegan = if (filter.vegan) "vegan" else null,
+                glutenFree = if (filter.glutenFree) "gluten-free" else null,
+                healthy = if (filter.healthy) "healthy" else null,
+                cheap = if (filter.cheap) "cheap" else null,
+                sustainable = if (filter.sustainable) "sustainable" else null,
+                spiceLevels = filter.spiceLevel,
+                mealTypes = filter.type,
+                cuisines = filter.culture,
+                filters = filter.toMap(),
+            )
             parseResponse(response)
         } catch (error: Exception) {
             // Catch ConnectExceptions, UnknownHostExceptions, etc.

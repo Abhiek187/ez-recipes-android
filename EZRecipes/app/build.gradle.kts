@@ -68,9 +68,9 @@ android {
 }
 
 dependencies {
-    val composeBomVersion = "2024.02.01"
+    val composeBomVersion = "2024.02.02"
     val lifecycleVersion = "2.7.0"
-    val materialVersion = "1.6.2"
+    val materialVersion = "1.6.3"
     val retrofitVersion = "2.9.0"
     val jupiterVersion = "5.10.2"
     val espressoVersion = "3.5.1"
@@ -85,7 +85,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material:$materialVersion")
     implementation("androidx.compose.material:material-icons-extended:$materialVersion")
-    implementation("androidx.compose.material3:material3-window-size-class:1.2.0")
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // AsyncImage
@@ -97,6 +97,7 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBomVersion"))

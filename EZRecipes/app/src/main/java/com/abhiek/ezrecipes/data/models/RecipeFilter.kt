@@ -14,12 +14,16 @@ data class RecipeFilter(
     var cheap: Boolean = false,
     var sustainable: Boolean = false,
     var spiceLevel: List<SpiceLevel> = listOf(),
-    var type: List<String> = listOf(),
-    var culture: List<String> = listOf()
+    var type: List<MealType> = listOf(),
+    var culture: List<Cuisine> = listOf()
 ) {
     fun toMap(): Map<String, Any> {
+        // Filter all the keys that aren't defined separately in the service
+        val omittedKeys = listOf("vegetarian", "vegan", "glutenFree", "healthy", "cheap",
+            "sustainable", "spiceLevel", "type", "culture")
         val gson = Gson()
         val json = gson.toJson(this)
-        return gson.fromJson(json, object: TypeToken<Map<String, Any>>() {}.type)
+        val map = gson.fromJson<Map<String, Any>>(json, object: TypeToken<Map<String, Any>>() {}.type)
+        return map.filter { (key, _) -> !omittedKeys.contains(key) }
     }
 }
