@@ -1,19 +1,23 @@
 package com.abhiek.ezrecipes.ui.search
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.models.Cuisine
+import com.abhiek.ezrecipes.data.models.MealType
 import com.abhiek.ezrecipes.data.models.SpiceLevel
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
@@ -29,8 +33,6 @@ import com.abhiek.ezrecipes.utils.getActivity
 fun FilterForm(searchViewModel: SearchViewModel) {
     var caloriesExceedMax by remember { mutableStateOf(false) }
     var caloriesInvalidRange by remember { mutableStateOf(false) }
-
-    var openSpiceDropdown by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -50,7 +52,11 @@ fun FilterForm(searchViewModel: SearchViewModel) {
         }
     }
 
-    Column {
+    Column(
+        modifier = Modifier
+            .padding(8.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         TextField(
             value = searchViewModel.recipeFilter.query,
             onValueChange = { searchViewModel.recipeFilter.query = it },
@@ -151,32 +157,54 @@ fun FilterForm(searchViewModel: SearchViewModel) {
             )
         }
 
-        Row {
-            Text(
-                text = stringResource(R.string.spice_label)
-            )
-            IconButton(onClick = { openSpiceDropdown = true }) {
-                Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
-            }
-            DropdownMenu(
-                expanded = openSpiceDropdown,
-                onDismissRequest = { openSpiceDropdown = false }
-            ) {
-                SpiceLevel.entries.forEach { spiceLevel ->
-                    // Don't filter by unknown
-                    if (spiceLevel != SpiceLevel.UNKNOWN) {
-                        DropdownMenuItem(
-                            onClick = {
-                                searchViewModel.recipeFilter.spiceLevel += spiceLevel
-                                openSpiceDropdown = false
-                            }
-                        ) {
-                            Text(spiceLevel.name)
-                        }
-                    }
+        MultiSelectDropdown(
+            options = SpiceLevel.entries.filter { spiceLevel ->
+                // Don't filter by unknown
+                spiceLevel != SpiceLevel.UNKNOWN
+            },
+            value = searchViewModel.recipeFilter.spiceLevel,
+            label = { Text(stringResource(R.string.spice_label)) },
+            onSelectOption = { spiceLevel ->
+                searchViewModel.recipeFilter.spiceLevel = if (searchViewModel.recipeFilter.spiceLevel.contains(spiceLevel)) {
+                    searchViewModel.recipeFilter.spiceLevel - spiceLevel
+                } else {
+                    searchViewModel.recipeFilter.spiceLevel + spiceLevel
                 }
             }
-        }
+        )
+        MultiSelectDropdown(
+            options = MealType.entries.filter { mealType ->
+                mealType != MealType.UNKNOWN
+            }.sortedBy { mealType ->
+                // Allow the meal types to be sorted for ease of reference
+                mealType.name
+            },
+            value = searchViewModel.recipeFilter.type,
+            label = { Text(stringResource(R.string.type_label)) },
+            onSelectOption = { mealType ->
+                searchViewModel.recipeFilter.type = if (searchViewModel.recipeFilter.type.contains(mealType)) {
+                    searchViewModel.recipeFilter.type - mealType
+                } else {
+                    searchViewModel.recipeFilter.type + mealType
+                }
+            }
+        )
+        MultiSelectDropdown(
+            options = Cuisine.entries.filter { cuisine ->
+                cuisine != Cuisine.UNKNOWN
+            }.sortedBy { cuisine ->
+                cuisine.name
+            },
+            value = searchViewModel.recipeFilter.culture,
+            label = { Text(stringResource(R.string.culture_label)) },
+            onSelectOption = { cuisine ->
+                searchViewModel.recipeFilter.culture = if (searchViewModel.recipeFilter.culture.contains(cuisine)) {
+                    searchViewModel.recipeFilter.culture - cuisine
+                } else {
+                    searchViewModel.recipeFilter.culture + cuisine
+                }
+            }
+        )
 
         SubmitButton(
             searchViewModel = searchViewModel,
