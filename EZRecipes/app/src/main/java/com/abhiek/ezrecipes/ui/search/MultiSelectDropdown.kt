@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -15,9 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.abhiek.ezrecipes.R
-import com.abhiek.ezrecipes.data.models.Cuisine
-import com.abhiek.ezrecipes.data.recipe.MockRecipeService
-import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.models.SpiceLevel
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -68,11 +67,17 @@ fun <T> MultiSelectDropdown(
                 DropdownMenuItem(
                     onClick = { onSelectOption(option) }
                 ) {
-                    Text(option.toString())
-                    Checkbox(
-                        checked = value.contains(option),
-                        onCheckedChange = null
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(option.toString())
+                        Checkbox(
+                            checked = value.contains(option),
+                            onCheckedChange = null
+                        )
+                    }
                 }
             }
         }
@@ -85,16 +90,21 @@ fun <T> MultiSelectDropdown(
 @OrientationPreviews
 @Composable
 fun MultiSelectDropdownDemo() {
-    val recipeService = MockRecipeService
-    val viewModel = SearchViewModel(RecipeRepository(recipeService))
+    var selectedOptions by remember { mutableStateOf(listOf<SpiceLevel>()) }
 
     EZRecipesTheme {
-        Surface {
+        Surface(modifier = Modifier.fillMaxHeight()) {
             MultiSelectDropdown(
-                options = Cuisine.entries,
-                value = viewModel.recipeFilter.culture,
-                label = { Text(stringResource(R.string.culture_label)) },
-                onSelectOption = {}
+                options = SpiceLevel.entries.toList(),
+                value = selectedOptions,
+                label = { Text(stringResource(R.string.spice_label)) },
+                onSelectOption = { option ->
+                    selectedOptions = if (selectedOptions.contains(option)) {
+                        selectedOptions - option
+                    } else {
+                        selectedOptions + option
+                    }
+                }
             )
         }
     }
