@@ -5,7 +5,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -53,8 +56,10 @@ fun FilterForm(searchViewModel: SearchViewModel) {
     }
 
     Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
-            .padding(8.dp)
+            .fillMaxWidth()
+            .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
         TextField(
@@ -62,12 +67,14 @@ fun FilterForm(searchViewModel: SearchViewModel) {
             onValueChange = { searchViewModel.recipeFilter.query = it },
             label = { Text(stringResource(R.string.query_section)) },
             placeholder = { Text(stringResource(R.string.query_placeholder)) },
+            trailingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
 
-        Text(text = stringResource(R.string.filter_section))
-
-        Row {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             TextField(
                 value = searchViewModel.recipeFilter.minCals?.toString() ?: "",
                 onValueChange = {
@@ -81,7 +88,8 @@ fun FilterForm(searchViewModel: SearchViewModel) {
                 },
                 placeholder = { Text(stringResource(R.string.min_cals_placeholder)) },
                 isError = caloriesExceedMax || caloriesInvalidRange,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.width(75.dp)
             )
             Text(stringResource(R.string.calorie_label))
             TextField(
@@ -97,64 +105,97 @@ fun FilterForm(searchViewModel: SearchViewModel) {
                 },
                 placeholder = { Text(stringResource(R.string.max_cals_placeholder)) },
                 isError = caloriesExceedMax || caloriesInvalidRange,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.width(75.dp)
             )
             Text(stringResource(R.string.calorie_unit))
         }
 
-        Row {
-            Text(
-                text = stringResource(R.string.vegetarian_label)
-            )
-            Checkbox(
-                checked = searchViewModel.recipeFilter.vegetarian,
-                onCheckedChange = { searchViewModel.recipeFilter.vegetarian = it }
-            )
-        }
-        Row {
-            Text(
-                text = stringResource(R.string.vegan_label)
-            )
-            Checkbox(
-                checked = searchViewModel.recipeFilter.vegan,
-                onCheckedChange = { searchViewModel.recipeFilter.vegan = it }
-            )
-        }
-        Row {
-            Text(
-                text = stringResource(R.string.gluten_free_label)
-            )
-            Checkbox(
-                checked = searchViewModel.recipeFilter.glutenFree,
-                onCheckedChange = { searchViewModel.recipeFilter.glutenFree = it }
-            )
-        }
-        Row {
-            Text(
-                text = stringResource(R.string.healthy_label)
-            )
-            Checkbox(
-                checked = searchViewModel.recipeFilter.healthy,
-                onCheckedChange = { searchViewModel.recipeFilter.healthy = it }
-            )
-        }
-        Row {
-            Text(
-                text = stringResource(R.string.cheap_label)
-            )
-            Checkbox(
-                checked = searchViewModel.recipeFilter.cheap,
-                onCheckedChange = { searchViewModel.recipeFilter.cheap = it }
-            )
-        }
-        Row {
-            Text(
-                text = stringResource(R.string.sustainable_label)
-            )
-            Checkbox(
-                checked = searchViewModel.recipeFilter.sustainable,
-                onCheckedChange = { searchViewModel.recipeFilter.sustainable = it }
-            )
+        Column {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.vegetarian_label),
+                    style = MaterialTheme.typography.subtitle1
+                )
+                Checkbox(
+                    checked = searchViewModel.recipeFilter.vegetarian,
+                    onCheckedChange = { searchViewModel.recipeFilter.vegetarian = it }
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.vegan_label),
+                    style = MaterialTheme.typography.subtitle1
+                )
+                Checkbox(
+                    checked = searchViewModel.recipeFilter.vegan,
+                    onCheckedChange = { searchViewModel.recipeFilter.vegan = it }
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.gluten_free_label),
+                    style = MaterialTheme.typography.subtitle1
+                )
+                Checkbox(
+                    checked = searchViewModel.recipeFilter.glutenFree,
+                    onCheckedChange = { searchViewModel.recipeFilter.glutenFree = it }
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.healthy_label),
+                    style = MaterialTheme.typography.subtitle1
+                )
+                Checkbox(
+                    checked = searchViewModel.recipeFilter.healthy,
+                    onCheckedChange = { searchViewModel.recipeFilter.healthy = it }
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.cheap_label),
+                    style = MaterialTheme.typography.subtitle1
+                )
+                Checkbox(
+                    checked = searchViewModel.recipeFilter.cheap,
+                    onCheckedChange = { searchViewModel.recipeFilter.cheap = it }
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.sustainable_label),
+                    style = MaterialTheme.typography.subtitle1
+                )
+                Checkbox(
+                    checked = searchViewModel.recipeFilter.sustainable,
+                    onCheckedChange = { searchViewModel.recipeFilter.sustainable = it }
+                )
+            }
         }
 
         MultiSelectDropdown(

@@ -13,7 +13,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.models.SpiceLevel
@@ -48,7 +47,6 @@ fun <T> MultiSelectDropdown(
                 )
             },
             modifier = Modifier
-                .padding(16.dp)
                 .clickable { expanded = true }
                 .onGloballyPositioned { coordinates ->
                     textFieldSize = coordinates.size.toSize()

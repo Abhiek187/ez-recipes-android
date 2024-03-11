@@ -38,10 +38,14 @@ fun SubmitButton(searchViewModel: SearchViewModel, enabled: Boolean) {
     }
 
     Column {
-        Row {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(8.dp)
+        ) {
             Button(
                 onClick = { searchViewModel.searchRecipes() },
-                enabled = enabled
+                enabled = enabled,
+                modifier = Modifier.weight(1f)
             ) {
                 Text(stringResource(R.string.submit_button))
             }
@@ -55,6 +59,7 @@ fun SubmitButton(searchViewModel: SearchViewModel, enabled: Boolean) {
             text = loadingMessage,
             modifier = Modifier
                 .alpha(if (searchViewModel.isLoading) 1f else 0f)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         )
 
         // Show an alert if the recipe failed to load
