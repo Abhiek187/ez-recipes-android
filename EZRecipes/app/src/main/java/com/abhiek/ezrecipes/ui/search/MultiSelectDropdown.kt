@@ -8,8 +8,12 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.models.Cuisine
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
@@ -28,6 +32,7 @@ fun <T> MultiSelectDropdown(
     onSelectOption: (option: T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
     Box {
         OutlinedTextField(
@@ -46,10 +51,18 @@ fun <T> MultiSelectDropdown(
             modifier = Modifier
                 .padding(16.dp)
                 .clickable { expanded = true }
+                .onGloballyPositioned { coordinates ->
+                    textFieldSize = coordinates.size.toSize()
+                }
         )
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                // Match the width of the menu with the text field
+                .width(
+                    with(LocalDensity.current) { textFieldSize.width.toDp() }
+                )
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
