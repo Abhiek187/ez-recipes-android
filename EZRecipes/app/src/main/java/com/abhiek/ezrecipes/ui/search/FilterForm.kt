@@ -15,6 +15,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -294,14 +296,44 @@ fun FilterForm(searchViewModel: SearchViewModel) {
     }
 }
 
+private data class FilterFormState(
+    val maxError: Boolean = false,
+    val rangeError: Boolean = false,
+    val isLoading: Boolean = false,
+    val noResults: Boolean = false
+)
+
+private class FilterFormPreviewParameterProvider: PreviewParameterProvider<FilterFormState> {
+    override val values = sequenceOf(
+        FilterFormState(),
+        FilterFormState(maxError = true),
+        FilterFormState(rangeError = true),
+        FilterFormState(isLoading = true),
+        FilterFormState(noResults = true)
+    )
+}
+
 @DevicePreviews
 @DisplayPreviews
 @FontPreviews
 @OrientationPreviews
 @Composable
-private fun FilterFormPreview() {
+private fun FilterFormPreview(
+    @PreviewParameter(FilterFormPreviewParameterProvider::class) state: FilterFormState
+) {
     val recipeService = MockRecipeService
     val viewModel = SearchViewModel(RecipeRepository(recipeService))
+
+    val (maxError, rangeError, isLoading, noResults) = state
+    if (maxError) {
+        viewModel.recipeFilter.maxCals = 2001
+    }
+    if (rangeError) {
+        viewModel.recipeFilter.minCals = 200
+        viewModel.recipeFilter.maxCals = 100
+    }
+    viewModel.isLoading = isLoading
+    viewModel.noRecipesFound = noResults
 
     EZRecipesTheme {
         Surface {
