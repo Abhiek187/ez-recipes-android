@@ -55,12 +55,13 @@ fun SubmitButton(searchViewModel: SearchViewModel, enabled: Boolean) {
             )
         }
 
-        Text(
-            text = loadingMessage,
-            modifier = Modifier
-                .alpha(if (searchViewModel.isLoading) 1f else 0f)
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-        )
+        if (searchViewModel.isLoading) {
+            Text(
+                text = loadingMessage,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+        }
 
         // Show an alert if the recipe failed to load
         if (searchViewModel.showRecipeAlert) {

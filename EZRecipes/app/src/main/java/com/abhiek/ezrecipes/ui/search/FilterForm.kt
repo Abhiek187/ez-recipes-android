@@ -31,6 +31,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.getActivity
+import kotlin.math.floor
 
 @Composable
 fun FilterForm(searchViewModel: SearchViewModel) {
@@ -71,44 +72,71 @@ fun FilterForm(searchViewModel: SearchViewModel) {
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            TextField(
-                value = searchViewModel.recipeFilter.minCals?.toString() ?: "",
-                onValueChange = {
-                    val newValue = it.toInt()
-                    searchViewModel.recipeFilter.minCals = newValue
-                    caloriesExceedMax = newValue > Constants.MAX_CALS ||
-                            (searchViewModel.recipeFilter.maxCals
-                                ?: Constants.MIN_CALS) > Constants.MAX_CALS
-                    caloriesInvalidRange =
-                        newValue > (searchViewModel.recipeFilter.maxCals ?: Int.MAX_VALUE)
-                },
-                placeholder = { Text(stringResource(R.string.min_cals_placeholder)) },
-                isError = caloriesExceedMax || caloriesInvalidRange,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.width(75.dp)
-            )
-            Text(stringResource(R.string.calorie_label))
-            TextField(
-                value = searchViewModel.recipeFilter.maxCals?.toString() ?: "",
-                onValueChange = {
-                    val newValue = it.toInt()
-                    searchViewModel.recipeFilter.maxCals = newValue
-                    caloriesExceedMax = newValue != Int.MAX_VALUE && newValue > Constants.MAX_CALS ||
-                            (searchViewModel.recipeFilter.minCals
-                                ?: Constants.MIN_CALS) > Constants.MAX_CALS
-                    caloriesInvalidRange =
-                        newValue < (searchViewModel.recipeFilter.minCals ?: Int.MIN_VALUE)
-                },
-                placeholder = { Text(stringResource(R.string.max_cals_placeholder)) },
-                isError = caloriesExceedMax || caloriesInvalidRange,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.width(75.dp)
-            )
-            Text(stringResource(R.string.calorie_unit))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextField(
+                    value = searchViewModel.recipeFilter.minCals?.toString() ?: "",
+                    onValueChange = {
+                        // Disregard decimals (to be more consistent with other platforms)
+                        val parsedValue = it.toFloatOrNull() ?: return@TextField
+                        val newValue = floor(parsedValue).toInt()
+
+                        searchViewModel.recipeFilter.minCals = newValue
+                        caloriesExceedMax = newValue > Constants.MAX_CALS ||
+                                (searchViewModel.recipeFilter.maxCals
+                                    ?: Constants.MIN_CALS) > Constants.MAX_CALS
+                        caloriesInvalidRange =
+                            newValue > (searchViewModel.recipeFilter.maxCals ?: Int.MAX_VALUE)
+                    },
+                    placeholder = { Text(stringResource(R.string.min_cals_placeholder)) },
+                    isError = caloriesExceedMax || caloriesInvalidRange,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.width(75.dp)
+                )
+                Text(stringResource(R.string.calorie_label))
+                TextField(
+                    value = searchViewModel.recipeFilter.maxCals?.toString() ?: "",
+                    onValueChange = {
+                        val parsedValue = it.toFloatOrNull() ?: return@TextField
+                        val newValue = floor(parsedValue).toInt()
+
+                        searchViewModel.recipeFilter.maxCals = newValue
+                        caloriesExceedMax =
+                            newValue != Int.MAX_VALUE && newValue > Constants.MAX_CALS ||
+                                    (searchViewModel.recipeFilter.minCals
+                                        ?: Constants.MIN_CALS) > Constants.MAX_CALS
+                        caloriesInvalidRange =
+                            newValue < (searchViewModel.recipeFilter.minCals ?: Int.MIN_VALUE)
+                    },
+                    placeholder = { Text(stringResource(R.string.max_cals_placeholder)) },
+                    isError = caloriesExceedMax || caloriesInvalidRange,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.width(75.dp)
+                )
+                Text(stringResource(R.string.calorie_unit))
+            }
+            // Form errors
+            if (caloriesExceedMax) {
+                Text(
+                    text = stringResource(R.string.calorie_exceed_max_error),
+                    style = MaterialTheme.typography.caption.copy(
+                        color = MaterialTheme.colors.error
+                    )
+                )
+            }
+            if (caloriesInvalidRange) {
+                Text(
+                    text = stringResource(R.string.calorie_invalid_range_error),
+                    style = MaterialTheme.typography.caption.copy(
+                        color = MaterialTheme.colors.error
+                    )
+                )
+            }
         }
 
         Column {
@@ -247,10 +275,22 @@ fun FilterForm(searchViewModel: SearchViewModel) {
             }
         )
 
-        SubmitButton(
-            searchViewModel = searchViewModel,
-            enabled = !caloriesExceedMax && !caloriesInvalidRange && !searchViewModel.isLoading
-        )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            SubmitButton(
+                searchViewModel = searchViewModel,
+                enabled = !caloriesExceedMax && !caloriesInvalidRange && !searchViewModel.isLoading
+            )
+            if (searchViewModel.noRecipesFound) {
+                Text(
+                    text = stringResource(R.string.no_results),
+                    style = MaterialTheme.typography.body2.copy(
+                        color = MaterialTheme.colors.error
+                    )
+                )
+            }
+        }
     }
 }
 
