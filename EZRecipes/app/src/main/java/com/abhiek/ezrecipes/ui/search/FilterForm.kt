@@ -67,7 +67,10 @@ fun FilterForm(searchViewModel: SearchViewModel) {
     ) {
         TextField(
             value = searchViewModel.recipeFilter.query,
-            onValueChange = { searchViewModel.recipeFilter.query = it },
+            onValueChange = {
+                // Like setState(), the whole object must be passed to recompose
+                searchViewModel.recipeFilter = searchViewModel.recipeFilter.copy(query = it)
+            },
             label = { Text(stringResource(R.string.query_section)) },
             placeholder = { Text(stringResource(R.string.query_placeholder)) },
             trailingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
@@ -88,7 +91,8 @@ fun FilterForm(searchViewModel: SearchViewModel) {
                         val parsedValue = it.toFloatOrNull() ?: return@TextField
                         val newValue = floor(parsedValue).toInt()
 
-                        searchViewModel.recipeFilter.minCals = newValue
+                        searchViewModel.recipeFilter =
+                            searchViewModel.recipeFilter.copy(minCals = newValue)
                         caloriesExceedMax = newValue > Constants.MAX_CALS ||
                                 (searchViewModel.recipeFilter.maxCals
                                     ?: Constants.MIN_CALS) > Constants.MAX_CALS
@@ -107,7 +111,8 @@ fun FilterForm(searchViewModel: SearchViewModel) {
                         val parsedValue = it.toFloatOrNull() ?: return@TextField
                         val newValue = floor(parsedValue).toInt()
 
-                        searchViewModel.recipeFilter.maxCals = newValue
+                        searchViewModel.recipeFilter =
+                            searchViewModel.recipeFilter.copy(maxCals = newValue)
                         caloriesExceedMax =
                             newValue != Int.MAX_VALUE && newValue > Constants.MAX_CALS ||
                                     (searchViewModel.recipeFilter.minCals
@@ -153,7 +158,10 @@ fun FilterForm(searchViewModel: SearchViewModel) {
                 )
                 Checkbox(
                     checked = searchViewModel.recipeFilter.vegetarian,
-                    onCheckedChange = { searchViewModel.recipeFilter.vegetarian = it }
+                    onCheckedChange = {
+                        searchViewModel.recipeFilter =
+                            searchViewModel.recipeFilter.copy(vegetarian = it)
+                    }
                 )
             }
             Row(
@@ -167,7 +175,10 @@ fun FilterForm(searchViewModel: SearchViewModel) {
                 )
                 Checkbox(
                     checked = searchViewModel.recipeFilter.vegan,
-                    onCheckedChange = { searchViewModel.recipeFilter.vegan = it }
+                    onCheckedChange = {
+                        searchViewModel.recipeFilter =
+                            searchViewModel.recipeFilter.copy(vegan = it)
+                    }
                 )
             }
             Row(
@@ -181,7 +192,10 @@ fun FilterForm(searchViewModel: SearchViewModel) {
                 )
                 Checkbox(
                     checked = searchViewModel.recipeFilter.glutenFree,
-                    onCheckedChange = { searchViewModel.recipeFilter.glutenFree = it }
+                    onCheckedChange = {
+                        searchViewModel.recipeFilter =
+                            searchViewModel.recipeFilter.copy(glutenFree = it)
+                    }
                 )
             }
             Row(
@@ -195,7 +209,10 @@ fun FilterForm(searchViewModel: SearchViewModel) {
                 )
                 Checkbox(
                     checked = searchViewModel.recipeFilter.healthy,
-                    onCheckedChange = { searchViewModel.recipeFilter.healthy = it }
+                    onCheckedChange = {
+                        searchViewModel.recipeFilter =
+                            searchViewModel.recipeFilter.copy(healthy = it)
+                    }
                 )
             }
             Row(
@@ -209,7 +226,10 @@ fun FilterForm(searchViewModel: SearchViewModel) {
                 )
                 Checkbox(
                     checked = searchViewModel.recipeFilter.cheap,
-                    onCheckedChange = { searchViewModel.recipeFilter.cheap = it }
+                    onCheckedChange = {
+                        searchViewModel.recipeFilter =
+                            searchViewModel.recipeFilter.copy(cheap = it)
+                    }
                 )
             }
             Row(
@@ -223,7 +243,10 @@ fun FilterForm(searchViewModel: SearchViewModel) {
                 )
                 Checkbox(
                     checked = searchViewModel.recipeFilter.sustainable,
-                    onCheckedChange = { searchViewModel.recipeFilter.sustainable = it }
+                    onCheckedChange = {
+                        searchViewModel.recipeFilter =
+                            searchViewModel.recipeFilter.copy(sustainable = it)
+                    }
                 )
             }
         }
@@ -236,11 +259,9 @@ fun FilterForm(searchViewModel: SearchViewModel) {
             value = searchViewModel.recipeFilter.spiceLevel,
             label = { Text(stringResource(R.string.spice_label)) },
             onSelectOption = { spiceLevel ->
-                searchViewModel.recipeFilter.spiceLevel = if (searchViewModel.recipeFilter.spiceLevel.contains(spiceLevel)) {
-                    searchViewModel.recipeFilter.spiceLevel - spiceLevel
-                } else {
-                    searchViewModel.recipeFilter.spiceLevel + spiceLevel
-                }
+                searchViewModel.recipeFilter = searchViewModel.recipeFilter.copy(
+                    spiceLevel = toggleList(searchViewModel.recipeFilter.spiceLevel, spiceLevel)
+                )
             }
         )
         MultiSelectDropdown(
@@ -253,11 +274,9 @@ fun FilterForm(searchViewModel: SearchViewModel) {
             value = searchViewModel.recipeFilter.type,
             label = { Text(stringResource(R.string.type_label)) },
             onSelectOption = { mealType ->
-                searchViewModel.recipeFilter.type = if (searchViewModel.recipeFilter.type.contains(mealType)) {
-                    searchViewModel.recipeFilter.type - mealType
-                } else {
-                    searchViewModel.recipeFilter.type + mealType
-                }
+                searchViewModel.recipeFilter = searchViewModel.recipeFilter.copy(
+                    type = toggleList(searchViewModel.recipeFilter.type, mealType)
+                )
             }
         )
         MultiSelectDropdown(
@@ -269,11 +288,9 @@ fun FilterForm(searchViewModel: SearchViewModel) {
             value = searchViewModel.recipeFilter.culture,
             label = { Text(stringResource(R.string.culture_label)) },
             onSelectOption = { cuisine ->
-                searchViewModel.recipeFilter.culture = if (searchViewModel.recipeFilter.culture.contains(cuisine)) {
-                    searchViewModel.recipeFilter.culture - cuisine
-                } else {
-                    searchViewModel.recipeFilter.culture + cuisine
-                }
+                searchViewModel.recipeFilter = searchViewModel.recipeFilter.copy(
+                    culture = toggleList(searchViewModel.recipeFilter.culture, cuisine)
+                )
             }
         )
 
@@ -295,6 +312,16 @@ fun FilterForm(searchViewModel: SearchViewModel) {
         }
     }
 }
+
+/**
+ * Adds the item if present in the list, otherwise removes the item
+ */
+private fun <T> toggleList(list: List<T>, item: T): List<T> =
+    if (list.contains(item)) {
+        list - item
+    } else {
+        list + item
+    }
 
 private data class FilterFormState(
     val maxError: Boolean = false,

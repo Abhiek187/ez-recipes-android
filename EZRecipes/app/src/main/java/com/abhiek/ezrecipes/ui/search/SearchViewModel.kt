@@ -18,11 +18,10 @@ class SearchViewModel(
 ): ViewModel() {
     var job by mutableStateOf<Job?>(null)
         private set
-    var recipeFilter by mutableStateOf(RecipeFilter())
-        private set
     var recipeError by mutableStateOf<RecipeError?>(null)
         private set
 
+    var recipeFilter by mutableStateOf(RecipeFilter())
     var recipes by mutableStateOf<List<Recipe>>(listOf())
     var isLoading by mutableStateOf(false)
     var isRecipeLoaded by mutableStateOf(false)
