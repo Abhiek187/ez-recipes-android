@@ -43,7 +43,8 @@ fun <T> MultiSelectDropdown(
             trailingIcon = {
                 Icon(
                     if (expanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
-                    contentDescription = null // TODO: add text explaining if the menu is expanded or collapsed
+                    contentDescription = if (expanded) stringResource(R.string.collapse_alt)
+                        else stringResource(R.string.expand_alt)
                 )
             },
             modifier = Modifier
