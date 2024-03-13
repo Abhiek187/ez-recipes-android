@@ -147,108 +147,54 @@ fun FilterForm(searchViewModel: SearchViewModel) {
         }
 
         Column {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.vegetarian_label),
-                    style = MaterialTheme.typography.subtitle1
-                )
-                Checkbox(
-                    checked = searchViewModel.recipeFilter.vegetarian,
-                    onCheckedChange = {
-                        searchViewModel.recipeFilter =
-                            searchViewModel.recipeFilter.copy(vegetarian = it)
-                    }
-                )
-            }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.vegan_label),
-                    style = MaterialTheme.typography.subtitle1
-                )
-                Checkbox(
-                    checked = searchViewModel.recipeFilter.vegan,
-                    onCheckedChange = {
-                        searchViewModel.recipeFilter =
-                            searchViewModel.recipeFilter.copy(vegan = it)
-                    }
-                )
-            }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.gluten_free_label),
-                    style = MaterialTheme.typography.subtitle1
-                )
-                Checkbox(
-                    checked = searchViewModel.recipeFilter.glutenFree,
-                    onCheckedChange = {
-                        searchViewModel.recipeFilter =
-                            searchViewModel.recipeFilter.copy(glutenFree = it)
-                    }
-                )
-            }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.healthy_label),
-                    style = MaterialTheme.typography.subtitle1
-                )
-                Checkbox(
-                    checked = searchViewModel.recipeFilter.healthy,
-                    onCheckedChange = {
-                        searchViewModel.recipeFilter =
-                            searchViewModel.recipeFilter.copy(healthy = it)
-                    }
-                )
-            }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.cheap_label),
-                    style = MaterialTheme.typography.subtitle1
-                )
-                Checkbox(
-                    checked = searchViewModel.recipeFilter.cheap,
-                    onCheckedChange = {
-                        searchViewModel.recipeFilter =
-                            searchViewModel.recipeFilter.copy(cheap = it)
-                    }
-                )
-            }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.sustainable_label),
-                    style = MaterialTheme.typography.subtitle1
-                )
-                Checkbox(
-                    checked = searchViewModel.recipeFilter.sustainable,
-                    onCheckedChange = {
-                        searchViewModel.recipeFilter =
-                            searchViewModel.recipeFilter.copy(sustainable = it)
-                    }
-                )
-            }
+            CheckboxRow(
+                stringId = R.string.vegetarian_label,
+                checked = searchViewModel.recipeFilter.vegetarian,
+                onCheckedChange = {
+                    searchViewModel.recipeFilter =
+                        searchViewModel.recipeFilter.copy(vegetarian = it)
+                }
+            )
+            CheckboxRow(
+                stringId = R.string.vegan_label,
+                checked = searchViewModel.recipeFilter.vegan,
+                onCheckedChange = {
+                    searchViewModel.recipeFilter =
+                        searchViewModel.recipeFilter.copy(vegan = it)
+                }
+            )
+            CheckboxRow(
+                stringId = R.string.gluten_free_label,
+                checked = searchViewModel.recipeFilter.glutenFree,
+                onCheckedChange = {
+                    searchViewModel.recipeFilter =
+                        searchViewModel.recipeFilter.copy(glutenFree = it)
+                }
+            )
+            CheckboxRow(
+                stringId = R.string.healthy_label,
+                checked = searchViewModel.recipeFilter.healthy,
+                onCheckedChange = {
+                    searchViewModel.recipeFilter =
+                        searchViewModel.recipeFilter.copy(healthy = it)
+                }
+            )
+            CheckboxRow(
+                stringId = R.string.cheap_label,
+                checked = searchViewModel.recipeFilter.cheap,
+                onCheckedChange = {
+                    searchViewModel.recipeFilter =
+                        searchViewModel.recipeFilter.copy(cheap = it)
+                }
+            )
+            CheckboxRow(
+                stringId = R.string.sustainable_label,
+                checked = searchViewModel.recipeFilter.sustainable,
+                onCheckedChange = {
+                    searchViewModel.recipeFilter =
+                        searchViewModel.recipeFilter.copy(sustainable = it)
+                }
+            )
         }
 
         MultiSelectDropdown(

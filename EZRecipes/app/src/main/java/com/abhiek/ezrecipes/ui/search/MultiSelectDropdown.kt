@@ -88,7 +88,7 @@ fun <T> MultiSelectDropdown(
 @FontPreviews
 @OrientationPreviews
 @Composable
-fun MultiSelectDropdownDemo() {
+private fun MultiSelectDropdownPreview() {
     var selectedOptions by remember { mutableStateOf(listOf<SpiceLevel>()) }
 
     EZRecipesTheme {
