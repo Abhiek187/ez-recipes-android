@@ -101,7 +101,10 @@ fun FilterForm(searchViewModel: SearchViewModel) {
                     },
                     placeholder = { Text(stringResource(R.string.min_cals_placeholder)) },
                     isError = caloriesExceedMax || caloriesInvalidRange,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
                     modifier = Modifier.width(75.dp)
                 )
                 Text(stringResource(R.string.calorie_label))
@@ -122,7 +125,10 @@ fun FilterForm(searchViewModel: SearchViewModel) {
                     },
                     placeholder = { Text(stringResource(R.string.max_cals_placeholder)) },
                     isError = caloriesExceedMax || caloriesInvalidRange,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
                     modifier = Modifier.width(75.dp)
                 )
                 Text(stringResource(R.string.calorie_unit))
