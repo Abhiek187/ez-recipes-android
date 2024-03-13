@@ -47,6 +47,13 @@ fun <T> MultiSelectDropdown(
                         else stringResource(R.string.expand_alt)
                 )
             },
+            // Make the dropdown appear clickable instead of grayed out
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                disabledBorderColor = MaterialTheme.colors.onSurface,
+                disabledLabelColor = MaterialTheme.colors.onSurface,
+                disabledTextColor = MaterialTheme.colors.onSurface,
+                disabledTrailingIconColor = MaterialTheme.colors.onSurface
+            ),
             modifier = Modifier
                 .clickable { expanded = true }
                 .onGloballyPositioned { coordinates ->
