@@ -1,16 +1,33 @@
 package com.abhiek.ezrecipes.data.models
 
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+
 data class RecipeFilter(
-    val query: String?,
-    val minCals: Int?,
-    val maxCals: Int?,
-    val vegetarian: Boolean?,
-    val vegan: Boolean?,
-    val glutenFree: Boolean?,
-    val healthy: Boolean?,
-    val cheap: Boolean?,
-    val sustainable: Boolean?,
-    val spiceLevel: List<SpiceLevel>,
-    val type: List<String>,
-    val culture: List<String>
-)
+    var query: String = "",
+    var minCals: Int? = null,
+    var maxCals: Int? = null,
+    var vegetarian: Boolean = false,
+    var vegan: Boolean = false,
+    var glutenFree: Boolean = false,
+    var healthy: Boolean = false,
+    var cheap: Boolean = false,
+    var sustainable: Boolean = false,
+    var spiceLevel: List<SpiceLevel> = listOf(),
+    var type: List<MealType> = listOf(),
+    var culture: List<Cuisine> = listOf()
+) {
+    fun toMap(): Map<String, Any> {
+        // Filter all the keys that aren't defined separately in the service
+        val omittedKeys = listOf("vegetarian", "vegan", "gluten-free", "healthy", "cheap",
+            "sustainable", "spice-level", "type", "culture")
+        // Convert all the keys to kebab-case
+        val gson = GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
+            .create()
+        val json = gson.toJson(this)
+        val map = gson.fromJson<Map<String, Any>>(json, object: TypeToken<Map<String, Any>>() {}.type)
+        return map.filter { (key, _) -> !omittedKeys.contains(key) }
+    }
+}

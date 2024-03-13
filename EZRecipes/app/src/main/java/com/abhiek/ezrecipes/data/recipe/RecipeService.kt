@@ -13,14 +13,29 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 import retrofit2.http.QueryMap
+import retrofit2.http.QueryName
 import java.util.concurrent.TimeUnit
 
 // The DataSource for the recipes API
 interface RecipeService {
-    @GET("")
+    @GET(".") // same as the base URL
+    @JvmSuppressWildcards // allow Any map value
     suspend fun getRecipesByFilter(
-        @QueryMap filter: RecipeFilter
+        // Just key, no value
+        @QueryName vegetarian: String? = null,
+        @QueryName vegan: String? = null,
+        @QueryName glutenFree: String? = null,
+        @QueryName healthy: String? = null,
+        @QueryName cheap: String? = null,
+        @QueryName sustainable: String? = null,
+        // Multiple repeating query parameters
+        @Query("spice-level") spiceLevels: List<SpiceLevel> = listOf(),
+        @Query("type") mealTypes: List<MealType> = listOf(),
+        @Query("culture") cuisines: List<Cuisine> = listOf(),
+        // All other filters that can be serialized like normal
+        @QueryMap filters: Map<String, Any> = mapOf()
     ): Response<List<Recipe>>
 
     @GET("random")
@@ -51,14 +66,14 @@ interface RecipeService {
                     .build()
 
                 // Convert responses to GSON (Google JSON)
-                val gsonBuilder = GsonBuilder()
+                val gson = GsonBuilder()
                     .registerTypeAdapter(Cuisine::class.java, CuisineTypeAdapter())
                     .registerTypeAdapter(MealType::class.java, MealTypeAdapter())
                     .registerTypeAdapter(SpiceLevel::class.java, SpiceLevelTypeAdapter())
                     .create()
                 val retrofit = Retrofit.Builder()
                     .baseUrl(Constants.SERVER_BASE_URL + Constants.RECIPE_PATH)
-                    .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(httpClient)
                     .build()
 

@@ -58,11 +58,9 @@ fun MainLayout(
                 }
             },
             // Show the navigation drawer on large screens
-            drawerContent = {
-                if (widthSizeClass == WindowWidthSizeClass.Expanded) {
-                    NavigationDrawer(scope, scaffoldState, navController, drawerWidth)
-                }
-            },
+            drawerContent = if (widthSizeClass == WindowWidthSizeClass.Expanded) {
+                { NavigationDrawer(scope, scaffoldState, navController, drawerWidth) }
+            } else null,
             // Limit the width of the navigation drawer so there isn't much whitespace
             drawerShape = object : Shape {
                 override fun createOutline(

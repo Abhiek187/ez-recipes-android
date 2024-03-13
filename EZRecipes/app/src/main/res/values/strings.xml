@@ -82,7 +82,6 @@
     <string name="query_section">Query</string>
     <string name="query_placeholder">food</string>
 
-    <string name="filter_section">Filters</string>
     <string name="min_cals_placeholder">0</string>
     <string name="max_cals_placeholder">2000</string>
     <string name="calorie_label">≤ Calories ≤</string>
@@ -100,6 +99,8 @@
     <string name="spice_label">Spice Level</string>
     <string name="type_label">Meal Type</string>
     <string name="culture_label">Cuisine</string>
+    <string name="expand_alt">Expand dropdown</string>
+    <string name="collapse_alt">Collapse dropdown</string>
     <string name="submit_button">Apply</string>
     <string name="no_results">No recipes found</string>
 

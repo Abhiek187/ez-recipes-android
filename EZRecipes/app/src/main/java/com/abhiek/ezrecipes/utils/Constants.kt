@@ -16,6 +16,9 @@ object Constants {
     // Error message to fallback on in case all fails
     val UNKNOWN_ERROR = Resources.getSystem().getString(R.string.unknown_error)
 
+    const val MIN_CALS = 0
+    const val MAX_CALS = 2000
+
     object Routes {
         // tabs = user-facing labels, routes = internal "pretend" URL paths
         // All tabs have routes, but not all routes have tabs

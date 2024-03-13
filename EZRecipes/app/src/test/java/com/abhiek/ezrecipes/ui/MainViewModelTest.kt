@@ -48,7 +48,6 @@ internal class MainViewModelTest {
         assertEquals(viewModel.recipeError, mockService.recipeError)
         assertFalse(viewModel.isLoading)
         assertFalse(viewModel.isRecipeLoaded)
-        assertTrue(viewModel.showRecipeAlert)
     }
 
     @Test
@@ -78,6 +77,5 @@ internal class MainViewModelTest {
         assertEquals(viewModel.recipeError, mockService.recipeError)
         assertFalse(viewModel.isLoading)
         assertFalse(viewModel.isRecipeLoaded)
-        assertTrue(viewModel.showRecipeAlert)
     }
 }

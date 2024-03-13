@@ -1,8 +1,6 @@
 package com.abhiek.ezrecipes.data.recipe
 
-import com.abhiek.ezrecipes.data.models.Recipe
-import com.abhiek.ezrecipes.data.models.RecipeError
-import com.abhiek.ezrecipes.data.models.RecipeFilter
+import com.abhiek.ezrecipes.data.models.*
 import com.abhiek.ezrecipes.utils.Constants
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
@@ -18,16 +16,27 @@ object MockRecipeService: RecipeService {
         Constants.Mocks.THAI_BASIL_CHICKEN
     )
 
-    private const val recipeErrorString =
+    private const val RECIPE_ERROR_STRING =
         "{\"error\":\"You are not authorized. Please read https://spoonacular.com/food-api/docs#Authentication\"}"
     val recipeError =
         RecipeError(error = "You are not authorized. Please read https://spoonacular.com/food-api/docs#Authentication")
 
-    override suspend fun getRecipesByFilter(filter: RecipeFilter): Response<List<Recipe>> {
+    override suspend fun getRecipesByFilter(
+        vegetarian: String?,
+        vegan: String?,
+        glutenFree: String?,
+        healthy: String?,
+        cheap: String?,
+        sustainable: String?,
+        spiceLevels: List<SpiceLevel>,
+        mealTypes: List<MealType>,
+        cuisines: List<Cuisine>,
+        filters: Map<String, Any>
+    ): Response<List<Recipe>> {
         return if (isSuccess) {
             if (noResults) Response.success(listOf()) else Response.success(recipes)
         } else {
-            Response.error(401, recipeErrorString.toResponseBody())
+            Response.error(401, RECIPE_ERROR_STRING.toResponseBody())
         }
     }
 
@@ -35,7 +44,7 @@ object MockRecipeService: RecipeService {
         return if (isSuccess) {
             Response.success(recipes[1])
         } else {
-            Response.error(401, recipeErrorString.toResponseBody())
+            Response.error(401, RECIPE_ERROR_STRING.toResponseBody())
         }
     }
 
@@ -43,7 +52,7 @@ object MockRecipeService: RecipeService {
         return if (isSuccess) {
             Response.success(recipes[1])
         } else {
-            Response.error(401, recipeErrorString.toResponseBody())
+            Response.error(401, RECIPE_ERROR_STRING.toResponseBody())
         }
     }
 }
