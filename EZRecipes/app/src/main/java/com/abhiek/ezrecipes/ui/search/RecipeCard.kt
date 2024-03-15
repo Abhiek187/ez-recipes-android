@@ -41,6 +41,7 @@ fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(8.dp)
         ) {
             AsyncImage(
@@ -49,7 +50,6 @@ fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
                 modifier = Modifier
                     .size(width = 312.dp, height = 231.dp)
                     .padding(8.dp),
-                alignment = Alignment.Center,
                 contentScale = ContentScale.Fit
             )
             Divider()
