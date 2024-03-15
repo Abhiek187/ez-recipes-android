@@ -65,7 +65,7 @@ fun NutritionLabel(recipe: Recipe) {
 
             // Nutritional information
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .padding(bottom = 8.dp)

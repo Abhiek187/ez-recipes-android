@@ -33,23 +33,7 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.Blue300
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
-
-private fun boldAnnotatedString(
-    text: String,
-    startIndex: Int = 0,
-    endIndex: Int
-) = buildAnnotatedString {
-    append(text)
-
-    // Bold only the portion: [startIndex, endIndex)
-    addStyle(
-        style = SpanStyle(
-            fontWeight = FontWeight.Bold
-        ),
-        start = startIndex,
-        end = endIndex
-    )
-}
+import com.abhiek.ezrecipes.utils.boldAnnotatedString
 
 @Composable
 fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Unit) {

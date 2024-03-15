@@ -12,9 +12,10 @@ import com.abhiek.ezrecipes.ui.MainViewModelFactory
 import com.abhiek.ezrecipes.ui.home.Home
 import com.abhiek.ezrecipes.ui.recipe.Recipe
 import com.abhiek.ezrecipes.ui.search.FilterForm
+import com.abhiek.ezrecipes.ui.search.SearchResults
 import com.abhiek.ezrecipes.ui.search.SearchViewModel
 import com.abhiek.ezrecipes.ui.search.SearchViewModelFactory
-import com.abhiek.ezrecipes.utils.Constants
+import com.abhiek.ezrecipes.utils.*
 
 @Composable
 fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidthSizeClass) {
@@ -32,7 +33,16 @@ fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidt
         navController = navController,
         startDestination = Constants.Routes.HOME
     ) {
-        composable(Constants.Routes.HOME) {
+        composable(
+            Constants.Routes.HOME,
+            // Fading in is ok when switching tabs
+            exitTransition = if (mainViewModel.recipe != null) {
+                { slideLeftExit() }
+            } else null,
+            popEnterTransition = if (mainViewModel.recipe != null) {
+                { slideRightEnter() }
+            } else null
+        ) {
             Home(mainViewModel) {
                 navController.navigate(
                     Constants.Routes.RECIPE.replace(
@@ -50,12 +60,42 @@ fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidt
                 navDeepLink {
                     uriPattern = "${Constants.RECIPE_WEB_ORIGIN}/${Constants.Routes.RECIPE}"
                 }
-            )
+            ),
+            // Mimic sliding transitions on iOS
+            enterTransition = { slideLeftEnter() },
+            exitTransition = { slideLeftExit() },
+            popEnterTransition = { slideRightEnter() },
+            popExitTransition = { slideRightExit() }
         ) { backStackEntry ->
             Recipe(mainViewModel, isWideScreen, backStackEntry.arguments?.getString("id"))
         }
-        composable(Constants.Routes.SEARCH) {
-            FilterForm(searchViewModel)
+        composable(
+            Constants.Routes.SEARCH,
+            exitTransition = if (searchViewModel.recipes.isNotEmpty()) {
+                { slideLeftExit() }
+            } else null,
+            popEnterTransition = if (searchViewModel.recipes.isNotEmpty()) {
+                { slideRightEnter() }
+            } else null
+        ) {
+            FilterForm(searchViewModel) {
+                navController.navigate(Constants.Routes.RESULTS)
+            }
+        }
+        composable(
+            Constants.Routes.RESULTS,
+            enterTransition = { slideLeftEnter() },
+            exitTransition = { slideLeftExit() },
+            popEnterTransition = { slideRightEnter() },
+            popExitTransition = { slideRightExit() }
+        ) {
+            SearchResults(searchViewModel.recipes, mainViewModel) {
+                navController.navigate(
+                    Constants.Routes.RECIPE.replace(
+                        "{id}", mainViewModel.recipe?.id.toString()
+                    )
+                )
+            }
         }
     }
 }

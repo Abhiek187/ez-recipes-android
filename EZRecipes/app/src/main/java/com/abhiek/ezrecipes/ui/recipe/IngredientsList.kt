@@ -45,7 +45,7 @@ fun IngredientsList(ingredients: List<Ingredient>) {
 
             // Ingredients list
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 16.dp)

@@ -19,11 +19,10 @@ class MainViewModel(
     // Only expose a read-only copy of the state to the View
     var job by mutableStateOf<Job?>(null)
         private set
-    var recipe by mutableStateOf<Recipe?>(null)
-        private set
     var recipeError by mutableStateOf<RecipeError?>(null)
         private set
 
+    var recipe by mutableStateOf<Recipe?>(null)
     var isLoading by mutableStateOf(false)
     // Alerts the home screen to navigate to the recipe screen
     var isRecipeLoaded by mutableStateOf(false)
