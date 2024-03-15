@@ -36,7 +36,7 @@ import com.abhiek.ezrecipes.utils.getActivity
 import kotlin.math.floor
 
 @Composable
-fun FilterForm(searchViewModel: SearchViewModel) {
+fun FilterForm(searchViewModel: SearchViewModel, onNavigateToResults: () -> Unit) {
     var caloriesExceedMax by remember { mutableStateOf(false) }
     var caloriesInvalidRange by remember { mutableStateOf(false) }
 
@@ -55,6 +55,15 @@ fun FilterForm(searchViewModel: SearchViewModel) {
 
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    if (searchViewModel.isRecipeLoaded) {
+        LaunchedEffect(searchViewModel.recipes) {
+            if (searchViewModel.recipes.isNotEmpty()) {
+                onNavigateToResults()
+                searchViewModel.isRecipeLoaded = false
+            }
         }
     }
 
@@ -316,7 +325,7 @@ private fun FilterFormPreview(
 
     EZRecipesTheme {
         Surface {
-            FilterForm(viewModel)
+            FilterForm(viewModel) {}
         }
     }
 }

@@ -12,6 +12,7 @@ import com.abhiek.ezrecipes.ui.MainViewModelFactory
 import com.abhiek.ezrecipes.ui.home.Home
 import com.abhiek.ezrecipes.ui.recipe.Recipe
 import com.abhiek.ezrecipes.ui.search.FilterForm
+import com.abhiek.ezrecipes.ui.search.SearchResults
 import com.abhiek.ezrecipes.ui.search.SearchViewModel
 import com.abhiek.ezrecipes.ui.search.SearchViewModelFactory
 import com.abhiek.ezrecipes.utils.Constants
@@ -55,7 +56,18 @@ fun NavigationGraph(navController: NavHostController, widthSizeClass: WindowWidt
             Recipe(mainViewModel, isWideScreen, backStackEntry.arguments?.getString("id"))
         }
         composable(Constants.Routes.SEARCH) {
-            FilterForm(searchViewModel)
+            FilterForm(searchViewModel) {
+                navController.navigate(Constants.Routes.RESULTS)
+            }
+        }
+        composable(Constants.Routes.RESULTS) {
+            SearchResults(searchViewModel.recipes, mainViewModel) {
+                navController.navigate(
+                    Constants.Routes.RECIPE.replace(
+                        "{id}", mainViewModel.recipe?.id.toString()
+                    )
+                )
+            }
         }
     }
 }
