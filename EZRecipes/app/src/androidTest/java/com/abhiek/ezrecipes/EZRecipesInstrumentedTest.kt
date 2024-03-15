@@ -18,7 +18,6 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.abhiek.ezrecipes.ui.MainActivity
 import com.abhiek.ezrecipes.ui.MainLayout
-import com.abhiek.ezrecipes.ui.navbar.Tab
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
