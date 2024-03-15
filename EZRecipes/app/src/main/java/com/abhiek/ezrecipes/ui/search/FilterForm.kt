@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui.search
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -11,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -42,6 +44,7 @@ fun FilterForm(searchViewModel: SearchViewModel, onNavigateToResults: () -> Unit
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val density = LocalDensity.current
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -143,7 +146,20 @@ fun FilterForm(searchViewModel: SearchViewModel, onNavigateToResults: () -> Unit
                 Text(stringResource(R.string.calorie_unit))
             }
             // Form errors
-            if (caloriesExceedMax) {
+            AnimatedVisibility(
+                visible = caloriesExceedMax,
+                enter = slideInVertically {
+                    // Slide in from 40 dp from the top
+                    with(density) { -40.dp.roundToPx() }
+                } + expandVertically(
+                    // Expand from the top
+                    expandFrom = Alignment.Top
+                ) + fadeIn(
+                    // Fade in with the initial alpha of 0.3f
+                    initialAlpha = 0.3f
+                ),
+                exit = slideOutVertically() + shrinkVertically() + fadeOut()
+            ) {
                 Text(
                     text = stringResource(R.string.calorie_exceed_max_error),
                     style = MaterialTheme.typography.caption.copy(
@@ -151,7 +167,17 @@ fun FilterForm(searchViewModel: SearchViewModel, onNavigateToResults: () -> Unit
                     )
                 )
             }
-            if (caloriesInvalidRange) {
+            AnimatedVisibility(
+                visible = caloriesInvalidRange,
+                enter = slideInVertically {
+                    with(density) { -40.dp.roundToPx() }
+                } + expandVertically(
+                    expandFrom = Alignment.Top
+                ) + fadeIn(
+                    initialAlpha = 0.3f
+                ),
+                exit = slideOutVertically() + shrinkVertically() + fadeOut()
+            ) {
                 Text(
                     text = stringResource(R.string.calorie_invalid_range_error),
                     style = MaterialTheme.typography.caption.copy(
@@ -265,9 +291,10 @@ fun FilterForm(searchViewModel: SearchViewModel, onNavigateToResults: () -> Unit
             if (searchViewModel.noRecipesFound) {
                 Text(
                     text = stringResource(R.string.no_results),
-                    style = MaterialTheme.typography.body2.copy(
+                    style = MaterialTheme.typography.body1.copy(
                         color = MaterialTheme.colors.error
-                    )
+                    ),
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }
