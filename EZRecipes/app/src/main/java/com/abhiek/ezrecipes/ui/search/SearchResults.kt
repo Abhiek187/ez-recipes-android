@@ -1,8 +1,9 @@
 package com.abhiek.ezrecipes.ui.search
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -25,7 +26,6 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SearchResults(
     recipes: List<Recipe>,
@@ -33,9 +33,7 @@ fun SearchResults(
     onNavigateToRecipe: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .padding(8.dp)
-            .verticalScroll(rememberScrollState())
+        modifier = Modifier.padding(8.dp)
     ) {
         Text(
             text = stringResource(R.string.results_title),
@@ -46,14 +44,15 @@ fun SearchResults(
             modifier = Modifier.fillMaxWidth()
         )
 
-        FlowRow(
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 350.dp),
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            recipes.forEach { recipe ->
+            items(recipes) { recipe ->
                 RecipeCard(recipe) {
                     mainViewModel.recipe = recipe
                     onNavigateToRecipe()
