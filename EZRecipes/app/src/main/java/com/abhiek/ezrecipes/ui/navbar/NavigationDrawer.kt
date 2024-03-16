@@ -2,10 +2,7 @@ package com.abhiek.ezrecipes.ui.navbar
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.DrawerValue
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberDrawerState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -87,12 +84,14 @@ fun NavigationDrawer(
 @FontPreviews
 @OrientationPreviews
 @Composable
-fun NavigationDrawerPreview() {
+private fun NavigationDrawerPreview() {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val navController = rememberNavController()
 
     EZRecipesTheme {
-        NavigationDrawer(scope, scaffoldState, navController, 300)
+        Surface {
+            NavigationDrawer(scope, scaffoldState, navController, 300)
+        }
     }
 }
