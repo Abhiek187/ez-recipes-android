@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
@@ -28,11 +29,11 @@ fun NavRail(navController: NavController) {
                 selected = currentRoute == item.route,
                 onClick = {
                     navController.navigate(item.route) {
-                        // Pop all previous routes from the back stack until the selected route is found
-                        navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route)
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
                         launchSingleTop = true
+                        restoreState = true
                     }
                 }
             )

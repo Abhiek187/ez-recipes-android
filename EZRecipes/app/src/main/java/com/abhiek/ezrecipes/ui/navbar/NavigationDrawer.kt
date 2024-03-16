@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.R
@@ -66,11 +67,11 @@ fun NavigationDrawer(
                 selected = currentRoute == item.route,
                 onItemClick = {
                     navController.navigate(item.route) {
-                        // Pop all previous routes from the back stack until the selected route is found
-                        navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route)
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
                         launchSingleTop = true
+                        restoreState = true
                     }
                     scope.launch {
                         scaffoldState.drawerState.close()
