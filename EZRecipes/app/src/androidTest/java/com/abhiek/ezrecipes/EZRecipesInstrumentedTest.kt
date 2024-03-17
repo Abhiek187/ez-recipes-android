@@ -253,6 +253,7 @@ internal class EZRecipesInstrumentedTest {
         // Use the hamburger menu on large screens
         val hamburgerMenu = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
+        var shotNum = 1
 
         if (hamburgerMenu.isDisplayed()) {
             hamburgerMenu
@@ -261,6 +262,8 @@ internal class EZRecipesInstrumentedTest {
             composeTestRule
                 .onNodeWithContentDescription(activity.getString(R.string.app_logo_alt))
                 .assertExists()
+            screenshot("search-screen", shotNum)
+            shotNum += 1
         }
 
         val searchTab = composeTestRule
@@ -279,7 +282,6 @@ internal class EZRecipesInstrumentedTest {
             resultsPlaceholder.assertExists()
         }
 
-        var shotNum = 1
         screenshot("search-screen", shotNum)
         shotNum += 1
         composeTestRule
