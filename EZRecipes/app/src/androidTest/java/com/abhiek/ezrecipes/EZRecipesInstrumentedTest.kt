@@ -38,9 +38,9 @@ internal class EZRecipesInstrumentedTest {
     private val extras = InstrumentationRegistry.getArguments()
     private val isLocal = extras.getString("ci") != "true"
 
-    private fun screenshot(name: String) {
+    private fun screenshot(name: String, shotNum: Int) {
         if (isLocal) {
-            Screengrab.screenshot(name)
+            Screengrab.screenshot("$name-$shotNum")
         }
     }
 
@@ -104,7 +104,7 @@ internal class EZRecipesInstrumentedTest {
             .assertDoesNotExist()
         // Take screenshots along the way
         var shotNum = 1
-        screenshot("home-screen-$shotNum")
+        screenshot("home-screen", shotNum)
         shotNum += 1
 
         // After clicking the find recipe button, it should be disabled
@@ -159,7 +159,7 @@ internal class EZRecipesInstrumentedTest {
         intended(shareIntent)
 
         shotNum = 1
-        screenshot("recipe-screen-$shotNum")
+        screenshot("recipe-screen", shotNum)
         shotNum += 1
 
         // Since the recipe loaded will be random, check all the elements that are guaranteed
@@ -205,7 +205,7 @@ internal class EZRecipesInstrumentedTest {
             .onNodeWithText(activity.getString(R.string.summary))
             .performScrollTo()
             .assertExists()
-        screenshot("recipe-screen-${shotNum}")
+        screenshot("recipe-screen", shotNum)
         shotNum += 1
 
         // "Ingredients" appear in each step card
@@ -214,21 +214,21 @@ internal class EZRecipesInstrumentedTest {
             .onFirst()
             .performScrollTo()
             .assertExists()
-        screenshot("recipe-screen-${shotNum}")
+        screenshot("recipe-screen", shotNum)
         shotNum += 1
 
         composeTestRule
             .onNodeWithText(activity.getString(R.string.steps))
             .performScrollTo()
             .assertExists()
-        screenshot("recipe-screen-${shotNum}")
+        screenshot("recipe-screen", shotNum)
         shotNum += 1
 
         composeTestRule
             .onNodeWithText(activity.getString(R.string.attribution))
             .performScrollTo()
             .assertExists()
-        screenshot("recipe-screen-${shotNum}")
+        screenshot("recipe-screen", shotNum)
         shotNum += 1
 
         // Check that clicking the show another recipe button disables the button
@@ -243,5 +243,56 @@ internal class EZRecipesInstrumentedTest {
             activity.onBackPressedDispatcher.onBackPressed()
         }
         findRecipeButton.assertExists()
+    }
+
+    @LargeTest
+    @Test
+    fun testSearchRecipes() {
+        // Click the search tab
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.search_tab))
+            .performClick()
+        var shotNum = 1
+        screenshot("search-screen", shotNum)
+        shotNum += 1
+
+        // Interact with all the filter options
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.query_section))
+            .performTextInput("pasta")
+
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.calorie_unit))
+            .assertExists()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.min_cals_placeholder))
+            .performTextInput("500")
+
+        // Check that all the form errors appear
+        val maxCalTextField = composeTestRule
+            .onNodeWithText(activity.getString(R.string.max_cals_placeholder))
+        maxCalTextField.performTextInput("80")
+        val calorieRangeError = composeTestRule
+            .onNodeWithText(activity.getString(R.string.calorie_invalid_range_error))
+        calorieRangeError.assertExists()
+        val submitButton = composeTestRule
+            .onNodeWithText(activity.getString(R.string.submit_button))
+        submitButton.assertIsNotEnabled()
+
+        composeTestRule
+            .onNodeWithText("80")
+            .performTextInput("00")
+        val maxCaloriesError = composeTestRule
+            .onNodeWithText(activity.getString(R.string.calorie_exceed_max_error))
+        maxCaloriesError.assertExists()
+        submitButton.assertIsNotEnabled()
+
+        composeTestRule
+            .onNodeWithText("8000")
+            .performTextClearance()
+        maxCalTextField.performTextInput("800")
+        calorieRangeError.assertDoesNotExist()
+        maxCaloriesError.assertDoesNotExist()
+        submitButton.assertIsEnabled()
     }
 }
