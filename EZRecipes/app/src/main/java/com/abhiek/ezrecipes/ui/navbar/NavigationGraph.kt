@@ -119,7 +119,9 @@ fun NavigationGraph(
                             Constants.Routes.RECIPE.replace(
                                 "{id}", mainViewModel.recipe?.id.toString()
                             )
-                        )
+                        ) {
+                            launchSingleTop = true
+                        }
                     }
                 }
             }
@@ -137,7 +139,9 @@ fun NavigationGraph(
                         Constants.Routes.RECIPE.replace(
                             "{id}", mainViewModel.recipe?.id.toString()
                         )
-                    )
+                    ) {
+                        launchSingleTop = true
+                    }
                 }
             }
         }
