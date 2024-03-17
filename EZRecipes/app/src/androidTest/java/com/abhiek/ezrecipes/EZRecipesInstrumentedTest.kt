@@ -250,14 +250,38 @@ internal class EZRecipesInstrumentedTest {
     @Test
     fun testSearchRecipes() {
         // Click the search tab
+        // Use the hamburger menu on large screens
+        val hamburgerMenu = composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
+
+        if (hamburgerMenu.isDisplayed()) {
+            hamburgerMenu
+                .assertHasClickAction()
+                .performClick()
+            composeTestRule
+                .onNodeWithContentDescription(activity.getString(R.string.app_logo_alt))
+                .assertExists()
+        }
+
         val searchTab = composeTestRule
             .onNodeWithText(activity.getString(R.string.search_tab))
         searchTab.performClick()
+
+        // Interact with all the filter options
+        // The results placeholder should only show on large screens
+        val resultsTitle = composeTestRule
+            .onNodeWithText(activity.getString(R.string.results_title))
+        val resultsPlaceholder = composeTestRule
+            .onNodeWithText(activity.getString(R.string.results_placeholder))
+
+        if (resultsPlaceholder.isDisplayed()) {
+            resultsTitle.assertExists()
+            resultsPlaceholder.assertExists()
+        }
+
         var shotNum = 1
         screenshot("search-screen", shotNum)
         shotNum += 1
-
-        // Interact with all the filter options
         composeTestRule
             .onNodeWithText(activity.getString(R.string.query_section))
             .performTextInput("pasta")
@@ -369,11 +393,17 @@ internal class EZRecipesInstrumentedTest {
 
         // Submit the form and wait for results
         submitButton.performClick()
-        composeTestRule.waitUntil(timeoutMillis = 30_000) {
-            composeTestRule
-                .onAllNodesWithText(activity.getString(R.string.results_title))
-                .fetchSemanticsNodes()
-                .isNotEmpty()
+
+        if (resultsPlaceholder.isDisplayed()) {
+            // Wait until the placeholder disappears on large screens
+            composeTestRule.waitUntil(timeoutMillis = 30_000) {
+                resultsPlaceholder.isNotDisplayed()
+            }
+        } else {
+            // Wait until the results are shown on small screens
+            composeTestRule.waitUntil(timeoutMillis = 30_000) {
+                resultsTitle.isDisplayed()
+            }
         }
         screenshot("search-screen", shotNum)
         shotNum += 1
