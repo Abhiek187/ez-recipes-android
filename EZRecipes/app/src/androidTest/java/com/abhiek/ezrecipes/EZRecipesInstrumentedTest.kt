@@ -114,6 +114,7 @@ internal class EZRecipesInstrumentedTest {
         // Wait up to 30 seconds for the recipe to load
         // waitUntil defaults to 1 second before timeout
         composeTestRule.waitUntil(timeoutMillis = 30_000) {
+            // Expression must be a boolean
             composeTestRule
                 .onAllNodesWithText(activity.getString(R.string.find_recipe_button))
                 .fetchSemanticsNodes()
@@ -249,9 +250,9 @@ internal class EZRecipesInstrumentedTest {
     @Test
     fun testSearchRecipes() {
         // Click the search tab
-        composeTestRule
+        val searchTab = composeTestRule
             .onNodeWithText(activity.getString(R.string.search_tab))
-            .performClick()
+        searchTab.performClick()
         var shotNum = 1
         screenshot("search-screen", shotNum)
         shotNum += 1
@@ -294,5 +295,87 @@ internal class EZRecipesInstrumentedTest {
         calorieRangeError.assertDoesNotExist()
         maxCaloriesError.assertDoesNotExist()
         submitButton.assertIsEnabled()
+
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.vegetarian_label))
+            .assertExists()
+            .performClick()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.vegan_label))
+            .assertExists()
+            .performClick()
+            .performClick()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.gluten_free_label))
+            .assertExists()
+            .performClick()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.healthy_label))
+            .assertExists()
+            .performClick()
+            .performClick()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.cheap_label))
+            .assertExists()
+            .performClick()
+            .performClick()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.sustainable_label))
+            .assertExists()
+            .performClick()
+            .performClick()
+
+        val spiceLevelDropdown = composeTestRule
+            .onNodeWithText(activity.getString(R.string.spice_label))
+        spiceLevelDropdown.performClick()
+        composeTestRule
+            .onNodeWithText("none")
+            .performClick()
+        composeTestRule
+            .onNodeWithText("mild")
+            .performClick()
+        composeTestRule
+            .onNodeWithText("spicy")
+            .performClick()
+            .performClick()
+        spiceLevelDropdown.performClick()
+
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.type_label))
+            .performClick()
+        composeTestRule
+            .onNodeWithText("dinner")
+            .performClick()
+        composeTestRule
+            .onNodeWithText("lunch")
+            .performClick()
+        composeTestRule
+            .onNodeWithText("main course")
+            .performClick()
+        composeTestRule
+            .onNodeWithText("main dish")
+            .performClick()
+        searchTab.performClick()
+
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.culture_label))
+            .performClick()
+        composeTestRule
+            .onNodeWithText("Italian")
+            .performClick()
+        searchTab.performClick()
+        screenshot("search-screen", shotNum)
+        shotNum += 1
+
+        // Submit the form and wait for results
+        submitButton.performClick()
+        composeTestRule.waitUntil(timeoutMillis = 30_000) {
+            composeTestRule
+                .onAllNodesWithText(activity.getString(R.string.results_title))
+                .fetchSemanticsNodes()
+                .isNotEmpty()
+        }
+        screenshot("search-screen", shotNum)
+        shotNum += 1
     }
 }
