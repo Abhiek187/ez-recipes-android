@@ -38,7 +38,11 @@ import com.abhiek.ezrecipes.utils.getActivity
 import kotlin.math.floor
 
 @Composable
-fun FilterForm(searchViewModel: SearchViewModel, onNavigateToResults: () -> Unit) {
+fun FilterForm(
+    searchViewModel: SearchViewModel,
+    modifier: Modifier = Modifier,
+    onNavigateToResults: () -> Unit
+) {
     var caloriesExceedMax by remember { mutableStateOf(false) }
     var caloriesInvalidRange by remember { mutableStateOf(false) }
 
@@ -72,9 +76,9 @@ fun FilterForm(searchViewModel: SearchViewModel, onNavigateToResults: () -> Unit
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .padding(16.dp)
+            .fillMaxHeight()
             .verticalScroll(rememberScrollState())
     ) {
         TextField(

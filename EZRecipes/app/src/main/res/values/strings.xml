@@ -105,4 +105,5 @@
     <string name="no_results">No recipes found</string>
 
     <string name="results_title">Results</string>
+    <string name="results_placeholder">Use the filters to search for your favorite recipes!</string>
 </resources>
