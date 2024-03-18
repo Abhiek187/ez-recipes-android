@@ -50,7 +50,8 @@ fun DrawerListItem(item: Tab, selected: Boolean, onItemClick: () -> Unit) {
             style = MaterialTheme.typography.subtitle1.copy(
                 fontSize = 18.sp
             ),
-            color = if (selected) Color.Black else MaterialTheme.colors.onBackground
+            color = if (selected) Color.Black else MaterialTheme.colors.onBackground,
+            modifier = Modifier.clickable(onClick = onItemClick)
         )
     }
 }
