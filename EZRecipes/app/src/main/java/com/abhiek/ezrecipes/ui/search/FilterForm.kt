@@ -38,7 +38,11 @@ import com.abhiek.ezrecipes.utils.getActivity
 import kotlin.math.floor
 
 @Composable
-fun FilterForm(searchViewModel: SearchViewModel, onNavigateToResults: () -> Unit) {
+fun FilterForm(
+    searchViewModel: SearchViewModel,
+    modifier: Modifier = Modifier,
+    onNavigateToResults: () -> Unit
+) {
     var caloriesExceedMax by remember { mutableStateOf(false) }
     var caloriesInvalidRange by remember { mutableStateOf(false) }
 
@@ -72,9 +76,9 @@ fun FilterForm(searchViewModel: SearchViewModel, onNavigateToResults: () -> Unit
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .padding(16.dp)
+            .fillMaxHeight()
             .verticalScroll(rememberScrollState())
     ) {
         TextField(
@@ -99,6 +103,16 @@ fun FilterForm(searchViewModel: SearchViewModel, onNavigateToResults: () -> Unit
                 TextField(
                     value = searchViewModel.recipeFilter.minCals?.toString() ?: "",
                     onValueChange = {
+                        if (it.isEmpty()) {
+                            // Treat empty inputs as null
+                            searchViewModel.recipeFilter =
+                                searchViewModel.recipeFilter.copy(minCals = null)
+                            caloriesExceedMax = (searchViewModel.recipeFilter.maxCals
+                                ?: Constants.MIN_CALS) > Constants.MAX_CALS
+                            caloriesInvalidRange = false
+                            return@TextField
+                        }
+
                         // Disregard decimals (to be more consistent with other platforms)
                         val parsedValue = it.toFloatOrNull() ?: return@TextField
                         val newValue = floor(parsedValue).toInt()
@@ -123,6 +137,15 @@ fun FilterForm(searchViewModel: SearchViewModel, onNavigateToResults: () -> Unit
                 TextField(
                     value = searchViewModel.recipeFilter.maxCals?.toString() ?: "",
                     onValueChange = {
+                        if (it.isEmpty()) {
+                            searchViewModel.recipeFilter =
+                                searchViewModel.recipeFilter.copy(maxCals = null)
+                            caloriesExceedMax = (searchViewModel.recipeFilter.minCals
+                                ?: Constants.MIN_CALS) > Constants.MAX_CALS
+                            caloriesInvalidRange = false
+                            return@TextField
+                        }
+
                         val parsedValue = it.toFloatOrNull() ?: return@TextField
                         val newValue = floor(parsedValue).toInt()
 

@@ -38,9 +38,9 @@ internal class EZRecipesInstrumentedTest {
     private val extras = InstrumentationRegistry.getArguments()
     private val isLocal = extras.getString("ci") != "true"
 
-    private fun screenshot(name: String) {
+    private fun screenshot(name: String, shotNum: Int) {
         if (isLocal) {
-            Screengrab.screenshot(name)
+            Screengrab.screenshot("$name-$shotNum")
         }
     }
 
@@ -104,7 +104,7 @@ internal class EZRecipesInstrumentedTest {
             .assertDoesNotExist()
         // Take screenshots along the way
         var shotNum = 1
-        screenshot("home-screen-$shotNum")
+        screenshot("home-screen", shotNum)
         shotNum += 1
 
         // After clicking the find recipe button, it should be disabled
@@ -114,6 +114,7 @@ internal class EZRecipesInstrumentedTest {
         // Wait up to 30 seconds for the recipe to load
         // waitUntil defaults to 1 second before timeout
         composeTestRule.waitUntil(timeoutMillis = 30_000) {
+            // Expression must be a boolean
             composeTestRule
                 .onAllNodesWithText(activity.getString(R.string.find_recipe_button))
                 .fetchSemanticsNodes()
@@ -159,7 +160,7 @@ internal class EZRecipesInstrumentedTest {
         intended(shareIntent)
 
         shotNum = 1
-        screenshot("recipe-screen-$shotNum")
+        screenshot("recipe-screen", shotNum)
         shotNum += 1
 
         // Since the recipe loaded will be random, check all the elements that are guaranteed
@@ -205,7 +206,7 @@ internal class EZRecipesInstrumentedTest {
             .onNodeWithText(activity.getString(R.string.summary))
             .performScrollTo()
             .assertExists()
-        screenshot("recipe-screen-${shotNum}")
+        screenshot("recipe-screen", shotNum)
         shotNum += 1
 
         // "Ingredients" appear in each step card
@@ -214,21 +215,21 @@ internal class EZRecipesInstrumentedTest {
             .onFirst()
             .performScrollTo()
             .assertExists()
-        screenshot("recipe-screen-${shotNum}")
+        screenshot("recipe-screen", shotNum)
         shotNum += 1
 
         composeTestRule
             .onNodeWithText(activity.getString(R.string.steps))
             .performScrollTo()
             .assertExists()
-        screenshot("recipe-screen-${shotNum}")
+        screenshot("recipe-screen", shotNum)
         shotNum += 1
 
         composeTestRule
             .onNodeWithText(activity.getString(R.string.attribution))
             .performScrollTo()
             .assertExists()
-        screenshot("recipe-screen-${shotNum}")
+        screenshot("recipe-screen", shotNum)
         shotNum += 1
 
         // Check that clicking the show another recipe button disables the button
@@ -243,5 +244,182 @@ internal class EZRecipesInstrumentedTest {
             activity.onBackPressedDispatcher.onBackPressed()
         }
         findRecipeButton.assertExists()
+    }
+
+    @LargeTest
+    @Test
+    fun testSearchRecipes() {
+        // Click the search tab
+        // Use the hamburger menu on large screens
+        val hamburgerMenu = composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
+        var shotNum = 1
+
+        if (hamburgerMenu.isDisplayed()) {
+            hamburgerMenu
+                .assertHasClickAction()
+                .performClick()
+            composeTestRule
+                .onNodeWithContentDescription(activity.getString(R.string.app_logo_alt))
+                .assertExists()
+            screenshot("search-screen", shotNum)
+            shotNum += 1
+        }
+
+        val searchTab = composeTestRule
+            .onNodeWithText(activity.getString(R.string.search_tab))
+        searchTab.performClick()
+
+        // Interact with all the filter options
+        // The results placeholder should only show on large screens
+        val resultsTitle = composeTestRule
+            .onNodeWithText(activity.getString(R.string.results_title))
+        val resultsPlaceholder = composeTestRule
+            .onNodeWithText(activity.getString(R.string.results_placeholder))
+
+        if (resultsPlaceholder.isDisplayed()) {
+            resultsTitle.assertExists()
+            resultsPlaceholder.assertExists()
+        }
+
+        screenshot("search-screen", shotNum)
+        shotNum += 1
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.query_section))
+            .performTextInput("pasta")
+
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.calorie_unit))
+            .assertExists()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.min_cals_placeholder))
+            .performTextInput("500")
+
+        // Check that all the form errors appear
+        val maxCalTextField = composeTestRule
+            .onNodeWithText(activity.getString(R.string.max_cals_placeholder))
+        maxCalTextField.performTextInput("80")
+        val calorieRangeError = composeTestRule
+            .onNodeWithText(activity.getString(R.string.calorie_invalid_range_error))
+        calorieRangeError.assertExists()
+        val submitButton = composeTestRule
+            .onNodeWithText(activity.getString(R.string.submit_button))
+        submitButton.assertIsNotEnabled()
+
+        composeTestRule
+            .onNodeWithText("80")
+            .performTextInput("00")
+        val maxCaloriesError = composeTestRule
+            .onNodeWithText(activity.getString(R.string.calorie_exceed_max_error))
+        maxCaloriesError.assertExists()
+        submitButton.assertIsNotEnabled()
+
+        composeTestRule
+            .onNodeWithText("8000")
+            .performTextClearance()
+        maxCalTextField.performTextInput("800")
+        calorieRangeError.assertDoesNotExist()
+        maxCaloriesError.assertDoesNotExist()
+        submitButton.assertIsEnabled()
+
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.vegetarian_label))
+            .assertExists()
+            .performClick()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.vegan_label))
+            .assertExists()
+            .performClick()
+            .performClick()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.gluten_free_label))
+            .assertExists()
+            .performClick()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.healthy_label))
+            .assertExists()
+            .performClick()
+            .performClick()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.cheap_label))
+            .assertExists()
+            .performClick()
+            .performClick()
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.sustainable_label))
+            .assertExists()
+            .performClick()
+            .performClick()
+
+        val spiceLevelDropdown = composeTestRule
+            .onNodeWithText(activity.getString(R.string.spice_label))
+        spiceLevelDropdown
+            .performScrollTo()
+            .performClick()
+        composeTestRule
+            .onNodeWithText("none")
+            .performClick()
+        composeTestRule
+            .onNodeWithText("mild")
+            .performClick()
+        composeTestRule
+            .onNodeWithText("spicy")
+            .performClick()
+            .performClick()
+        spiceLevelDropdown.performClick()
+
+        val mealTypeDropdown = composeTestRule
+            .onNodeWithText(activity.getString(R.string.type_label))
+        mealTypeDropdown
+            .performScrollTo()
+            .performClick()
+        composeTestRule
+            .onNodeWithText("dinner")
+            .performClick()
+        composeTestRule
+            .onNodeWithText("lunch")
+            .performScrollTo()
+            .performClick()
+        composeTestRule
+            .onNodeWithText("main course")
+            .performScrollTo()
+            .performClick()
+        composeTestRule
+            .onNodeWithText("main dish")
+            .performScrollTo()
+            .performClick()
+        mealTypeDropdown.performClick()
+
+        val cuisineDropdown = composeTestRule
+            .onNodeWithText(activity.getString(R.string.culture_label))
+        cuisineDropdown
+            .performScrollTo()
+            .performClick()
+        composeTestRule
+            .onNodeWithText("Italian")
+            .performScrollTo()
+            .performClick()
+        cuisineDropdown.performClick()
+        screenshot("search-screen", shotNum)
+        shotNum += 1
+
+        // Submit the form and wait for results
+        submitButton
+            .performScrollTo()
+            .performClick()
+
+        if (resultsPlaceholder.isDisplayed()) {
+            // Wait until the placeholder disappears on large screens
+            composeTestRule.waitUntil(timeoutMillis = 30_000) {
+                resultsPlaceholder.isNotDisplayed()
+            }
+        } else {
+            // Wait until the results are shown on small screens
+            composeTestRule.waitUntil(timeoutMillis = 30_000) {
+                resultsTitle.isDisplayed()
+            }
+        }
+        screenshot("search-screen", shotNum)
+        shotNum += 1
     }
 }

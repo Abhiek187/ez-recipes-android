@@ -2,10 +2,7 @@ package com.abhiek.ezrecipes.ui.navbar
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.DrawerValue
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberDrawerState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -14,6 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.R
@@ -66,11 +64,11 @@ fun NavigationDrawer(
                 selected = currentRoute == item.route,
                 onItemClick = {
                     navController.navigate(item.route) {
-                        // Pop all previous routes from the back stack until the selected route is found
-                        navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route)
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
                         launchSingleTop = true
+                        restoreState = true
                     }
                     scope.launch {
                         scaffoldState.drawerState.close()
@@ -86,12 +84,14 @@ fun NavigationDrawer(
 @FontPreviews
 @OrientationPreviews
 @Composable
-fun NavigationDrawerPreview() {
+private fun NavigationDrawerPreview() {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val navController = rememberNavController()
 
     EZRecipesTheme {
-        NavigationDrawer(scope, scaffoldState, navController, 300)
+        Surface {
+            NavigationDrawer(scope, scaffoldState, navController, 300)
+        }
     }
 }

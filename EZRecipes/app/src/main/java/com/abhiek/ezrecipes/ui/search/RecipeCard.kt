@@ -34,7 +34,6 @@ fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
 
     Card(
         modifier = Modifier
-            .widthIn(min = 350.dp, max = 450.dp)
             .padding(8.dp)
             .clickable { onClick() },
         elevation = 2.dp
@@ -65,10 +64,10 @@ fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
                 )
                 IconButton(onClick = { isFavorite = !isFavorite }) {
                     Icon(
-                        imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                        contentDescription = if (isFavorite) stringResource(R.string.un_favorite_alt) else stringResource(
-                            R.string.favorite_alt
-                        ),
+                        imageVector = if (isFavorite) Icons.Filled.Favorite
+                            else Icons.Filled.FavoriteBorder,
+                        contentDescription = if (isFavorite) stringResource(R.string.un_favorite_alt)
+                            else stringResource(R.string.favorite_alt),
                         tint = MaterialTheme.colors.primary
                     )
                 }

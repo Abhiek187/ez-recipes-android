@@ -55,7 +55,7 @@ fun <T> MultiSelectDropdown(
                 disabledTrailingIconColor = MaterialTheme.colors.onSurface
             ),
             modifier = Modifier
-                .clickable { expanded = true }
+                .clickable { expanded = !expanded }
                 .onGloballyPositioned { coordinates ->
                     textFieldSize = coordinates.size.toSize()
                 }
