@@ -353,7 +353,9 @@ internal class EZRecipesInstrumentedTest {
 
         val spiceLevelDropdown = composeTestRule
             .onNodeWithText(activity.getString(R.string.spice_label))
-        spiceLevelDropdown.performClick()
+        spiceLevelDropdown
+            .performScrollTo()
+            .performClick()
         composeTestRule
             .onNodeWithText("none")
             .performClick()
@@ -366,35 +368,45 @@ internal class EZRecipesInstrumentedTest {
             .performClick()
         spiceLevelDropdown.performClick()
 
-        composeTestRule
+        val mealTypeDropdown = composeTestRule
             .onNodeWithText(activity.getString(R.string.type_label))
+        mealTypeDropdown
+            .performScrollTo()
             .performClick()
         composeTestRule
             .onNodeWithText("dinner")
             .performClick()
         composeTestRule
             .onNodeWithText("lunch")
+            .performScrollTo()
             .performClick()
         composeTestRule
             .onNodeWithText("main course")
+            .performScrollTo()
             .performClick()
         composeTestRule
             .onNodeWithText("main dish")
+            .performScrollTo()
             .performClick()
-        searchTab.performClick()
+        mealTypeDropdown.performClick()
 
-        composeTestRule
+        val cuisineDropdown = composeTestRule
             .onNodeWithText(activity.getString(R.string.culture_label))
+        cuisineDropdown
+            .performScrollTo()
             .performClick()
         composeTestRule
             .onNodeWithText("Italian")
+            .performScrollTo()
             .performClick()
-        searchTab.performClick()
+        cuisineDropdown.performClick()
         screenshot("search-screen", shotNum)
         shotNum += 1
 
         // Submit the form and wait for results
-        submitButton.performClick()
+        submitButton
+            .performScrollTo()
+            .performClick()
 
         if (resultsPlaceholder.isDisplayed()) {
             // Wait until the placeholder disappears on large screens
