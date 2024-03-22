@@ -1,0 +1,6 @@
+- Now you can search for recipes by name, calories, cuisines, and more with a dedicated search tab
+- Show messages while loading recipes
+- Show spice level, meal types, cuisines, and other facts for each recipe
+- Increase the timeout to load recipes to 1 minute
+- Add different navigation methods for small, medium, and large screen sizes
+- Adjust icons for RTL displays
