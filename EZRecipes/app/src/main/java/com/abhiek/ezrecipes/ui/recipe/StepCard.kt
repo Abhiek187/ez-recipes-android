@@ -87,7 +87,8 @@ fun StepCard(step: Step) {
                             Column {
                                 AsyncImage(
                                     model = stringResource(R.string.ingredient_url, ingredient.image),
-                                    contentDescription = ingredient.name,
+                                    // Image alts aren't needed since there's text next to them
+                                    contentDescription = null,
                                     modifier = Modifier.size(100.dp)
                                 )
                                 Text(
@@ -127,7 +128,7 @@ fun StepCard(step: Step) {
                             Column {
                                 AsyncImage(
                                     model = stringResource(R.string.equipment_url, equipment.image),
-                                    contentDescription = equipment.name,
+                                    contentDescription = null,
                                     modifier = Modifier.size(100.dp)
                                 )
                                 Text(
