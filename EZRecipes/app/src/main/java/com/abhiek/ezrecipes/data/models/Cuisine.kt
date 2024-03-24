@@ -33,6 +33,7 @@ enum class Cuisine {
     ENGLISH,
     SCOTTISH,
     SOUTH_AMERICAN,
+    CREOLE,
     UNKNOWN;
 
     override fun toString() = name.replace("_", " ").lowercase().capitalizeWords()

@@ -43,7 +43,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
 
     // Make the image caption clickable
     val annotatedLinkString = buildAnnotatedString {
-        val str = stringResource(R.string.image_copyright, recipe.credit ?: "")
+        val str = stringResource(R.string.image_copyright, recipe.credit)
         val startIndex = 8 // "Image © ".length = 8
         val endIndex = str.length // exclusive
         append(str)
@@ -83,21 +83,19 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
             contentScale = ContentScale.Fit
         )
 
-        if (recipe.credit != null) {
-            ClickableText(
-                text = annotatedLinkString,
-                style = MaterialTheme.typography.caption.copy(
-                    color = MaterialTheme.colors.onBackground
-                ),
-                modifier = Modifier.padding(horizontal = 8.dp)
-            ) { offset ->
-                // Open the URL from the annotated string
-                annotatedLinkString
-                    .getStringAnnotations(annotationTag, offset, offset)
-                    .firstOrNull()?.let { stringAnnotation ->
-                        uriHandler.openUri(stringAnnotation.item)
-                    }
-            }
+        ClickableText(
+            text = annotatedLinkString,
+            style = MaterialTheme.typography.caption.copy(
+                color = MaterialTheme.colors.onBackground
+            ),
+            modifier = Modifier.padding(horizontal = 8.dp)
+        ) { offset ->
+            // Open the URL from the annotated string
+            annotatedLinkString
+                .getStringAnnotations(annotationTag, offset, offset)
+                .firstOrNull()?.let { stringAnnotation ->
+                    uriHandler.openUri(stringAnnotation.item)
+                }
         }
 
         // Recipe info

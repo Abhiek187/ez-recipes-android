@@ -5,7 +5,7 @@ data class Recipe(
     val name: String,
     val url: String,
     val image: String,
-    val credit: String?,
+    val credit: String,
     val sourceUrl: String,
     val healthScore: Int,
     val time: Int,
