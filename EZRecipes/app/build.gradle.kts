@@ -72,7 +72,7 @@ dependencies {
     val lifecycleVersion = "2.7.0"
     val materialVersion = "1.6.3"
     val material3Version = "1.2.1"
-    val retrofitVersion = "2.9.0"
+    val retrofitVersion = "2.11.0"
     val jupiterVersion = "5.10.2"
     val espressoVersion = "3.5.1"
 
