@@ -93,12 +93,14 @@ dependencies {
     // AsyncImage
     implementation("io.coil-kt:coil-compose:2.6.0")
     // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
-    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+    implementation(platform("com.squareup.retrofit2:retrofit-bom:$retrofitVersion"))
+    implementation("com.squareup.retrofit2:retrofit")
+    implementation("com.squareup.retrofit2:converter-gson")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
+    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
 

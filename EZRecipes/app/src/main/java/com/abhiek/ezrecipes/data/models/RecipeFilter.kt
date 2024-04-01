@@ -2,6 +2,7 @@ package com.abhiek.ezrecipes.data.models
 
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import com.google.gson.ToNumberPolicy
 import com.google.gson.reflect.TypeToken
 
 data class RecipeFilter(
@@ -22,9 +23,11 @@ data class RecipeFilter(
         // Filter all the keys that aren't defined separately in the service
         val omittedKeys = listOf("vegetarian", "vegan", "gluten-free", "healthy", "cheap",
             "sustainable", "spice-level", "type", "culture")
-        // Convert all the keys to kebab-case
         val gson = GsonBuilder()
+            // Convert all the keys to kebab-case
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
+            // Convert whole numbers to longs instead of doubles
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
             .create()
         val json = gson.toJson(this)
         val map = gson.fromJson<Map<String, Any>>(json, object: TypeToken<Map<String, Any>>() {}.type)
