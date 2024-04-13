@@ -16,8 +16,8 @@ android {
         applicationId = "com.abhiek.ezrecipes"
         minSdk = 23
         targetSdk = 34
-        versionCode = 7
-        versionName = "2.0.0"
+        versionCode = 8
+        versionName = "2.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -68,9 +68,9 @@ android {
 }
 
 dependencies {
-    val composeBomVersion = "2024.03.00"
+    val composeBomVersion = "2024.04.00"
     val lifecycleVersion = "2.7.0"
-    val materialVersion = "1.6.4"
+    val materialVersion = "1.6.5"
     val material3Version = "1.2.1"
     val retrofitVersion = "2.11.0"
     val jupiterVersion = "5.10.2"

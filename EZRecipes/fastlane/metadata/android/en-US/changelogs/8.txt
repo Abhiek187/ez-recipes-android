@@ -1,0 +1,2 @@
+- Add South American and Creole as cuisines
+- Remove duplicate accessibility descriptions
