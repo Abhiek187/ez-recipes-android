@@ -77,7 +77,7 @@ dependencies {
     val espressoVersion = "3.5.1"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
