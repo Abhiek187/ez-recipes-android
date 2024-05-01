@@ -70,7 +70,7 @@ android {
 dependencies {
     val composeBomVersion = "2024.04.00"
     val lifecycleVersion = "2.7.0"
-    val materialVersion = "1.6.5"
+    val materialVersion = "1.6.6"
     val material3Version = "1.2.1"
     val retrofitVersion = "2.11.0"
     val jupiterVersion = "5.10.2"
