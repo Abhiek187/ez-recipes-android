@@ -70,14 +70,14 @@ android {
 dependencies {
     val composeBomVersion = "2024.05.00"
     val lifecycleVersion = "2.7.0"
-    val materialVersion = "1.6.6"
+    val materialVersion = "1.6.7"
     val material3Version = "1.2.1"
     val retrofitVersion = "2.11.0"
     val jupiterVersion = "5.10.2"
     val espressoVersion = "3.5.1"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
-    implementation("androidx.core:core-ktx:1.13.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
