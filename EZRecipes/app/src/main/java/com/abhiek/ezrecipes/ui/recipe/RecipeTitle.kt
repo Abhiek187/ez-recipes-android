@@ -45,13 +45,15 @@ fun RecipeTitle(recipe: Recipe) {
             modifier = Modifier.weight(1f, false)
         )
 
-        IconButton(
-            onClick = { uriHandler.openUri(recipe.url) }
-        ) {
-            Icon(
-                imageVector = Icons.Default.Link,
-                contentDescription = stringResource(R.string.recipe_link),
-            )
+        recipe.url?.let { url ->
+            IconButton(
+                onClick = { uriHandler.openUri(url) }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Link,
+                    contentDescription = stringResource(R.string.recipe_link),
+                )
+            }
         }
     }
 }
