@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -25,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.models.Cuisine
+import com.abhiek.ezrecipes.data.models.MealType
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
@@ -34,6 +35,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.Blue300
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.boldAnnotatedString
+import com.abhiek.ezrecipes.utils.contentEquals
 
 @Composable
 fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Unit) {
@@ -120,12 +122,12 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
-        if (recipe.types.isNotEmpty()) {
+        if (recipe.types.isNotEmpty() && !(recipe.types contentEquals listOf(MealType.UNKNOWN))) {
             Text(
                 text = boldAnnotatedString(
                     text = stringResource(
                         R.string.recipe_meal_types,
-                        recipe.types.joinToString(", ")
+                        recipe.types.filter { it != MealType.UNKNOWN }.joinToString(", ")
                     ),
                     endIndex = 10 // "Great for:".length = 10
                 ),
@@ -134,12 +136,12 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     .padding(horizontal = 16.dp)
             )
         }
-        if (recipe.culture.isNotEmpty()) {
+        if (recipe.culture.isNotEmpty() && !(recipe.culture contentEquals listOf(Cuisine.UNKNOWN))) {
             Text(
                 text = boldAnnotatedString(
                     text = stringResource(
                         R.string.recipe_cuisines,
-                        recipe.culture.joinToString(", ")
+                        recipe.culture.filter { it != Cuisine.UNKNOWN }.joinToString(", ")
                     ),
                     endIndex = 9 // "Cuisines:".length = 9
                 ),
