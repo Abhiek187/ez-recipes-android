@@ -16,7 +16,7 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
 fun NavRail(navController: NavController) {
-    val railItems = listOf(Tab.Home, Tab.Search)
+    val railItems = listOf(Tab.Home, Tab.Search, Tab.Glossary)
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route

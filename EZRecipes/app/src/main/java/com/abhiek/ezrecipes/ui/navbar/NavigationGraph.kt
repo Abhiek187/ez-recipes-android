@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.MainViewModelFactory
+import com.abhiek.ezrecipes.ui.glossary.Glossary
 import com.abhiek.ezrecipes.ui.home.Home
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -133,17 +134,20 @@ fun NavigationGraph(
             popEnterTransition = { slideRightEnter() },
             popExitTransition = { slideRightExit() }
         ) {
-            Row {
-                SearchResults(searchViewModel.recipes, mainViewModel) {
-                    navController.navigate(
-                        Constants.Routes.RECIPE.replace(
-                            "{id}", mainViewModel.recipe?.id.toString()
-                        )
-                    ) {
-                        launchSingleTop = true
-                    }
+            SearchResults(searchViewModel.recipes, mainViewModel) {
+                navController.navigate(
+                    Constants.Routes.RECIPE.replace(
+                        "{id}", mainViewModel.recipe?.id.toString()
+                    )
+                ) {
+                    launchSingleTop = true
                 }
             }
+        }
+        composable(
+            Constants.Routes.GLOSSARY
+        ) {
+            Glossary()
         }
     }
 }
@@ -153,7 +157,8 @@ private class NavigationGraphPreviewParameterProvider: PreviewParameterProvider<
         Constants.Routes.HOME,
         Constants.Routes.RECIPE,
         Constants.Routes.SEARCH,
-        Constants.Routes.RESULTS
+        Constants.Routes.RESULTS,
+        Constants.Routes.GLOSSARY
     )
 }
 

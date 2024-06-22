@@ -11,6 +11,7 @@
     <!-- Tabs -->
     <string name="home_tab">Home</string>
     <string name="search_tab">Search</string>
+    <string name="glossary_tab">Glossary</string>
 
     <!-- Home Screen -->
     <string name="find_recipe_button">Find Me a Recipe!</string>

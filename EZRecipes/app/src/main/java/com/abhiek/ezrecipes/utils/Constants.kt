@@ -26,6 +26,7 @@ object Constants {
         const val RECIPE = "recipe/{id}"
         const val SEARCH = "search"
         const val RESULTS = "search/results"
+        const val GLOSSARY = "glossary"
     }
 
     object Mocks {
