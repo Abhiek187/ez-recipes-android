@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -52,6 +53,11 @@ fun NavigationGraph(
     val glossaryViewModel = viewModel<GlossaryViewModel>(
         factory = GlossaryViewModelFactory(context)
     )
+
+    // Only call once when composed
+    LaunchedEffect(Unit) {
+        glossaryViewModel.checkCachedTerms()
+    }
 
     // Show the appropriate composable based on the current route, starting at the home screen
     // NavHostController is a subclass of NavController
