@@ -19,10 +19,7 @@ object Constants {
     const val MIN_CALS = 0
     const val MAX_CALS = 2000
 
-    object DataStore {
-        const val STORE_NAME = "data-store"
-        const val KEY_TERMS = "terms"
-    }
+    const val DATA_STORE_NAME = "data-store"
 
     object Routes {
         // tabs = user-facing labels, routes = internal "pretend" URL paths

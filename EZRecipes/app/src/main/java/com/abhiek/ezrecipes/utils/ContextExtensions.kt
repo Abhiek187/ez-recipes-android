@@ -24,5 +24,5 @@ tailrec fun Context.getActivity(): ComponentActivity? = when (this) {
  * DataStore singleton
  */
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-    name = Constants.DataStore.STORE_NAME
+    name = Constants.DATA_STORE_NAME
 )
