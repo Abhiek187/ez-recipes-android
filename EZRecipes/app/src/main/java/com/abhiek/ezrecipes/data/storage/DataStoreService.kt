@@ -33,7 +33,7 @@ class DataStoreService(context: Context) {
 
             // Replace the terms if they're expired
             if (System.currentTimeMillis() >= termStore.expireAt) {
-                Log.d(TAG, "Cached terms have expired, retrieving a new set of terms...")
+                Log.i(TAG, "Cached terms have expired, retrieving a new set of terms...")
                 return@map null
             }
 
@@ -62,7 +62,7 @@ class DataStoreService(context: Context) {
             )
             val termStoreStr = gson.toJson(termStore)
             preferences[KEY_TERMS] = termStoreStr
-            Log.d(TAG, "Saved terms to DataStore!")
+            Log.i(TAG, "Saved terms to DataStore!")
         }
     }
 }
