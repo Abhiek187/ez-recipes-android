@@ -19,27 +19,29 @@ class GlossaryViewModel(
     var terms by mutableStateOf<List<Term>>(listOf())
         private set
 
+    companion object {
+        private const val TAG = "GlossaryViewModel"
+    }
+
     fun checkCachedTerms() {
         viewModelScope.launch {
             // Check if terms need to be cached
-            val cachedTerms = dataStoreService.getTerms()
-            if (cachedTerms != null) {
-                terms = cachedTerms
-                return@launch
-            }
-
-            when (val result = termsRepository.getTerms()) {
-                is TermsResult.Success -> {
-                    terms = result.response
-                    dataStoreService.saveTerms(terms)
+            dataStoreService.getTerms().collect { cachedTerms ->
+                if (cachedTerms != null) {
+                    terms = cachedTerms
+                    return@collect
                 }
-                is TermsResult.Error -> {
-                    // No need to handle errors besides logging
-                    terms = listOf()
-                    Log.w(
-                        "GlossaryViewModel",
-                        "Failed to get terms :: error: ${result.recipeError}"
-                    )
+
+                when (val result = termsRepository.getTerms()) {
+                    is TermsResult.Success -> {
+                        terms = result.response
+                        dataStoreService.saveTerms(terms)
+                    }
+                    is TermsResult.Error -> {
+                        // No need to handle errors besides logging
+                        terms = listOf()
+                        Log.w(TAG, "Failed to get terms :: error: ${result.recipeError}")
+                    }
                 }
             }
         }

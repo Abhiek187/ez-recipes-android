@@ -8,8 +8,8 @@ import com.abhiek.ezrecipes.data.models.Term
 import com.abhiek.ezrecipes.data.models.TermStore
 import com.abhiek.ezrecipes.utils.dataStore
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 /**
@@ -26,32 +26,30 @@ class DataStoreService(context: Context) {
         private val KEY_TERMS = stringPreferencesKey("terms")
     }
 
-    suspend fun getTerms(): List<Term>? {
-        val termStoreFlow = dataStore.data.map { preferences ->
-            try {
-                val termStoreStr = preferences[KEY_TERMS]
-                val termStore = gson.fromJson(termStoreStr, TermStore::class.java) ?: return@map null
+    fun getTerms(): Flow<List<Term>?> =
+        dataStore.data.map { preferences ->
+            val termStoreStr = preferences[KEY_TERMS]
+            val termStore = gson.fromJson(termStoreStr, TermStore::class.java) ?: return@map null
 
-                // Replace the terms if they're expired
-                if (System.currentTimeMillis() >= termStore.expireAt) {
-                    Log.d(TAG, "Cached terms have expired, retrieving a new set of terms...")
-                    return@map null
-                }
-
-                return@map termStore.terms
-            } catch (error: JsonSyntaxException) {
-                Log.w(
-                    TAG,
-                    "Stored terms are corrupted, deleting them and retrieving a new set of terms..."
-                )
-                Log.w(TAG, "Actual error: ${error.localizedMessage}")
+            // Replace the terms if they're expired
+            if (System.currentTimeMillis() >= termStore.expireAt) {
+                Log.d(TAG, "Cached terms have expired, retrieving a new set of terms...")
                 return@map null
             }
-        }
 
-        return termStoreFlow.first()
-//        return termStoreFlow.firstOrNull()
-    }
+            return@map termStore.terms
+        }.catch { error ->
+            Log.w(
+                TAG,
+                "Stored terms are corrupted, deleting them and retrieving a new set of terms..."
+            )
+            error.localizedMessage?.let { Log.w(TAG, it) }
+
+            dataStore.edit { preferences ->
+                preferences.remove(KEY_TERMS)
+                emit(null)
+            }
+        }
 
     suspend fun saveTerms(terms: List<Term>) {
         dataStore.edit { preferences ->
