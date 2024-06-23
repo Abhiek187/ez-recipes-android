@@ -19,6 +19,10 @@ class GlossaryViewModel(
     var terms by mutableStateOf<List<Term>>(listOf())
         private set
 
+    companion object {
+        private const val TAG = "GlossaryViewModel"
+    }
+
     fun checkCachedTerms() {
         viewModelScope.launch {
             // Check if terms need to be cached
@@ -36,10 +40,7 @@ class GlossaryViewModel(
                 is TermsResult.Error -> {
                     // No need to handle errors besides logging
                     terms = listOf()
-                    Log.w(
-                        "GlossaryViewModel",
-                        "Failed to get terms :: error: ${result.recipeError}"
-                    )
+                    Log.w(TAG, "Failed to get terms :: error: ${result.recipeError}")
                 }
             }
         }
