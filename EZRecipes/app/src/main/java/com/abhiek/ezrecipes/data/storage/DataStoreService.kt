@@ -39,17 +39,17 @@ class DataStoreService(context: Context) {
 
             return@map termStore.terms
         }.catch { error ->
-        Log.w(
-            TAG,
-            "Stored terms are corrupted, deleting them and retrieving a new set of terms..."
-        )
-        error.localizedMessage?.let { Log.w(TAG, it) }
+            Log.w(
+                TAG,
+                "Stored terms are corrupted, deleting them and retrieving a new set of terms..."
+            )
+            error.localizedMessage?.let { Log.w(TAG, it) }
 
-        dataStore.edit { preferences ->
-            preferences.remove(KEY_TERMS)
-            emit(null)
+            dataStore.edit { preferences ->
+                preferences.remove(KEY_TERMS)
+                emit(null)
+            }
         }
-    }
 
         return termStoreFlow.first()
     }
