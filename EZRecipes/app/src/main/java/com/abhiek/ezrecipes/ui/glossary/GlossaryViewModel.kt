@@ -22,7 +22,11 @@ class GlossaryViewModel(
     fun checkCachedTerms() {
         viewModelScope.launch {
             // Check if terms need to be cached
-            if (dataStoreService.getTerms() != null) return@launch
+            val cachedTerms = dataStoreService.getTerms()
+            if (cachedTerms != null) {
+                terms = cachedTerms
+                return@launch
+            }
 
             when (val result = termsRepository.getTerms()) {
                 is TermsResult.Success -> {
