@@ -24,7 +24,10 @@ fun Glossary(terms: List<Term>) {
         modifier = Modifier.padding(8.dp)
     ) {
         // Sort all the terms alphabetically for ease of reference
-        itemsIndexed(terms.sortedBy { it.word }) { index, term ->
+        itemsIndexed(
+            items = terms.sortedBy { it.word },
+            key = { _, term -> term._id }
+        ) { index, term ->
             Text(
                 text = boldAnnotatedString(
                     text = "${term.word} — ${term.definition}",
