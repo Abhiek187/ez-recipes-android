@@ -6,6 +6,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -18,6 +19,8 @@ import androidx.navigation.navDeepLink
 import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.MainViewModelFactory
 import com.abhiek.ezrecipes.ui.glossary.Glossary
+import com.abhiek.ezrecipes.ui.glossary.GlossaryViewModel
+import com.abhiek.ezrecipes.ui.glossary.GlossaryViewModelFactory
 import com.abhiek.ezrecipes.ui.home.Home
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -37,13 +40,18 @@ fun NavigationGraph(
     widthSizeClass: WindowWidthSizeClass,
     startDestination: String = Constants.Routes.HOME
 ) {
+    val context = LocalContext.current
+    val isWideScreen = widthSizeClass == WindowWidthSizeClass.Expanded
+
     val mainViewModel = viewModel<MainViewModel>(
         factory = MainViewModelFactory()
     )
     val searchViewModel = viewModel<SearchViewModel>(
         factory = SearchViewModelFactory()
     )
-    val isWideScreen = widthSizeClass == WindowWidthSizeClass.Expanded
+    val glossaryViewModel = viewModel<GlossaryViewModel>(
+        factory = GlossaryViewModelFactory(context)
+    )
 
     // Show the appropriate composable based on the current route, starting at the home screen
     // NavHostController is a subclass of NavController
@@ -147,7 +155,7 @@ fun NavigationGraph(
         composable(
             Constants.Routes.GLOSSARY
         ) {
-            Glossary()
+            Glossary(glossaryViewModel.terms)
         }
     }
 }
