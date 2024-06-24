@@ -27,7 +27,9 @@ internal class GlossaryViewModelTest {
     @BeforeEach
     fun setup() {
         mockTermsService = MockTermsService
-        mockDataStoreService = mockkClass(DataStoreService::class)
+        mockDataStoreService = mockkClass(DataStoreService::class) {
+            coEvery { saveTerms(any()) } returns Unit
+        }
         viewModel = GlossaryViewModel(
             termsRepository = TermsRepository(mockTermsService),
             dataStoreService = mockDataStoreService
@@ -52,7 +54,6 @@ internal class GlossaryViewModelTest {
     fun checkCachedTermsFetchSuccess() = runTest {
         // Given a DataStore with no terms
         coEvery { mockDataStoreService.getTerms() } returns null
-        coEvery { mockDataStoreService.saveTerms(any()) } returns Unit
 
         // When checkCachedTerms() is called with a successful API call
         mockTermsService.isSuccess = true
