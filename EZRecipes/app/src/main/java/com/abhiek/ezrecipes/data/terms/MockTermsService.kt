@@ -10,17 +10,18 @@ import retrofit2.Response
 // Using an object to create a singleton to pass to the repository
 object MockTermsService: TermsService {
     var isSuccess = true // controls whether the mock API calls succeed or fail
+    val terms = Constants.Mocks.TERMS
 
-    private const val recipeErrorString =
+    private const val RECIPE_ERROR_STRING =
         "{\"error\":\"You are not authorized. Please read https://spoonacular.com/food-api/docs#Authentication\"}"
     val recipeError =
         RecipeError(error = "You are not authorized. Please read https://spoonacular.com/food-api/docs#Authentication")
 
     override suspend fun getTerms(): Response<List<Term>> {
         return if (isSuccess) {
-            Response.success(Constants.Mocks.TERMS)
+            Response.success(terms)
         } else {
-            Response.error(401, recipeErrorString.toResponseBody())
+            Response.error(401, RECIPE_ERROR_STRING.toResponseBody())
         }
     }
 }

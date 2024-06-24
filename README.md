@@ -19,9 +19,13 @@
 
 ## Overview
 
-Cooking food at home is an essential skill for anyone looking to save money and eat healthily. However, learning how to cook can be daunting, since there are so many recipes to choose from. And even when meal prepping, knowing what ingredients to buy, what equipment is required, and the order of steps to make the meal can be hard to remember for many different recipes. Plus, during busy days, it's nice to be able to cook up something quick and tasty.
+Cooking food at home is an essential skill for anyone looking to save money and eat healthily. However, learning how to cook can be daunting, since there are so many recipes to choose from. Even when meal prepping, knowing what ingredients to buy, what equipment is required, and the order of steps to make the meal can be hard to remember for many different recipes. Plus, during busy days, it's nice to be able to cook up something quick and tasty.
 
 Introducing EZ Recipes, an app that lets chefs find low-effort recipes that can be made in under an hour, use common kitchen ingredients, and can produce multiple servings. On one page, chefs can view what the recipe looks like, its nutritional qualities, the total cooking time, all the ingredients needed, and step-by-step instructions showing what ingredients and equipment are required per step. Each recipe can be shared so other chefs can learn how to make the same recipes.
+
+Chefs can either find a random recipe or search for one using various filters, including by name, dietary restrictions, spice level, and meal type.
+
+The app features a glossary to easily lookup the meaning of common terms found in recipes. This will better assist newer chefs in learning how to cook, prep certain ingredients, and use certain kitchen tools. Think How to Stock, but for cooking food instead of managing finances.
 
 ## Features
 
@@ -29,6 +33,7 @@ Introducing EZ Recipes, an app that lets chefs find low-effort recipes that can 
 - Material Design UI
 - Responsive and accessible mobile design
 - REST APIs to a custom [server](https://github.com/Abhiek187/ez-recipes-server) using Retrofit, which fetches recipe information from [spoonacular](https://spoonacular.com/food-api) and MongoDB
+- Offline data storage using DataStore and Room
 - App Links to open recipes from the web app to the mobile app
 - Automated testing and deployment using CI/CD pipelines in GitHub Actions and Fastlane
 - Mermaid to write diagrams as code

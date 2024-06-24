@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -17,6 +19,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.MainViewModelFactory
+import com.abhiek.ezrecipes.ui.glossary.Glossary
+import com.abhiek.ezrecipes.ui.glossary.GlossaryViewModel
+import com.abhiek.ezrecipes.ui.glossary.GlossaryViewModelFactory
 import com.abhiek.ezrecipes.ui.home.Home
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -36,13 +41,23 @@ fun NavigationGraph(
     widthSizeClass: WindowWidthSizeClass,
     startDestination: String = Constants.Routes.HOME
 ) {
+    val context = LocalContext.current
+    val isWideScreen = widthSizeClass == WindowWidthSizeClass.Expanded
+
     val mainViewModel = viewModel<MainViewModel>(
         factory = MainViewModelFactory()
     )
     val searchViewModel = viewModel<SearchViewModel>(
         factory = SearchViewModelFactory()
     )
-    val isWideScreen = widthSizeClass == WindowWidthSizeClass.Expanded
+    val glossaryViewModel = viewModel<GlossaryViewModel>(
+        factory = GlossaryViewModelFactory(context)
+    )
+
+    // Only call once when composed
+    LaunchedEffect(Unit) {
+        glossaryViewModel.checkCachedTerms()
+    }
 
     // Show the appropriate composable based on the current route, starting at the home screen
     // NavHostController is a subclass of NavController
@@ -133,17 +148,20 @@ fun NavigationGraph(
             popEnterTransition = { slideRightEnter() },
             popExitTransition = { slideRightExit() }
         ) {
-            Row {
-                SearchResults(searchViewModel.recipes, mainViewModel) {
-                    navController.navigate(
-                        Constants.Routes.RECIPE.replace(
-                            "{id}", mainViewModel.recipe?.id.toString()
-                        )
-                    ) {
-                        launchSingleTop = true
-                    }
+            SearchResults(searchViewModel.recipes, mainViewModel) {
+                navController.navigate(
+                    Constants.Routes.RECIPE.replace(
+                        "{id}", mainViewModel.recipe?.id.toString()
+                    )
+                ) {
+                    launchSingleTop = true
                 }
             }
+        }
+        composable(
+            Constants.Routes.GLOSSARY
+        ) {
+            Glossary(glossaryViewModel.terms)
         }
     }
 }
@@ -153,7 +171,8 @@ private class NavigationGraphPreviewParameterProvider: PreviewParameterProvider<
         Constants.Routes.HOME,
         Constants.Routes.RECIPE,
         Constants.Routes.SEARCH,
-        Constants.Routes.RESULTS
+        Constants.Routes.RESULTS,
+        Constants.Routes.GLOSSARY
     )
 }
 

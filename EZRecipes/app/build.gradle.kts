@@ -89,6 +89,7 @@ dependencies {
     //implementation("androidx.compose.material3:material3-android:$material3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // AsyncImage
     implementation("io.coil-kt:coil-compose:2.6.0")
@@ -103,6 +104,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    testImplementation("io.mockk:mockk:1.13.5")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

@@ -33,7 +33,7 @@ fun NavigationDrawer(
     /* Using sealedSubclasses requires reflection, which will make the app slower,
      * so list each drawer item manually
      */
-    val drawerItems = listOf(Tab.Home, Tab.Search)
+    val drawerItems = listOf(Tab.Home, Tab.Search, Tab.Glossary)
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route

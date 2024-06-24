@@ -17,7 +17,7 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
 fun BottomBar(navController: NavController) {
-    val bottomNavBarItems = listOf(Tab.Home, Tab.Search)
+    val bottomNavBarItems = listOf(Tab.Home, Tab.Search, Tab.Glossary)
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination

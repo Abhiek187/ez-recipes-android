@@ -19,6 +19,8 @@ object Constants {
     const val MIN_CALS = 0
     const val MAX_CALS = 2000
 
+    const val DATA_STORE_NAME = "data-store"
+
     object Routes {
         // tabs = user-facing labels, routes = internal "pretend" URL paths
         // All tabs have routes, but not all routes have tabs
@@ -26,6 +28,7 @@ object Constants {
         const val RECIPE = "recipe/{id}"
         const val SEARCH = "search"
         const val RESULTS = "search/results"
+        const val GLOSSARY = "glossary"
     }
 
     object Mocks {

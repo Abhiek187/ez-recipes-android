@@ -3,6 +3,9 @@ package com.abhiek.ezrecipes.utils
 import android.content.Context
 import android.content.ContextWrapper
 import androidx.activity.ComponentActivity
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 
 /**
  * Gets the underlying activity of a context
@@ -16,3 +19,10 @@ tailrec fun Context.getActivity(): ComponentActivity? = when (this) {
     is ContextWrapper -> baseContext.getActivity()
     else -> null
 }
+
+/**
+ * DataStore singleton
+ */
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+    name = Constants.DATA_STORE_NAME
+)
