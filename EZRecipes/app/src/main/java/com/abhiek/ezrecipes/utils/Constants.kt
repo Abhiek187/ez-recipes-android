@@ -34,6 +34,7 @@ object Constants {
     object Mocks {
         //region Normal, no culture
         val PINEAPPLE_SALAD = Recipe(
+            _id = "65dd4e615d5abcc9dc113038",
             id = 635562,
             name = "Blueberry-Pineapple Salad",
             url = "https://spoonacular.com/blueberry-pineapple-salad-635562",
@@ -125,6 +126,7 @@ object Constants {
         //endregion
         //region Contains instruction name & culture
         val CHOCOLATE_CUPCAKE = Recipe(
+            _id = "65bfe0fde939d8f4ebff712f",
             id = 644783,
             name = "Gluten And Dairy Free Chocolate Cupcakes",
             url = "https://spoonacular.com/gluten-and-dairy-free-chocolate-cupcakes-644783",
@@ -346,6 +348,7 @@ object Constants {
         //endregion
         //region Spicy, more culture & types
         val THAI_BASIL_CHICKEN = Recipe(
+            _id = "65bb6a8de939d8f4eba23cf0",
             id = 663074,
             name = "Thai Basil Chicken With Green Curry",
             url = "https://spoonacular.com/thai-basil-chicken-with-green-curry-663074",

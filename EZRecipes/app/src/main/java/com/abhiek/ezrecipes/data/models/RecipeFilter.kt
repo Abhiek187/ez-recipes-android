@@ -17,7 +17,8 @@ data class RecipeFilter(
     var sustainable: Boolean = false,
     var spiceLevel: List<SpiceLevel> = listOf(),
     var type: List<MealType> = listOf(),
-    var culture: List<Cuisine> = listOf()
+    var culture: List<Cuisine> = listOf(),
+    var token: String? = null // either an ObjectId or searchSequenceToken for pagination
 ) {
     fun toMap(): Map<String, Any> {
         // Filter all the keys that aren't defined separately in the service

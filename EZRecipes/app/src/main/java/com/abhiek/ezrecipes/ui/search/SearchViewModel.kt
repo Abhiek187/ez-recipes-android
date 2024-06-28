@@ -20,6 +20,8 @@ class SearchViewModel(
         private set
     var recipeError by mutableStateOf<RecipeError?>(null)
         private set
+    var lastToken by mutableStateOf<String?>(null)
+        private set
 
     var recipeFilter by mutableStateOf(RecipeFilter())
     var recipes by mutableStateOf<List<Recipe>>(listOf())
@@ -28,19 +30,30 @@ class SearchViewModel(
     var noRecipesFound by mutableStateOf(false)
     var showRecipeAlert by mutableStateOf(false)
 
-    fun searchRecipes() {
+    fun searchRecipes(paginate: Boolean = false) {
         job = viewModelScope.launch {
             noRecipesFound = false
+            recipeFilter.token = if (paginate) lastToken else null
+
             isLoading = true
             val result = recipeRepository.getRecipesByFilter(recipeFilter)
             isLoading = false
 
             when (result) {
                 is RecipeResult.Success -> {
-                    recipes = result.response
+                    // Append results if paginating, replace otherwise
+                    if (paginate) {
+                        recipes += result.response
+                    } else {
+                        recipes = result.response
+                    }
+
                     recipeError = null
                     isRecipeLoaded = recipes.isNotEmpty()
                     noRecipesFound = recipes.isEmpty()
+                    // Prevent subsequent calls if there are no more results
+                    lastToken = result.response.lastOrNull()?.token
+                        ?: result.response.lastOrNull()?._id
                 }
                 is RecipeResult.Error -> {
                     recipes = listOf()
