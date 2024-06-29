@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,12 +32,13 @@ import com.abhiek.ezrecipes.utils.Constants
 
 @Composable
 fun SearchResults(
-    recipes: List<Recipe>,
     mainViewModel: MainViewModel,
+    searchViewModel: SearchViewModel,
     modifier: Modifier = Modifier,
     onNavigateToRecipe: () -> Unit
 ) {
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.padding(8.dp)
     ) {
         Text(
@@ -48,7 +51,7 @@ fun SearchResults(
         )
 
         // Should only be visible on large screens
-        if (recipes.isEmpty()) {
+        if (searchViewModel.recipes.isEmpty()) {
             // Center vertically & horizontally
             Text(
                 text = stringResource(R.string.results_placeholder),
@@ -61,19 +64,38 @@ fun SearchResults(
             )
         }
 
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 350.dp),
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            items(recipes) { recipe ->
-                RecipeCard(recipe) {
-                    mainViewModel.recipe = recipe
-                    onNavigateToRecipe()
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = 350.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .weight(1f), // occupy remaining space when loader isn't visible
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(searchViewModel.recipes) { recipe ->
+                    RecipeCard(recipe) {
+                        mainViewModel.recipe = recipe
+                        onNavigateToRecipe()
+                    }
                 }
+                // Invisible detector when the user scrolls to the bottom of the list
+                // https://stackoverflow.com/a/71875618
+                item {
+                    LaunchedEffect(true) {
+                        // Prevent multiple requests from running at once
+                        if (searchViewModel.lastToken != null && !searchViewModel.isLoading) {
+                            searchViewModel.searchRecipes(paginate = true)
+                        }
+                    }
+                }
+            }
+
+            if (searchViewModel.isLoading && searchViewModel.lastToken != null) {
+                CircularProgressIndicator()
             }
         }
     }
@@ -99,11 +121,13 @@ private fun SearchResultsPreview(
     @PreviewParameter(SearchResultsPreviewParameterProvider::class) recipes: List<Recipe>
 ) {
     val recipeService = MockRecipeService
-    val viewModel = MainViewModel(RecipeRepository(recipeService))
+    val recipeViewModel = MainViewModel(RecipeRepository(recipeService))
+    val searchViewModel = SearchViewModel(RecipeRepository((recipeService)))
+    searchViewModel.recipes = recipes
 
     EZRecipesTheme {
         Surface {
-            SearchResults(recipes, viewModel) {}
+            SearchResults(recipeViewModel, searchViewModel) {}
         }
     }
 }

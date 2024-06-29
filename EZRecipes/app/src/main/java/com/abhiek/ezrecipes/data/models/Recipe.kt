@@ -1,6 +1,7 @@
 package com.abhiek.ezrecipes.data.models
 
 data class Recipe(
+    val _id: String?,
     val id: Int,
     val name: String,
     val url: String?,
@@ -22,5 +23,6 @@ data class Recipe(
     val culture: List<Cuisine>,
     val nutrients: List<Nutrient>,
     val ingredients: List<Ingredient>,
-    val instructions: List<Instruction>
+    val instructions: List<Instruction>,
+    var token: String? = null // searchSequenceToken for pagination
 )

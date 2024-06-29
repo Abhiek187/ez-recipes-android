@@ -74,7 +74,7 @@ dependencies {
     val material3Version = "1.2.1"
     val retrofitVersion = "2.11.0"
     val jupiterVersion = "5.10.2"
-    val espressoVersion = "3.5.1"
+    val espressoVersion = "3.6.1"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     implementation("androidx.core:core-ktx:1.13.1")
@@ -107,7 +107,7 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.5")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion")
     androidTestImplementation("androidx.test.espresso:espresso-intents:$espressoVersion")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
