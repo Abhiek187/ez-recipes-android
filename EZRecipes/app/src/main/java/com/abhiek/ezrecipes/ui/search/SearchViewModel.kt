@@ -49,7 +49,8 @@ class SearchViewModel(
                     }
 
                     recipeError = null
-                    isRecipeLoaded = recipes.isNotEmpty()
+                    // isRecipeLoaded only applies when waiting for SearchResults from FilterForm
+                    isRecipeLoaded = !paginate && recipes.isNotEmpty()
                     noRecipesFound = recipes.isEmpty()
                     // Prevent subsequent calls if there are no more results
                     lastToken = result.response.lastOrNull()?.token
