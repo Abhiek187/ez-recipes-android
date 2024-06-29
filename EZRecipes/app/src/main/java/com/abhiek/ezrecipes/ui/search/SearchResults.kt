@@ -38,6 +38,7 @@ fun SearchResults(
     onNavigateToRecipe: () -> Unit
 ) {
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.padding(8.dp)
     ) {
         Text(
@@ -63,36 +64,34 @@ fun SearchResults(
             )
         }
 
-        Column {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 350.dp),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(searchViewModel.recipes) { recipe ->
-                    RecipeCard(recipe) {
-                        mainViewModel.recipe = recipe
-                        onNavigateToRecipe()
-                    }
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 350.dp),
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(searchViewModel.recipes) { recipe ->
+                RecipeCard(recipe) {
+                    mainViewModel.recipe = recipe
+                    onNavigateToRecipe()
                 }
-                // Invisible detector when the user scrolls to the bottom of the list
-                // https://stackoverflow.com/a/71875618
-                item {
-                    LaunchedEffect(true) {
-                        // Prevent multiple requests from running at once
-                        if (searchViewModel.lastToken != null && !searchViewModel.isLoading) {
-                            searchViewModel.searchRecipes(paginate = true)
-                        }
+            }
+            // Invisible detector when the user scrolls to the bottom of the list
+            // https://stackoverflow.com/a/71875618
+            item {
+                LaunchedEffect(true) {
+                    // Prevent multiple requests from running at once
+                    if (searchViewModel.lastToken != null && !searchViewModel.isLoading) {
+                        searchViewModel.searchRecipes(paginate = true)
                     }
                 }
             }
+        }
 
-            if (searchViewModel.isLoading) {
-                CircularProgressIndicator()
-            }
+        if (searchViewModel.isLoading && searchViewModel.lastToken != null) {
+            CircularProgressIndicator()
         }
     }
 }
