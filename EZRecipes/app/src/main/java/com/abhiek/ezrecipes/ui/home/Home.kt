@@ -1,5 +1,9 @@
 package com.abhiek.ezrecipes.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -92,7 +96,7 @@ fun Home(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
@@ -160,27 +164,38 @@ fun Home(
         }
 
         // Recently viewed recipes
-        if (mainViewModel.recentRecipes.isNotEmpty()) {
-            Text(
-                text = stringResource(R.string.recently_viewed),
-                style = MaterialTheme.typography.h4
+        // Smoothly fade in the recipe cards if they're slow to fetch from Room
+        AnimatedVisibility(
+            visible = mainViewModel.recentRecipes.isNotEmpty(),
+            enter = fadeIn(
+                tween(300, easing = LinearEasing)
             )
-            Divider()
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                mainViewModel.recentRecipes.forEach { recentRecipe ->
-                    RecipeCard(
-                        recipe = recentRecipe.recipe,
-                        width = 350.dp
-                    ) {
-                        mainViewModel.recipe = recentRecipe.recipe
-                        onNavigateToRecipe()
+                Text(
+                    text = stringResource(R.string.recently_viewed),
+                    style = MaterialTheme.typography.h4
+                )
+                Divider()
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                ) {
+                    mainViewModel.recentRecipes.forEach { recentRecipe ->
+                        RecipeCard(
+                            recipe = recentRecipe.recipe,
+                            width = 350.dp
+                        ) {
+                            mainViewModel.recipe = recentRecipe.recipe
+                            onNavigateToRecipe()
+                        }
                     }
                 }
             }
