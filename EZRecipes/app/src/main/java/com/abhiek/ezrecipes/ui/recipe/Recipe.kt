@@ -9,6 +9,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +29,12 @@ import com.abhiek.ezrecipes.utils.currentWindowSize
 
 @Composable
 fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: String? = null) {
+    LaunchedEffect(viewModel.recipe) {
+        viewModel.recipe?.let { recipe ->
+            viewModel.saveRecentRecipe(recipe)
+        }
+    }
+
     if (viewModel.recipe == null) {
         // If this composable was opened due to a deep link, use the recipeId to load the recipe
         recipeIdString?.toIntOrNull()?.let { recipeId ->

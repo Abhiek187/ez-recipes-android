@@ -44,8 +44,6 @@ class MainViewModel(
                 recipeError = null
                 isRecipeLoaded = fromHome
                 showRecipeAlert = false
-
-                saveRecentRecipe(result.response)
             }
             is RecipeResult.Error -> {
                 recipe = null
@@ -83,7 +81,7 @@ class MainViewModel(
         }
     }
 
-    private fun saveRecentRecipe(recipe: Recipe) {
+    fun saveRecentRecipe(recipe: Recipe) {
         viewModelScope.launch {
             // If the recipe already exists, replace the timestamp with the current time
             val existingRecipe = recentRecipeDao.getRecipeById(recipe.id)

@@ -170,6 +170,7 @@ fun Home(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
             ) {
