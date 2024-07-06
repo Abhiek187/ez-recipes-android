@@ -31,6 +31,11 @@ object Constants {
         const val GLOSSARY = "glossary"
     }
 
+    object Room {
+        const val DATABASE_NAME = "AppDatabase"
+        const val RECENT_RECIPE_TABLE = "RecentRecipe"
+    }
+
     object Mocks {
         //region Normal, no culture
         val PINEAPPLE_SALAD = Recipe(
