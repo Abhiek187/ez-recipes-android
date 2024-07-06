@@ -20,6 +20,7 @@ object Constants {
     const val MAX_CALS = 2000
 
     const val DATA_STORE_NAME = "data-store"
+    const val MAX_RECENT_RECIPES = 10
 
     object Routes {
         // tabs = user-facing labels, routes = internal "pretend" URL paths

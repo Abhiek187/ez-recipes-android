@@ -45,7 +45,7 @@ fun NavigationGraph(
     val isWideScreen = widthSizeClass == WindowWidthSizeClass.Expanded
 
     val mainViewModel = viewModel<MainViewModel>(
-        factory = MainViewModelFactory()
+        factory = MainViewModelFactory(context)
     )
     val searchViewModel = viewModel<SearchViewModel>(
         factory = SearchViewModelFactory()
