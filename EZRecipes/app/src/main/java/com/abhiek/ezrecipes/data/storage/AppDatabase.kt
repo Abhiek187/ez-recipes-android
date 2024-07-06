@@ -16,10 +16,22 @@ abstract class AppDatabase: RoomDatabase() {
     companion object {
         private lateinit var db: AppDatabase
 
-        // Initialize the Room database when first referencing the singleton
-        // Room stored at /data/data/PACKAGE-NAME/database
-        fun getInstance(context: Context): AppDatabase {
+        /**
+         * Initialize the Room database
+         *
+         * Note: Room stored at /data/data/PACKAGE-NAME/databases
+         *
+         * @param context the application context
+         * @param inMemory if true, use an in-memory database
+         * @return a database instance
+         */
+        fun getInstance(context: Context, inMemory: Boolean = false): AppDatabase {
             return if (Companion::db.isInitialized) {
+                db
+            } else if (inMemory) {
+                db = Room.inMemoryDatabaseBuilder(
+                    context, AppDatabase::class.java
+                ).build()
                 db
             } else {
                 db = Room.databaseBuilder(

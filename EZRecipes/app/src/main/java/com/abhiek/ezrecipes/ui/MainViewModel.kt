@@ -31,6 +31,7 @@ class MainViewModel(
     // Alerts the home screen to navigate to the recipe screen
     var isRecipeLoaded by mutableStateOf(false)
     var showRecipeAlert by mutableStateOf(false)
+    var recentRecipes by mutableStateOf<List<RecentRecipe>>(listOf())
 
     private fun updateRecipeProps(
         result: RecipeResult<Recipe>,
@@ -73,6 +74,12 @@ class MainViewModel(
             isLoading = false
 
             updateRecipeProps(response, fromHome)
+        }
+    }
+
+    fun fetchRecentRecipes() {
+        viewModelScope.launch {
+            recentRecipes = recentRecipeDao.getAll()
         }
     }
 

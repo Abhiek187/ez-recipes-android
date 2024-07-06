@@ -1,6 +1,9 @@
 package com.abhiek.ezrecipes.ui.home
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,14 +18,19 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.models.RecentRecipe
+import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.getActivity
 import kotlinx.coroutines.delay
 
@@ -78,7 +86,8 @@ fun Home(
 
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -87,7 +96,8 @@ fun Home(
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = MaterialTheme.colors.secondary
             ),
-            enabled = !mainViewModel.isLoading // prevent button spam
+            enabled = !mainViewModel.isLoading, // prevent button spam
+            modifier = Modifier.padding(top = 32.dp)
         ) {
             Text(
                 text = stringResource(R.string.find_recipe_button)
@@ -144,21 +154,53 @@ fun Home(
                 }
             )
         }
+
+        // Recently viewed recipes
+        if (mainViewModel.recentRecipes.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.recently_viewed),
+                style = MaterialTheme.typography.h4
+            )
+            Divider()
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                mainViewModel.recentRecipes.forEach { recentRecipe ->
+                    RecipeCard(
+                        recipe = recentRecipe.recipe,
+                        width = 350.dp
+                    ) {
+                        mainViewModel.recipe = recentRecipe.recipe
+                        onNavigateToRecipe()
+                    }
+                }
+            }
+        }
     }
 }
 
 // Show different previews for each possible state of the home screen
 private data class HomeState(
     val isLoading: Boolean,
-    val showAlert: Boolean
+    val showAlert: Boolean,
+    val recentRecipes: List<Recipe>
 )
 
 private class HomePreviewParameterProvider: PreviewParameterProvider<HomeState> {
     // Show previews of the default home screen, with the progress bar, and with an alert
     override val values = sequenceOf(
-        HomeState(isLoading = false, showAlert = false),
-        HomeState(isLoading = true, showAlert = false),
-        HomeState(isLoading = false, showAlert = true)
+        HomeState(isLoading = false, showAlert = false, recentRecipes = listOf(
+            Constants.Mocks.PINEAPPLE_SALAD,
+            Constants.Mocks.CHOCOLATE_CUPCAKE,
+            Constants.Mocks.THAI_BASIL_CHICKEN
+        )),
+        HomeState(isLoading = false, showAlert = false, recentRecipes = listOf()),
+        HomeState(isLoading = true, showAlert = false, recentRecipes = listOf()),
+        HomeState(isLoading = false, showAlert = true, recentRecipes = listOf())
     )
 }
 
@@ -170,12 +212,18 @@ private class HomePreviewParameterProvider: PreviewParameterProvider<HomeState> 
 private fun HomePreview(
     @PreviewParameter(HomePreviewParameterProvider::class) state: HomeState
 ) {
+    val context = LocalContext.current
     val recipeService = MockRecipeService
-    val viewModel = MainViewModel(RecipeRepository(recipeService))
-    val (isLoading, showAlert) = state
+    val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
+
+    val viewModel = MainViewModel(RecipeRepository(recipeService), recentRecipeDao)
+    val (isLoading, showAlert, recentRecipes) = state
     viewModel.isLoading = isLoading
     viewModel.showRecipeAlert = showAlert // show the fallback alert in the preview
     recipeService.isSuccess = !showAlert // show the alert after clicking the find recipe button
+    viewModel.recentRecipes = recentRecipes.map { recipe ->
+        RecentRecipe(recipe.id, System.currentTimeMillis(), recipe)
+    }
 
     EZRecipesTheme {
         Surface {
