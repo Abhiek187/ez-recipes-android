@@ -19,6 +19,7 @@ class Converters {
             return gson.fromJson(recipeStr, Recipe::class.java)
         } catch (error: JsonSyntaxException) {
             Log.w(TAG, "Failed to parse recipe string: $recipeStr")
+            Log.w(TAG, "Error: ${error.localizedMessage}")
             return null
         }
     }
