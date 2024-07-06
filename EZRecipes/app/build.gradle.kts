@@ -124,6 +124,11 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
 
+ksp {
+    // Export the Room schema to be version controlled (but not included in the build)
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 // Log Gradle test results
 tasks.withType<Test> {
     useJUnitPlatform() // enable JUnit 5 (Jupiter)

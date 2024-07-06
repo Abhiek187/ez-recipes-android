@@ -57,7 +57,6 @@ fun NavigationGraph(
     // Only call once when composed
     LaunchedEffect(Unit) {
         glossaryViewModel.checkCachedTerms()
-        mainViewModel.fetchRecentRecipes()
     }
 
     // Show the appropriate composable based on the current route, starting at the home screen

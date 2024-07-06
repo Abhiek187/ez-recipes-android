@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import com.abhiek.ezrecipes.data.models.RecentRecipe
 import com.abhiek.ezrecipes.utils.Constants
 
-@Database(entities = [RecentRecipe::class], version = 1)
+@Database(entities = [RecentRecipe::class], version = Constants.Room.DATABASE_VERSION)
 @TypeConverters(Converters::class)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun recentRecipeDao(): RecentRecipeDao

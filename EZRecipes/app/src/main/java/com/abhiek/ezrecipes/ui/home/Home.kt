@@ -45,6 +45,10 @@ fun Home(
     val defaultLoadingMessage = ""
     var loadingMessage by remember { mutableStateOf(defaultLoadingMessage) }
 
+    LaunchedEffect(Unit) {
+        mainViewModel.fetchRecentRecipes()
+    }
+
     LaunchedEffect(mainViewModel.isLoading) {
         // Don't show any messages initially if the recipe loads quickly
         loadingMessage = defaultLoadingMessage

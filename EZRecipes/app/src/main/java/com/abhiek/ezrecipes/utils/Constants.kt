@@ -34,6 +34,7 @@ object Constants {
 
     object Room {
         const val DATABASE_NAME = "AppDatabase"
+        const val DATABASE_VERSION = 1
         const val RECENT_RECIPE_TABLE = "RecentRecipe"
     }
 
