@@ -7,6 +7,7 @@ import com.abhiek.ezrecipes.data.terms.MockTermsService
 import com.abhiek.ezrecipes.data.terms.TermsRepository
 import com.abhiek.ezrecipes.ui.MainDispatcherExtension
 import io.mockk.*
+import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MainDispatcherExtension::class)
+@ExtendWith(MockKExtension::class)
 internal class GlossaryViewModelTest {
     private lateinit var mockTermsService: MockTermsService
     private lateinit var mockDataStoreService: DataStoreService
