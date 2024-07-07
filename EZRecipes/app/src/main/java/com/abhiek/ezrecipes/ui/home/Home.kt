@@ -236,7 +236,7 @@ private fun HomePreview(
     val recipeService = MockRecipeService
     val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
 
-    val viewModel = MainViewModel(RecipeRepository(recipeService), recentRecipeDao)
+    val viewModel = MainViewModel(RecipeRepository(recipeService, recentRecipeDao))
     val (isLoading, showAlert, recentRecipes) = state
     viewModel.isLoading = isLoading
     viewModel.showRecipeAlert = showAlert // show the fallback alert in the preview

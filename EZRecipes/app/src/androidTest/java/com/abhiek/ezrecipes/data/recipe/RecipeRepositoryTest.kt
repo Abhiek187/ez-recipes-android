@@ -1,4 +1,4 @@
-package com.abhiek.ezrecipes.ui
+package com.abhiek.ezrecipes.data.recipe
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -6,8 +6,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.abhiek.ezrecipes.MainDispatcherRule
 import com.abhiek.ezrecipes.data.models.RecentRecipe
 import com.abhiek.ezrecipes.data.models.Recipe
-import com.abhiek.ezrecipes.data.recipe.MockRecipeService
-import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.data.storage.RecentRecipeDao
 import com.abhiek.ezrecipes.utils.Constants
@@ -20,11 +18,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-internal class MainViewModelTest {
+internal class RecipeRepositoryTest {
     private lateinit var recentRecipeDao: RecentRecipeDao
     private lateinit var db: AppDatabase
     private lateinit var mockService: MockRecipeService
-    private lateinit var viewModel: MainViewModel
+    private lateinit var recipeRepository: RecipeRepository
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -47,7 +45,7 @@ internal class MainViewModelTest {
         recentRecipeDao = db.recentRecipeDao()
 
         mockService = MockRecipeService
-        viewModel = MainViewModel(RecipeRepository(mockService), recentRecipeDao)
+        recipeRepository = RecipeRepository(mockService, recentRecipeDao)
     }
 
     @After
@@ -61,10 +59,10 @@ internal class MainViewModelTest {
         prepopulateDatabase(listOf())
 
         // When fetchRecentRecipes() is called
-        viewModel.fetchRecentRecipes()
+        val recentRecipes = recipeRepository.fetchRecentRecipes()
 
         // Then recentRecipes should return an empty list
-        assertTrue(viewModel.recentRecipes.isEmpty())
+        assertTrue(recentRecipes.isEmpty())
     }
 
     @Test
@@ -73,8 +71,7 @@ internal class MainViewModelTest {
         prepopulateDatabase(mockService.recipes)
 
         // When fetchRecentRecipes() is called
-//        viewModel.fetchRecentRecipes()
-        val recentRecipes = recentRecipeDao.getAll()
+        val recentRecipes = recipeRepository.fetchRecentRecipes()
 
 //        println("viewModel.recentRecipes.map { it.recipe }.toTypedArray(): " + viewModel.recentRecipes.map { it.recipe }.toTypedArray().)
 //        println("mockService.recipes.toTypedArray(): " + mockService.recipes.toTypedArray())
@@ -106,7 +103,7 @@ internal class MainViewModelTest {
         prepopulateDatabase(mockService.recipes)
 
         // When a new recipe is added
-        viewModel.saveRecentRecipe(mockService.recipes[0].copy(id = 2))
+        recipeRepository.saveRecentRecipe(mockService.recipes[0].copy(id = 2))
 
         // Then the number of recipes should increase by 1
         assertEquals(recentRecipeDao.getAll().size, mockService.recipes.size + 1)
@@ -121,7 +118,7 @@ internal class MainViewModelTest {
         prepopulateDatabase(recipes)
 
         // When a new recipe is added
-        viewModel.saveRecentRecipe(mockService.recipes[0])
+        recipeRepository.saveRecentRecipe(mockService.recipes[0])
 
         // Then the oldest recipe is deleted
         assertEquals(recentRecipeDao.getAll().size, Constants.MAX_RECENT_RECIPES)
@@ -134,7 +131,7 @@ internal class MainViewModelTest {
         val oldTimestamp = recentRecipeDao.getRecipeById(mockService.recipes[0].id)?.timestamp ?: -1
 
         // When an existing recipe is added
-        viewModel.saveRecentRecipe(mockService.recipes[0])
+        recipeRepository.saveRecentRecipe(mockService.recipes[0])
 
         // Then its timestamp is updated
         val newTimestamp = recentRecipeDao.getRecipeById(mockService.recipes[0].id)?.timestamp ?: -1

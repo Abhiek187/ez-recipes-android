@@ -126,7 +126,7 @@ private fun SearchResultsPreview(
     val recipeService = MockRecipeService
     val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
 
-    val recipeViewModel = MainViewModel(RecipeRepository(recipeService), recentRecipeDao)
+    val recipeViewModel = MainViewModel(RecipeRepository(recipeService, recentRecipeDao))
     val searchViewModel = SearchViewModel(RecipeRepository((recipeService)))
     searchViewModel.recipes = recipes
 

@@ -14,9 +14,9 @@ class MainViewModelFactory(private val context: Context): ViewModelProvider.Fact
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             return MainViewModel(
                 recipeRepository = RecipeRepository(
-                    recipeService = RecipeService.instance
-                ),
-                recentRecipeDao = AppDatabase.getInstance(context).recentRecipeDao()
+                    recipeService = RecipeService.instance,
+                    recentRecipeDao = AppDatabase.getInstance(context).recentRecipeDao()
+                )
             ) as T
         }
 

@@ -10,15 +10,12 @@ import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.recipe.RecipeResult
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.models.RecipeError
-import com.abhiek.ezrecipes.data.storage.RecentRecipeDao
-import com.abhiek.ezrecipes.utils.Constants
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 // Connects the View to the Repository
 class MainViewModel(
-    private val recipeRepository: RecipeRepository,
-    private val recentRecipeDao: RecentRecipeDao
+    private val recipeRepository: RecipeRepository
 ): ViewModel() {
     // Only expose a read-only copy of the state to the View
     var job by mutableStateOf<Job?>(null)
@@ -77,35 +74,13 @@ class MainViewModel(
 
     fun fetchRecentRecipes() {
         viewModelScope.launch {
-            recentRecipes = recentRecipeDao.getAll()
+            recentRecipes = recipeRepository.fetchRecentRecipes()
         }
     }
 
     fun saveRecentRecipe(recipe: Recipe) {
         viewModelScope.launch {
-            // If the recipe already exists, replace the timestamp with the current time
-            val existingRecipe = recentRecipeDao.getRecipeById(recipe.id)
-
-            if (existingRecipe != null) {
-                existingRecipe.timestamp = System.currentTimeMillis()
-                recentRecipeDao.insert(existingRecipe)
-                return@launch
-            }
-
-            // If there are too many recipes, delete the oldest recipe
-            val recipes = recentRecipeDao.getAll()
-
-            if (recipes.size >= Constants.MAX_RECENT_RECIPES) {
-                val oldestRecipe = recipes.last()
-                recentRecipeDao.delete(oldestRecipe)
-            }
-
-            val newRecipe = RecentRecipe(
-                id = recipe.id,
-                timestamp = System.currentTimeMillis(),
-                recipe = recipe
-            )
-            recentRecipeDao.insert(newRecipe)
+            recipeRepository.saveRecentRecipe(recipe)
         }
     }
 }

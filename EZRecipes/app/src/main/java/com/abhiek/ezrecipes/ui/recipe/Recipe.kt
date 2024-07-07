@@ -138,7 +138,7 @@ private fun RecipePreview() {
     val context = LocalContext.current
     val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
 
-    val viewModel = MainViewModel(RecipeRepository(MockRecipeService), recentRecipeDao)
+    val viewModel = MainViewModel(RecipeRepository(MockRecipeService, recentRecipeDao))
     viewModel.getRandomRecipe()
     val windowSize = currentWindowSize()
 
