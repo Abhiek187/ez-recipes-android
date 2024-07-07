@@ -73,24 +73,7 @@ internal class RecipeRepositoryTest {
         // When fetchRecentRecipes() is called
         val recentRecipes = recipeRepository.fetchRecentRecipes()
 
-//        println("viewModel.recentRecipes.map { it.recipe }.toTypedArray(): " + viewModel.recentRecipes.map { it.recipe }.toTypedArray().)
-//        println("mockService.recipes.toTypedArray(): " + mockService.recipes.toTypedArray())
-//        println("viewModel.recentRecipes.map { it.recipe }.sortedBy { it.id }: " + viewModel.recentRecipes.map { it.recipe }.sortedBy { it.id })
-//        println("mockService.recipes.sortedBy { it.id }: " + mockService.recipes.sortedBy { it.id })
-
         // Then recentRecipes should return the mock recipes
-//        assertArrayEquals(
-//            recentRecipes.map { it.recipe }.toTypedArray(),
-//            mockService.recipes.toTypedArray()
-//        )
-//        assertArrayEquals(
-//            viewModel.recentRecipes.map { it.recipe }.toTypedArray(),
-//            mockService.recipes.toTypedArray()
-//        )
-//        assertEquals(
-//            viewModel.recentRecipes.map { it.recipe }.sortedBy { it.id },
-//            mockService.recipes.sortedBy { it.id }
-//        )
         assertEquals(
             recentRecipes.map { it.recipe }.sortedBy { it.id },
             mockService.recipes.sortedBy { it.id }
