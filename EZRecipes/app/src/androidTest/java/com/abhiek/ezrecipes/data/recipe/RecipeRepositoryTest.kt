@@ -42,6 +42,8 @@ internal class RecipeRepositoryTest {
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = AppDatabase.getInstance(context, inMemory = true)
+        // Clear any data stored from previous instrumented tests
+        db.clearAllTables()
         recentRecipeDao = db.recentRecipeDao()
 
         mockService = MockRecipeService
