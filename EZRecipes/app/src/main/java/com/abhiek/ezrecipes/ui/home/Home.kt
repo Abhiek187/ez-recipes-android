@@ -159,7 +159,8 @@ fun Home(
                             )
                         }
                     }
-                }
+                },
+                modifier = Modifier.padding(horizontal = 8.dp)
             )
         }
 

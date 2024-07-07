@@ -98,7 +98,8 @@ fun SubmitButton(searchViewModel: SearchViewModel, enabled: Boolean) {
                             )
                         }
                     }
-                }
+                },
+                modifier = Modifier.padding(horizontal = 8.dp)
             )
         }
     }
