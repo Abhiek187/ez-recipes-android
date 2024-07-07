@@ -10,6 +10,7 @@ import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.data.storage.RecentRecipeDao
+import com.abhiek.ezrecipes.utils.Constants
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.*
@@ -100,6 +101,43 @@ internal class MainViewModelTest {
     }
 
     @Test
-    fun saveRecentRecipe() {
+    fun saveNewRecentRecipe() = runTest {
+        // Given a database with recipes
+        prepopulateDatabase(mockService.recipes)
+
+        // When a new recipe is added
+        viewModel.saveRecentRecipe(mockService.recipes[0].copy(id = 2))
+
+        // Then the number of recipes should increase by 1
+        assertEquals(recentRecipeDao.getAll().size, mockService.recipes.size + 1)
+    }
+
+    @Test
+    fun saveNewRecentRecipeBeyondMax() = runTest {
+        // Given a database with the max number of recipes
+        val recipes = List(Constants.MAX_RECENT_RECIPES) { index ->
+            mockService.recipes[0].copy(id = index)
+        }
+        prepopulateDatabase(recipes)
+
+        // When a new recipe is added
+        viewModel.saveRecentRecipe(mockService.recipes[0])
+
+        // Then the oldest recipe is deleted
+        assertEquals(recentRecipeDao.getAll().size, Constants.MAX_RECENT_RECIPES)
+    }
+
+    @Test
+    fun saveExistingRecentRecipe() = runTest {
+        // Given a database with recipes
+        prepopulateDatabase(mockService.recipes)
+        val oldTimestamp = recentRecipeDao.getRecipeById(mockService.recipes[0].id)?.timestamp ?: -1
+
+        // When an existing recipe is added
+        viewModel.saveRecentRecipe(mockService.recipes[0])
+
+        // Then its timestamp is updated
+        val newTimestamp = recentRecipeDao.getRecipeById(mockService.recipes[0].id)?.timestamp ?: -1
+        assertTrue(newTimestamp > oldTimestamp)
     }
 }
