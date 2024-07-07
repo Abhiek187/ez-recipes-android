@@ -15,6 +15,7 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.abhiek.ezrecipes.ui.MainActivity
 import com.abhiek.ezrecipes.ui.MainLayout
@@ -38,9 +39,11 @@ internal class EZRecipesInstrumentedTest {
     private val extras = InstrumentationRegistry.getArguments()
     private val isLocal = extras.getString("ci") != "true"
 
-    private fun screenshot(name: String, shotNum: Int) {
+    private fun screenshot(name: String, shotNum: Int? = null) {
         if (isLocal) {
-            Screengrab.screenshot("$name-$shotNum")
+            var screenshotName = name
+            if (shotNum != null) screenshotName += "-$shotNum"
+            Screengrab.screenshot(screenshotName)
         }
     }
 
@@ -421,5 +424,22 @@ internal class EZRecipesInstrumentedTest {
         }
         screenshot("search-screen", shotNum)
         shotNum += 1
+    }
+
+    @SmallTest
+    @Test
+    fun testGlossaryScreen() {
+        // Take a screenshot of the glossary tab (no assertions)
+        val hamburgerMenu = composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
+
+        if (hamburgerMenu.isDisplayed()) {
+            hamburgerMenu.performClick()
+        }
+
+        val glossaryTab = composeTestRule
+            .onNodeWithText(activity.getString(R.string.glossary_tab))
+        glossaryTab.performClick()
+        screenshot("glossary-view")
     }
 }

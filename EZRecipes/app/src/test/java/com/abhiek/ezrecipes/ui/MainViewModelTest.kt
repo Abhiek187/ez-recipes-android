@@ -1,7 +1,12 @@
 package com.abhiek.ezrecipes.ui
 
+import android.content.Context
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.AppDatabase
+import com.abhiek.ezrecipes.data.storage.RecentRecipeDao
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -9,14 +14,20 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MainDispatcherExtension::class)
+@ExtendWith(MockKExtension::class)
 internal class MainViewModelTest {
     private lateinit var mockService: MockRecipeService
+    private lateinit var recentRecipeDao: RecentRecipeDao
     private lateinit var viewModel: MainViewModel
+
+    @MockK
+    private lateinit var context: Context
 
     @BeforeEach
     fun setUp() {
         mockService = MockRecipeService
-        viewModel = MainViewModel(RecipeRepository(mockService))
+        recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
+        viewModel = MainViewModel(RecipeRepository(mockService, recentRecipeDao))
     }
 
     @Test

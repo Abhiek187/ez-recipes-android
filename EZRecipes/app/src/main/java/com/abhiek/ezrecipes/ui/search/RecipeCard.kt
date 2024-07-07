@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.abhiek.ezrecipes.R
@@ -26,7 +27,7 @@ import com.abhiek.ezrecipes.utils.boldAnnotatedString
 import kotlin.math.roundToInt
 
 @Composable
-fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
+fun RecipeCard(recipe: Recipe, width: Dp? = null, onClick: () -> Unit) {
     var isFavorite by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
@@ -35,7 +36,8 @@ fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .then(if (width != null) Modifier.width(width) else Modifier),
         elevation = 2.dp
     ) {
         Column(

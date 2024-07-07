@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +23,7 @@ import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -120,8 +122,11 @@ private class SearchResultsPreviewParameterProvider: PreviewParameterProvider<Li
 private fun SearchResultsPreview(
     @PreviewParameter(SearchResultsPreviewParameterProvider::class) recipes: List<Recipe>
 ) {
+    val context = LocalContext.current
     val recipeService = MockRecipeService
-    val recipeViewModel = MainViewModel(RecipeRepository(recipeService))
+    val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
+
+    val recipeViewModel = MainViewModel(RecipeRepository(recipeService, recentRecipeDao))
     val searchViewModel = SearchViewModel(RecipeRepository((recipeService)))
     searchViewModel.recipes = recipes
 

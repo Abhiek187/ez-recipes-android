@@ -1,8 +1,10 @@
 package com.abhiek.ezrecipes.data.recipe
 
+import com.abhiek.ezrecipes.data.models.RecentRecipe
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.models.RecipeError
 import com.abhiek.ezrecipes.data.models.RecipeFilter
+import com.abhiek.ezrecipes.data.storage.RecentRecipeDao
 import com.abhiek.ezrecipes.utils.Constants
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -10,7 +12,10 @@ import retrofit2.Response
 
 // Connects the ViewModel to the DataSource
 // Using dependency injection for happy little tests
-class RecipeRepository(private val recipeService: RecipeService) {
+class RecipeRepository(
+    private val recipeService: RecipeService,
+    private val recentRecipeDao: RecentRecipeDao? = null
+) {
     private fun <T> parseResponse(response: Response<T>): RecipeResult<T> {
         // isSuccessful means a 2xx response code
         return if (response.isSuccessful && response.body() != null) {
@@ -70,5 +75,37 @@ class RecipeRepository(private val recipeService: RecipeService) {
             val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
             return RecipeResult.Error(recipeError)
         }
+    }
+
+    suspend fun fetchRecentRecipes(): List<RecentRecipe> {
+        if (recentRecipeDao == null) return listOf()
+        return recentRecipeDao.getAll()
+    }
+
+    suspend fun saveRecentRecipe(recipe: Recipe) {
+        if (recentRecipeDao == null) return
+        // If the recipe already exists, replace the timestamp with the current time
+        val existingRecipe = recentRecipeDao.getRecipeById(recipe.id)
+
+        if (existingRecipe != null) {
+            existingRecipe.timestamp = System.currentTimeMillis()
+            recentRecipeDao.insert(existingRecipe)
+            return
+        }
+
+        // If there are too many recipes, delete the oldest recipe
+        val recipes = recentRecipeDao.getAll()
+
+        if (recipes.size >= Constants.MAX_RECENT_RECIPES) {
+            val oldestRecipe = recipes.last()
+            recentRecipeDao.delete(oldestRecipe)
+        }
+
+        val newRecipe = RecentRecipe(
+            id = recipe.id,
+            timestamp = System.currentTimeMillis(),
+            recipe = recipe
+        )
+        recentRecipeDao.insert(newRecipe)
     }
 }

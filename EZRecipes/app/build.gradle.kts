@@ -4,6 +4,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -69,10 +70,11 @@ android {
 
 dependencies {
     val composeBomVersion = "2024.06.00"
-    val lifecycleVersion = "2.8.2"
+    val lifecycleVersion = "2.8.3"
     val materialVersion = "1.6.8"
     val material3Version = "1.2.1"
     val retrofitVersion = "2.11.0"
+    val roomVersion = "2.6.1"
     val jupiterVersion = "5.10.3"
     val espressoVersion = "3.6.1"
 
@@ -98,6 +100,11 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit")
     implementation("com.squareup.retrofit2:converter-gson")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    // Room
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
@@ -115,6 +122,11 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+}
+
+ksp {
+    // Export the Room schema to be version controlled (but not included in the build)
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 // Log Gradle test results

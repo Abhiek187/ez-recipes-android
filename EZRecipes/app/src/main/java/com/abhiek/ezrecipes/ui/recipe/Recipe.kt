@@ -9,13 +9,16 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -26,6 +29,12 @@ import com.abhiek.ezrecipes.utils.currentWindowSize
 
 @Composable
 fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: String? = null) {
+    LaunchedEffect(viewModel.recipe) {
+        viewModel.recipe?.let { recipe ->
+            viewModel.saveRecentRecipe(recipe)
+        }
+    }
+
     if (viewModel.recipe == null) {
         // If this composable was opened due to a deep link, use the recipeId to load the recipe
         recipeIdString?.toIntOrNull()?.let { recipeId ->
@@ -126,7 +135,10 @@ fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: Stri
 @OrientationPreviews
 @Composable
 private fun RecipePreview() {
-    val viewModel = MainViewModel(RecipeRepository(MockRecipeService))
+    val context = LocalContext.current
+    val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
+
+    val viewModel = MainViewModel(RecipeRepository(MockRecipeService, recentRecipeDao))
     viewModel.getRandomRecipe()
     val windowSize = currentWindowSize()
 

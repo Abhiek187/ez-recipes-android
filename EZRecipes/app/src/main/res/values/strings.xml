@@ -37,6 +37,7 @@
         <item>Mixing things up… 🥘</item>
         <item>Shaking things up… 🍲</item>
     </string-array>
+    <string name="recently_viewed">Recently Viewed</string>
 
     <!-- Recipe Screen -->
     <string name="no_recipe">No recipe loaded</string>

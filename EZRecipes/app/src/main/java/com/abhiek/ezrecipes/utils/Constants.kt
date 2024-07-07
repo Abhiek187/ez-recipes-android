@@ -20,6 +20,7 @@ object Constants {
     const val MAX_CALS = 2000
 
     const val DATA_STORE_NAME = "data-store"
+    const val MAX_RECENT_RECIPES = 10
 
     object Routes {
         // tabs = user-facing labels, routes = internal "pretend" URL paths
@@ -29,6 +30,12 @@ object Constants {
         const val SEARCH = "search"
         const val RESULTS = "search/results"
         const val GLOSSARY = "glossary"
+    }
+
+    object Room {
+        const val DATABASE_NAME = "AppDatabase"
+        const val DATABASE_VERSION = 1
+        const val RECENT_RECIPE_TABLE = "RecentRecipe"
     }
 
     object Mocks {
