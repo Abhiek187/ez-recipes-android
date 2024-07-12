@@ -55,6 +55,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         // Check compatibility table before updating:
@@ -70,6 +71,7 @@ android {
 
 dependencies {
     val composeBomVersion = "2024.06.00"
+    val googlePlayVersion = "2.0.1"
     val lifecycleVersion = "2.8.3"
     val materialVersion = "1.6.8"
     val material3Version = "1.2.1"
@@ -105,6 +107,9 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
+    // Google Play
+    implementation("com.google.android.play:review:$googlePlayVersion")
+    implementation("com.google.android.play:review-ktx:$googlePlayVersion")
 
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")

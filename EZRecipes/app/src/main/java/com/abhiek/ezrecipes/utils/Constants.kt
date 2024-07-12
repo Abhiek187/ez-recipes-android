@@ -21,6 +21,7 @@ object Constants {
 
     const val DATA_STORE_NAME = "data-store"
     const val MAX_RECENT_RECIPES = 10
+    const val RECIPES_TO_PRESENT_REVIEW = 5
 
     object Routes {
         // tabs = user-facing labels, routes = internal "pretend" URL paths

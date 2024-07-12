@@ -19,6 +19,7 @@ import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.AppDatabase
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -26,12 +27,14 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.currentWindowSize
+import com.google.android.play.core.review.testing.FakeReviewManager
 
 @Composable
 fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: String? = null) {
     LaunchedEffect(viewModel.recipe) {
         viewModel.recipe?.let { recipe ->
             viewModel.saveRecentRecipe(recipe)
+            viewModel.incrementRecipesViewed()
         }
     }
 
@@ -138,7 +141,11 @@ private fun RecipePreview() {
     val context = LocalContext.current
     val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
 
-    val viewModel = MainViewModel(RecipeRepository(MockRecipeService, recentRecipeDao))
+    val viewModel = MainViewModel(
+        recipeRepository = RecipeRepository(MockRecipeService, recentRecipeDao),
+        dataStoreService = DataStoreService(context),
+        reviewManager = FakeReviewManager(context)
+    )
     viewModel.getRandomRecipe()
     val windowSize = currentWindowSize()
 
