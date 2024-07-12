@@ -31,8 +31,6 @@ class MainViewModel(
         private set
     var recipeError by mutableStateOf<RecipeError?>(null)
         private set
-    var canReview by mutableStateOf(false)
-        private set
 
     var recipe by mutableStateOf<Recipe?>(null)
     var isLoading by mutableStateOf(false)
@@ -103,39 +101,45 @@ class MainViewModel(
     fun incrementRecipesViewed() {
         viewModelScope.launch {
             dataStoreService.incrementRecipesViewed()
-            val recipesViewed = dataStoreService.getRecipesViewed()
-            val lastVersionReviewed = dataStoreService.getLastVersionReviewed()
-
-            canReview = recipesViewed >= Constants.RECIPES_TO_PRESENT_REVIEW
-                    && CURRENT_VERSION > lastVersionReviewed
         }
     }
 
-    fun presentReview(activity: Activity) {
-        val request = reviewManager.requestReviewFlow()
+    fun presentReviewIfQualified(activity: Activity) {
+        viewModelScope.launch {
+            // If the user viewed enough recipes, ask for a review
+            // Only ask once per app version to avoid intimidating the user
+            // and quickly reaching the quota
+            val recipesViewed = dataStoreService.getRecipesViewed()
+            val lastVersionReviewed = dataStoreService.getLastVersionReviewed()
+            if (
+                recipesViewed < Constants.RECIPES_TO_PRESENT_REVIEW
+                || CURRENT_VERSION <= lastVersionReviewed
+            ) return@launch
+            val request = reviewManager.requestReviewFlow()
 
-        request.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val reviewInfo = task.result
-                Log.d(TAG, "Got the ReviewInfo object: $reviewInfo")
-                // Delay for two seconds to avoid interrupting the person using the app
-                viewModelScope.launch {
-                    delay(2000)
-                    val flow = reviewManager.launchReviewFlow(activity, reviewInfo)
+            request.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val reviewInfo = task.result
+                    Log.d(TAG, "Got the ReviewInfo object: $reviewInfo")
+                    // Delay for two seconds to avoid interrupting the person using the app
+                    viewModelScope.launch {
+                        delay(2000)
+                        val flow = reviewManager.launchReviewFlow(activity, reviewInfo)
 
-                    flow.addOnCompleteListener { a ->
-                        // The user may or may not have reviewed or was prompted to review
-                        Log.d(TAG, "Review flow complete! Result: ${a.result}")
-                        viewModelScope.launch {
-                            dataStoreService.setLastVersionReviewed(CURRENT_VERSION)
+                        flow.addOnCompleteListener { a ->
+                            // The user may or may not have reviewed or was prompted to review
+                            Log.d(TAG, "Review flow complete! Result: ${a.result}")
+                            viewModelScope.launch {
+                                dataStoreService.setLastVersionReviewed(CURRENT_VERSION)
+                            }
                         }
                     }
+                } else {
+                    Log.w(
+                        TAG,
+                        "Failed to request for a review: ${task.exception?.localizedMessage}"
+                    )
                 }
-            } else {
-                Log.w(
-                    TAG,
-                    "Failed to request for a review: ${task.exception?.localizedMessage}"
-                )
             }
         }
     }

@@ -55,10 +55,8 @@ fun Home(
     LaunchedEffect(Unit) {
         mainViewModel.fetchRecentRecipes()
 
-        // If the user viewed enough recipes, ask for a review
-        // Only ask once per app version to avoid intimidating the user and quickly reaching the quota
-        if (mainViewModel.canReview && activity != null) {
-            mainViewModel.presentReview(activity)
+        if (activity != null) {
+            mainViewModel.presentReviewIfQualified(activity)
         }
     }
 
