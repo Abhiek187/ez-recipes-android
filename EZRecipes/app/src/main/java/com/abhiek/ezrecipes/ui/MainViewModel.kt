@@ -15,10 +15,9 @@ import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.models.RecipeError
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.utils.Constants
-import com.google.android.play.core.review.ReviewException
 import com.google.android.play.core.review.ReviewManager
-import com.google.android.play.core.review.model.ReviewErrorCode
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 // Connects the View to the Repository
@@ -113,28 +112,30 @@ class MainViewModel(
     }
 
     fun presentReview(activity: Activity) {
-        // Delay for two seconds to avoid interrupting the person using the app
-//        Thread.sleep(2000)
         val request = reviewManager.requestReviewFlow()
 
         request.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val reviewInfo = task.result
                 Log.d(TAG, "Got the ReviewInfo object: $reviewInfo")
-                val flow = reviewManager.launchReviewFlow(activity, reviewInfo)
+                // Delay for two seconds to avoid interrupting the person using the app
+                viewModelScope.launch {
+                    delay(2000)
+                    val flow = reviewManager.launchReviewFlow(activity, reviewInfo)
 
-                flow.addOnCompleteListener { a ->
-                    // The user may or may not have reviewed or was prompted to review
-                    Log.d(TAG, "Review flow complete! Result: ${a.result}")
-
-                    viewModelScope.launch {
-                        dataStoreService.setLastVersionReviewed(CURRENT_VERSION)
+                    flow.addOnCompleteListener { a ->
+                        // The user may or may not have reviewed or was prompted to review
+                        Log.d(TAG, "Review flow complete! Result: ${a.result}")
+                        viewModelScope.launch {
+                            dataStoreService.setLastVersionReviewed(CURRENT_VERSION)
+                        }
                     }
                 }
             } else {
-                @ReviewErrorCode
-                val reviewErrorCode = (task.exception as ReviewException).errorCode
-                Log.w(TAG, "Failed to request for a review: $reviewErrorCode")
+                Log.w(
+                    TAG,
+                    "Failed to request for a review: ${task.exception?.localizedMessage}"
+                )
             }
         }
     }
