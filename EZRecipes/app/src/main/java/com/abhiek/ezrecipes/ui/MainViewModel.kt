@@ -126,9 +126,9 @@ class MainViewModel(
                         delay(2000)
                         val flow = reviewManager.launchReviewFlow(activity, reviewInfo)
 
-                        flow.addOnCompleteListener { a ->
+                        flow.addOnCompleteListener {
                             // The user may or may not have reviewed or was prompted to review
-                            Log.d(TAG, "Review flow complete! Result: ${a.result}")
+                            Log.d(TAG, "Review flow complete!")
                             viewModelScope.launch {
                                 dataStoreService.setLastVersionReviewed(CURRENT_VERSION)
                             }
