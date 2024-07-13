@@ -136,7 +136,9 @@ internal class MainViewModelTest {
     fun `don't present a review if not enough recipes are viewed`() = runTest {
         // Given a user that's viewed less than the required number of recipes
         coEvery { mockDataStoreService.getRecipesViewed() } returns 1
-        coEvery { mockDataStoreService.getLastVersionReviewed() } returns MainViewModel.CURRENT_VERSION - 1
+        coEvery {
+            mockDataStoreService.getLastVersionReviewed()
+        } returns MainViewModel.CURRENT_VERSION - 1
 
         // When presentReviewIfQualified() is called
         viewModel.presentReviewIfQualified(activity)
@@ -148,8 +150,12 @@ internal class MainViewModelTest {
     @Test
     fun `don't present a review on the same version`() = runTest {
         // Given a user that was already presented a review on the current app version
-        coEvery { mockDataStoreService.getRecipesViewed() } returns Constants.RECIPES_TO_PRESENT_REVIEW
-        coEvery { mockDataStoreService.getLastVersionReviewed() } returns MainViewModel.CURRENT_VERSION
+        coEvery {
+            mockDataStoreService.getRecipesViewed()
+        } returns Constants.RECIPES_TO_PRESENT_REVIEW
+        coEvery {
+            mockDataStoreService.getLastVersionReviewed()
+        } returns MainViewModel.CURRENT_VERSION
 
         // When presentReviewIfQualified() is called
         viewModel.presentReviewIfQualified(activity)
@@ -161,17 +167,24 @@ internal class MainViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `present a review if qualified`() = runTest {
-        // Given a user that's viewed enough recipes and hasn't already reviewed on the current app version
-        coEvery { mockDataStoreService.getRecipesViewed() } returns Constants.RECIPES_TO_PRESENT_REVIEW
-        coEvery { mockDataStoreService.getLastVersionReviewed() } returns MainViewModel.CURRENT_VERSION - 1
-        coEvery { mockDataStoreService.setLastVersionReviewed(any<Int>()) } returns Unit
+        // Given a user that's viewed enough recipes and hasn't reviewed on the current app version
+        coEvery {
+            mockDataStoreService.getRecipesViewed()
+        } returns Constants.RECIPES_TO_PRESENT_REVIEW
+        coEvery {
+            mockDataStoreService.getLastVersionReviewed()
+        } returns MainViewModel.CURRENT_VERSION - 1
+        coEvery {
+            mockDataStoreService.setLastVersionReviewed(any<Int>())
+        } returns Unit
 
+        // Mock all the completion listeners
         val requestFlowTask = mockk<Task<ReviewInfo>>()
         every { mockReviewManager.requestReviewFlow() } returns requestFlowTask
-        val requestListenerSlot = slot<OnCompleteListener<ReviewInfo>>()
         val reviewInfoMock = mockk<ReviewInfo>()
         every { requestFlowTask.isSuccessful } returns true
         every { requestFlowTask.result } returns reviewInfoMock
+        val requestListenerSlot = slot<OnCompleteListener<ReviewInfo>>()
         every { requestFlowTask.addOnCompleteListener(capture(requestListenerSlot)) } answers {
             requestListenerSlot.captured.onComplete(requestFlowTask)
             requestFlowTask
