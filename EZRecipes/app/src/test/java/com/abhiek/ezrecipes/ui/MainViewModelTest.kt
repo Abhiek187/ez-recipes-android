@@ -16,6 +16,8 @@ import com.google.android.play.core.review.testing.FakeReviewManager
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -156,6 +158,7 @@ internal class MainViewModelTest {
         verify(exactly = 0) { mockReviewManager.requestReviewFlow() }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `present a review if qualified`() = runTest {
         // Given a user that's viewed enough recipes and hasn't already reviewed on the current app version
@@ -184,10 +187,11 @@ internal class MainViewModelTest {
 
         // When presentReviewIfQualified() is called
         viewModel.presentReviewIfQualified(activity)
+        advanceUntilIdle() // run all coroutines and listeners
 
         // Then it should go through the review flow and save the last version reviewed
         verify { mockReviewManager.requestReviewFlow() }
-//        verify { mockReviewManager.launchReviewFlow(activity, any()) }
-//        coVerify { mockDataStoreService.setLastVersionReviewed(MainViewModel.CURRENT_VERSION) }
+        verify { mockReviewManager.launchReviewFlow(activity, any()) }
+        coVerify { mockDataStoreService.setLastVersionReviewed(MainViewModel.CURRENT_VERSION) }
     }
 }
