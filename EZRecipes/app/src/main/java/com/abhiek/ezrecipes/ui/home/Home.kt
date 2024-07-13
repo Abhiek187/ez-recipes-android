@@ -27,6 +27,7 @@ import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.AppDatabase
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -36,6 +37,7 @@ import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.getActivity
+import com.google.android.play.core.review.testing.FakeReviewManager
 import kotlinx.coroutines.delay
 
 @Composable
@@ -44,6 +46,7 @@ fun Home(
     onNavigateToRecipe: () -> Unit
 ) {
     val context = LocalContext.current
+    val activity = context.getActivity()
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val defaultLoadingMessage = ""
@@ -51,6 +54,10 @@ fun Home(
 
     LaunchedEffect(Unit) {
         mainViewModel.fetchRecentRecipes()
+
+        if (activity != null) {
+            mainViewModel.presentReviewIfQualified(activity)
+        }
     }
 
     LaunchedEffect(mainViewModel.isLoading) {
@@ -237,7 +244,11 @@ private fun HomePreview(
     val recipeService = MockRecipeService
     val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
 
-    val viewModel = MainViewModel(RecipeRepository(recipeService, recentRecipeDao))
+    val viewModel = MainViewModel(
+        recipeRepository = RecipeRepository(recipeService, recentRecipeDao),
+        dataStoreService = DataStoreService(context),
+        reviewManager = FakeReviewManager(context)
+    )
     val (isLoading, showAlert, recentRecipes) = state
     viewModel.isLoading = isLoading
     viewModel.showRecipeAlert = showAlert // show the fallback alert in the preview

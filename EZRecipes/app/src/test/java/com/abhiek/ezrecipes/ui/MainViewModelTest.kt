@@ -1,12 +1,23 @@
 package com.abhiek.ezrecipes.ui
 
+import android.app.Activity
 import android.content.Context
+import android.util.Log
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.AppDatabase
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.data.storage.RecentRecipeDao
+import com.abhiek.ezrecipes.utils.Constants
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.testing.FakeReviewManager
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -18,16 +29,37 @@ import org.junit.jupiter.api.extension.ExtendWith
 internal class MainViewModelTest {
     private lateinit var mockService: MockRecipeService
     private lateinit var recentRecipeDao: RecentRecipeDao
+    private lateinit var mockDataStoreService: DataStoreService
+    private lateinit var mockReviewManager: FakeReviewManager
     private lateinit var viewModel: MainViewModel
 
     @MockK
     private lateinit var context: Context
+    @MockK
+    private lateinit var activity: Activity
+
+    private fun mockLog() {
+        mockkStatic(Log::class)
+        every { Log.d(any(), any<String>()) } returns 0
+        every { Log.w(any(), any<String>()) } returns 0
+    }
 
     @BeforeEach
     fun setUp() {
         mockService = MockRecipeService
         recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
-        viewModel = MainViewModel(RecipeRepository(mockService, recentRecipeDao))
+        mockDataStoreService = mockkClass(DataStoreService::class) {
+            coEvery { incrementRecipesViewed() } returns Unit
+        }
+        mockReviewManager = spyk(FakeReviewManager(context))
+
+        viewModel = MainViewModel(
+            recipeRepository = RecipeRepository(mockService, recentRecipeDao),
+            dataStoreService = mockDataStoreService,
+            reviewManager = mockReviewManager
+        )
+
+        mockLog()
     }
 
     @Test
@@ -88,5 +120,91 @@ internal class MainViewModelTest {
         assertEquals(viewModel.recipeError, mockService.recipeError)
         assertFalse(viewModel.isLoading)
         assertFalse(viewModel.isRecipeLoaded)
+    }
+
+    @Test
+    fun incrementRecipesViewed() = runTest {
+        // Given an instance of MainViewModel
+        // When incrementRecipesViewed() is called
+        viewModel.incrementRecipesViewed()
+
+        // Then the corresponding DataStore method should be called
+        coVerify { mockDataStoreService.incrementRecipesViewed() }
+    }
+
+    @Test
+    fun `don't present a review if not enough recipes are viewed`() = runTest {
+        // Given a user that's viewed less than the required number of recipes
+        coEvery { mockDataStoreService.getRecipesViewed() } returns 1
+        coEvery {
+            mockDataStoreService.getLastVersionReviewed()
+        } returns MainViewModel.CURRENT_VERSION - 1
+
+        // When presentReviewIfQualified() is called
+        viewModel.presentReviewIfQualified(activity)
+
+        // Then it shouldn't request a review
+        verify(exactly = 0) { mockReviewManager.requestReviewFlow() }
+    }
+
+    @Test
+    fun `don't present a review on the same version`() = runTest {
+        // Given a user that was already presented a review on the current app version
+        coEvery {
+            mockDataStoreService.getRecipesViewed()
+        } returns Constants.RECIPES_TO_PRESENT_REVIEW
+        coEvery {
+            mockDataStoreService.getLastVersionReviewed()
+        } returns MainViewModel.CURRENT_VERSION
+
+        // When presentReviewIfQualified() is called
+        viewModel.presentReviewIfQualified(activity)
+
+        // Then it shouldn't request a review
+        verify(exactly = 0) { mockReviewManager.requestReviewFlow() }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `present a review if qualified`() = runTest {
+        // Given a user that's viewed enough recipes and hasn't reviewed on the current app version
+        coEvery {
+            mockDataStoreService.getRecipesViewed()
+        } returns Constants.RECIPES_TO_PRESENT_REVIEW
+        coEvery {
+            mockDataStoreService.getLastVersionReviewed()
+        } returns MainViewModel.CURRENT_VERSION - 1
+        coEvery {
+            mockDataStoreService.setLastVersionReviewed(any<Int>())
+        } returns Unit
+
+        // Mock all the completion listeners
+        val requestFlowTask = mockk<Task<ReviewInfo>>()
+        every { mockReviewManager.requestReviewFlow() } returns requestFlowTask
+        val reviewInfoMock = mockk<ReviewInfo>()
+        every { requestFlowTask.isSuccessful } returns true
+        every { requestFlowTask.result } returns reviewInfoMock
+        val requestListenerSlot = slot<OnCompleteListener<ReviewInfo>>()
+        every { requestFlowTask.addOnCompleteListener(capture(requestListenerSlot)) } answers {
+            requestListenerSlot.captured.onComplete(requestFlowTask)
+            requestFlowTask
+        }
+
+        val launchFlowTask = mockk<Task<Void>>()
+        every { mockReviewManager.launchReviewFlow(activity, reviewInfoMock) } returns launchFlowTask
+        val reviewListenerSlot = slot<OnCompleteListener<Void>>()
+        every { launchFlowTask.addOnCompleteListener(capture(reviewListenerSlot)) } answers {
+            reviewListenerSlot.captured.onComplete(launchFlowTask)
+            launchFlowTask
+        }
+
+        // When presentReviewIfQualified() is called
+        viewModel.presentReviewIfQualified(activity)
+        advanceUntilIdle() // run all coroutines and listeners
+
+        // Then it should go through the review flow and save the last version reviewed
+        verify { mockReviewManager.requestReviewFlow() }
+        verify { mockReviewManager.launchReviewFlow(activity, any()) }
+        coVerify { mockDataStoreService.setLastVersionReviewed(MainViewModel.CURRENT_VERSION) }
     }
 }

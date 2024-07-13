@@ -3,6 +3,7 @@ package com.abhiek.ezrecipes.data.storage
 import android.content.Context
 import android.util.Log
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.abhiek.ezrecipes.data.models.Term
 import com.abhiek.ezrecipes.data.models.TermStore
@@ -24,6 +25,8 @@ class DataStoreService(context: Context) {
     companion object {
         private const val TAG = "DataStoreService"
         private val KEY_TERMS = stringPreferencesKey("terms")
+        private val KEY_RECIPES_VIEWED = intPreferencesKey("recipes_viewed")
+        private val KEY_LAST_VERSION_REVIEWED = intPreferencesKey("last_version_reviewed")
     }
 
     suspend fun getTerms(): List<Term>? {
@@ -63,6 +66,27 @@ class DataStoreService(context: Context) {
             val termStoreStr = gson.toJson(termStore)
             preferences[KEY_TERMS] = termStoreStr
             Log.i(TAG, "Saved terms to DataStore!")
+        }
+    }
+
+    suspend fun getRecipesViewed() = dataStore.data.map { preferences ->
+        preferences[KEY_RECIPES_VIEWED] ?: 0
+    }.first()
+
+    suspend fun incrementRecipesViewed() {
+        dataStore.edit { preferences ->
+            val recipesViewed = preferences[KEY_RECIPES_VIEWED] ?: 0
+            preferences[KEY_RECIPES_VIEWED] = recipesViewed + 1
+        }
+    }
+
+    suspend fun getLastVersionReviewed() = dataStore.data.map { preferences ->
+        preferences[KEY_LAST_VERSION_REVIEWED] ?: 0
+    }.first()
+
+    suspend fun setLastVersionReviewed(versionCode: Int) {
+        dataStore.edit { preferences ->
+            preferences[KEY_LAST_VERSION_REVIEWED] = versionCode
         }
     }
 }
