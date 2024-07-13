@@ -4,9 +4,14 @@ import android.content.Context
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.AppDatabase
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.data.storage.RecentRecipeDao
+import com.google.android.play.core.review.testing.FakeReviewManager
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockkClass
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -18,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 internal class MainViewModelTest {
     private lateinit var mockService: MockRecipeService
     private lateinit var recentRecipeDao: RecentRecipeDao
+    private lateinit var mockDataStoreService: DataStoreService
     private lateinit var viewModel: MainViewModel
 
     @MockK
@@ -27,7 +33,15 @@ internal class MainViewModelTest {
     fun setUp() {
         mockService = MockRecipeService
         recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
-        viewModel = MainViewModel(RecipeRepository(mockService, recentRecipeDao))
+        mockDataStoreService = mockkClass(DataStoreService::class) {
+            coEvery { incrementRecipesViewed() } returns Unit
+        }
+
+        viewModel = MainViewModel(
+            recipeRepository = RecipeRepository(mockService, recentRecipeDao),
+            dataStoreService = mockDataStoreService,
+            reviewManager = FakeReviewManager(context)
+        )
     }
 
     @Test
@@ -88,5 +102,15 @@ internal class MainViewModelTest {
         assertEquals(viewModel.recipeError, mockService.recipeError)
         assertFalse(viewModel.isLoading)
         assertFalse(viewModel.isRecipeLoaded)
+    }
+
+    @Test
+    fun incrementRecipesViewed() = runTest {
+        // Given an instance of MainViewModel
+        // When incrementRecipesViewed() is called
+        viewModel.incrementRecipesViewed()
+
+        // Then the corresponding DataStore method should be called
+        coVerify { mockDataStoreService.incrementRecipesViewed() }
     }
 }
