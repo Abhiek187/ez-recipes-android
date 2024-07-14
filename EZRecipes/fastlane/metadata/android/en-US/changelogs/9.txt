@@ -1,0 +1,9 @@
+- Your 10 most recently viewed recipes will now appear on the home screen and can be viewed offline
+- Added a glossary screen to learn about various cooking terms
+- Added Central American as a cuisine
+- Added smoothie, cocktail, and mocktail as meal types
+- Improved search performance when there are many matching recipes
+- Fixed cases where a recipe didn't have a URL
+- Fixed cases where a recipe didn't have any meal types or cuisines
+- Updated the URLs of ingredient and equipment images for improved performance
+- The app will now prompt you for a review after browsing enough recipes (we won't be pushy 😊)
