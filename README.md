@@ -25,7 +25,7 @@ Introducing EZ Recipes, an app that lets chefs find low-effort recipes that can 
 
 Chefs can either find a random recipe or search for one using various filters, including by name, dietary restrictions, spice level, and meal type.
 
-The app features a glossary to easily look up the meaning of common terms found in recipes. This will better assist newer chefs in learning how to cook, prep certain ingredients, and use certain kitchen tools. Think How to Stock, but for cooking food instead of managing finances.
+The app features a glossary to easily look up the meaning of common terms found in recipes. This will better assist newer chefs in learning how to cook, prep certain ingredients, and use certain kitchen tools. Think [How to Stock](https://github.com/Abhiek187/how-to-stock), but for cooking food instead of managing finances.
 
 ## Features
 
