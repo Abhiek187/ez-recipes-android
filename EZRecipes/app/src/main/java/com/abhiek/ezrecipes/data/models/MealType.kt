@@ -27,6 +27,9 @@ enum class MealType {
     CONDIMENT,
     DIP,
     SPREAD,
+    SMOOTHIE,
+    COCKTAIL,
+    MOCKTAIL,
     UNKNOWN;
 
     override fun toString(): String {
