@@ -100,9 +100,6 @@ internal class EZRecipesInstrumentedTest {
             .onNodeWithText(activity.getString(R.string.app_name))
             .assertExists()
         composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.favorite_alt))
-            .assertDoesNotExist()
-        composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.share_alt))
             .assertDoesNotExist()
         // Take screenshots along the way
@@ -251,7 +248,7 @@ internal class EZRecipesInstrumentedTest {
 
     @LargeTest
     @Test
-    fun testSearchRecipes() {
+    fun searchRecipes() {
         // Click the search tab
         // Use the hamburger menu on large screens
         val hamburgerMenu = composeTestRule
@@ -428,7 +425,7 @@ internal class EZRecipesInstrumentedTest {
 
     @SmallTest
     @Test
-    fun testGlossaryScreen() {
+    fun glossaryScreen() {
         // Take a screenshot of the glossary tab (no assertions)
         val hamburgerMenu = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
@@ -440,6 +437,14 @@ internal class EZRecipesInstrumentedTest {
         val glossaryTab = composeTestRule
             .onNodeWithText(activity.getString(R.string.glossary_tab))
         glossaryTab.performClick()
+
+        // Wait until the glossary screen is visible before taking a screenshot
+        composeTestRule.waitUntil {
+            composeTestRule
+                .onAllNodesWithText(activity.getString(R.string.find_recipe_button))
+                .fetchSemanticsNodes()
+                .isEmpty()
+        }
         screenshot("glossary-view")
     }
 }

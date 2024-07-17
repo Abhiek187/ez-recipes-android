@@ -133,6 +133,17 @@ internal class MainViewModelTest {
     }
 
     @Test
+    fun `don't present a review on first launch`() = runTest {
+        // Given a user that's launched the app
+        // When presentReviewIfQualified() is called
+        viewModel.presentReviewIfQualified(activity)
+
+        // Then it should return immediately
+        coVerify(exactly = 0) { mockDataStoreService.getRecipesViewed() }
+        coVerify(exactly = 0) { mockDataStoreService.getLastVersionReviewed() }
+    }
+
+    @Test
     fun `don't present a review if not enough recipes are viewed`() = runTest {
         // Given a user that's viewed less than the required number of recipes
         coEvery { mockDataStoreService.getRecipesViewed() } returns 1
@@ -140,10 +151,13 @@ internal class MainViewModelTest {
             mockDataStoreService.getLastVersionReviewed()
         } returns MainViewModel.CURRENT_VERSION - 1
 
-        // When presentReviewIfQualified() is called
+        // When presentReviewIfQualified() is called (twice)
+        viewModel.presentReviewIfQualified(activity)
         viewModel.presentReviewIfQualified(activity)
 
         // Then it shouldn't request a review
+        coVerify { mockDataStoreService.getRecipesViewed() }
+        coVerify { mockDataStoreService.getLastVersionReviewed() }
         verify(exactly = 0) { mockReviewManager.requestReviewFlow() }
     }
 
@@ -159,8 +173,11 @@ internal class MainViewModelTest {
 
         // When presentReviewIfQualified() is called
         viewModel.presentReviewIfQualified(activity)
+        viewModel.presentReviewIfQualified(activity)
 
         // Then it shouldn't request a review
+        coVerify { mockDataStoreService.getRecipesViewed() }
+        coVerify { mockDataStoreService.getLastVersionReviewed() }
         verify(exactly = 0) { mockReviewManager.requestReviewFlow() }
     }
 
@@ -199,6 +216,7 @@ internal class MainViewModelTest {
         }
 
         // When presentReviewIfQualified() is called
+        viewModel.presentReviewIfQualified(activity)
         viewModel.presentReviewIfQualified(activity)
         advanceUntilIdle() // run all coroutines and listeners
 

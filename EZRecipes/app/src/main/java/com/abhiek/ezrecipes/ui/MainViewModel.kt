@@ -39,8 +39,10 @@ class MainViewModel(
     var showRecipeAlert by mutableStateOf(false)
     var recentRecipes by mutableStateOf<List<RecentRecipe>>(listOf())
 
+    private var isFirstPrompt = true
+
     companion object {
-        const val TAG = "MainViewModel"
+        private const val TAG = "MainViewModel"
         const val CURRENT_VERSION = BuildConfig.VERSION_CODE
     }
 
@@ -106,6 +108,12 @@ class MainViewModel(
 
     fun presentReviewIfQualified(activity: Activity) {
         viewModelScope.launch {
+            // Avoid presenting a review immediately on launch
+            if (isFirstPrompt) {
+                isFirstPrompt = false
+                return@launch
+            }
+
             // If the user viewed enough recipes, ask for a review
             // Only ask once per app version to avoid intimidating the user
             // and quickly reaching the quota

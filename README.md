@@ -8,13 +8,14 @@
 </a>
 
 <div>
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US_framed.png" alt="home screen" width="300">
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US_framed.png" alt="recipe header" width="300">
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US_framed.png" alt="nutrition label" width="300">
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US_framed.png" alt="summary box" width="300">
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US_framed.png" alt="ingredients list" width="300">
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/6_en-US_framed.png" alt="filter form" width="300">
-    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/7_en-US_framed.png" alt="search results" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png" alt="home screen" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png" alt="recipe header" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png" alt="nutrition label" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.png" alt="summary box" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US.png" alt="instructions list" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/6_en-US.png" alt="filter form" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/7_en-US.png" alt="search results" width="300">
+    <img src="EZRecipes/fastlane/metadata/android/en-US/images/phoneScreenshots/8_en-US.png" alt="glossary screen" width="300">
 </div>
 
 ## Overview
@@ -25,7 +26,7 @@ Introducing EZ Recipes, an app that lets chefs find low-effort recipes that can 
 
 Chefs can either find a random recipe or search for one using various filters, including by name, dietary restrictions, spice level, and meal type.
 
-The app features a glossary to easily lookup the meaning of common terms found in recipes. This will better assist newer chefs in learning how to cook, prep certain ingredients, and use certain kitchen tools. Think How to Stock, but for cooking food instead of managing finances.
+The app features a glossary to easily look up the meaning of common terms found in recipes. This will better assist newer chefs in learning how to cook, prep certain ingredients, and use certain kitchen tools. Think [How to Stock](https://github.com/Abhiek187/how-to-stock), but for cooking food instead of managing finances.
 
 ## Features
 
