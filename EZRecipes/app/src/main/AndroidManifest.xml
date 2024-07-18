@@ -4,15 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Allows storing screenshots on external storage, where it can be accessed by ADB -->
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
-
     <!-- Allows changing locales -->
     <uses-permission
         android:name="android.permission.CHANGE_CONFIGURATION"
