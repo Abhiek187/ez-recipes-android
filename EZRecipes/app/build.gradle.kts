@@ -17,8 +17,8 @@ android {
         applicationId = "com.abhiek.ezrecipes"
         minSdk = 23
         targetSdk = 34
-        versionCode = 9
-        versionName = "2.1.0"
+        versionCode = 10
+        versionName = "2.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
