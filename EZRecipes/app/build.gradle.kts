@@ -76,7 +76,8 @@ android {
 dependencies {
     val composeBomVersion = "2024.06.00"
     val googlePlayVersion = "2.0.1"
-    val lifecycleVersion = "2.8.3"
+    val lifecycleVersion = "2.8.4"
+    val activityVersion = "1.9.1"
     val materialVersion = "1.6.8"
     val material3Version = "1.2.1"
     val retrofitVersion = "2.11.0"
@@ -89,12 +90,13 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
-    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation("androidx.activity:activity-compose:$activityVersion")
+    implementation("androidx.activity:activity-ktx:$activityVersion")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material:$materialVersion")
     implementation("androidx.compose.material:material-icons-extended:$materialVersion")
-    //implementation("androidx.compose.material3:material3-android:$material3Version")
+    implementation("androidx.compose.material3:material3:$material3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
