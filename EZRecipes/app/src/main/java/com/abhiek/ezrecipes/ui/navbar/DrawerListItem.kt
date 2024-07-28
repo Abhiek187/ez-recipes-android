@@ -3,9 +3,9 @@ package com.abhiek.ezrecipes.ui.navbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +22,7 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 @Composable
 fun DrawerListItem(item: Tab, selected: Boolean, onItemClick: () -> Unit) {
     // Highlight the selected drawer item
-    val backgroundColor = if (selected) MaterialTheme.colors.secondary else Color.Transparent
+    val backgroundColor = if (selected) MaterialTheme.colorScheme.secondary else Color.Transparent
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -40,17 +40,17 @@ fun DrawerListItem(item: Tab, selected: Boolean, onItemClick: () -> Unit) {
                 .height(32.dp)
                 .width(32.dp),
             // In dark mode, black contrasts with yellow better than white
-            tint = if (selected) Color.Black else MaterialTheme.colors.onBackground
+            tint = if (selected) Color.Black else MaterialTheme.colorScheme.onBackground
         )
         Spacer(
             modifier = Modifier.width(16.dp)
         )
         Text(
             text = stringResource(item.resourceId),
-            style = MaterialTheme.typography.subtitle1.copy(
+            style = MaterialTheme.typography.titleMedium.copy(
                 fontSize = 18.sp
             ),
-            color = if (selected) Color.Black else MaterialTheme.colors.onBackground,
+            color = if (selected) Color.Black else MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.clickable(onClick = onItemClick)
         )
     }

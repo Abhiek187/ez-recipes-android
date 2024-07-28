@@ -94,7 +94,6 @@ dependencies {
     implementation("androidx.activity:activity-ktx:$activityVersion")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material:material:$materialVersion")
     implementation("androidx.compose.material:material-icons-extended:$materialVersion")
     implementation("androidx.compose.material3:material3:$material3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$material3Version")

@@ -4,9 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,37 +50,37 @@ fun RecipePills(
         if (isVegetarian) {
             Pill(
                 text = stringResource(R.string.vegetarian_label),
-                backgroundColor = MaterialTheme.colors.primary
+                backgroundColor = MaterialTheme.colorScheme.primary
             )
         }
         if (isVegan) {
             Pill(
                 text = stringResource(R.string.vegan_label),
-                backgroundColor = MaterialTheme.colors.primary
+                backgroundColor = MaterialTheme.colorScheme.primary
             )
         }
         if (isGlutenFree) {
             Pill(
                 text = stringResource(R.string.gluten_free_label),
-                backgroundColor = MaterialTheme.colors.primary
+                backgroundColor = MaterialTheme.colorScheme.primary
             )
         }
         if (isHealthy) {
             Pill(
                 text = stringResource(R.string.healthy_label),
-                backgroundColor = MaterialTheme.colors.primary
+                backgroundColor = MaterialTheme.colorScheme.primary
             )
         }
         if (isCheap) {
             Pill(
                 text = stringResource(R.string.cheap_label),
-                backgroundColor = MaterialTheme.colors.primary
+                backgroundColor = MaterialTheme.colorScheme.primary
             )
         }
         if (isSustainable) {
             Pill(
                 text = stringResource(R.string.sustainable_label),
-                backgroundColor = MaterialTheme.colors.primary
+                backgroundColor = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -98,7 +98,7 @@ private fun Pill(text: String, backgroundColor: Color, textColor: Color = Color.
         Text(
             text = text,
             color = textColor,
-            style = MaterialTheme.typography.caption,
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .padding(horizontal = 8.dp, vertical = 4.dp)
         )

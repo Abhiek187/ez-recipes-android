@@ -1,7 +1,7 @@
 package com.abhiek.ezrecipes.ui.recipe
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,18 +21,17 @@ import com.abhiek.ezrecipes.utils.capitalizeWords
 
 @Composable
 fun IngredientsList(ingredients: List<Ingredient>) {
-    Card(
+    ElevatedCard(
         modifier = Modifier
             .width(400.dp)
-            .padding(16.dp),
-        elevation = 10.dp
+            .padding(16.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
                 text = stringResource(R.string.ingredients),
-                style = MaterialTheme.typography.h5.copy(
+                style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 ),
@@ -41,7 +40,7 @@ fun IngredientsList(ingredients: List<Ingredient>) {
                     .padding(top = 8.dp)
             )
 
-            Divider()
+            HorizontalDivider()
 
             // Ingredients list
             Column(
@@ -57,13 +56,13 @@ fun IngredientsList(ingredients: List<Ingredient>) {
                     ) {
                         Text(
                             text = "${ingredient.amount} ${ingredient.unit}",
-                            style = MaterialTheme.typography.body1.copy(
+                            style = MaterialTheme.typography.bodyLarge.copy(
                                 fontSize = 18.sp
                             )
                         )
                         Text(
                             text = ingredient.name.capitalizeWords(),
-                            style = MaterialTheme.typography.body1.copy(
+                            style = MaterialTheme.typography.bodyLarge.copy(
                                 fontSize = 18.sp,
                                 textAlign = TextAlign.End
                             )

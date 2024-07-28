@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -185,8 +185,8 @@ fun FilterForm(
             ) {
                 Text(
                     text = stringResource(R.string.calorie_exceed_max_error),
-                    style = MaterialTheme.typography.caption.copy(
-                        color = MaterialTheme.colors.error
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.error
                     )
                 )
             }
@@ -203,8 +203,8 @@ fun FilterForm(
             ) {
                 Text(
                     text = stringResource(R.string.calorie_invalid_range_error),
-                    style = MaterialTheme.typography.caption.copy(
-                        color = MaterialTheme.colors.error
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.error
                     )
                 )
             }
@@ -314,8 +314,8 @@ fun FilterForm(
             if (searchViewModel.noRecipesFound) {
                 Text(
                     text = stringResource(R.string.no_results),
-                    style = MaterialTheme.typography.body1.copy(
-                        color = MaterialTheme.colors.error
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.error
                     ),
                     modifier = Modifier.padding(start = 8.dp)
                 )

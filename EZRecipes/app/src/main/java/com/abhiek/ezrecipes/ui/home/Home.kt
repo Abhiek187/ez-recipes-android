@@ -8,7 +8,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -109,7 +109,7 @@ fun Home(
         Button(
             onClick = { mainViewModel.getRandomRecipe(fromHome = true) },
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = MaterialTheme.colors.secondary
+                containerColor = MaterialTheme.colorScheme.secondary
             ),
             enabled = !mainViewModel.isLoading, // prevent button spam
             modifier = Modifier.padding(top = 32.dp)
@@ -148,25 +148,36 @@ fun Home(
                            stringResource(R.string.unknown_error)
                        )
                 },
-                buttons = {
-                    // Position the button at the bottom right of the alert
-                    Row(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Button(
-                            onClick = {
-                                mainViewModel.showRecipeAlert = false
-                            }
-                        ) {
-                            Text(
-                                text = stringResource(R.string.ok_button)
-                            )
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            mainViewModel.showRecipeAlert = false
                         }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.ok_button)
+                        )
                     }
                 },
+//                buttons = {
+//                    // Position the button at the bottom right of the alert
+//                    Row(
+//                        modifier = Modifier
+//                            .padding(8.dp)
+//                            .fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.End
+//                    ) {
+//                        Button(
+//                            onClick = {
+//                                mainViewModel.showRecipeAlert = false
+//                            }
+//                        ) {
+//                            Text(
+//                                text = stringResource(R.string.ok_button)
+//                            )
+//                        }
+//                    }
+//                },
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
         }
@@ -185,9 +196,9 @@ fun Home(
             ) {
                 Text(
                     text = stringResource(R.string.recently_viewed),
-                    style = MaterialTheme.typography.h4
+                    style = MaterialTheme.typography.headlineMedium
                 )
-                Divider()
+                HorizontalDivider()
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),

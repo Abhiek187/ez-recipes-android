@@ -2,10 +2,10 @@ package com.abhiek.ezrecipes.ui.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,12 +33,11 @@ fun RecipeCard(recipe: Recipe, width: Dp? = null, onClick: () -> Unit) {
 
     val calories = recipe.nutrients.firstOrNull { nutrient -> nutrient.name == "Calories" }
 
-    Card(
+    ElevatedCard(
         modifier = Modifier
             .padding(8.dp)
             .clickable { onClick() }
-            .then(if (width != null) Modifier.width(width) else Modifier),
-        elevation = 2.dp
+            .then(if (width != null) Modifier.width(width) else Modifier)
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -53,7 +52,7 @@ fun RecipeCard(recipe: Recipe, width: Dp? = null, onClick: () -> Unit) {
                     .padding(8.dp),
                 contentScale = ContentScale.Fit
             )
-            Divider()
+            HorizontalDivider()
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -61,7 +60,7 @@ fun RecipeCard(recipe: Recipe, width: Dp? = null, onClick: () -> Unit) {
             ) {
                 Text(
                     text = recipe.name,
-                    style = MaterialTheme.typography.h6,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(onClick = { isFavorite = !isFavorite }) {
@@ -70,7 +69,7 @@ fun RecipeCard(recipe: Recipe, width: Dp? = null, onClick: () -> Unit) {
                             else Icons.Filled.FavoriteBorder,
                         contentDescription = if (isFavorite) stringResource(R.string.un_favorite_alt)
                             else stringResource(R.string.favorite_alt),
-                        tint = MaterialTheme.colors.primary
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -85,12 +84,12 @@ fun RecipeCard(recipe: Recipe, width: Dp? = null, onClick: () -> Unit) {
                         text = context.resources.getQuantityString(R.plurals.recipe_time, recipe.time, recipe.time),
                         endIndex = 5 // "Time:".length = 5
                     ),
-                    style = MaterialTheme.typography.subtitle1
+                    style = MaterialTheme.typography.titleMedium
                 )
                 calories?.let { calorie ->
                     Text(
                         text = "${calorie.amount.roundToInt()} ${calorie.unit}",
-                        style = MaterialTheme.typography.subtitle1
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
             }

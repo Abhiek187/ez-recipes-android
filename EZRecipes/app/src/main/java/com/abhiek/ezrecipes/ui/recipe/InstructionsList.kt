@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +35,7 @@ fun InstructionsList(instructions: List<Instruction>) {
     ) {
         Text(
             text = stringResource(R.string.steps),
-            style = MaterialTheme.typography.h6.copy(
+            style = MaterialTheme.typography.titleLarge.copy(
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
@@ -48,7 +48,7 @@ fun InstructionsList(instructions: List<Instruction>) {
             if (instruction.name.isNotEmpty()) {
                 Text(
                     text = instruction.name,
-                    style = MaterialTheme.typography.subtitle1.copy(
+                    style = MaterialTheme.typography.titleMedium.copy(
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center
                     ),

@@ -3,10 +3,10 @@ package com.abhiek.ezrecipes.ui.recipe
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -87,8 +87,8 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
 
         ClickableText(
             text = annotatedLinkString,
-            style = MaterialTheme.typography.caption.copy(
-                color = MaterialTheme.colors.onBackground
+            style = MaterialTheme.typography.bodySmall.copy(
+                color = MaterialTheme.colorScheme.onBackground
             ),
             modifier = Modifier.padding(horizontal = 8.dp)
         ) { offset ->
@@ -118,7 +118,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                 text = context.resources.getQuantityString(R.plurals.recipe_time, recipe.time, recipe.time),
                 endIndex = 5 // "Time:".length = 5
             ),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
@@ -163,7 +163,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     modifier = Modifier.size(50.dp), // avoid the oval shape
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.error
+                        containerColor = MaterialTheme.colorScheme.error
                     ),
                     onClick = { println("Nice! Hope it was tasty!") }
                 ) {
@@ -171,7 +171,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                 }
                 Text(
                     text = stringResource(R.string.made_button),
-                    style = MaterialTheme.typography.button.copy(
+                    style = MaterialTheme.typography.labelLarge.copy(
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center
                     )
@@ -186,7 +186,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     modifier = Modifier.size(50.dp),
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.secondary
+                        containerColor = MaterialTheme.colorScheme.secondary
                     ),
                     onClick = { onClickFindRecipe() },
                     enabled = !isLoading
@@ -198,7 +198,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                 }
                 Text(
                     text = stringResource(R.string.show_recipe_button),
-                    style = MaterialTheme.typography.button.copy(
+                    style = MaterialTheme.typography.labelLarge.copy(
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center
                     )

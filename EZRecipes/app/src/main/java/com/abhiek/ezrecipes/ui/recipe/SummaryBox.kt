@@ -2,12 +2,12 @@ package com.abhiek.ezrecipes.ui.recipe
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.TipsAndUpdates
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +29,7 @@ import com.abhiek.ezrecipes.utils.HTMLText
 fun SummaryBox(summary: String) {
     Box(
         modifier = Modifier
-            .background(MaterialTheme.colors.secondary)
+            .background(MaterialTheme.colorScheme.secondary)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -43,7 +43,7 @@ fun SummaryBox(summary: String) {
             ) {
                 Text(
                     text = stringResource(R.string.summary),
-                    style = MaterialTheme.typography.h6.copy(
+                    style = MaterialTheme.typography.titleLarge.copy(
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
