@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -39,13 +41,14 @@ fun NavigationDrawer(
     scope: CoroutineScope,
     navController: NavHostController,
     widthSizeClass: WindowWidthSizeClass,
-    width: Int = 300
+    width: Int = 300,
+    initialDrawerValue: DrawerValue = DrawerValue.Closed
 ) {
     /* Using sealedSubclasses requires reflection, which will make the app slower,
      * so list each drawer item manually
      */
     val drawerItems = listOf(Tab.Home, Tab.Search, Tab.Glossary)
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val drawerState = rememberDrawerState(initialDrawerValue)
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -117,8 +120,12 @@ fun NavigationDrawer(
             }
         }
     ) {
-        MainScaffold(scope, navController, widthSizeClass)
+        MainScaffold(scope, navController, widthSizeClass, drawerState)
     }
+}
+
+private class NavigationDrawerPreviewParameterProvider: PreviewParameterProvider<DrawerValue> {
+    override val values = sequenceOf(DrawerValue.Closed, DrawerValue.Open)
 }
 
 @DevicePreviews
@@ -126,14 +133,21 @@ fun NavigationDrawer(
 @FontPreviews
 @OrientationPreviews
 @Composable
-private fun NavigationDrawerPreview() {
+private fun NavigationDrawerPreview(
+    @PreviewParameter(NavigationDrawerPreviewParameterProvider::class) drawerValue: DrawerValue
+) {
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
     val windowSize = currentWindowSize()
 
     EZRecipesTheme {
         Surface {
-            NavigationDrawer(scope, navController, windowSize.widthSizeClass)
+            NavigationDrawer(
+                scope,
+                navController,
+                windowSize.widthSizeClass,
+                initialDrawerValue = drawerValue
+            )
         }
     }
 }

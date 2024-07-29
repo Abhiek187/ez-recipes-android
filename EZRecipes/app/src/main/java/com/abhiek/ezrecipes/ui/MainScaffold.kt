@@ -23,14 +23,15 @@ import kotlinx.coroutines.CoroutineScope
 fun MainScaffold(
     scope: CoroutineScope,
     navController: NavHostController,
-    widthSizeClass: WindowWidthSizeClass
+    widthSizeClass: WindowWidthSizeClass,
+    drawerState: DrawerState? = null
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            TopBar(scope, navController, widthSizeClass)
+            TopBar(scope, navController, widthSizeClass, drawerState)
         },
         // Show the navigation bar on small screens
         bottomBar = {
@@ -68,8 +69,9 @@ private fun MainScaffoldPreview() {
     // Use the actual size of the device to show accurate previews
     val windowSize = currentWindowSize()
     val navController = rememberNavController()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     EZRecipesTheme {
-        MainScaffold(scope, navController, windowSize.widthSizeClass)
+        MainScaffold(scope, navController, windowSize.widthSizeClass, drawerState)
     }
 }
