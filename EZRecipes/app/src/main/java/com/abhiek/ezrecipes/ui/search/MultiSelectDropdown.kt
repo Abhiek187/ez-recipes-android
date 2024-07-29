@@ -80,7 +80,12 @@ fun <T> MultiSelectDropdown(
                             Text(option.toString())
                             Checkbox(
                                 checked = value.contains(option),
-                                onCheckedChange = null
+                                onCheckedChange = null,
+                                colors = CheckboxDefaults.colors().copy(
+                                    checkedBoxColor = MaterialTheme.colorScheme.tertiary,
+                                    checkedCheckmarkColor = MaterialTheme.colorScheme.onTertiary,
+                                    checkedBorderColor = MaterialTheme.colorScheme.tertiary
+                                )
                             )
                         }
                     },

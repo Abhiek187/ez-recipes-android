@@ -109,7 +109,8 @@ fun Home(
         Button(
             onClick = { mainViewModel.getRandomRecipe(fromHome = true) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.tertiary
+                containerColor = MaterialTheme.colorScheme.tertiary,
+                contentColor = MaterialTheme.colorScheme.onTertiary
             ),
             enabled = !mainViewModel.isLoading, // prevent button spam
             modifier = Modifier.padding(top = 32.dp)

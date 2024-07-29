@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +40,12 @@ fun CheckboxRow(
         )
         Checkbox(
             checked = checked,
-            onCheckedChange = null
+            onCheckedChange = null,
+            colors = CheckboxDefaults.colors().copy(
+                checkedBoxColor = MaterialTheme.colorScheme.tertiary,
+                checkedCheckmarkColor = MaterialTheme.colorScheme.onTertiary,
+                checkedBorderColor = MaterialTheme.colorScheme.tertiary
+            )
         )
     }
 }
