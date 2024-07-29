@@ -90,23 +90,6 @@ fun SubmitButton(searchViewModel: SearchViewModel, enabled: Boolean) {
                             text = stringResource(R.string.ok_button)
                         )
                     }
-                    // Position the button at the bottom right of the alert
-//                    Row(
-//                        modifier = Modifier
-//                            .padding(8.dp)
-//                            .fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.End
-//                    ) {
-//                        Button(
-//                            onClick = {
-//                                searchViewModel.showRecipeAlert = false
-//                            }
-//                        ) {
-//                            Text(
-//                                text = stringResource(R.string.ok_button)
-//                            )
-//                        }
-//                    }
                 },
                 modifier = Modifier.padding(horizontal = 8.dp)
             )

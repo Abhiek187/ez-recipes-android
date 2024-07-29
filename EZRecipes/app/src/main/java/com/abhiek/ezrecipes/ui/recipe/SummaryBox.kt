@@ -29,7 +29,7 @@ import com.abhiek.ezrecipes.utils.HTMLText
 fun SummaryBox(summary: String) {
     Box(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.secondary)
+            .background(MaterialTheme.colorScheme.tertiary)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)

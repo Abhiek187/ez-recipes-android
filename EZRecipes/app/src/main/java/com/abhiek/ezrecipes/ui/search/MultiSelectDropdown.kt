@@ -86,19 +86,6 @@ fun <T> MultiSelectDropdown(
                     },
                     onClick = { onSelectOption(option) }
                 )
-//                ) {
-//                    Row(
-//                        horizontalArrangement = Arrangement.SpaceBetween,
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        modifier = Modifier.fillMaxWidth()
-//                    ) {
-//                        Text(option.toString())
-//                        Checkbox(
-//                            checked = value.contains(option),
-//                            onCheckedChange = null
-//                        )
-//                    }
-//                }
             }
         }
     }

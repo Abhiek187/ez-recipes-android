@@ -109,7 +109,7 @@ fun Home(
         Button(
             onClick = { mainViewModel.getRandomRecipe(fromHome = true) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary
+                containerColor = MaterialTheme.colorScheme.tertiary
             ),
             enabled = !mainViewModel.isLoading, // prevent button spam
             modifier = Modifier.padding(top = 32.dp)
@@ -159,25 +159,6 @@ fun Home(
                         )
                     }
                 },
-//                buttons = {
-//                    // Position the button at the bottom right of the alert
-//                    Row(
-//                        modifier = Modifier
-//                            .padding(8.dp)
-//                            .fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.End
-//                    ) {
-//                        Button(
-//                            onClick = {
-//                                mainViewModel.showRecipeAlert = false
-//                            }
-//                        ) {
-//                            Text(
-//                                text = stringResource(R.string.ok_button)
-//                            )
-//                        }
-//                    }
-//                },
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
         }

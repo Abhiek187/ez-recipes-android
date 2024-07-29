@@ -22,7 +22,7 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 @Composable
 fun DrawerListItem(item: Tab, selected: Boolean, onItemClick: () -> Unit) {
     // Highlight the selected drawer item
-    val backgroundColor = if (selected) MaterialTheme.colorScheme.secondary else Color.Transparent
+    val backgroundColor = if (selected) MaterialTheme.colorScheme.tertiary else Color.Transparent
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -66,6 +66,7 @@ fun DrawerListItemPreview() {
         Column {
             DrawerListItem(item = Tab.Home, selected = true) {}
             DrawerListItem(item = Tab.Search, selected = false) {}
+            DrawerListItem(item = Tab.Glossary, selected = false) {}
         }
     }
 }
