@@ -165,7 +165,9 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error
                     ),
-                    onClick = { println("Nice! Hope it was tasty!") }
+                    onClick = { println("Nice! Hope it was tasty!") },
+                    // Reduce padding to make the icon take up more space
+                    contentPadding = PaddingValues(8.dp)
                 ) {
                     Icon(Icons.Default.Restaurant, stringResource(R.string.made_button))
                 }
@@ -186,9 +188,11 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     modifier = Modifier.size(50.dp),
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
+                        containerColor = MaterialTheme.colorScheme.tertiary,
+                        contentColor = MaterialTheme.colorScheme.onTertiary
                     ),
                     onClick = { onClickFindRecipe() },
+                    contentPadding = PaddingValues(8.dp),
                     enabled = !isLoading
                 ) {
                     Icon(
