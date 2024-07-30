@@ -2,17 +2,17 @@ package com.abhiek.ezrecipes.ui.navbar
 
 import android.content.ClipDescription
 import android.content.Intent
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.R
@@ -26,12 +26,13 @@ import com.abhiek.ezrecipes.utils.currentWindowSize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
     scope: CoroutineScope,
-    scaffoldState: ScaffoldState,
-    navController: NavController,
-    widthSizeClass: WindowWidthSizeClass
+    navController: NavHostController,
+    widthSizeClass: WindowWidthSizeClass,
+    drawerState: DrawerState? = null
 ) {
     var isFavorite by remember { mutableStateOf(false) }
     // Get a context variable like in activities
@@ -62,7 +63,7 @@ fun TopBar(
                 IconButton(
                     onClick = {
                         scope.launch {
-                            scaffoldState.drawerState.open()
+                            drawerState?.open()
                         }
                     }
                 ) {
@@ -90,7 +91,12 @@ fun TopBar(
                 }
             }
         },
-        backgroundColor = MaterialTheme.colors.primary
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+        )
     )
 }
 
@@ -101,11 +107,11 @@ fun TopBar(
 @Composable
 fun TopBarPreview() {
     val scope = rememberCoroutineScope()
-    val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val navController = rememberNavController()
     val windowSize = currentWindowSize()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     EZRecipesTheme {
-        TopBar(scope, scaffoldState, navController, windowSize.widthSizeClass)
+        TopBar(scope, navController, windowSize.widthSizeClass, drawerState)
     }
 }

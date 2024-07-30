@@ -1,11 +1,11 @@
 package com.abhiek.ezrecipes.ui.navbar
 
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
@@ -15,7 +15,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
-fun NavRail(navController: NavController) {
+fun NavRail(navController: NavHostController) {
     val railItems = listOf(Tab.Home, Tab.Search, Tab.Glossary)
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()

@@ -2,16 +2,23 @@ package com.abhiek.ezrecipes.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         setContent {
@@ -37,7 +44,7 @@ class MainActivity : ComponentActivity() {
         if (appLinkAction == Intent.ACTION_VIEW) {
             appLinkData?.lastPathSegment?.also { recipeId ->
                 // The navigation graph will take care of the deep link ;)
-                println("recipe ID = $recipeId")
+                Log.d(TAG, "recipe ID = $recipeId")
             }
         }
     }

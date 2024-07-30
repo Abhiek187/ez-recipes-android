@@ -1,9 +1,9 @@
 package com.abhiek.ezrecipes.ui.recipe
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Link
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +36,7 @@ fun RecipeTitle(recipe: Recipe) {
         // Recipe name and source link
         Text(
             text = recipe.name.capitalizeWords(),
-            style = MaterialTheme.typography.h5.copy(
+            style = MaterialTheme.typography.headlineSmall.copy(
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             ),

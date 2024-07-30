@@ -3,7 +3,7 @@ package com.abhiek.ezrecipes.ui.recipe
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,11 +25,10 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun StepCard(step: Step) {
-    Card(
+    ElevatedCard(
         modifier = Modifier
             .width(600.dp)
-            .padding(8.dp),
-        elevation = 10.dp
+            .padding(8.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -46,11 +45,11 @@ fun StepCard(step: Step) {
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(50.dp)
-                        .border(1.dp, MaterialTheme.colors.onBackground, CircleShape)
+                        .border(1.dp, MaterialTheme.colorScheme.onBackground, CircleShape)
                 ) {
                     Text(
                         text = step.number.toString(),
-                        style = MaterialTheme.typography.h6.copy(
+                        style = MaterialTheme.typography.titleLarge.copy(
                             fontSize = 22.sp,
                             textAlign = TextAlign.Center
                         )
@@ -58,12 +57,12 @@ fun StepCard(step: Step) {
                 }
                 Text(
                     text = step.step,
-                    style = MaterialTheme.typography.body1
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
 
             if (step.ingredients.isNotEmpty()) {
-                Divider()
+                HorizontalDivider()
 
                 // Ingredients for each step
                 Row(
@@ -72,7 +71,7 @@ fun StepCard(step: Step) {
                 ) {
                     Text(
                         text = stringResource(R.string.ingredients),
-                        style = MaterialTheme.typography.subtitle1.copy(
+                        style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -93,7 +92,7 @@ fun StepCard(step: Step) {
                                 )
                                 Text(
                                     text = ingredient.name,
-                                    style = MaterialTheme.typography.body2.copy(
+                                    style = MaterialTheme.typography.bodyMedium.copy(
                                         textAlign = TextAlign.Center
                                     ),
                                     modifier = Modifier.width(100.dp)
@@ -105,7 +104,7 @@ fun StepCard(step: Step) {
             }
 
             if (step.equipment.isNotEmpty()) {
-                Divider()
+                HorizontalDivider()
 
                 // Equipment for each step
                 Row(
@@ -114,7 +113,7 @@ fun StepCard(step: Step) {
                 ) {
                     Text(
                         text = stringResource(R.string.equipment),
-                        style = MaterialTheme.typography.subtitle1.copy(
+                        style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -133,7 +132,7 @@ fun StepCard(step: Step) {
                                 )
                                 Text(
                                     text = equipment.name,
-                                    style = MaterialTheme.typography.body2.copy(
+                                    style = MaterialTheme.typography.bodyMedium.copy(
                                         textAlign = TextAlign.Center
                                     ),
                                     modifier = Modifier.width(100.dp)

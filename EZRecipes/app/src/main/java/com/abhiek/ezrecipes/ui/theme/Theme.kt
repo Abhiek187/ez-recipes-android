@@ -1,21 +1,26 @@
 package com.abhiek.ezrecipes.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette = darkColorScheme(
     primary = Blue300,
-    primaryVariant = Blue700,
-    secondary = Amber300
+    secondary = Blue700,
+    tertiary = Amber300,
+    onPrimary = Color.Black,
+    onTertiary = Color.Black
 )
 
-private val LightColorPalette = lightColors(
+private val LightColorPalette = lightColorScheme(
     primary = Blue500,
-    primaryVariant = Blue700,
-    secondary = Amber300
+    secondary = Blue700,
+    tertiary = Amber300,
+    onPrimary = Color.Black,
+    onTertiary = Color.Black
 
     /* Other default colors to override
     background = Color.White,
@@ -36,7 +41,7 @@ fun EZRecipesTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
     }
 
     MaterialTheme(
-        colors = colors,
+        colorScheme = colors,
         typography = Typography,
         shapes = Shapes,
         content = content

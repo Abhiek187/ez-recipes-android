@@ -2,10 +2,10 @@ package com.abhiek.ezrecipes.ui.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,11 +48,11 @@ fun <T> MultiSelectDropdown(
                 )
             },
             // Make the dropdown appear clickable instead of grayed out
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                disabledBorderColor = MaterialTheme.colors.onSurface,
-                disabledLabelColor = MaterialTheme.colors.onSurface,
-                disabledTextColor = MaterialTheme.colors.onSurface,
-                disabledTrailingIconColor = MaterialTheme.colors.onSurface
+            colors = OutlinedTextFieldDefaults.colors(
+                disabledBorderColor = MaterialTheme.colorScheme.onSurface,
+                disabledLabelColor = MaterialTheme.colorScheme.onSurface,
+                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface
             ),
             modifier = Modifier
                 .clickable { expanded = !expanded }
@@ -71,20 +71,26 @@ fun <T> MultiSelectDropdown(
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
+                    text = {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(option.toString())
+                            Checkbox(
+                                checked = value.contains(option),
+                                onCheckedChange = null,
+                                colors = CheckboxDefaults.colors().copy(
+                                    checkedBoxColor = MaterialTheme.colorScheme.tertiary,
+                                    checkedCheckmarkColor = MaterialTheme.colorScheme.onTertiary,
+                                    checkedBorderColor = MaterialTheme.colorScheme.tertiary
+                                )
+                            )
+                        }
+                    },
                     onClick = { onSelectOption(option) }
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(option.toString())
-                        Checkbox(
-                            checked = value.contains(option),
-                            onCheckedChange = null
-                        )
-                    }
-                }
+                )
             }
         }
     }

@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -47,7 +47,7 @@ fun SearchResults(
     ) {
         Text(
             text = stringResource(R.string.results_title),
-            style = MaterialTheme.typography.h5.copy(
+            style = MaterialTheme.typography.headlineSmall.copy(
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             ),
@@ -59,7 +59,7 @@ fun SearchResults(
             // Center vertically & horizontally
             Text(
                 text = stringResource(R.string.results_placeholder),
-                style = MaterialTheme.typography.h6.copy(
+                style = MaterialTheme.typography.titleLarge.copy(
                     textAlign = TextAlign.Center
                 ),
                 modifier = Modifier

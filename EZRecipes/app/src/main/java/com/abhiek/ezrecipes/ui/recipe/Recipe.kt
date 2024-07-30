@@ -3,10 +3,7 @@ package com.abhiek.ezrecipes.ui.recipe
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -125,7 +122,7 @@ fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: Stri
 
             InstructionsList(instructions = recipe.instructions)
 
-            Divider()
+            HorizontalDivider()
 
             RecipeFooter()
         }

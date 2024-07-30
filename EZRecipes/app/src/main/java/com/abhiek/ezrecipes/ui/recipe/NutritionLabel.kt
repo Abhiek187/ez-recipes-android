@@ -1,7 +1,7 @@
 package com.abhiek.ezrecipes.ui.recipe
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,11 +28,10 @@ fun NutritionLabel(recipe: Recipe) {
     // Nutrients that should be bolded on the nutrition label
     val nutrientHeadings = listOf("Calories", "Fat", "Carbohydrates", "Protein")
 
-    Card(
+    ElevatedCard(
         modifier = Modifier
             .width(300.dp)
-            .padding(16.dp),
-        elevation = 10.dp
+            .padding(16.dp)
     ) {
         Column(
             modifier = Modifier.padding(8.dp)
@@ -45,21 +44,21 @@ fun NutritionLabel(recipe: Recipe) {
             ) {
                 Text(
                     text = stringResource(R.string.nutrition_facts),
-                    style = MaterialTheme.typography.h5.copy(
+                    style = MaterialTheme.typography.headlineSmall.copy(
                         fontWeight = FontWeight.Bold
                     )
                 )
                 Text(
                     text = stringResource(R.string.health_score, recipe.healthScore),
-                    style = MaterialTheme.typography.subtitle1
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Text(
                     text = context.resources.getQuantityString(R.plurals.servings, recipe.servings, recipe.servings),
-                    style = MaterialTheme.typography.subtitle1
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.padding(vertical = 8.dp)
             )
 
@@ -83,14 +82,14 @@ fun NutritionLabel(recipe: Recipe) {
                     ) {
                         Text(
                             text = nutrient.name,
-                            style = MaterialTheme.typography.body1.copy(
+                            style = MaterialTheme.typography.bodyLarge.copy(
                                 fontSize = 18.sp,
                                 fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
                             )
                         )
                         Text(
                             text = "$formattedAmount ${nutrient.unit}",
-                            style = MaterialTheme.typography.body1.copy(
+                            style = MaterialTheme.typography.bodyLarge.copy(
                                 fontSize = 18.sp,
                                 fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal,
                                 textAlign = TextAlign.End

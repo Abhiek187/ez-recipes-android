@@ -3,10 +3,10 @@ package com.abhiek.ezrecipes.ui.recipe
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,7 +32,6 @@ import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
-import com.abhiek.ezrecipes.ui.theme.Blue300
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.boldAnnotatedString
 import com.abhiek.ezrecipes.utils.contentEquals
@@ -53,7 +52,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
         // Apply a blue link style to the section after the copyright symbol
         addStyle(
             style = SpanStyle(
-                color = Blue300,
+                color = MaterialTheme.colorScheme.primary,
                 textDecoration = TextDecoration.Underline
             ),
             start = startIndex,
@@ -87,8 +86,8 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
 
         ClickableText(
             text = annotatedLinkString,
-            style = MaterialTheme.typography.caption.copy(
-                color = MaterialTheme.colors.onBackground
+            style = MaterialTheme.typography.bodySmall.copy(
+                color = MaterialTheme.colorScheme.onBackground
             ),
             modifier = Modifier.padding(horizontal = 8.dp)
         ) { offset ->
@@ -118,7 +117,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                 text = context.resources.getQuantityString(R.plurals.recipe_time, recipe.time, recipe.time),
                 endIndex = 5 // "Time:".length = 5
             ),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
@@ -163,15 +162,21 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     modifier = Modifier.size(50.dp), // avoid the oval shape
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.error
+                        containerColor = MaterialTheme.colorScheme.error
                     ),
-                    onClick = { println("Nice! Hope it was tasty!") }
+                    onClick = { println("Nice! Hope it was tasty!") },
+                    // Reduce padding to make the icon take up more space
+                    contentPadding = PaddingValues(8.dp)
                 ) {
-                    Icon(Icons.Default.Restaurant, stringResource(R.string.made_button))
+                    Icon(
+                        imageVector = Icons.Default.Restaurant,
+                        contentDescription = stringResource(R.string.made_button),
+                        tint = MaterialTheme.colorScheme.onError
+                    )
                 }
                 Text(
                     text = stringResource(R.string.made_button),
-                    style = MaterialTheme.typography.button.copy(
+                    style = MaterialTheme.typography.labelLarge.copy(
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center
                     )
@@ -186,19 +191,21 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     modifier = Modifier.size(50.dp),
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.secondary
+                        containerColor = MaterialTheme.colorScheme.tertiary,
+                        contentColor = MaterialTheme.colorScheme.onTertiary
                     ),
                     onClick = { onClickFindRecipe() },
+                    contentPadding = PaddingValues(8.dp),
                     enabled = !isLoading
                 ) {
                     Icon(
-                        Icons.AutoMirrored.Filled.ReceiptLong,
-                        stringResource(R.string.show_recipe_button)
+                        imageVector = Icons.AutoMirrored.Filled.ReceiptLong,
+                        contentDescription = stringResource(R.string.show_recipe_button)
                     )
                 }
                 Text(
                     text = stringResource(R.string.show_recipe_button),
-                    style = MaterialTheme.typography.button.copy(
+                    style = MaterialTheme.typography.labelLarge.copy(
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center
                     )
