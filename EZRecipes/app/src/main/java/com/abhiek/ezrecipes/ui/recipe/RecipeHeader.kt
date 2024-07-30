@@ -169,8 +169,8 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     contentPadding = PaddingValues(8.dp)
                 ) {
                     Icon(
-                        Icons.Default.Restaurant,
-                        contentDescription = null,
+                        imageVector = Icons.Default.Restaurant,
+                        contentDescription = stringResource(R.string.made_button),
                         tint = MaterialTheme.colorScheme.onError
                     )
                 }
@@ -199,8 +199,8 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     enabled = !isLoading
                 ) {
                     Icon(
-                        Icons.AutoMirrored.Filled.ReceiptLong,
-                        contentDescription = null
+                        imageVector = Icons.AutoMirrored.Filled.ReceiptLong,
+                        contentDescription = stringResource(R.string.show_recipe_button)
                     )
                 }
                 Text(
