@@ -32,7 +32,6 @@ import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
-import com.abhiek.ezrecipes.ui.theme.Blue300
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.boldAnnotatedString
 import com.abhiek.ezrecipes.utils.contentEquals
@@ -53,7 +52,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
         // Apply a blue link style to the section after the copyright symbol
         addStyle(
             style = SpanStyle(
-                color = Blue300,
+                color = MaterialTheme.colorScheme.primary,
                 textDecoration = TextDecoration.Underline
             ),
             start = startIndex,
@@ -169,7 +168,11 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     // Reduce padding to make the icon take up more space
                     contentPadding = PaddingValues(8.dp)
                 ) {
-                    Icon(Icons.Default.Restaurant, stringResource(R.string.made_button))
+                    Icon(
+                        Icons.Default.Restaurant,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onError
+                    )
                 }
                 Text(
                     text = stringResource(R.string.made_button),
@@ -197,7 +200,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                 ) {
                     Icon(
                         Icons.AutoMirrored.Filled.ReceiptLong,
-                        stringResource(R.string.show_recipe_button)
+                        contentDescription = null
                     )
                 }
                 Text(

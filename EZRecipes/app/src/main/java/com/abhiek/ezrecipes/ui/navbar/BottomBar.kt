@@ -22,13 +22,20 @@ fun BottomBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar {
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.primary
+    ) {
         bottomNavBarItems.forEach { item ->
             NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = null) },
                 label = { Text(stringResource(item.resourceId)) },
                 // Keep the tab selected as long as it matches one of the parent routes
                 selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
+                colors = NavigationBarItemDefaults.colors().copy(
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedTextColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 onClick = {
                     navController.navigate(item.route) {
                         // Pop up to the start destination of the graph to

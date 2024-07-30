@@ -11,6 +11,7 @@ private val DarkColorPalette = darkColorScheme(
     primary = Blue300,
     secondary = Blue700,
     tertiary = Amber300,
+    onPrimary = Color.Black,
     onTertiary = Color.Black
 )
 
@@ -18,6 +19,7 @@ private val LightColorPalette = lightColorScheme(
     primary = Blue500,
     secondary = Blue700,
     tertiary = Amber300,
+    onPrimary = Color.Black,
     onTertiary = Color.Black
 
     /* Other default colors to override
