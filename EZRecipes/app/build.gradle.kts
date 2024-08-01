@@ -101,7 +101,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // AsyncImage
-    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
     // Retrofit
     implementation(platform("com.squareup.retrofit2:retrofit-bom:$retrofitVersion"))
     implementation("com.squareup.retrofit2:retrofit")
