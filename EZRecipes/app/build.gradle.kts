@@ -9,14 +9,14 @@ plugins {
 
 android {
     namespace = "com.abhiek.ezrecipes"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         // GITHUB_ACTIONS = true if running in a workflow
         testInstrumentationRunnerArguments["ci"] = System.getenv("GITHUB_ACTIONS") ?: "null"
         applicationId = "com.abhiek.ezrecipes"
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 10
         versionName = "2.1.1"
 
@@ -74,7 +74,7 @@ android {
 }
 
 dependencies {
-    val composeBomVersion = "2024.06.00"
+    val composeBomVersion = "2024.08.00"
     val googlePlayVersion = "2.0.1"
     val lifecycleVersion = "2.8.4"
     val activityVersion = "1.9.1"
@@ -82,7 +82,7 @@ dependencies {
     val material3Version = "1.2.1"
     val retrofitVersion = "2.11.0"
     val roomVersion = "2.6.1"
-    val jupiterVersion = "5.10.3"
+    val jupiterVersion = "5.11.0"
     val espressoVersion = "3.6.1"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
