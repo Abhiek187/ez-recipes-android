@@ -78,7 +78,7 @@ dependencies {
     val googlePlayVersion = "2.0.1"
     val lifecycleVersion = "2.8.4"
     val activityVersion = "1.9.1"
-    val materialVersion = "1.6.8"
+    val materialVersion = "1.7.2"
     val material3Version = "1.2.1"
     val retrofitVersion = "2.11.0"
     val roomVersion = "2.6.1"
