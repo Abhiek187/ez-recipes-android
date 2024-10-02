@@ -2,7 +2,6 @@ package com.abhiek.ezrecipes.ui.recipe
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Restaurant
@@ -12,10 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -39,33 +36,28 @@ import com.abhiek.ezrecipes.utils.contentEquals
 @Composable
 fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Unit) {
     val context = LocalContext.current
-    val uriHandler = LocalUriHandler.current
-    val annotationTag = "URL"
 
     // Make the image caption clickable
     val annotatedLinkString = buildAnnotatedString {
         val str = stringResource(R.string.image_copyright, recipe.credit)
         val startIndex = 8 // "Image © ".length = 8
         val endIndex = str.length // exclusive
-        append(str)
+        append(str.substring(0, startIndex))
 
         // Apply a blue link style to the section after the copyright symbol
-        addStyle(
-            style = SpanStyle(
-                color = MaterialTheme.colorScheme.primary,
-                textDecoration = TextDecoration.Underline
-            ),
-            start = startIndex,
-            end = endIndex
-        )
-
-        // Point the link to the source URL and tag it for reference
-        addStringAnnotation(
-            tag = annotationTag,
-            annotation = recipe.sourceUrl,
-            start = startIndex,
-            end = endIndex
-        )
+        withLink(
+            LinkAnnotation.Url(
+                url = recipe.sourceUrl,
+                styles = TextLinkStyles(
+                    style = SpanStyle(
+                        color = MaterialTheme.colorScheme.primary,
+                        textDecoration = TextDecoration.Underline
+                    )
+                )
+            )
+        ) {
+            append(str.substring(startIndex, endIndex))
+        }
     }
 
     Column(
@@ -84,20 +76,13 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
             contentScale = ContentScale.Fit
         )
 
-        ClickableText(
+        Text(
             text = annotatedLinkString,
             style = MaterialTheme.typography.bodySmall.copy(
                 color = MaterialTheme.colorScheme.onBackground
             ),
             modifier = Modifier.padding(horizontal = 8.dp)
-        ) { offset ->
-            // Open the URL from the annotated string
-            annotatedLinkString
-                .getStringAnnotations(annotationTag, offset, offset)
-                .firstOrNull()?.let { stringAnnotation ->
-                    uriHandler.openUri(stringAnnotation.item)
-                }
-        }
+        )
 
         // Recipe info
         RecipePills(
