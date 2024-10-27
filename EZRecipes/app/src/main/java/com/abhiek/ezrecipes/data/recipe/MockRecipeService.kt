@@ -55,4 +55,12 @@ object MockRecipeService: RecipeService {
             Response.error(401, RECIPE_ERROR_STRING.toResponseBody())
         }
     }
+
+    override suspend fun updateRecipe(fields: RecipeUpdate, token: String?): Response<Token> {
+        return if (isSuccess) {
+            Response.success(Token())
+        } else {
+            Response.error(401, RECIPE_ERROR_STRING.toResponseBody())
+        }
+    }
 }

@@ -9,6 +9,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.chef.ChefRepository
+import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.AuthState
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -19,12 +21,12 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 @Composable
 fun Profile(profileViewModel: ProfileViewModel) {
     val authState = profileViewModel.authState
-    val profile = profileViewModel.profile
+    val chef = profileViewModel.chef
 
     Column {
-        if (authState == AuthState.AUTHENTICATED && profile != null) {
+        if (authState == AuthState.AUTHENTICATED && chef != null) {
             Text(
-                text = stringResource(R.string.profile_header, profile.email),
+                text = stringResource(R.string.profile_header, chef.email),
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -35,7 +37,7 @@ fun Profile(profileViewModel: ProfileViewModel) {
                 )
             )
             Row {
-                for (id in profile.favoriteRecipes) {
+                for (id in chef.favoriteRecipes) {
                     Text(id)
                 }
             }
@@ -48,7 +50,7 @@ fun Profile(profileViewModel: ProfileViewModel) {
                 )
             )
             Row {
-                for ((id, timestamp) in profile.recentRecipes.entries) {
+                for ((id, timestamp) in chef.recentRecipes.entries) {
                     Text("$id: Recently viewed at $timestamp")
                 }
             }
@@ -61,7 +63,7 @@ fun Profile(profileViewModel: ProfileViewModel) {
                 )
             )
             Row {
-                for ((id, rating) in profile.ratings.entries) {
+                for ((id, rating) in chef.ratings.entries) {
                     Text("$id: $rating star(s)")
                 }
             }
@@ -122,8 +124,10 @@ private class ProfilePreviewParameterProvider : PreviewParameterProvider<Profile
 private fun ProfilePreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) state: ProfileState
 ) {
-    val profileViewModel = ProfileViewModel()
+    val chefService = MockChefService
+    val profileViewModel = ProfileViewModel(ChefRepository(chefService))
     profileViewModel.authState = state.authState
+    profileViewModel.chef = MockChefService.chef
 
     EZRecipesTheme {
         Surface {

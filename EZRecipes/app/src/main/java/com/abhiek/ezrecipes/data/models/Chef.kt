@@ -1,6 +1,6 @@
 package com.abhiek.ezrecipes.data.models
 
-data class Profile(
+data class Chef(
     val uid: String,
     val email: String,
     val ratings: Map<String, Int>,

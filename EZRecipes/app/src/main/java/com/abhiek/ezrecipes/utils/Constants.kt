@@ -9,6 +9,7 @@ object Constants {
     const val SERVER_BASE_URL = "https://ez-recipes-server.onrender.com"
     const val RECIPE_PATH = "/api/recipes/"
     const val TERMS_PATH = "/api/terms/"
+    const val CHEFS_PATH = "/api/chefs/"
     const val TIMEOUT_SECONDS = 60L
 
     const val RECIPE_WEB_ORIGIN = "https://ez-recipes-web.onrender.com"
@@ -534,6 +535,20 @@ object Constants {
                 word = "al dente",
                 definition = "(\"to the tooth\") pasta or rice that's cooked so it can be chewed"
             )
+        )
+        val CHEF = Chef(
+            uid = "oJG5PZ8KIIfvQMDsQzOwDbu2m6O2",
+            email = "test@email.com",
+            ratings = mapOf(
+                "641024" to 5,
+                "663849" to 3
+            ),
+            recentRecipes = mapOf(
+                "641024" to "2024-10-17T02:54:07.471+00:00",
+                "663849" to "2024-10-17T22:28:27.387+00:00"
+            ),
+            favoriteRecipes = listOf("641024"),
+            token = "e30.e30.e30"
         )
     }
 }
