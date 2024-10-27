@@ -27,6 +27,9 @@ import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.profile.Profile
+import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
+import com.abhiek.ezrecipes.ui.profile.ProfileViewModelFactory
 import com.abhiek.ezrecipes.ui.recipe.Recipe
 import com.abhiek.ezrecipes.ui.search.FilterForm
 import com.abhiek.ezrecipes.ui.search.SearchResults
@@ -52,6 +55,9 @@ fun NavigationGraph(
     )
     val glossaryViewModel = viewModel<GlossaryViewModel>(
         factory = GlossaryViewModelFactory(context)
+    )
+    val profileViewModel = viewModel<ProfileViewModel>(
+        factory = ProfileViewModelFactory(context)
     )
 
     // Only call once when composed
@@ -162,6 +168,11 @@ fun NavigationGraph(
             Constants.Routes.GLOSSARY
         ) {
             Glossary(glossaryViewModel.terms)
+        }
+        composable(
+            Constants.Routes.PROFILE
+        ) {
+            Profile(profileViewModel)
         }
     }
 }

@@ -31,6 +31,7 @@ object Constants {
         const val SEARCH = "search"
         const val RESULTS = "search/results"
         const val GLOSSARY = "glossary"
+        const val PROFILE = "profile"
     }
 
     object Room {
