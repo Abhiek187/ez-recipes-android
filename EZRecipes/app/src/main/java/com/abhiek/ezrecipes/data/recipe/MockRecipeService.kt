@@ -56,7 +56,9 @@ object MockRecipeService: RecipeService {
         }
     }
 
-    override suspend fun updateRecipe(fields: RecipeUpdate, token: String?): Response<Token> {
+    override suspend fun updateRecipe(
+        id: Int, fields: RecipeUpdate, token: String?
+    ): Response<Token> {
         return if (isSuccess) {
             Response.success(Token())
         } else {

@@ -44,6 +44,7 @@ interface RecipeService {
 
     @PATCH("{id}")
     suspend fun updateRecipe(
+        @Path("id") id: Int,
         @Body fields: RecipeUpdate,
         @Header("Authorization") token: String? = null,
     ): Response<Token>

@@ -74,9 +74,11 @@ class RecipeRepository(
         }
     }
 
-    suspend fun updateRecipe(fields: RecipeUpdate, token: String? = null): RecipeResult<Token> {
+    suspend fun updateRecipe(
+        id: Int, fields: RecipeUpdate, token: String? = null
+    ): RecipeResult<Token> {
         return try {
-            val response = recipeService.updateRecipe(fields, token)
+            val response = recipeService.updateRecipe(id, fields, token)
             parseResponse(response)
         } catch (error: Exception) {
             val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
