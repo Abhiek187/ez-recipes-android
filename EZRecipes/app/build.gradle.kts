@@ -77,7 +77,7 @@ dependencies {
     val lifecycleVersion = "2.8.6"
     val activityVersion = "1.9.2"
     val materialVersion = "1.7.3"
-    val material3Version = "1.3.0"
+    val material3Version = "1.3.1"
     val retrofitVersion = "2.11.0"
     val roomVersion = "2.6.1"
     val jupiterVersion = "5.11.1"
