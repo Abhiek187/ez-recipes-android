@@ -75,7 +75,7 @@ dependencies {
     val composeBomVersion = "2024.09.03"
     val googlePlayVersion = "2.0.1"
     val lifecycleVersion = "2.8.6"
-    val activityVersion = "1.9.2"
+    val activityVersion = "1.9.3"
     val materialVersion = "1.7.3"
     val material3Version = "1.3.0"
     val retrofitVersion = "2.11.0"
