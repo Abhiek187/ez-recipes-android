@@ -1,8 +1,12 @@
 package com.abhiek.ezrecipes.ui.profile
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.abhiek.ezrecipes.data.chef.ChefRepository
@@ -24,7 +28,12 @@ fun Profile(profileViewModel: ProfileViewModel) {
     } else if (authState == AuthState.UNAUTHENTICATED) {
         ProfileLoggedOut()
     } else {
-        CircularProgressIndicator()
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
     }
 }
 
