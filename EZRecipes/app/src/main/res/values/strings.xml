@@ -117,10 +117,10 @@
     <string name="profile_ratings">Ratings</string>
     <string name="login_message">
         Signing up for an account is free and gives you great perks, including:\n
-        - Saving your favorite recipes\n
-        - Saving more than 10 recently viewed recipes\n
-        - Rating recipes\n
-        - Syncing recipes across the web and mobile apps
+        &#8226; Saving your favorite recipes\n
+        &#8226; Saving more than 10 recently viewed recipes\n
+        &#8226; Rating recipes\n
+        &#8226; Syncing recipes across the web and mobile apps
     </string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
