@@ -22,6 +22,7 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
+import com.abhiek.ezrecipes.utils.Routes
 import com.abhiek.ezrecipes.utils.currentWindowSize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -73,7 +74,7 @@ fun TopBar(
         },
         // Add a favorite and share button on the right side if we're on the recipe screen
         actions = {
-            if (currentRoute == Constants.Routes.RECIPE) {
+            if (currentRoute == Routes.RECIPE) {
                 IconButton(onClick = { isFavorite = !isFavorite }) {
                     Icon(
                         if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,

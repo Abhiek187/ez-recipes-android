@@ -42,7 +42,7 @@ import com.abhiek.ezrecipes.utils.*
 fun NavigationGraph(
     navController: NavHostController,
     widthSizeClass: WindowWidthSizeClass,
-    startDestination: String = Constants.Routes.HOME
+    startDestination: String = Routes.HOME
 ) {
     val context = LocalContext.current
     val isWideScreen = widthSizeClass == WindowWidthSizeClass.Expanded
@@ -72,7 +72,7 @@ fun NavigationGraph(
         startDestination = startDestination
     ) {
         composable(
-            Constants.Routes.HOME,
+            Routes.HOME,
             // Fading in is ok when switching tabs
             exitTransition = if (mainViewModel.recipe != null) {
                 { slideLeftExit() }
@@ -83,7 +83,7 @@ fun NavigationGraph(
         ) {
             Home(mainViewModel) {
                 navController.navigate(
-                    Constants.Routes.RECIPE.replace(
+                    Routes.RECIPE.replace(
                         "{id}", mainViewModel.recipe?.id.toString()
                     )
                 ) {
@@ -93,10 +93,10 @@ fun NavigationGraph(
             }
         }
         composable(
-            Constants.Routes.RECIPE,
+            Routes.RECIPE,
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "${Constants.RECIPE_WEB_ORIGIN}/${Constants.Routes.RECIPE}"
+                    uriPattern = "${Constants.RECIPE_WEB_ORIGIN}/${Routes.RECIPE}"
                 }
             ),
             // Mimic sliding transitions on iOS
@@ -108,7 +108,7 @@ fun NavigationGraph(
             Recipe(mainViewModel, isWideScreen, backStackEntry.arguments?.getString("id"))
         }
         composable(
-            Constants.Routes.SEARCH,
+            Routes.SEARCH,
             exitTransition = if (searchViewModel.recipes.isNotEmpty()) {
                 { slideLeftExit() }
             } else null,
@@ -119,7 +119,7 @@ fun NavigationGraph(
             // On large screens, show the form and results side-by-side
             if (widthSizeClass == WindowWidthSizeClass.Compact) {
                 FilterForm(searchViewModel) {
-                    navController.navigate(Constants.Routes.RESULTS)
+                    navController.navigate(Routes.RESULTS)
                 }
             } else {
                 Row(
@@ -137,7 +137,7 @@ fun NavigationGraph(
                         )
                     ) {
                         navController.navigate(
-                            Constants.Routes.RECIPE.replace(
+                            Routes.RECIPE.replace(
                                 "{id}", mainViewModel.recipe?.id.toString()
                             )
                         ) {
@@ -148,7 +148,7 @@ fun NavigationGraph(
             }
         }
         composable(
-            Constants.Routes.RESULTS,
+            Routes.RESULTS,
             enterTransition = { slideLeftEnter() },
             exitTransition = { slideLeftExit() },
             popEnterTransition = { slideRightEnter() },
@@ -156,7 +156,7 @@ fun NavigationGraph(
         ) {
             SearchResults(mainViewModel, searchViewModel) {
                 navController.navigate(
-                    Constants.Routes.RECIPE.replace(
+                    Routes.RECIPE.replace(
                         "{id}", mainViewModel.recipe?.id.toString()
                     )
                 ) {
@@ -165,12 +165,12 @@ fun NavigationGraph(
             }
         }
         composable(
-            Constants.Routes.GLOSSARY
+            Routes.GLOSSARY
         ) {
             Glossary(glossaryViewModel.terms)
         }
         composable(
-            Constants.Routes.PROFILE
+            Routes.PROFILE
         ) {
             Profile(profileViewModel)
         }
@@ -179,11 +179,12 @@ fun NavigationGraph(
 
 private class NavigationGraphPreviewParameterProvider: PreviewParameterProvider<String> {
     override val values = sequenceOf(
-        Constants.Routes.HOME,
-        Constants.Routes.RECIPE,
-        Constants.Routes.SEARCH,
-        Constants.Routes.RESULTS,
-        Constants.Routes.GLOSSARY
+        Routes.HOME,
+        Routes.RECIPE,
+        Routes.SEARCH,
+        Routes.RESULTS,
+        Routes.GLOSSARY,
+        Routes.PROFILE
     )
 }
 
