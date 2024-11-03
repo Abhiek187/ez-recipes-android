@@ -112,9 +112,9 @@
 
     <!-- Profile Screen -->
     <string name="profile_header">Chef %1$s</string>
-    <string name="profile_favorites">Favorites</string>
-    <string name="profile_recently_viewed">Recently Viewed</string>
-    <string name="profile_ratings">Ratings</string>
+    <string name="profile_favorites">💖 Favorites</string>
+    <string name="profile_recently_viewed">⌚ Recently Viewed</string>
+    <string name="profile_ratings">⭐ Ratings</string>
     <string name="login_message">
         Signing up for an account is free and gives you great perks, including:\n
         &#8226; Saving your favorite recipes\n

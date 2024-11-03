@@ -6,9 +6,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
@@ -36,86 +37,87 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
     ) {
         Text(
             text = stringResource(R.string.profile_header, chef.email),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.headlineMedium.copy(
+                textAlign = TextAlign.Center,
+            ),
+            modifier = Modifier.fillMaxWidth()
         )
 
-        Text(
-            text = stringResource(R.string.profile_favorites),
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold
-            )
-        )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
+        Accordion(
+            header = stringResource(R.string.profile_favorites),
+            expandByDefault = false
         ) {
-            for (recipe in profileViewModel.favoriteRecipes) {
-                RecipeCard(
-                    recipe = recipe,
-                    width = 350.dp
-                ) {}
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                for (recipe in profileViewModel.favoriteRecipes) {
+                    RecipeCard(
+                        recipe = recipe,
+                        width = 350.dp
+                    ) {}
+                }
             }
         }
-        HorizontalDivider()
 
-        Text(
-            text = stringResource(R.string.profile_recently_viewed),
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold
-            )
-        )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
+        Accordion(
+            header = stringResource(R.string.profile_recently_viewed),
+            expandByDefault = false
         ) {
-            for (recipe in profileViewModel.recentRecipes) {
-                RecipeCard(
-                    recipe = recipe,
-                    width = 350.dp
-                ) {}
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                for (recipe in profileViewModel.recentRecipes) {
+                    RecipeCard(
+                        recipe = recipe,
+                        width = 350.dp
+                    ) {}
+                }
             }
         }
-        HorizontalDivider()
 
-        Text(
-            text = stringResource(R.string.profile_ratings),
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold
-            )
-        )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
+        Accordion(
+            header = stringResource(R.string.profile_ratings),
+            expandByDefault = false
         ) {
-            for (recipe in profileViewModel.ratedRecipes) {
-                RecipeCard(
-                    recipe = recipe,
-                    width = 350.dp
-                ) {}
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                for (recipe in profileViewModel.ratedRecipes) {
+                    RecipeCard(
+                        recipe = recipe,
+                        width = 350.dp
+                    ) {}
+                }
             }
         }
 
         Button(
-            onClick = { println("Logout") }
+            onClick = { println("Logout") },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = stringResource(R.string.logout))
         }
         Button(
-            onClick = { println("Change Email") }
+            onClick = { println("Change Email") },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = stringResource(R.string.change_email))
         }
         Button(
-            onClick = { println("Change Password") }
+            onClick = { println("Change Password") },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = stringResource(R.string.change_password))
         }
@@ -123,7 +125,8 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             onClick = { println("Delete Account") },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.error
-            )
+            ),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = stringResource(R.string.delete_account))
         }
