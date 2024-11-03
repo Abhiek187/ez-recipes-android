@@ -12,6 +12,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.AuthState
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -24,7 +26,7 @@ fun Profile(profileViewModel: ProfileViewModel) {
     val chef = profileViewModel.chef
 
     if (authState == AuthState.AUTHENTICATED && chef != null) {
-        ProfileLoggedIn(chef)
+        ProfileLoggedIn(chef, profileViewModel)
     } else if (authState == AuthState.UNAUTHENTICATED) {
         ProfileLoggedOut()
     } else {
@@ -58,9 +60,13 @@ private fun ProfilePreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) state: ProfileState
 ) {
     val chefService = MockChefService
-    val profileViewModel = ProfileViewModel(ChefRepository(chefService))
+    val recipeService = MockRecipeService
+    val profileViewModel = ProfileViewModel(
+        chefRepository = ChefRepository(chefService),
+        recipeRepository = RecipeRepository(recipeService)
+    )
     profileViewModel.authState = state.authState
-    profileViewModel.chef = MockChefService.chef
+    profileViewModel.chef = chefService.chef
 
     EZRecipesTheme {
         Surface {

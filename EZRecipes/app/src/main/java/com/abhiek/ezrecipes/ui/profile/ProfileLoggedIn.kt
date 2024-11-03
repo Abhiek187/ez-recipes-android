@@ -1,23 +1,39 @@
 package com.abhiek.ezrecipes.ui.profile
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Chef
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
-fun ProfileLoggedIn(chef: Chef) {
-    Column {
+fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
+    // Start loading all the recipe cards
+    profileViewModel.getAllChefRecipes()
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .padding(8.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         Text(
             text = stringResource(R.string.profile_header, chef.email),
             style = MaterialTheme.typography.titleLarge
@@ -29,9 +45,18 @@ fun ProfileLoggedIn(chef: Chef) {
                 fontWeight = FontWeight.Bold
             )
         )
-        Row {
-            for (id in chef.favoriteRecipes) {
-                Text(id)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+        ) {
+            for (recipe in profileViewModel.favoriteRecipes) {
+                RecipeCard(
+                    recipe = recipe,
+                    width = 350.dp
+                ) {}
             }
         }
         HorizontalDivider()
@@ -42,9 +67,18 @@ fun ProfileLoggedIn(chef: Chef) {
                 fontWeight = FontWeight.Bold
             )
         )
-        Row {
-            for ((id, timestamp) in chef.recentRecipes.entries) {
-                Text("$id: Recently viewed at $timestamp")
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+        ) {
+            for (recipe in profileViewModel.recentRecipes) {
+                RecipeCard(
+                    recipe = recipe,
+                    width = 350.dp
+                ) {}
             }
         }
         HorizontalDivider()
@@ -55,9 +89,18 @@ fun ProfileLoggedIn(chef: Chef) {
                 fontWeight = FontWeight.Bold
             )
         )
-        Row {
-            for ((id, rating) in chef.ratings.entries) {
-                Text("$id: $rating star(s)")
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+        ) {
+            for (recipe in profileViewModel.ratedRecipes) {
+                RecipeCard(
+                    recipe = recipe,
+                    width = 350.dp
+                ) {}
             }
         }
 
@@ -77,7 +120,10 @@ fun ProfileLoggedIn(chef: Chef) {
             Text(text = stringResource(R.string.change_password))
         }
         Button(
-            onClick = { println("Delete Account") }
+            onClick = { println("Delete Account") },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.error
+            )
         ) {
             Text(text = stringResource(R.string.delete_account))
         }
@@ -90,9 +136,17 @@ fun ProfileLoggedIn(chef: Chef) {
 @OrientationPreviews
 @Composable
 private fun ProfileLoggedInPreview() {
+    val chefService = MockChefService
+    val recipeService = MockRecipeService
+    val profileViewModel = ProfileViewModel(
+        chefRepository = ChefRepository(chefService),
+        recipeRepository = RecipeRepository(recipeService)
+    )
+    profileViewModel.chef = chefService.chef
+
     EZRecipesTheme {
         Surface {
-            ProfileLoggedIn(MockChefService.chef)
+            ProfileLoggedIn(chefService.chef, profileViewModel)
         }
     }
 }

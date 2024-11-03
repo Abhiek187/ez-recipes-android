@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.ChefService
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.recipe.RecipeService
 
 class ProfileViewModelFactory: ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
@@ -12,6 +14,9 @@ class ProfileViewModelFactory: ViewModelProvider.Factory {
             return ProfileViewModel(
                 chefRepository = ChefRepository(
                     chefService = ChefService.instance
+                ),
+                recipeRepository = RecipeRepository(
+                    recipeService = RecipeService.instance
                 )
             ) as T
         }
