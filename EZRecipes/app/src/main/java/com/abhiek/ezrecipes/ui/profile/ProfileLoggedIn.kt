@@ -131,7 +131,10 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             ),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text(text = stringResource(R.string.delete_account))
+            Text(
+                text = stringResource(R.string.delete_account),
+                color = MaterialTheme.colorScheme.onError
+            )
         }
     }
 }
