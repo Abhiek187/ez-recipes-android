@@ -11,11 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
-import retrofit2.http.QueryMap
-import retrofit2.http.QueryName
+import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 // The DataSource for the recipes API
@@ -45,6 +41,13 @@ interface RecipeService {
     suspend fun getRecipeById(
         @Path("id") id: Int
     ): Response<Recipe>
+
+    @PATCH("{id}")
+    suspend fun updateRecipe(
+        @Path("id") id: Int,
+        @Body fields: RecipeUpdate,
+        @Header("Authorization") token: String? = null,
+    ): Response<Token>
 
     companion object {
         private lateinit var recipeService: RecipeService

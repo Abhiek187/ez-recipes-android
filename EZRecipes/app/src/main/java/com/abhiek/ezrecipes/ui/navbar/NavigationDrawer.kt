@@ -31,6 +31,7 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.currentWindowSize
 import com.abhiek.ezrecipes.utils.toPx
 import kotlinx.coroutines.CoroutineScope
@@ -44,10 +45,6 @@ fun NavigationDrawer(
     width: Int = 300,
     initialDrawerValue: DrawerValue = DrawerValue.Closed
 ) {
-    /* Using sealedSubclasses requires reflection, which will make the app slower,
-     * so list each drawer item manually
-     */
-    val drawerItems = listOf(Tab.Home, Tab.Search, Tab.Glossary)
     val drawerState = rememberDrawerState(initialDrawerValue)
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -97,13 +94,13 @@ fun NavigationDrawer(
                             .height(8.dp)
                     )
                     // Loop through all the subclasses of the sealed Tab class
-                    drawerItems.forEach { item ->
+                    Constants.TABS.forEach { tab ->
                         DrawerListItem(
-                            item = item,
+                            item = tab,
                             // Highlight the drawer item corresponding to the current route on screen
-                            selected = currentRoute == item.route,
+                            selected = currentRoute == tab.route,
                             onItemClick = {
-                                navController.navigate(item.route) {
+                                navController.navigate(tab.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
                                     }

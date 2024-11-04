@@ -14,30 +14,29 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.Constants
 
 @Composable
 fun BottomBar(navController: NavHostController) {
-    val bottomNavBarItems = listOf(Tab.Home, Tab.Search, Tab.Glossary)
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.primary
     ) {
-        bottomNavBarItems.forEach { item ->
+        Constants.TABS.forEach { tab ->
             NavigationBarItem(
-                icon = { Icon(item.icon, contentDescription = null) },
-                label = { Text(stringResource(item.resourceId)) },
+                icon = { Icon(tab.icon, contentDescription = null) },
+                label = { Text(stringResource(tab.resourceId)) },
                 // Keep the tab selected as long as it matches one of the parent routes
-                selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
+                selected = currentDestination?.hierarchy?.any { it.route == tab.route } == true,
                 colors = NavigationBarItemDefaults.colors().copy(
                     selectedTextColor = MaterialTheme.colorScheme.onPrimary,
                     unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
                     unselectedTextColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 onClick = {
-                    navController.navigate(item.route) {
+                    navController.navigate(tab.route) {
                         // Pop up to the start destination of the graph to
                         // avoid building up a large stack of destinations
                         // on the back stack as users select items

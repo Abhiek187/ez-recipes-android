@@ -13,22 +13,21 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.Constants
 
 @Composable
 fun NavRail(navController: NavHostController) {
-    val railItems = listOf(Tab.Home, Tab.Search, Tab.Glossary)
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationRail {
-        railItems.forEach { item ->
+        Constants.TABS.forEach { tab ->
             NavigationRailItem(
-                label = { Text(stringResource(item.resourceId)) },
-                icon = { Icon(item.icon, contentDescription = null) },
-                selected = currentRoute == item.route,
+                label = { Text(stringResource(tab.resourceId)) },
+                icon = { Icon(tab.icon, contentDescription = null) },
+                selected = currentRoute == tab.route,
                 onClick = {
-                    navController.navigate(item.route) {
+                    navController.navigate(tab.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }

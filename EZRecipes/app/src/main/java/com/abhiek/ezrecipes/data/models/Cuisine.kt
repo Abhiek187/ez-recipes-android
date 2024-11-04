@@ -35,7 +35,13 @@ enum class Cuisine {
     SOUTH_AMERICAN,
     CREOLE,
     CENTRAL_AMERICAN,
+    BBQ,
+    BARBECUE,
     UNKNOWN;
 
-    override fun toString() = name.replace("_", " ").lowercase().capitalizeWords()
+    override fun toString(): String {
+        if (name == "BBQ") return "BBQ"
+
+        return name.replace("_", " ").lowercase().capitalizeWords()
+    }
 }

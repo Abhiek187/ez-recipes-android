@@ -5,6 +5,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -72,19 +73,19 @@ android {
 }
 
 dependencies {
-    val composeBomVersion = "2024.09.03"
-    val googlePlayVersion = "2.0.1"
-    val lifecycleVersion = "2.8.6"
-    val activityVersion = "1.9.2"
-    val materialVersion = "1.7.3"
-    val material3Version = "1.3.0"
+    val composeBomVersion = "2024.10.01"
+    val lifecycleVersion = "2.8.7"
+    val activityVersion = "1.9.3"
+    val materialVersion = "1.7.5"
+    val material3Version = "1.3.1"
     val retrofitVersion = "2.11.0"
     val roomVersion = "2.6.1"
-    val jupiterVersion = "5.11.1"
+    val googlePlayVersion = "2.0.2"
+    val jupiterVersion = "5.11.3"
     val espressoVersion = "3.6.1"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
-    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
@@ -95,7 +96,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:$materialVersion")
     implementation("androidx.compose.material3:material3:$material3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
-    implementation("androidx.navigation:navigation-compose:2.8.2")
+    implementation("androidx.navigation:navigation-compose:2.8.3")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // AsyncImage
@@ -118,8 +119,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
-    testImplementation("io.mockk:mockk:1.13.12")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    testImplementation("io.mockk:mockk:1.13.13")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

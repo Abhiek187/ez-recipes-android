@@ -1,7 +1,5 @@
 package com.abhiek.ezrecipes.utils
 
-import android.content.res.Resources
-import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.models.*
 
 object Constants {
@@ -9,12 +7,14 @@ object Constants {
     const val SERVER_BASE_URL = "https://ez-recipes-server.onrender.com"
     const val RECIPE_PATH = "/api/recipes/"
     const val TERMS_PATH = "/api/terms/"
+    const val CHEFS_PATH = "/api/chefs/"
     const val TIMEOUT_SECONDS = 60L
 
     const val RECIPE_WEB_ORIGIN = "https://ez-recipes-web.onrender.com"
 
     // Error message to fallback on in case all fails
-    val UNKNOWN_ERROR = Resources.getSystem().getString(R.string.unknown_error)
+    const val UNKNOWN_ERROR = "Something went terribly wrong. Please submit a bug report to " +
+            "https://github.com/Abhiek187/ez-recipes-android/issues"
 
     const val MIN_CALS = 0
     const val MAX_CALS = 2000
@@ -23,15 +23,10 @@ object Constants {
     const val MAX_RECENT_RECIPES = 10
     const val RECIPES_TO_PRESENT_REVIEW = 5
 
-    object Routes {
-        // tabs = user-facing labels, routes = internal "pretend" URL paths
-        // All tabs have routes, but not all routes have tabs
-        const val HOME = "home"
-        const val RECIPE = "recipe/{id}"
-        const val SEARCH = "search"
-        const val RESULTS = "search/results"
-        const val GLOSSARY = "glossary"
-    }
+    /* Using sealedSubclasses requires reflection, which will make the app slower,
+     * so list each tab manually
+     */
+    val TABS = listOf(Tab.Home, Tab.Search, Tab.Glossary, Tab.Profile)
 
     object Room {
         const val DATABASE_NAME = "AppDatabase"
@@ -533,6 +528,20 @@ object Constants {
                 word = "al dente",
                 definition = "(\"to the tooth\") pasta or rice that's cooked so it can be chewed"
             )
+        )
+        val CHEF = Chef(
+            uid = "oJG5PZ8KIIfvQMDsQzOwDbu2m6O2",
+            email = "test@email.com",
+            ratings = mapOf(
+                "641024" to 5,
+                "663849" to 3
+            ),
+            recentRecipes = mapOf(
+                "641024" to "2024-10-17T02:54:07.471+00:00",
+                "663849" to "2024-10-17T22:28:27.387+00:00"
+            ),
+            favoriteRecipes = listOf("641024"),
+            token = "e30.e30.e30"
         )
     }
 }

@@ -1,9 +1,6 @@
 package com.abhiek.ezrecipes.data.recipe
 
-import com.abhiek.ezrecipes.data.models.RecentRecipe
-import com.abhiek.ezrecipes.data.models.Recipe
-import com.abhiek.ezrecipes.data.models.RecipeError
-import com.abhiek.ezrecipes.data.models.RecipeFilter
+import com.abhiek.ezrecipes.data.models.*
 import com.abhiek.ezrecipes.data.storage.RecentRecipeDao
 import com.abhiek.ezrecipes.utils.Constants
 import com.google.gson.Gson
@@ -70,6 +67,18 @@ class RecipeRepository(
     suspend fun getRecipeById(id: Int): RecipeResult<Recipe> {
         return try {
             val response = recipeService.getRecipeById(id)
+            parseResponse(response)
+        } catch (error: Exception) {
+            val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+            return RecipeResult.Error(recipeError)
+        }
+    }
+
+    suspend fun updateRecipe(
+        id: Int, fields: RecipeUpdate, token: String? = null
+    ): RecipeResult<Token> {
+        return try {
+            val response = recipeService.updateRecipe(id, fields, token)
             parseResponse(response)
         } catch (error: Exception) {
             val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)

@@ -18,6 +18,8 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.Constants
+import com.abhiek.ezrecipes.utils.Tab
 
 @Composable
 fun DrawerListItem(item: Tab, selected: Boolean, onItemClick: () -> Unit) {
@@ -64,9 +66,9 @@ fun DrawerListItem(item: Tab, selected: Boolean, onItemClick: () -> Unit) {
 fun DrawerListItemPreview() {
     EZRecipesTheme {
         Column {
-            DrawerListItem(item = Tab.Home, selected = true) {}
-            DrawerListItem(item = Tab.Search, selected = false) {}
-            DrawerListItem(item = Tab.Glossary, selected = false) {}
+            Constants.TABS.forEach { tab ->
+                DrawerListItem(item = tab, selected = tab == Tab.Home) {}
+            }
         }
     }
 }
