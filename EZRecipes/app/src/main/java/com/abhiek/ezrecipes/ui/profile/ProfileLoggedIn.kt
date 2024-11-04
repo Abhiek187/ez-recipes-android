@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,8 +27,10 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
 fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
-    // Start loading all the recipe cards
-    profileViewModel.getAllChefRecipes()
+    LaunchedEffect(Unit) {
+        // Start loading all the recipe cards
+        profileViewModel.getAllChefRecipes()
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
