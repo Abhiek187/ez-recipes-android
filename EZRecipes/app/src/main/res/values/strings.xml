@@ -130,15 +130,15 @@
 
     <!-- Login Screen -->
     <string name="sign_in_header">Sign In</string>
-    <string name="sign_in_sub_header">Don\'t have an account? Sign up</string>
+    <string name="sign_in_sub_header">Don\'t have an account?</string>
     <string name="username_field">Username</string>
     <string name="password_field">Password</string>
-    <string name="password_forget">Forgot Password?</string>
+    <string name="password_forget">Forgot password?</string>
     <string name="sign_in_success">Signed in successfully!</string>
     <string name="sign_out_success">Signed out successfully!</string>
 
     <string name="sign_up_header">Sign Up</string>
-    <string name="sign_up_sub_header">Already have an account? Sign in</string>
+    <string name="sign_up_sub_header">Already have an account?</string>
     <string name="email_field">Email</string>
     <string name="password_confirm_field">Confirm Password</string>
 
