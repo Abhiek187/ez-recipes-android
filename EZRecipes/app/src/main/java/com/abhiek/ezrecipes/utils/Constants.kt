@@ -18,6 +18,7 @@ object Constants {
 
     const val MIN_CALS = 0
     const val MAX_CALS = 2000
+    const val PASSWORD_MIN_LENGTH = 8
 
     const val DATA_STORE_NAME = "data-store"
     const val MAX_RECENT_RECIPES = 10

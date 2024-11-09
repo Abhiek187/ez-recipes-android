@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui.login
 
+import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Routes
 
 @Composable
@@ -36,6 +38,13 @@ fun SignUpForm(navController: NavController) {
     var password by remember { mutableStateOf("") }
     var passwordConfirm by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
+
+    // Errors
+    val emailEmpty = email.isEmpty()
+    val emailInvalid = !Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    val passwordEmpty = password.isEmpty()
+    val passwordTooShort = password.length < Constants.PASSWORD_MIN_LENGTH
+    val passwordsDoNotMatch = password != passwordConfirm
 
     val context = LocalContext.current
 
@@ -81,6 +90,14 @@ fun SignUpForm(navController: NavController) {
             label = {
                 Text(stringResource(R.string.email_field))
             },
+            supportingText = {
+                if (emailEmpty) {
+                    Text(stringResource(R.string.field_required, "Email"))
+                } else if (emailInvalid) {
+                    Text(stringResource(R.string.email_invalid))
+                }
+            },
+            isError = emailEmpty || emailInvalid,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
@@ -106,6 +123,14 @@ fun SignUpForm(navController: NavController) {
                     )
                 }
             },
+            supportingText = {
+                if (passwordEmpty) {
+                    Text(stringResource(R.string.field_required, "Password"))
+                } else if (passwordTooShort) {
+                    Text(stringResource(R.string.password_min_length))
+                }
+            },
+            isError = passwordEmpty || passwordTooShort,
             visualTransformation = if (showPassword) VisualTransformation.None
             else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
@@ -133,16 +158,20 @@ fun SignUpForm(navController: NavController) {
                     )
                 }
             },
+            supportingText = {
+                if (passwordsDoNotMatch) {
+                    Text(stringResource(R.string.password_match))
+                } else {
+                    Text(stringResource(R.string.password_min_length))
+                }
+            },
+            isError = passwordsDoNotMatch,
             visualTransformation = if (showPassword) VisualTransformation.None
             else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             )
-        )
-        Text(
-            text = stringResource(R.string.password_min_length),
-            style = MaterialTheme.typography.labelLarge
         )
         Button(
             onClick = {
@@ -152,6 +181,8 @@ fun SignUpForm(navController: NavController) {
                     Toast.LENGTH_SHORT
                 ).show()
             },
+            enabled = !(emailEmpty || emailInvalid || passwordEmpty || passwordTooShort ||
+                    passwordsDoNotMatch),
             modifier = Modifier.align(Alignment.End)
         ) {
             Text(stringResource(R.string.sign_up_header))
