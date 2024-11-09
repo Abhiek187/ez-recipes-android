@@ -78,9 +78,8 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
 
         Text(
             text = annotatedLinkString,
-            style = MaterialTheme.typography.bodySmall.copy(
-                color = MaterialTheme.colorScheme.onBackground
-            ),
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(horizontal = 8.dp)
         )
 
@@ -161,10 +160,9 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                 }
                 Text(
                     text = stringResource(R.string.made_button),
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Center
-                    )
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
 
@@ -190,10 +188,9 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                 }
                 Text(
                     text = stringResource(R.string.show_recipe_button),
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Center
-                    )
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
         }

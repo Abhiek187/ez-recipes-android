@@ -43,11 +43,10 @@ fun SummaryBox(summary: String) {
             ) {
                 Text(
                     text = stringResource(R.string.summary),
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    ),
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
                 )

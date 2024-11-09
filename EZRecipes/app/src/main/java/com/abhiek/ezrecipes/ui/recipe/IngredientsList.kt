@@ -31,10 +31,9 @@ fun IngredientsList(ingredients: List<Ingredient>) {
         ) {
             Text(
                 text = stringResource(R.string.ingredients),
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                ),
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
@@ -56,16 +55,14 @@ fun IngredientsList(ingredients: List<Ingredient>) {
                     ) {
                         Text(
                             text = "${ingredient.amount} ${ingredient.unit}",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontSize = 18.sp
-                            )
+                            fontSize = 18.sp,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                         Text(
                             text = ingredient.name.capitalizeWords(),
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontSize = 18.sp,
-                                textAlign = TextAlign.End
-                            )
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.End,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     }
                 }

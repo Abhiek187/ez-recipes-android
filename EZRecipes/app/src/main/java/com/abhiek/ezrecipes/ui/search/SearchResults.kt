@@ -47,10 +47,9 @@ fun SearchResults(
     ) {
         Text(
             text = stringResource(R.string.results_title),
-            style = MaterialTheme.typography.headlineSmall.copy(
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            ),
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -59,9 +58,8 @@ fun SearchResults(
             // Center vertically & horizontally
             Text(
                 text = stringResource(R.string.results_placeholder),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    textAlign = TextAlign.Center
-                ),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentHeight(Alignment.CenterVertically)

@@ -44,9 +44,8 @@ fun NutritionLabel(recipe: Recipe) {
             ) {
                 Text(
                     text = stringResource(R.string.nutrition_facts),
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.Bold
-                    )
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
                     text = stringResource(R.string.health_score, recipe.healthScore),
@@ -82,18 +81,16 @@ fun NutritionLabel(recipe: Recipe) {
                     ) {
                         Text(
                             text = nutrient.name,
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontSize = 18.sp,
-                                fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
-                            )
+                            fontSize = 18.sp,
+                            fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                         Text(
                             text = "$formattedAmount ${nutrient.unit}",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontSize = 18.sp,
-                                fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal,
-                                textAlign = TextAlign.End
-                            )
+                            fontSize = 18.sp,
+                            fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal,
+                            textAlign = TextAlign.End,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     }
                 }

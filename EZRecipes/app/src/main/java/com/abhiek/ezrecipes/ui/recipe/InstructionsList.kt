@@ -35,11 +35,10 @@ fun InstructionsList(instructions: List<Instruction>) {
     ) {
         Text(
             text = stringResource(R.string.steps),
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            ),
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -48,10 +47,9 @@ fun InstructionsList(instructions: List<Instruction>) {
             if (instruction.name.isNotEmpty()) {
                 Text(
                     text = instruction.name,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontSize = 18.sp,
-                        textAlign = TextAlign.Center
-                    ),
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

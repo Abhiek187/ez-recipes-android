@@ -185,9 +185,8 @@ fun FilterForm(
             ) {
                 Text(
                     text = stringResource(R.string.calorie_exceed_max_error),
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = MaterialTheme.colorScheme.error
-                    )
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
             AnimatedVisibility(
@@ -203,9 +202,8 @@ fun FilterForm(
             ) {
                 Text(
                     text = stringResource(R.string.calorie_invalid_range_error),
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = MaterialTheme.colorScheme.error
-                    )
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
@@ -314,9 +312,8 @@ fun FilterForm(
             if (searchViewModel.noRecipesFound) {
                 Text(
                     text = stringResource(R.string.no_results),
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        color = MaterialTheme.colorScheme.error
-                    ),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
