@@ -141,6 +141,7 @@
     <string name="sign_up_sub_header">Already have an account?</string>
     <string name="email_field">Email</string>
     <string name="password_confirm_field">Confirm Password</string>
+    <string name="password_min_length">Your password must be at least 8 characters long.</string>
 
     <string name="email_verify_header">You\'re Almost There!</string>
     <string name="email_verify_body">

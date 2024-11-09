@@ -1,9 +1,11 @@
 package com.abhiek.ezrecipes.ui.login
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -28,7 +30,9 @@ fun LoginDialog(onDismiss: () -> Unit) {
     ) {
         // Add a background so the dialog appears on top of the main content
         Surface(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentHeight(Alignment.CenterVertically),
             color = MaterialTheme.colorScheme.background
         ) {
             // Use a NavHost to manage navigation within the dialog

@@ -52,7 +52,7 @@ fun SignUpForm(navController: NavController) {
         ) {
             Text(
                 text = stringResource(R.string.sign_up_sub_header),
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.titleLarge
             )
             TextButton(
                 onClick = {
@@ -69,7 +69,7 @@ fun SignUpForm(navController: NavController) {
             ) {
                 Text(
                     text = stringResource(R.string.sign_in_header),
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
         }
@@ -139,6 +139,10 @@ fun SignUpForm(navController: NavController) {
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             )
+        )
+        Text(
+            text = stringResource(R.string.password_min_length),
+            style = MaterialTheme.typography.labelLarge
         )
         Button(
             onClick = {

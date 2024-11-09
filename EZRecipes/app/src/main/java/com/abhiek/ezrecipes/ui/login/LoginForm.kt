@@ -51,7 +51,7 @@ fun LoginForm(navController: NavController) {
         ) {
             Text(
                 text = stringResource(R.string.sign_in_sub_header),
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.titleLarge
             )
             TextButton(
                 onClick = {
@@ -69,7 +69,7 @@ fun LoginForm(navController: NavController) {
             ) {
                 Text(
                     text = stringResource(R.string.sign_up_header),
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
         }
@@ -120,7 +120,7 @@ fun LoginForm(navController: NavController) {
         ) {
             Text(
                 text = stringResource(R.string.password_forget),
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.titleLarge
             )
         }
         Button(
