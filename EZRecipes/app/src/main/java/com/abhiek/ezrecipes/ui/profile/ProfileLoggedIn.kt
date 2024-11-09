@@ -40,9 +40,8 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
     ) {
         Text(
             text = stringResource(R.string.profile_header, chef.email),
-            style = MaterialTheme.typography.headlineMedium.copy(
-                textAlign = TextAlign.Center,
-            ),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.fillMaxWidth()
         )
 
