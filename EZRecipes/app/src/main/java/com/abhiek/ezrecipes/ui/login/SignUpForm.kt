@@ -56,7 +56,15 @@ fun SignUpForm(navController: NavController) {
             )
             TextButton(
                 onClick = {
-                    navController.navigate(Routes.LOGIN)
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(
+                            navController.currentBackStackEntry?.destination?.route
+                                ?: return@navigate
+                        ) {
+                            inclusive =  true
+                        }
+                        launchSingleTop = true
+                    }
                 }
             ) {
                 Text(

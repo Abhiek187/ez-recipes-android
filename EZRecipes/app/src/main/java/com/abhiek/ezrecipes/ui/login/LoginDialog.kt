@@ -1,7 +1,10 @@
 package com.abhiek.ezrecipes.ui.login
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.compose.NavHost
@@ -23,12 +26,18 @@ fun LoginDialog(onDismiss: () -> Unit) {
             decorFitsSystemWindows = false // Allow custom layout around system bars
         )
     ) {
-        // Use a NavHost to manage navigation within the dialog
-        val navController = rememberNavController()
+        // Add a background so the dialog appears on top of the main content
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            // Use a NavHost to manage navigation within the dialog
+            val navController = rememberNavController()
 
-        NavHost(navController = navController, startDestination = Routes.LOGIN) {
-            composable(Routes.LOGIN) { LoginForm(navController) }
-            composable(Routes.SIGN_UP) { SignUpForm(navController) }
+            NavHost(navController = navController, startDestination = Routes.LOGIN) {
+                composable(Routes.LOGIN) { LoginForm(navController) }
+                composable(Routes.SIGN_UP) { SignUpForm(navController) }
+            }
         }
     }
 }

@@ -55,7 +55,16 @@ fun LoginForm(navController: NavController) {
             )
             TextButton(
                 onClick = {
-                    navController.navigate(Routes.SIGN_UP)
+                    navController.navigate(Routes.SIGN_UP) {
+                        // Close the modal whenever the user navigates back
+                        popUpTo(
+                            navController.currentBackStackEntry?.destination?.route
+                                ?: return@navigate
+                        ) {
+                            inclusive =  true
+                        }
+                        launchSingleTop = true
+                    }
                 }
             ) {
                 Text(
