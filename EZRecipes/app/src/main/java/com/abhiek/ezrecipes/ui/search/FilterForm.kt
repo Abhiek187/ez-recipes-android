@@ -48,7 +48,6 @@ fun FilterForm(
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val density = LocalDensity.current
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -169,43 +168,14 @@ fun FilterForm(
                 Text(stringResource(R.string.calorie_unit))
             }
             // Form errors
-            AnimatedVisibility(
-                visible = caloriesExceedMax,
-                enter = slideInVertically {
-                    // Slide in from 40 dp from the top
-                    with(density) { -40.dp.roundToPx() }
-                } + expandVertically(
-                    // Expand from the top
-                    expandFrom = Alignment.Top
-                ) + fadeIn(
-                    // Fade in with the initial alpha of 0.3f
-                    initialAlpha = 0.3f
-                ),
-                exit = slideOutVertically() + shrinkVertically() + fadeOut()
-            ) {
-                Text(
-                    text = stringResource(R.string.calorie_exceed_max_error),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
-            AnimatedVisibility(
-                visible = caloriesInvalidRange,
-                enter = slideInVertically {
-                    with(density) { -40.dp.roundToPx() }
-                } + expandVertically(
-                    expandFrom = Alignment.Top
-                ) + fadeIn(
-                    initialAlpha = 0.3f
-                ),
-                exit = slideOutVertically() + shrinkVertically() + fadeOut()
-            ) {
-                Text(
-                    text = stringResource(R.string.calorie_invalid_range_error),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
+            FormError(
+                on = caloriesExceedMax,
+                message = stringResource(R.string.calorie_exceed_max_error)
+            )
+            FormError(
+                on = caloriesInvalidRange,
+                message = stringResource(R.string.calorie_invalid_range_error)
+            )
         }
 
         Column {
