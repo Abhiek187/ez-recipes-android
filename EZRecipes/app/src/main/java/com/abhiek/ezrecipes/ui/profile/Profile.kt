@@ -28,7 +28,7 @@ fun Profile(profileViewModel: ProfileViewModel) {
     if (authState == AuthState.AUTHENTICATED && chef != null) {
         ProfileLoggedIn(chef, profileViewModel)
     } else if (authState == AuthState.UNAUTHENTICATED) {
-        ProfileLoggedOut()
+        ProfileLoggedOut(profileViewModel)
     } else {
         Box(
             modifier = Modifier.fillMaxSize(),

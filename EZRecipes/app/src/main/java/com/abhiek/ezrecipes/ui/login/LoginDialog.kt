@@ -12,6 +12,7 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.Routes
 
 @Composable
 fun LoginDialog(onDismiss: () -> Unit) {
@@ -25,8 +26,9 @@ fun LoginDialog(onDismiss: () -> Unit) {
         // Use a NavHost to manage navigation within the dialog
         val navController = rememberNavController()
 
-        NavHost(navController = navController, startDestination = "login") {
-            composable("login") { LoginForm(navController) }
+        NavHost(navController = navController, startDestination = Routes.LOGIN) {
+            composable(Routes.LOGIN) { LoginForm(navController) }
+            composable(Routes.SIGN_UP) { SignUpForm(navController) }
         }
     }
 }

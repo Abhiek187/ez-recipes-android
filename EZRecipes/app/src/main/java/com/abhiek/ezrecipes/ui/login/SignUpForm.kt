@@ -31,9 +31,10 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Routes
 
 @Composable
-fun LoginForm(navController: NavController) {
-    var username by remember { mutableStateOf("") }
+fun SignUpForm(navController: NavController) {
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordConfirm by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
@@ -43,34 +44,34 @@ fun LoginForm(navController: NavController) {
         modifier = Modifier.padding(8.dp)
     ) {
         Text(
-            text = stringResource(R.string.sign_in_header),
+            text = stringResource(R.string.sign_up_header),
             style = MaterialTheme.typography.headlineLarge
         )
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(R.string.sign_in_sub_header),
+                text = stringResource(R.string.sign_up_sub_header),
                 style = MaterialTheme.typography.headlineSmall
             )
             TextButton(
                 onClick = {
-                    navController.navigate(Routes.SIGN_UP)
+                    navController.navigate(Routes.LOGIN)
                 }
             ) {
                 Text(
-                    text = stringResource(R.string.sign_up_header),
+                    text = stringResource(R.string.sign_in_header),
                     style = MaterialTheme.typography.headlineSmall
                 )
             }
         }
         TextField(
-            value = username,
+            value = email,
             onValueChange = {
-                username = it
+                email = it
             },
             label = {
-                Text(stringResource(R.string.username_field))
+                Text(stringResource(R.string.email_field))
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
@@ -91,40 +92,57 @@ fun LoginForm(navController: NavController) {
                 ) {
                     Icon(
                         imageVector = if (showPassword) Icons.Filled.Visibility
-                            else Icons.Filled.VisibilityOff,
+                        else Icons.Filled.VisibilityOff,
                         contentDescription = if (showPassword) "Hide password"
-                            else "Show password"
+                        else "Show password"
                     )
                 }
             },
             visualTransformation = if (showPassword) VisualTransformation.None
-                else PasswordVisualTransformation(),
+            else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             )
         )
-        TextButton(
-            onClick = {
-                println("Forgot password")
-            }
-        ) {
-            Text(
-                text = stringResource(R.string.password_forget),
-                style = MaterialTheme.typography.headlineSmall
+        TextField(
+            value = passwordConfirm,
+            onValueChange = {
+                passwordConfirm = it
+            },
+            label = {
+                Text(stringResource(R.string.password_confirm_field))
+            },
+            trailingIcon = {
+                IconButton(
+                    onClick = { showPassword = !showPassword }
+                ) {
+                    Icon(
+                        imageVector = if (showPassword) Icons.Filled.Visibility
+                        else Icons.Filled.VisibilityOff,
+                        contentDescription = if (showPassword) "Hide password"
+                        else "Show password"
+                    )
+                }
+            },
+            visualTransformation = if (showPassword) VisualTransformation.None
+            else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
             )
-        }
+        )
         Button(
             onClick = {
                 Toast.makeText(
                     context,
-                    "Username: $username, Password: $password",
+                    "Email: $email, Password: $password",
                     Toast.LENGTH_SHORT
                 ).show()
             },
             modifier = Modifier.align(Alignment.End)
         ) {
-            Text(stringResource(R.string.login))
+            Text(stringResource(R.string.sign_up_header))
         }
     }
 }
@@ -134,12 +152,12 @@ fun LoginForm(navController: NavController) {
 @FontPreviews
 @OrientationPreviews
 @Composable
-private fun LoginFormPreview() {
+private fun SignUpFormPreview() {
     val navController = rememberNavController()
 
     EZRecipesTheme {
         Surface {
-            LoginForm(navController)
+            SignUpForm(navController)
         }
     }
 }
