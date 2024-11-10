@@ -533,6 +533,7 @@ object Constants {
         val CHEF = Chef(
             uid = "oJG5PZ8KIIfvQMDsQzOwDbu2m6O2",
             email = "test@email.com",
+            emailVerified = true,
             ratings = mapOf(
                 "641024" to 5,
                 "663849" to 3
