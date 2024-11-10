@@ -131,7 +131,15 @@ fun LoginForm(navController: NavController) {
         )
         TextButton(
             onClick = {
-                println("Forgot password")
+                navController.navigate(Routes.FORGOT_PASSWORD) {
+                    popUpTo(
+                        navController.currentBackStackEntry?.destination?.route
+                            ?: return@navigate
+                    ) {
+                        inclusive =  true
+                    }
+                    launchSingleTop = true
+                }
             }
         ) {
             Text(

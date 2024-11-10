@@ -155,6 +155,7 @@
     <string name="forget_password_header">
         No problem! Enter your email so we can reset your password.
     </string>
+    <string name="forget_password_submit">Submit</string>
     <string name="forget_password_confirm">
         We sent an email to %1$s. Follow the instructions to reset your password.
     </string>
