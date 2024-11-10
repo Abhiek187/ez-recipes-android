@@ -1,7 +1,6 @@
 package com.abhiek.ezrecipes.ui.login
 
 import android.util.Patterns
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +13,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,8 +43,6 @@ fun SignUpForm(navController: NavController) {
     val passwordEmpty = password.isEmpty()
     val passwordTooShort = password.length < Constants.PASSWORD_MIN_LENGTH
     val passwordsDoNotMatch = password != passwordConfirm
-
-    val context = LocalContext.current
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -135,7 +131,7 @@ fun SignUpForm(navController: NavController) {
             else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done
+                imeAction = ImeAction.Next
             )
         )
         TextField(
@@ -175,11 +171,17 @@ fun SignUpForm(navController: NavController) {
         )
         Button(
             onClick = {
-                Toast.makeText(
-                    context,
-                    "Email: $email, Password: $password",
-                    Toast.LENGTH_SHORT
-                ).show()
+                navController.navigate(
+                    Routes.VERIFY_EMAIL.replace("{email}", email)
+                ) {
+                    popUpTo(
+                        navController.currentBackStackEntry?.destination?.route
+                            ?: return@navigate
+                    ) {
+                        inclusive =  true
+                    }
+                    launchSingleTop = true
+                }
             },
             enabled = !emailEmpty && !emailInvalid && !passwordEmpty && !passwordTooShort &&
                     !passwordsDoNotMatch,

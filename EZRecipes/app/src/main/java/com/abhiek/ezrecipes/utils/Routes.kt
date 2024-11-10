@@ -11,5 +11,6 @@ object Routes {
     const val PROFILE = "profile"
     const val LOGIN = "login"
     const val SIGN_UP = "sign-up"
-    const val VERIFY_EMAIL = "verify-email"
+    const val VERIFY_EMAIL = "verify/{email}"
+    const val FORGOT_PASSWORD = "forgot-password"
 }

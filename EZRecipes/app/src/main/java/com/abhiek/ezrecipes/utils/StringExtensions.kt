@@ -30,13 +30,13 @@ fun String.capitalizeWords(): String {
  *
  * @param text the string to annotate
  * @param startIndex the index to start bolding, inclusive
- * @param endIndex the index to end bolding, exclusive
+ * @param endIndex the index to end bolding, exclusive, defaults to the end of the string
  * @return the annotated string
  */
 fun boldAnnotatedString(
     text: String,
     startIndex: Int = 0,
-    endIndex: Int
+    endIndex: Int? = null
 ) = buildAnnotatedString {
     append(text)
 
@@ -46,6 +46,6 @@ fun boldAnnotatedString(
             fontWeight = FontWeight.Bold
         ),
         start = startIndex,
-        end = endIndex
+        end = endIndex ?: text.length
     )
 }

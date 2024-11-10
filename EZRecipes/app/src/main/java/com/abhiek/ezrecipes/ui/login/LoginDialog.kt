@@ -41,6 +41,10 @@ fun LoginDialog(onDismiss: () -> Unit) {
             NavHost(navController = navController, startDestination = Routes.LOGIN) {
                 composable(Routes.LOGIN) { LoginForm(navController) }
                 composable(Routes.SIGN_UP) { SignUpForm(navController) }
+                composable(Routes.VERIFY_EMAIL) { backStackEntry ->
+                    VerifyEmail(backStackEntry.arguments?.getString("email"))
+                }
+                composable(Routes.FORGOT_PASSWORD) { ForgotPasswordForm() }
             }
         }
     }
