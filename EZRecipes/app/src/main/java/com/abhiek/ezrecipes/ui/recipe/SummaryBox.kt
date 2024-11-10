@@ -23,7 +23,7 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
-import com.abhiek.ezrecipes.utils.HTMLText
+import com.abhiek.ezrecipes.ui.util.HTMLText
 
 @Composable
 fun SummaryBox(summary: String) {

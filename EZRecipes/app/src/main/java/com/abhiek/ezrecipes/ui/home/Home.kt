@@ -35,6 +35,7 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.getActivity
 import com.google.android.play.core.review.testing.FakeReviewManager

@@ -1,4 +1,4 @@
-package com.abhiek.ezrecipes.utils
+package com.abhiek.ezrecipes.ui.util
 
 import android.text.method.LinkMovementMethod
 import android.util.TypedValue

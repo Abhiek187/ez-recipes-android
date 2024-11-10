@@ -1,4 +1,4 @@
-package com.abhiek.ezrecipes.ui.search
+package com.abhiek.ezrecipes.ui.util
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

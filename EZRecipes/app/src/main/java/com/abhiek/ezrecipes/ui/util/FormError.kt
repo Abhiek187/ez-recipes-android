@@ -1,4 +1,4 @@
-package com.abhiek.ezrecipes.ui.search
+package com.abhiek.ezrecipes.ui.util
 
 import androidx.compose.animation.*
 import androidx.compose.material3.MaterialTheme

@@ -1,4 +1,4 @@
-package com.abhiek.ezrecipes.ui.home
+package com.abhiek.ezrecipes.ui.util
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog

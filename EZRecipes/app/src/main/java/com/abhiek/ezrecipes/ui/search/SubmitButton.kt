@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
-import com.abhiek.ezrecipes.ui.home.ErrorAlert
+import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
