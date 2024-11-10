@@ -134,33 +134,11 @@ fun Home(
         
         // Show an alert if the recipe failed to load
         if (mainViewModel.showRecipeAlert) {
-            AlertDialog(
-                onDismissRequest = {
+            ErrorAlert(
+                message = mainViewModel.recipeError?.error,
+                onDismiss = {
                     mainViewModel.showRecipeAlert = false
-                },
-                title = {
-                    Text(
-                        text = stringResource(R.string.error_title)
-                    )
-                },
-                text = {
-                       Text(
-                           text = mainViewModel.recipeError?.error ?:
-                           stringResource(R.string.unknown_error)
-                       )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            mainViewModel.showRecipeAlert = false
-                        }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.ok_button)
-                        )
-                    }
-                },
-                modifier = Modifier.padding(horizontal = 8.dp)
+                }
             )
         }
 

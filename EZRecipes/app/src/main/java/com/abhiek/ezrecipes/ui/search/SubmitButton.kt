@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.ui.home.ErrorAlert
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -65,33 +66,11 @@ fun SubmitButton(searchViewModel: SearchViewModel, enabled: Boolean) {
 
         // Show an alert if the recipe failed to load
         if (searchViewModel.showRecipeAlert) {
-            AlertDialog(
-                onDismissRequest = {
+            ErrorAlert(
+                message = searchViewModel.recipeError?.error,
+                onDismiss = {
                     searchViewModel.showRecipeAlert = false
-                },
-                title = {
-                    Text(
-                        text = stringResource(R.string.error_title)
-                    )
-                },
-                text = {
-                    Text(
-                        text = searchViewModel.recipeError?.error ?:
-                        stringResource(R.string.unknown_error)
-                    )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            searchViewModel.showRecipeAlert = false
-                        }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.ok_button)
-                        )
-                    }
-                },
-                modifier = Modifier.padding(horizontal = 8.dp)
+                }
             )
         }
     }
