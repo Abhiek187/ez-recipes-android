@@ -181,8 +181,8 @@ fun SignUpForm(navController: NavController) {
                     Toast.LENGTH_SHORT
                 ).show()
             },
-            enabled = !(emailEmpty || emailInvalid || passwordEmpty || passwordTooShort ||
-                    passwordsDoNotMatch),
+            enabled = !emailEmpty && !emailInvalid && !passwordEmpty && !passwordTooShort &&
+                    !passwordsDoNotMatch,
             modifier = Modifier.align(Alignment.End)
         ) {
             Text(stringResource(R.string.sign_up_header))

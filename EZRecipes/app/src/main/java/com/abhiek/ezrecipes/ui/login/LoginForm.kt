@@ -36,6 +36,10 @@ fun LoginForm(navController: NavController) {
     var password by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
 
+    // Errors
+    val usernameEmpty = username.isEmpty()
+    val passwordEmpty = password.isEmpty()
+
     val context = LocalContext.current
 
     Column(
@@ -81,6 +85,12 @@ fun LoginForm(navController: NavController) {
             label = {
                 Text(stringResource(R.string.username_field))
             },
+            supportingText = {
+                if (usernameEmpty) {
+                    Text(stringResource(R.string.field_required, "Username"))
+                }
+            },
+            isError = usernameEmpty,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
@@ -106,6 +116,12 @@ fun LoginForm(navController: NavController) {
                     )
                 }
             },
+            supportingText = {
+                if (passwordEmpty) {
+                    Text(stringResource(R.string.field_required, "Password"))
+                }
+            },
+            isError = passwordEmpty,
             visualTransformation = if (showPassword) VisualTransformation.None
                 else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
@@ -131,6 +147,7 @@ fun LoginForm(navController: NavController) {
                     Toast.LENGTH_SHORT
                 ).show()
             },
+            enabled = !usernameEmpty && !passwordEmpty,
             modifier = Modifier.align(Alignment.End)
         ) {
             Text(stringResource(R.string.login))
