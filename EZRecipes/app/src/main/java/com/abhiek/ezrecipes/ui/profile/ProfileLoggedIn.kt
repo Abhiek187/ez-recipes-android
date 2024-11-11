@@ -24,6 +24,7 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.ui.util.Accordion
 
 @Composable
 fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
@@ -40,9 +41,8 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
     ) {
         Text(
             text = stringResource(R.string.profile_header, chef.email),
-            style = MaterialTheme.typography.headlineMedium.copy(
-                textAlign = TextAlign.Center,
-            ),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.fillMaxWidth()
         )
 

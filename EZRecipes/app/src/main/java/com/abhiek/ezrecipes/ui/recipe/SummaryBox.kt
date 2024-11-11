@@ -23,7 +23,7 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
-import com.abhiek.ezrecipes.utils.HTMLText
+import com.abhiek.ezrecipes.ui.util.HTMLText
 
 @Composable
 fun SummaryBox(summary: String) {
@@ -43,11 +43,10 @@ fun SummaryBox(summary: String) {
             ) {
                 Text(
                     text = stringResource(R.string.summary),
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    ),
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
                 )

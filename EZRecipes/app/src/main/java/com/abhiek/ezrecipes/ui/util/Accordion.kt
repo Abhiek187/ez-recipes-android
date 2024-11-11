@@ -1,4 +1,4 @@
-package com.abhiek.ezrecipes.ui.profile
+package com.abhiek.ezrecipes.ui.util
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -42,9 +42,8 @@ fun Accordion(
         ) {
             Text(
                 text = header,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold
-                ),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.weight(1f)
             )
             Icon(

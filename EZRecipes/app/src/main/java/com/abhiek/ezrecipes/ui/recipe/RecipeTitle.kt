@@ -36,10 +36,9 @@ fun RecipeTitle(recipe: Recipe) {
         // Recipe name and source link
         Text(
             text = recipe.name.capitalizeWords(),
-            style = MaterialTheme.typography.headlineSmall.copy(
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            ),
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.headlineSmall,
             // Keep the recipe name and link next to each other
             // If the width is too small, wrap the text around the link
             modifier = Modifier.weight(1f, false)

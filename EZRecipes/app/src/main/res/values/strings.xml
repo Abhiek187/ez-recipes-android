@@ -127,4 +127,54 @@
     <string name="change_email">Change Email</string>
     <string name="change_password">Change Password</string>
     <string name="delete_account">Delete Account</string>
+
+    <!-- Login Screen -->
+    <string name="sign_in_header">Sign In</string>
+    <string name="sign_in_sub_header">Don\'t have an account?</string>
+    <string name="username_field">Username</string>
+    <string name="password_field">Password</string>
+    <string name="password_forget">Forgot password?</string>
+    <string name="sign_in_success">Signed in successfully!</string>
+    <string name="sign_out_success">Signed out successfully!</string>
+
+    <string name="sign_up_header">Sign Up</string>
+    <string name="sign_up_sub_header">Already have an account?</string>
+    <string name="email_field">Email</string>
+    <string name="password_confirm_field">Confirm Password</string>
+    <string name="field_required">Error: %1$s is required</string>
+    <string name="email_invalid">Error: Invalid email</string>
+    <string name="password_min_length">Password must be at least 8 characters long</string>
+    <string name="password_too_short">Error: Password must be at least 8 characters long</string>
+    <string name="password_match">Error: Passwords do not match</string>
+
+    <string name="email_verify_header">You\'re Almost There!</string>
+    <string name="email_verify_body">
+        We just need to verify your email before you can put on the chef\'s hat.
+        Check your email for a magic link sent to %1$s
+    </string>
+    <string name="email_verify_success">Email verified successfully!</string>
+    <string name="forget_password_header">
+        No problem! Enter your email so we can reset your password.
+    </string>
+    <string name="forget_password_submit">Submit</string>
+    <string name="forget_password_confirm">
+        We sent an email to %1$s. Follow the instructions to reset your password.
+    </string>
+
+    <string name="change_email_field">New Email</string>
+    <string name="change_email_confirm">
+        We sent an email to %1$s. Follow the instructions to change your email.
+    </string>
+    <string name="change_email_success">Email updated successfully!</string>
+    <string name="change_password_field">New Password</string>
+    <string name="change_password_confirm">
+        We sent an email to %1$s. Follow the instructions to change your password.
+    </string>
+    <string name="change_password_success">Password updated successfully!</string>
+    <string name="delete_account_header">Are You Sure?</string>
+    <string name="delete_account_sub_header">
+        You will lose access to your favorite recipes.\n
+        Enter your username to confirm.
+    </string>
+    <string name="delete_account_success">Your account has been deleted.</string>
 </resources>

@@ -21,9 +21,8 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 fun RecipeFooter() {
     Text(
         text = stringResource(R.string.attribution),
-        style = MaterialTheme.typography.bodySmall.copy(
-            textAlign = TextAlign.Center
-        ),
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.bodySmall,
         modifier = Modifier
             .padding(vertical = 8.dp)
             .fillMaxWidth()

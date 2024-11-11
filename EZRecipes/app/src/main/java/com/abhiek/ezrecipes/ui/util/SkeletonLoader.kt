@@ -1,4 +1,4 @@
-package com.abhiek.ezrecipes.ui.profile
+package com.abhiek.ezrecipes.ui.util
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image

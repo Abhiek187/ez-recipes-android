@@ -35,6 +35,7 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.getActivity
 import com.google.android.play.core.review.testing.FakeReviewManager
@@ -134,33 +135,11 @@ fun Home(
         
         // Show an alert if the recipe failed to load
         if (mainViewModel.showRecipeAlert) {
-            AlertDialog(
-                onDismissRequest = {
+            ErrorAlert(
+                message = mainViewModel.recipeError?.error,
+                onDismiss = {
                     mainViewModel.showRecipeAlert = false
-                },
-                title = {
-                    Text(
-                        text = stringResource(R.string.error_title)
-                    )
-                },
-                text = {
-                       Text(
-                           text = mainViewModel.recipeError?.error ?:
-                           stringResource(R.string.unknown_error)
-                       )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            mainViewModel.showRecipeAlert = false
-                        }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.ok_button)
-                        )
-                    }
-                },
-                modifier = Modifier.padding(horizontal = 8.dp)
+                }
             )
         }
 

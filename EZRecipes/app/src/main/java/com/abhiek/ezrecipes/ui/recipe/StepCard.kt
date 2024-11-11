@@ -49,10 +49,9 @@ fun StepCard(step: Step) {
                 ) {
                     Text(
                         text = step.number.toString(),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontSize = 22.sp,
-                            textAlign = TextAlign.Center
-                        )
+                        fontSize = 22.sp,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleLarge
                     )
                 }
                 Text(
@@ -71,9 +70,8 @@ fun StepCard(step: Step) {
                 ) {
                     Text(
                         text = stringResource(R.string.ingredients),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        )
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium
                     )
 
                     // Wrap items if they can't fit in one row
@@ -92,9 +90,8 @@ fun StepCard(step: Step) {
                                 )
                                 Text(
                                     text = ingredient.name,
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        textAlign = TextAlign.Center
-                                    ),
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     modifier = Modifier.width(100.dp)
                                 )
                             }
@@ -113,9 +110,8 @@ fun StepCard(step: Step) {
                 ) {
                     Text(
                         text = stringResource(R.string.equipment),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        )
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium
                     )
 
                     FlowRow(
@@ -132,9 +128,8 @@ fun StepCard(step: Step) {
                                 )
                                 Text(
                                     text = equipment.name,
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        textAlign = TextAlign.Center
-                                    ),
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     modifier = Modifier.width(100.dp)
                                 )
                             }

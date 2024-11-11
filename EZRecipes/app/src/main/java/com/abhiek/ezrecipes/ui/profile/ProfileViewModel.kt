@@ -27,6 +27,7 @@ class ProfileViewModel(
     var favoriteRecipes by mutableStateOf<List<Recipe>>(listOf())
     var recentRecipes by mutableStateOf<List<Recipe>>(listOf())
     var ratedRecipes by mutableStateOf<List<Recipe>>(listOf())
+    var openLoginDialog by mutableStateOf(false)
 
     companion object {
         private const val TAG = "ProfileViewModel"

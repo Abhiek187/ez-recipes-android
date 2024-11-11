@@ -8,5 +8,9 @@ object Routes {
     const val SEARCH = "search"
     const val RESULTS = "search/results"
     const val GLOSSARY = "glossary"
-    const val PROFILE = "profile"
+    const val PROFILE = "profile?action={action}"
+    const val LOGIN = "login"
+    const val SIGN_UP = "sign-up"
+    const val VERIFY_EMAIL = "verify/{email}"
+    const val FORGOT_PASSWORD = "forgot-password"
 }

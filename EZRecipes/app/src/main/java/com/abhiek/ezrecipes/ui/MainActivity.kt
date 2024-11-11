@@ -37,15 +37,17 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleRecipeLink(appLinkIntent: Intent) {
-        // Check if the intent is an app link with a URI of /recipe/RECIPE_ID
+        // Check the app link URI from the intent
         val appLinkAction = appLinkIntent.action
         val appLinkData = appLinkIntent.data
 
         if (appLinkAction == Intent.ACTION_VIEW) {
-            appLinkData?.lastPathSegment?.also { recipeId ->
-                // The navigation graph will take care of the deep link ;)
-                Log.d(TAG, "recipe ID = $recipeId")
-            }
+            val recipeId = appLinkData?.lastPathSegment
+            // The navigation graph will take care of the deep link ;)
+            Log.d(TAG, "recipe ID = $recipeId")
+
+            val action = appLinkData?.getQueryParameter("action")
+            Log.d(TAG, "action = $action")
         }
     }
 }

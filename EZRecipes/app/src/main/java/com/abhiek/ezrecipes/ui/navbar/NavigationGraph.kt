@@ -170,9 +170,14 @@ fun NavigationGraph(
             Glossary(glossaryViewModel.terms)
         }
         composable(
-            Routes.PROFILE
-        ) {
-            Profile(profileViewModel)
+            Routes.PROFILE,
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "${Constants.RECIPE_WEB_ORIGIN}/${Routes.PROFILE}"
+                }
+            ),
+        ) { backStackEntry ->
+            Profile(profileViewModel, backStackEntry.arguments?.getString("action"))
         }
     }
 }

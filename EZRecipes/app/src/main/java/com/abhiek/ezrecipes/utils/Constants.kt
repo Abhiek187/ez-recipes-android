@@ -18,6 +18,7 @@ object Constants {
 
     const val MIN_CALS = 0
     const val MAX_CALS = 2000
+    const val PASSWORD_MIN_LENGTH = 8
 
     const val DATA_STORE_NAME = "data-store"
     const val MAX_RECENT_RECIPES = 10
@@ -32,6 +33,12 @@ object Constants {
         const val DATABASE_NAME = "AppDatabase"
         const val DATABASE_VERSION = 1
         const val RECENT_RECIPE_TABLE = "RecentRecipe"
+    }
+
+    object ProfileActions {
+        const val VERIFY_EMAIL = "verifyEmail"
+        const val CHANGE_EMAIL = "changeEmail"
+        const val RESET_PASSWORD = "resetPassword"
     }
 
     object Mocks {
@@ -532,6 +539,7 @@ object Constants {
         val CHEF = Chef(
             uid = "oJG5PZ8KIIfvQMDsQzOwDbu2m6O2",
             email = "test@email.com",
+            emailVerified = true,
             ratings = mapOf(
                 "641024" to 5,
                 "663849" to 3
