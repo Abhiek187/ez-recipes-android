@@ -35,6 +35,12 @@ object Constants {
         const val RECENT_RECIPE_TABLE = "RecentRecipe"
     }
 
+    object ProfileActions {
+        const val VERIFY_EMAIL = "verifyEmail"
+        const val CHANGE_EMAIL = "changeEmail"
+        const val RESET_PASSWORD = "resetPassword"
+    }
+
     object Mocks {
         //region Normal, no culture
         val PINEAPPLE_SALAD = Recipe(

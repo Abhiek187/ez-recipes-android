@@ -152,6 +152,7 @@
         We just need to verify your email before you can put on the chef\'s hat.
         Check your email for a magic link sent to %1$s
     </string>
+    <string name="email_verify_success">Email verified successfully!</string>
     <string name="forget_password_header">
         No problem! Enter your email so we can reset your password.
     </string>

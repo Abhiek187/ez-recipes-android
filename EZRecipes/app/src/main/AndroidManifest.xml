@@ -29,6 +29,8 @@
             android:name=".ui.MainActivity"
             android:exported="true">
             <tools:validation testUrl="https://ez-recipes-web.onrender.com/recipe/644783" />
+            <tools:validation
+                testUrl="https://ez-recipes-web.onrender.com/profile?action=verifyEmail" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,6 +47,16 @@
                     android:scheme="https"
                     android:host="ez-recipes-web.onrender.com"
                     android:pathPattern="/recipe/.*" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:host="ez-recipes-web.onrender.com" />
+                <data android:pathPattern="/profile" />
             </intent-filter>
         </activity>
     </application>
