@@ -45,7 +45,7 @@ fun ProfileLoggedOut(profileViewModel: ProfileViewModel) {
         }
 
         if (profileViewModel.openLoginDialog) {
-            LoginDialog {
+            LoginDialog(profileViewModel) {
                 profileViewModel.openLoginDialog = false
             }
         }

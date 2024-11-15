@@ -12,15 +12,20 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.abhiek.ezrecipes.data.chef.ChefRepository
+import com.abhiek.ezrecipes.data.chef.MockChefService
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Routes
 
 @Composable
-fun LoginDialog(onDismiss: () -> Unit) {
+fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -40,7 +45,35 @@ fun LoginDialog(onDismiss: () -> Unit) {
 
             NavHost(navController = navController, startDestination = Routes.LOGIN) {
                 composable(Routes.LOGIN) { LoginForm(navController) }
-                composable(Routes.SIGN_UP) { SignUpForm(navController) }
+                composable(Routes.SIGN_UP) {
+                    SignUpForm(
+                        profileViewModel = profileViewModel,
+                        onLogin = {
+                            navController.navigate(Routes.LOGIN) {
+                                popUpTo(
+                                    navController.currentBackStackEntry?.destination?.route
+                                        ?: return@navigate
+                                ) {
+                                    inclusive =  true
+                                }
+                                launchSingleTop = true
+                            }
+                        },
+                        onVerifyEmail = { email ->
+                            navController.navigate(
+                                Routes.VERIFY_EMAIL.replace("{email}", email)
+                            ) {
+                                popUpTo(
+                                    navController.currentBackStackEntry?.destination?.route
+                                        ?: return@navigate
+                                ) {
+                                    inclusive =  true
+                                }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
                 composable(Routes.VERIFY_EMAIL) { backStackEntry ->
                     VerifyEmail(backStackEntry.arguments?.getString("email"))
                 }
@@ -56,9 +89,16 @@ fun LoginDialog(onDismiss: () -> Unit) {
 @OrientationPreviews
 @Composable
 private fun LoginDialogPreview() {
+    val chefService = MockChefService
+    val recipeService = MockRecipeService
+    val profileViewModel = ProfileViewModel(
+        chefRepository = ChefRepository(chefService),
+        recipeRepository = RecipeRepository(recipeService)
+    )
+
     EZRecipesTheme {
         Surface {
-            LoginDialog {}
+            LoginDialog(profileViewModel) {}
         }
     }
 }
