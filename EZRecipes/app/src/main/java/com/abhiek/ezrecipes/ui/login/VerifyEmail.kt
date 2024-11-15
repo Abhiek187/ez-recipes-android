@@ -2,11 +2,14 @@ package com.abhiek.ezrecipes.ui.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -38,6 +41,24 @@ fun VerifyEmail(email: String? = null) {
             ),
             style = MaterialTheme.typography.bodyLarge
         )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.email_verify_retry_text),
+                style = MaterialTheme.typography.bodyMedium
+            )
+            TextButton(
+                onClick = {
+                    println("resend verification email")
+                }
+            ) {
+                Text(
+                    text = stringResource(R.string.email_verify_retry_link),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
     }
 }
 
