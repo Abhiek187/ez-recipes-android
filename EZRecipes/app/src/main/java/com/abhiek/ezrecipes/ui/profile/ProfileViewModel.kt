@@ -41,14 +41,23 @@ class ProfileViewModel(
 
     private suspend fun saveToken(token: String) {
         // Encrypt the ID token and save it to the DataStore
-        val encryptedToken = Encryptor.encrypt(token)
-        dataStoreService.saveToken(encryptedToken)
+        try {
+            val encryptedToken = Encryptor.encrypt(token)
+            dataStoreService.saveToken(encryptedToken)
+        } catch (error: Exception) {
+            Log.e(TAG, "Error saving token: ${error.printStackTrace()}")
+        }
     }
 
     private suspend fun getToken(): String? {
         // Get the ID token from the DataStore and decrypt it
-        val encryptedToken = dataStoreService.getToken()
-        return if (encryptedToken != null) Encryptor.decrypt(encryptedToken) else null
+        try {
+            val encryptedToken = dataStoreService.getToken()
+            return if (encryptedToken != null) Encryptor.decrypt(encryptedToken) else null
+        } catch (error: Exception) {
+            Log.e(TAG, "Error getting token: ${error.printStackTrace()}")
+            return null
+        }
     }
 
     fun createAccount(username: String, password: String) {
