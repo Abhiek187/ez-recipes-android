@@ -4,11 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,10 +18,29 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.boldAnnotatedString
+import kotlinx.coroutines.delay
+import java.util.Locale
 
 @Composable
-fun VerifyEmail(email: String? = null) {
+fun VerifyEmail(email: String? = null, onResend: () -> Unit = {}) {
+    // Throttle the number of times the user can resend the verification email to satisfy API limits
+    var enableResend by remember { mutableStateOf(false) }
+    var secondsRemaining by remember { mutableIntStateOf(Constants.EMAIL_COOLDOWN_SECONDS) }
+
+    LaunchedEffect(enableResend) {
+        if (!enableResend) {
+            secondsRemaining = Constants.EMAIL_COOLDOWN_SECONDS
+
+            while (secondsRemaining > 0) {
+                delay(1000)
+                secondsRemaining--
+            }
+            enableResend = true
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.padding(8.dp)
@@ -50,11 +68,28 @@ fun VerifyEmail(email: String? = null) {
             )
             TextButton(
                 onClick = {
-                    println("resend verification email")
-                }
+                    onResend()
+                    enableResend = false
+                },
+                enabled = enableResend
             ) {
                 Text(
                     text = stringResource(R.string.email_verify_retry_link),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            if (!enableResend) {
+                Icon(
+                    imageVector = Icons.Filled.Schedule,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 4.dp)
+                )
+                Text(
+                    text = String.format(
+                        Locale.getDefault(),
+                        "%02d:%02d",
+                        secondsRemaining / 60, secondsRemaining % 60
+                    ),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

@@ -77,7 +77,12 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
                     )
                 }
                 composable(Routes.VERIFY_EMAIL) { backStackEntry ->
-                    VerifyEmail(backStackEntry.arguments?.getString("email"))
+                    VerifyEmail(
+                        email = backStackEntry.arguments?.getString("email"),
+                        onResend = {
+                            profileViewModel.verifyEmail()
+                        }
+                    )
                 }
                 composable(Routes.FORGOT_PASSWORD) { ForgotPasswordForm() }
             }
