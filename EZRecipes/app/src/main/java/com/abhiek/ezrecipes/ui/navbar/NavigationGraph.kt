@@ -57,7 +57,7 @@ fun NavigationGraph(
         factory = GlossaryViewModelFactory(context)
     )
     val profileViewModel = viewModel<ProfileViewModel>(
-        factory = ProfileViewModelFactory()
+        factory = ProfileViewModelFactory(context)
     )
 
     // Only call once when composed

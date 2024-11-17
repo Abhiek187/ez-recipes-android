@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
@@ -17,6 +18,7 @@ import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.login.LoginDialog
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -58,11 +60,14 @@ fun ProfileLoggedOut(profileViewModel: ProfileViewModel) {
 @OrientationPreviews
 @Composable
 private fun ProfileLoggedOutPreview() {
+    val context = LocalContext.current
+
     val chefService = MockChefService
     val recipeService = MockRecipeService
     val profileViewModel = ProfileViewModel(
         chefRepository = ChefRepository(chefService),
-        recipeRepository = RecipeRepository(recipeService)
+        recipeRepository = RecipeRepository(recipeService),
+        dataStoreService = DataStoreService(context)
     )
 
     EZRecipesTheme {

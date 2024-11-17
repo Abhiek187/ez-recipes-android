@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui.profile
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,12 +11,15 @@ import com.abhiek.ezrecipes.data.chef.ChefResult
 import com.abhiek.ezrecipes.data.models.*
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.recipe.RecipeResult
+import com.abhiek.ezrecipes.data.storage.DataStoreService
+import com.abhiek.ezrecipes.utils.Encryptor
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val chefRepository: ChefRepository,
-    private val recipeRepository: RecipeRepository
+    private val recipeRepository: RecipeRepository,
+    private val dataStoreService: DataStoreService
 ): ViewModel() {
     var job by mutableStateOf<Job?>(null)
         private set
@@ -35,6 +39,18 @@ class ProfileViewModel(
         private const val TAG = "ProfileViewModel"
     }
 
+    private suspend fun saveToken(token: String) {
+        // Encrypt the ID token and save it to the DataStore
+        val encryptedToken = Encryptor.encrypt(token)
+        dataStoreService.saveToken(encryptedToken)
+    }
+
+    private suspend fun getToken(): String? {
+        // Get the ID token from the DataStore and decrypt it
+        val encryptedToken = dataStoreService.getToken()
+        return if (encryptedToken != null) Encryptor.decrypt(encryptedToken) else null
+    }
+
     fun createAccount(username: String, password: String) {
         val loginCredentials = LoginCredentials(username, password)
 
@@ -46,7 +62,8 @@ class ProfileViewModel(
             when (result) {
                 is ChefResult.Success -> {
                     val loginResponse = result.response
-                    println("loginResponse: $loginResponse")
+                    Log.d(TAG, "loginResponse: $loginResponse")
+                    saveToken(loginResponse.token)
                     recipeError = null
                     showAlert = false
                 }
@@ -58,16 +75,21 @@ class ProfileViewModel(
         }
     }
 
-    fun verifyEmail(token: String) {
+    fun verifyEmail() {
         job = viewModelScope.launch {
             isLoading = true
-            val result = chefRepository.verifyEmail(token)
+            val token = getToken()
+            val result = if (token != null) {
+                chefRepository.verifyEmail(token)
+            } else {
+                ChefResult.Error(RecipeError("No token found"))
+            }
             isLoading = false
 
             when (result) {
                 is ChefResult.Success -> {
                     val emailResponse = result.response
-                    println("emailResponse: $emailResponse")
+                    Log.d(TAG, "emailResponse: $emailResponse")
                     recipeError = null
                     showAlert = false
                 }

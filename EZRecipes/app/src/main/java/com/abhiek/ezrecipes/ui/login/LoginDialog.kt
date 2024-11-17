@@ -7,6 +7,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.compose.NavHost
@@ -16,6 +17,7 @@ import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -89,11 +91,14 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
 @OrientationPreviews
 @Composable
 private fun LoginDialogPreview() {
+    val context = LocalContext.current
+
     val chefService = MockChefService
     val recipeService = MockRecipeService
     val profileViewModel = ProfileViewModel(
         chefRepository = ChefRepository(chefService),
-        recipeRepository = RecipeRepository(recipeService)
+        recipeRepository = RecipeRepository(recipeService),
+        dataStoreService = DataStoreService(context)
     )
 
     EZRecipesTheme {

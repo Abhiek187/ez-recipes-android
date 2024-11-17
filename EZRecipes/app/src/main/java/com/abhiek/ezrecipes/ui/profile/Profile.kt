@@ -18,6 +18,7 @@ import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.AuthState
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -94,11 +95,14 @@ private class ProfilePreviewParameterProvider : PreviewParameterProvider<Profile
 private fun ProfilePreview(
     @PreviewParameter(ProfilePreviewParameterProvider::class) state: ProfileState
 ) {
+    val context = LocalContext.current
+
     val chefService = MockChefService
     val recipeService = MockRecipeService
     val profileViewModel = ProfileViewModel(
         chefRepository = ChefRepository(chefService),
-        recipeRepository = RecipeRepository(recipeService)
+        recipeRepository = RecipeRepository(recipeService),
+        dataStoreService = DataStoreService(context)
     )
     profileViewModel.authState = state.authState
     profileViewModel.chef = chefService.chef

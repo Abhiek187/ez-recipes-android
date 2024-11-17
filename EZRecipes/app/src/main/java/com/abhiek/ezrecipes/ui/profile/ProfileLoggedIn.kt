@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -18,6 +19,7 @@ import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Chef
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -145,11 +147,14 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
 @OrientationPreviews
 @Composable
 private fun ProfileLoggedInPreview() {
+    val context = LocalContext.current
+
     val chefService = MockChefService
     val recipeService = MockRecipeService
     val profileViewModel = ProfileViewModel(
         chefRepository = ChefRepository(chefService),
-        recipeRepository = RecipeRepository(recipeService)
+        recipeRepository = RecipeRepository(recipeService),
+        dataStoreService = DataStoreService(context)
     )
     profileViewModel.chef = chefService.chef
 

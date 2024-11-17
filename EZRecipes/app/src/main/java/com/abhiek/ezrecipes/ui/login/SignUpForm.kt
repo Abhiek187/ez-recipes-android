@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,6 +28,7 @@ import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -183,6 +185,7 @@ fun SignUpForm(
             Button(
                 onClick = {
                     profileViewModel.createAccount(email, password)
+                    profileViewModel.verifyEmail()
                     onLogin()
                 },
                 enabled = !emailEmpty && !emailInvalid && !passwordEmpty && !passwordTooShort &&
@@ -224,11 +227,14 @@ private class SignUpFormPreviewParameterProvider: PreviewParameterProvider<SignU
 private fun SignUpFormPreview(
     @PreviewParameter(SignUpFormPreviewParameterProvider::class) state: SignUpFormState
 ) {
+    val context = LocalContext.current
+
     val chefService = MockChefService
     val recipeService = MockRecipeService
     val profileViewModel = ProfileViewModel(
         chefRepository = ChefRepository(chefService),
-        recipeRepository = RecipeRepository(recipeService)
+        recipeRepository = RecipeRepository(recipeService),
+        dataStoreService = DataStoreService(context)
     )
     profileViewModel.isLoading = state.isLoading
     profileViewModel.showAlert = state.showAlert
