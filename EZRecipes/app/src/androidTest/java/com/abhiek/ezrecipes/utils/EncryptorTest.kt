@@ -27,7 +27,7 @@ internal class EncryptorTest {
     @Test
     fun decryptedInvalidData() {
         // Given a byte array that doesn't represent encrypted data
-        val invalidData = byteArrayOf(1, 2, 3)
+        val invalidData = ByteArray(16) { it.toByte() }
         // When it's decrypted
         // Then an exception should be thrown
         assertThrows(Exception::class.java) {
