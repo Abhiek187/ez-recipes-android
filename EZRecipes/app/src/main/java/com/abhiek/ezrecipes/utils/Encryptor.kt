@@ -20,8 +20,9 @@ object Encryptor {
     // https://stackoverflow.com/questions/7560974/what-crypto-algorithms-does-android-support
     private const val ANDROID_KEYSTORE = "AndroidKeyStore"
     private const val ALGORITHM = "AES/GCM/NoPadding"
-    private const val KEY_SIZE = 256 // AES 256-bit encryption
-    private const val IV_SIZE = 128 // Initialization Vector (IV) size in bits
+    private const val KEY_SIZE_BITS = 256 // AES 256-bit encryption
+    private const val IV_SIZE_BYTES = 12 // Initialization Vector (IV) size in bytes
+    private const val AUTH_TAG_SIZE_BITS = 128 // Authentication tag size in bits
     private const val USER_AUTH_TIMEOUT_SECONDS = 30
 
     private val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE).apply {
@@ -43,7 +44,7 @@ object Encryptor {
             ).apply {
                 setBlockModes(KeyProperties.BLOCK_MODE_GCM)
                 setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-                setKeySize(KEY_SIZE)
+                setKeySize(KEY_SIZE_BITS)
                 // Requires a secure lock screen and biometrics
                 setUserAuthenticationRequired(false)
 
@@ -84,9 +85,12 @@ object Encryptor {
      */
     fun encrypt(data: String): ByteArray {
         val secretKey = getSecretKey()
+        // The IV is generated using SecureRandom (/dev/urandom)
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+        val iv = cipher.iv
         val encryptedData = cipher.doFinal(data.toByteArray())
-        return encryptedData
+        // Add the IV to the encrypted data so it can be used for decryption
+        return iv + encryptedData
     }
 
     /**
@@ -96,9 +100,14 @@ object Encryptor {
      */
     fun decrypt(encryptedData: ByteArray): String {
         val secretKey = getSecretKey()
-        val spec = GCMParameterSpec(IV_SIZE, cipher.iv)
+        val iv = encryptedData.sliceArray(0 until IV_SIZE_BYTES)
+        val encryptedText = encryptedData.sliceArray(
+            IV_SIZE_BYTES until encryptedData.size
+        )
+        val spec = GCMParameterSpec(AUTH_TAG_SIZE_BITS, iv)
+
         cipher.init(Cipher.DECRYPT_MODE, secretKey, spec)
-        val decryptedData = cipher.doFinal(encryptedData)
+        val decryptedData = cipher.doFinal(encryptedText)
         return String(decryptedData)
     }
 }
