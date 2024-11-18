@@ -49,7 +49,11 @@ object Encryptor {
                 setUserAuthenticationRequired(false)
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    setUnlockedDeviceRequired(true)
+                    // This is bugged on Android 12-14
+                    setUnlockedDeviceRequired(
+                        Build.VERSION.SDK_INT < Build.VERSION_CODES.S ||
+                        Build.VERSION.SDK_INT > Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+                    )
                     // Slower, but more secure than TEE (Trusted Execution Environment)
                     // Certain devices running Android P or later may have a StrongBox
                     // The Android emulator's security is purely software-based
