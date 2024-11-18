@@ -9,6 +9,7 @@ object Constants {
     const val TERMS_PATH = "/api/terms/"
     const val CHEFS_PATH = "/api/chefs/"
     const val TIMEOUT_SECONDS = 60L
+    const val EMAIL_COOLDOWN_SECONDS = 30
 
     const val RECIPE_WEB_ORIGIN = "https://ez-recipes-web.onrender.com"
 

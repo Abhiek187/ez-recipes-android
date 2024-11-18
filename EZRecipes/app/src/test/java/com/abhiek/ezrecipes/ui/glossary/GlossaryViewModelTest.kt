@@ -27,7 +27,7 @@ internal class GlossaryViewModelTest {
     }
 
     @BeforeEach
-    fun setup() {
+    fun setUp() {
         mockTermsService = MockTermsService
         mockDataStoreService = mockkClass(DataStoreService::class) {
             coEvery { saveTerms(any()) } returns Unit

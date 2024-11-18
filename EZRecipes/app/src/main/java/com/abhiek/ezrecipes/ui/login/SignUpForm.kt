@@ -13,25 +13,37 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.chef.ChefRepository
+import com.abhiek.ezrecipes.data.chef.MockChefService
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.Constants
-import com.abhiek.ezrecipes.utils.Routes
 
 @Composable
-fun SignUpForm(navController: NavController) {
+fun SignUpForm(
+    profileViewModel: ProfileViewModel,
+    onLogin: () -> Unit,
+    onVerifyEmail: (email: String) -> Unit
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordConfirm by remember { mutableStateOf("") }
@@ -61,15 +73,7 @@ fun SignUpForm(navController: NavController) {
             )
             TextButton(
                 onClick = {
-                    navController.navigate(Routes.LOGIN) {
-                        popUpTo(
-                            navController.currentBackStackEntry?.destination?.route
-                                ?: return@navigate
-                        ) {
-                            inclusive =  true
-                        }
-                        launchSingleTop = true
-                    }
+                    onVerifyEmail(email)
                 }
             ) {
                 Text(
@@ -169,27 +173,50 @@ fun SignUpForm(navController: NavController) {
                 imeAction = ImeAction.Done
             )
         )
-        Button(
-            onClick = {
-                navController.navigate(
-                    Routes.VERIFY_EMAIL.replace("{email}", email)
-                ) {
-                    popUpTo(
-                        navController.currentBackStackEntry?.destination?.route
-                            ?: return@navigate
-                    ) {
-                        inclusive =  true
-                    }
-                    launchSingleTop = true
-                }
-            },
-            enabled = !emailEmpty && !emailInvalid && !passwordEmpty && !passwordTooShort &&
-                    !passwordsDoNotMatch,
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.align(Alignment.End)
         ) {
-            Text(stringResource(R.string.sign_up_header))
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .alpha(if (profileViewModel.isLoading) 1f else 0f)
+            )
+            Button(
+                onClick = {
+                    profileViewModel.createAccount(email, password)
+                    profileViewModel.verifyEmail()
+                    onLogin()
+                },
+                enabled = !emailEmpty && !emailInvalid && !passwordEmpty && !passwordTooShort &&
+                        !passwordsDoNotMatch
+            ) {
+                Text(stringResource(R.string.sign_up_header))
+            }
+        }
+        if (profileViewModel.showAlert) {
+            ErrorAlert(
+                message = profileViewModel.recipeError?.error,
+                onDismiss = {
+                    profileViewModel.showAlert = false
+                }
+            )
         }
     }
+}
+
+private data class SignUpFormState(
+    val isLoading: Boolean,
+    val showAlert: Boolean
+)
+
+private class SignUpFormPreviewParameterProvider: PreviewParameterProvider<SignUpFormState> {
+    // Show previews of the default home screen, with the progress bar, and with an alert
+    override val values = sequenceOf(
+        SignUpFormState(isLoading = false, showAlert = false),
+        SignUpFormState(isLoading = true, showAlert = false),
+        SignUpFormState(isLoading = false, showAlert = true)
+    )
 }
 
 @DevicePreviews
@@ -197,12 +224,24 @@ fun SignUpForm(navController: NavController) {
 @FontPreviews
 @OrientationPreviews
 @Composable
-private fun SignUpFormPreview() {
-    val navController = rememberNavController()
+private fun SignUpFormPreview(
+    @PreviewParameter(SignUpFormPreviewParameterProvider::class) state: SignUpFormState
+) {
+    val context = LocalContext.current
+
+    val chefService = MockChefService
+    val recipeService = MockRecipeService
+    val profileViewModel = ProfileViewModel(
+        chefRepository = ChefRepository(chefService),
+        recipeRepository = RecipeRepository(recipeService),
+        dataStoreService = DataStoreService(context)
+    )
+    profileViewModel.isLoading = state.isLoading
+    profileViewModel.showAlert = state.showAlert
 
     EZRecipesTheme {
         Surface {
-            SignUpForm(navController)
+            SignUpForm(profileViewModel, {}, {})
         }
     }
 }

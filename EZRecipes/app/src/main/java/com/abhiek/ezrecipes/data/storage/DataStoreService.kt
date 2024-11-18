@@ -2,6 +2,7 @@ package com.abhiek.ezrecipes.data.storage
 
 import android.content.Context
 import android.util.Log
+import androidx.datastore.preferences.core.byteArrayPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -27,6 +28,7 @@ class DataStoreService(context: Context) {
         private val KEY_TERMS = stringPreferencesKey("terms")
         private val KEY_RECIPES_VIEWED = intPreferencesKey("recipes_viewed")
         private val KEY_LAST_VERSION_REVIEWED = intPreferencesKey("last_version_reviewed")
+        private val KEY_TOKEN = byteArrayPreferencesKey("token")
     }
 
     suspend fun getTerms(): List<Term>? {
@@ -87,6 +89,16 @@ class DataStoreService(context: Context) {
     suspend fun setLastVersionReviewed(versionCode: Int) {
         dataStore.edit { preferences ->
             preferences[KEY_LAST_VERSION_REVIEWED] = versionCode
+        }
+    }
+
+    suspend fun getToken() = dataStore.data.map { preferences ->
+        preferences[KEY_TOKEN]
+    }.first()
+
+    suspend fun saveToken(encryptedToken: ByteArray) {
+        dataStore.edit { preferences ->
+            preferences[KEY_TOKEN] = encryptedToken
         }
     }
 }

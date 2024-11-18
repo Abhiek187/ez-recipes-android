@@ -57,6 +57,7 @@ interface ChefService {
                 val loggingInterceptor = HttpLoggingInterceptor().setLevel(
                     HttpLoggingInterceptor.Level.BODY
                 )
+//                val loggingInterceptor = SensitiveHttpLoggingInterceptor()
                 val httpClient = OkHttpClient().newBuilder()
                     .addInterceptor(loggingInterceptor)
                     .readTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
