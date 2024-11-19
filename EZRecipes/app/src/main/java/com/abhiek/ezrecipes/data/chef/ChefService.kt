@@ -3,7 +3,6 @@ package com.abhiek.ezrecipes.data.chef
 import com.abhiek.ezrecipes.data.models.*
 import com.abhiek.ezrecipes.utils.Constants
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -54,10 +53,7 @@ interface ChefService {
             get() {
                 if (Companion::chefService.isInitialized) return chefService
 
-                val loggingInterceptor = HttpLoggingInterceptor().setLevel(
-                    HttpLoggingInterceptor.Level.BODY
-                )
-//                val loggingInterceptor = SensitiveHttpLoggingInterceptor()
+                val loggingInterceptor = SecureHttpLoggingInterceptor()
                 val httpClient = OkHttpClient().newBuilder()
                     .addInterceptor(loggingInterceptor)
                     .readTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
