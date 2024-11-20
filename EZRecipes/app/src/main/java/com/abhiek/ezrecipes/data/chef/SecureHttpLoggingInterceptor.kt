@@ -9,6 +9,8 @@ import okio.Buffer
 import java.util.concurrent.TimeUnit
 
 /**
+ * A variant of HttpLoggingInterceptor that masks sensitive data in the request headers and body
+ *
  * Based on https://github.com/square/okhttp/blob/master/okhttp-logging-interceptor/src/main/kotlin/okhttp3/logging/HttpLoggingInterceptor.kt
  */
 class SecureHttpLoggingInterceptor: Interceptor {
