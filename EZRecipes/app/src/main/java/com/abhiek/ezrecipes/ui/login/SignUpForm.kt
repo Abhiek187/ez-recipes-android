@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -48,6 +49,11 @@ fun SignUpForm(
     var password by remember { mutableStateOf("") }
     var passwordConfirm by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
+
+    // Focus
+    var emailTouched by remember { mutableStateOf(false) }
+    var passwordTouched by remember { mutableStateOf(false) }
+    var passwordConfirmTouched by remember { mutableStateOf(false) }
 
     // Errors
     val emailEmpty = email.isEmpty()
@@ -104,11 +110,14 @@ fun SignUpForm(
                     Text(stringResource(R.string.email_invalid))
                 }
             },
-            isError = emailEmpty || emailInvalid,
+            isError = emailTouched && (emailEmpty || emailInvalid),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
-            )
+            ),
+            modifier = Modifier.onFocusChanged {
+                if (it.isFocused) emailTouched = true
+            }
         )
         TextField(
             value = password,
@@ -137,13 +146,16 @@ fun SignUpForm(
                     Text(stringResource(R.string.password_min_length))
                 }
             },
-            isError = passwordEmpty || passwordTooShort,
+            isError = passwordTouched && (passwordEmpty || passwordTooShort),
             visualTransformation = if (showPassword) VisualTransformation.None
             else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Next
-            )
+            ),
+            modifier = Modifier.onFocusChanged {
+                if (it.isFocused) passwordTouched = true
+            }
         )
         TextField(
             value = passwordConfirm,
@@ -172,13 +184,16 @@ fun SignUpForm(
                     Text(stringResource(R.string.password_min_length))
                 }
             },
-            isError = passwordsDoNotMatch,
+            isError = passwordConfirmTouched && passwordsDoNotMatch,
             visualTransformation = if (showPassword) VisualTransformation.None
             else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
-            )
+            ),
+            modifier = Modifier.onFocusChanged {
+                if (it.isFocused) passwordConfirmTouched = true
+            }
         )
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -194,7 +209,7 @@ fun SignUpForm(
                     profileViewModel.createAccount(email, password)
                 },
                 enabled = !emailEmpty && !emailInvalid && !passwordEmpty && !passwordTooShort &&
-                        !passwordsDoNotMatch
+                        !passwordsDoNotMatch && !profileViewModel.isLoading
             ) {
                 Text(stringResource(R.string.sign_up_header))
             }
