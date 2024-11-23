@@ -80,6 +80,10 @@ class ProfileViewModel(
             when (result) {
                 is ChefResult.Success -> {
                     val loginResponse = result.response
+                    recipeError = null
+                    showAlert = false
+
+                    saveToken(loginResponse.token)
                     chef = Chef(
                         uid = loginResponse.uid,
                         email = username,
@@ -89,10 +93,6 @@ class ProfileViewModel(
                         favoriteRecipes = listOf(),
                         token = loginResponse.token
                     )
-                    recipeError = null
-                    showAlert = false
-
-                    saveToken(loginResponse.token)
                 }
                 is ChefResult.Error -> {
                     recipeError = result.recipeError
