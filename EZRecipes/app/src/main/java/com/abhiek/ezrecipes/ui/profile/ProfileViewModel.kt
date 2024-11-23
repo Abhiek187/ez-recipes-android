@@ -26,7 +26,7 @@ class ProfileViewModel(
     var recipeError by mutableStateOf<RecipeError?>(null)
         private set
 
-    var authState by mutableStateOf(AuthState.UNAUTHENTICATED)
+    var authState by mutableStateOf(AuthState.LOADING)
     var isLoading by mutableStateOf(false)
     var chef by mutableStateOf<Chef?>(null)
     var favoriteRecipes by mutableStateOf<List<Recipe>>(listOf())
@@ -44,6 +44,7 @@ class ProfileViewModel(
         try {
             val encryptedToken = Encryptor.encrypt(token)
             dataStoreService.saveToken(encryptedToken)
+            Log.d(TAG, "Saved ID token to the DataStore")
         } catch (error: Exception) {
             Log.e(TAG, "Error saving token: ${error.printStackTrace()}")
         }
@@ -53,7 +54,15 @@ class ProfileViewModel(
         // Get the ID token from the DataStore and decrypt it
         try {
             val encryptedToken = dataStoreService.getToken()
-            return if (encryptedToken != null) Encryptor.decrypt(encryptedToken) else null
+
+            return if (encryptedToken != null) {
+                val token = Encryptor.decrypt(encryptedToken)
+                Log.d(TAG, "Retrieved ID token from the DataStore")
+                token
+            } else {
+                Log.d(TAG, "No ID token found in the DataStore")
+                null
+            }
         } catch (error: Exception) {
             Log.e(TAG, "Error getting token: ${error.printStackTrace()}")
             return null
@@ -71,10 +80,19 @@ class ProfileViewModel(
             when (result) {
                 is ChefResult.Success -> {
                     val loginResponse = result.response
-                    Log.d(TAG, "loginResponse: $loginResponse")
-                    saveToken(loginResponse.token)
+                    chef = Chef(
+                        uid = loginResponse.uid,
+                        email = username,
+                        emailVerified = loginResponse.emailVerified,
+                        ratings = mapOf(),
+                        recentRecipes = mapOf(),
+                        favoriteRecipes = listOf(),
+                        token = loginResponse.token
+                    )
                     recipeError = null
                     showAlert = false
+
+                    saveToken(loginResponse.token)
                 }
                 is ChefResult.Error -> {
                     recipeError = result.recipeError
@@ -84,7 +102,7 @@ class ProfileViewModel(
         }
     }
 
-    fun verifyEmail() {
+    fun sendVerificationEmail() {
         job = viewModelScope.launch {
             isLoading = true
             val token = getToken()
@@ -101,10 +119,48 @@ class ProfileViewModel(
                     Log.d(TAG, "emailResponse: $emailResponse")
                     recipeError = null
                     showAlert = false
+
+                    // Don't update the chef's verified status until they click the deep link
+                    emailResponse.token?.let { newToken ->
+                        saveToken(newToken)
+                    }
                 }
                 is ChefResult.Error -> {
                     recipeError = result.recipeError
-                    showAlert = job?.isCancelled == false
+                    showAlert = token != null && job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun getChef() {
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val result = if (token != null) {
+                chefRepository.getChef(token)
+            } else {
+                ChefResult.Error(RecipeError("No token found"))
+            }
+            isLoading = false
+
+            when (result) {
+                is ChefResult.Success -> {
+                    val chefResponse = result.response
+                    Log.d(TAG, "chefResponse: $chefResponse")
+                    chef = chefResponse
+                    recipeError = null
+                    showAlert = false
+
+                    saveToken(chefResponse.token)
+                    authState = if (chefResponse.emailVerified) AuthState.AUTHENTICATED
+                        else AuthState.UNAUTHENTICATED
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    // Don't show an alert if the user isn't authenticated
+                    showAlert = token != null && job?.isCancelled == false
+                    authState = AuthState.UNAUTHENTICATED
                 }
             }
         }

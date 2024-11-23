@@ -56,6 +56,13 @@ fun SignUpForm(
     val passwordTooShort = password.length < Constants.PASSWORD_MIN_LENGTH
     val passwordsDoNotMatch = password != passwordConfirm
 
+    LaunchedEffect(profileViewModel.chef) {
+        if (profileViewModel.chef?.emailVerified == false) {
+            profileViewModel.sendVerificationEmail()
+            onVerifyEmail(email)
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.padding(8.dp)
@@ -73,7 +80,7 @@ fun SignUpForm(
             )
             TextButton(
                 onClick = {
-                    onVerifyEmail(email)
+                    onLogin()
                 }
             ) {
                 Text(
@@ -185,8 +192,6 @@ fun SignUpForm(
             Button(
                 onClick = {
                     profileViewModel.createAccount(email, password)
-                    profileViewModel.verifyEmail()
-                    onLogin()
                 },
                 enabled = !emailEmpty && !emailInvalid && !passwordEmpty && !passwordTooShort &&
                         !passwordsDoNotMatch

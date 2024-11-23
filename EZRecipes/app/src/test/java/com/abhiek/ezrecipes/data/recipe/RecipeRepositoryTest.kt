@@ -1,10 +1,7 @@
-package com.abhiek.ezrecipes.data
+package com.abhiek.ezrecipes.data.recipe
 
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.models.RecipeFilter
-import com.abhiek.ezrecipes.data.recipe.MockRecipeService
-import com.abhiek.ezrecipes.data.recipe.RecipeRepository
-import com.abhiek.ezrecipes.data.recipe.RecipeResult
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach

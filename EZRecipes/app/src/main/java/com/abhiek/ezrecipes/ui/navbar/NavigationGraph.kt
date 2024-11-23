@@ -177,7 +177,10 @@ fun NavigationGraph(
                 }
             ),
         ) { backStackEntry ->
-            Profile(profileViewModel, backStackEntry.arguments?.getString("action"))
+            Profile(
+                profileViewModel,
+                deepLinkAction = backStackEntry.arguments?.getString("action")
+            )
         }
     }
 }
