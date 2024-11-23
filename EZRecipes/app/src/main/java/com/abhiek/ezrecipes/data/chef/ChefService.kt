@@ -29,7 +29,7 @@ interface ChefService {
     @DELETE(".")
     suspend fun deleteChef(
         @Header("Authorization") token: String
-    ): Response<Void> // empty response
+    ): Response<String> // empty response
 
     @POST("verify")
     suspend fun verifyEmail(
@@ -44,7 +44,7 @@ interface ChefService {
     @POST("logout")
     suspend fun logout(
         @Header("Authorization") token: String
-    ): Response<Void>
+    ): Response<String>
 
     companion object {
         private lateinit var chefService: ChefService

@@ -56,7 +56,7 @@ class ChefRepository(private val chefService: ChefService) {
         }
     }
 
-    suspend fun deleteChef(token: String): ChefResult<Void> {
+    suspend fun deleteChef(token: String): ChefResult<String> {
         return try {
             val response = chefService.deleteChef(token)
             parseResponse(response)
@@ -86,7 +86,7 @@ class ChefRepository(private val chefService: ChefService) {
         }
     }
 
-    suspend fun logout(token: String): ChefResult<Void> {
+    suspend fun logout(token: String): ChefResult<String> {
         return try {
             val response = chefService.logout(token)
             parseResponse(response)
