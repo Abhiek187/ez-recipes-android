@@ -101,4 +101,10 @@ class DataStoreService(context: Context) {
             preferences[KEY_TOKEN] = encryptedToken
         }
     }
+
+    suspend fun deleteToken() {
+        dataStore.edit { preferences ->
+            preferences.remove(KEY_TOKEN)
+        }
+    }
 }

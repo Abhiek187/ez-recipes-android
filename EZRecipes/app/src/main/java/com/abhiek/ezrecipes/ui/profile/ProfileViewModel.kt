@@ -69,6 +69,11 @@ class ProfileViewModel(
         }
     }
 
+    private suspend fun clearToken() {
+        dataStoreService.deleteToken()
+        Log.d(TAG, "Removed ID token from the DataStore")
+    }
+
     fun createAccount(username: String, password: String) {
         val loginCredentials = LoginCredentials(username, password)
 
@@ -160,6 +165,8 @@ class ProfileViewModel(
                     recipeError = result.recipeError
                     // Don't show an alert if the user isn't authenticated
                     showAlert = token != null && job?.isCancelled == false
+
+                    clearToken()
                     authState = AuthState.UNAUTHENTICATED
                 }
             }
