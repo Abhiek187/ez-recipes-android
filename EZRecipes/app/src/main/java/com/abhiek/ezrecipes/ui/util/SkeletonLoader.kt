@@ -32,9 +32,9 @@ fun SkeletonLoader(
     content: @Composable BoxScope.() -> Unit
 ) {
     val shimmerColors = listOf(
-        Color.LightGray.copy(alpha = 0.6f),
-        Color.LightGray.copy(alpha = 0.2f),
-        Color.LightGray.copy(alpha = 0.6f)
+        Color.LightGray,
+        Color.LightGray.copy(alpha = 0.7f),
+        Color.LightGray
     )
 
     val transition = rememberInfiniteTransition(label = "")
@@ -51,9 +51,8 @@ fun SkeletonLoader(
     val brush = Brush.linearGradient(
         colors = shimmerColors,
         start = Offset.Zero,
-        end = Offset(x = translateAnim, y = translateAnim)
+        end = Offset(x = translateAnim, y = 0f)
     )
-
 
     if (isVisible) {
         Box(modifier = modifier.background(brush)) {
