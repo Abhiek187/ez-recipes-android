@@ -121,7 +121,6 @@ class ProfileViewModel(
             when (result) {
                 is ChefResult.Success -> {
                     val emailResponse = result.response
-                    Log.d(TAG, "emailResponse: $emailResponse")
                     recipeError = null
                     showAlert = false
 
@@ -152,7 +151,6 @@ class ProfileViewModel(
             when (result) {
                 is ChefResult.Success -> {
                     val chefResponse = result.response
-                    Log.d(TAG, "chefResponse: $chefResponse")
                     chef = chefResponse
                     recipeError = null
                     showAlert = false
