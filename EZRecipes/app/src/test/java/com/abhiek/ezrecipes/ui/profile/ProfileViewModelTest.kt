@@ -160,7 +160,7 @@ internal class ProfileViewModelTest {
         viewModel.sendVerificationEmail()
 
         // Then an error alert isn't shown
-        assertEquals(viewModel.recipeError, RecipeError("No token found"))
+        assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
         assertFalse(viewModel.showAlert)
 
         coVerify { mockDataStoreService.getToken() }
@@ -215,7 +215,7 @@ internal class ProfileViewModelTest {
 
         // Then the user is unauthenticated
         assertNull(viewModel.chef)
-        assertEquals(viewModel.recipeError, RecipeError("No token found"))
+        assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
         assertFalse(viewModel.showAlert)
         assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
 

@@ -12,6 +12,7 @@ import com.abhiek.ezrecipes.data.models.*
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.recipe.RecipeResult
 import com.abhiek.ezrecipes.data.storage.DataStoreService
+import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Encryptor
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -114,7 +115,7 @@ class ProfileViewModel(
             val result = if (token != null) {
                 chefRepository.verifyEmail(token)
             } else {
-                ChefResult.Error(RecipeError("No token found"))
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
             }
             isLoading = false
 
@@ -144,7 +145,7 @@ class ProfileViewModel(
             val result = if (token != null) {
                 chefRepository.getChef(token)
             } else {
-                ChefResult.Error(RecipeError("No token found"))
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
             }
             isLoading = false
 
