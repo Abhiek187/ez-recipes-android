@@ -30,7 +30,7 @@ internal class GlossaryViewModelTest {
     fun setUp() {
         mockTermsService = MockTermsService
         mockDataStoreService = mockkClass(DataStoreService::class) {
-            coEvery { saveTerms(any()) } returns Unit
+            coJustRun { saveTerms(any()) }
         }
         viewModel = GlossaryViewModel(
             termsRepository = TermsRepository(mockTermsService),

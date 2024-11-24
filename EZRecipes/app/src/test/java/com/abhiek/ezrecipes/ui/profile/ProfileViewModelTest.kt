@@ -46,7 +46,7 @@ internal class ProfileViewModelTest {
     private fun mockEncryptor() {
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns keyStore
-        every { keyStore.load(any()) } returns Unit
+        justRun { keyStore.load(any()) }
 
         mockkStatic(Cipher::class)
         every { Cipher.getInstance(any()) } returns mockk()
@@ -62,8 +62,8 @@ internal class ProfileViewModelTest {
         mockRecipeService = MockRecipeService
         mockDataStoreService = mockkClass(DataStoreService::class) {
             coEvery { getToken() } returns mockEncryptedToken
-            coEvery { saveToken(any()) } returns Unit
-            coEvery { deleteToken() } returns Unit
+            coJustRun { saveToken(any()) }
+            coJustRun { deleteToken() }
         }
         viewModel = ProfileViewModel(
             chefRepository = ChefRepository(mockChefService),
