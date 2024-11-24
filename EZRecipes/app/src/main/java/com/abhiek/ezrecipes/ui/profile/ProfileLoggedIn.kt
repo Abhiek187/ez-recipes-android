@@ -27,6 +27,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.Accordion
+import com.abhiek.ezrecipes.ui.util.SkeletonLoader
 
 @Composable
 fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
@@ -52,18 +53,23 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             header = stringResource(R.string.profile_favorites),
             expandByDefault = false
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                for (recipe in profileViewModel.favoriteRecipes) {
-                    RecipeCard(
-                        recipe = recipe,
-                        width = 350.dp
-                    ) {}
+            // TODO: change to a loading condition
+            if (true) {
+                RecipeCardLoader()
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                ) {
+                    for (recipe in profileViewModel.favoriteRecipes) {
+                        RecipeCard(
+                            recipe = recipe,
+                            width = 350.dp
+                        ) {}
+                    }
                 }
             }
         }
@@ -72,18 +78,22 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             header = stringResource(R.string.profile_recently_viewed),
             expandByDefault = false
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                for (recipe in profileViewModel.recentRecipes) {
-                    RecipeCard(
-                        recipe = recipe,
-                        width = 350.dp
-                    ) {}
+            if (true) {
+                RecipeCardLoader()
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                ) {
+                    for (recipe in profileViewModel.recentRecipes) {
+                        RecipeCard(
+                            recipe = recipe,
+                            width = 350.dp
+                        ) {}
+                    }
                 }
             }
         }
@@ -92,18 +102,22 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             header = stringResource(R.string.profile_ratings),
             expandByDefault = false
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                for (recipe in profileViewModel.ratedRecipes) {
-                    RecipeCard(
-                        recipe = recipe,
-                        width = 350.dp
-                    ) {}
+            if (true) {
+                RecipeCardLoader()
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                ) {
+                    for (recipe in profileViewModel.ratedRecipes) {
+                        RecipeCard(
+                            recipe = recipe,
+                            width = 350.dp
+                        ) {}
+                    }
                 }
             }
         }

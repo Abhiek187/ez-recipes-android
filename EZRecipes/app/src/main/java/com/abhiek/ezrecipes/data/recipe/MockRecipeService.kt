@@ -15,6 +15,7 @@ object MockRecipeService: RecipeService {
         Constants.Mocks.CHOCOLATE_CUPCAKE,
         Constants.Mocks.THAI_BASIL_CHICKEN
     )
+    val mockToken = Token(Constants.Mocks.CHEF.token)
 
     private const val RECIPE_ERROR_STRING =
         "{\"error\":\"You are not authorized. Please read https://spoonacular.com/food-api/docs#Authentication\"}"
@@ -60,7 +61,7 @@ object MockRecipeService: RecipeService {
         id: Int, fields: RecipeUpdate, token: String?
     ): Response<Token> {
         return if (isSuccess) {
-            Response.success(Token())
+            Response.success(mockToken)
         } else {
             Response.error(401, RECIPE_ERROR_STRING.toResponseBody())
         }

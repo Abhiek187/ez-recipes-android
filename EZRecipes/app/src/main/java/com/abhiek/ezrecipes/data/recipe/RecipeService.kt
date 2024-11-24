@@ -61,6 +61,8 @@ interface RecipeService {
                 val loggingInterceptor = HttpLoggingInterceptor().setLevel(
                     HttpLoggingInterceptor.Level.BODY
                 )
+                loggingInterceptor.redactHeader("Authorization")
+                loggingInterceptor.redactHeader("Cookie")
                 // Extend the default timeout of 10 seconds to account for cold starts
                 val httpClient = OkHttpClient().newBuilder()
                     .addInterceptor(loggingInterceptor)

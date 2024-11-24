@@ -1,7 +1,7 @@
 package com.abhiek.ezrecipes.data.models
 
 data class RecipeUpdate(
-    val rating: Int,
-    val view: Boolean,
-    val isFavorite: Boolean
+    val rating: Int? = null,
+    val view: Boolean? = null,
+    val isFavorite: Boolean? = null
 )

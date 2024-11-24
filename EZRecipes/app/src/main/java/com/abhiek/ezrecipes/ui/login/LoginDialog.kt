@@ -80,7 +80,7 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
                     VerifyEmail(
                         email = backStackEntry.arguments?.getString("email"),
                         onResend = {
-                            profileViewModel.verifyEmail()
+                            profileViewModel.sendVerificationEmail()
                         }
                     )
                 }

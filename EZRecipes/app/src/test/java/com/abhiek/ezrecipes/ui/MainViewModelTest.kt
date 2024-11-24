@@ -49,7 +49,7 @@ internal class MainViewModelTest {
         mockService = MockRecipeService
         recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
         mockDataStoreService = mockkClass(DataStoreService::class) {
-            coEvery { incrementRecipesViewed() } returns Unit
+            coJustRun { incrementRecipesViewed() }
         }
         mockReviewManager = spyk(FakeReviewManager(context))
 
@@ -191,9 +191,9 @@ internal class MainViewModelTest {
         coEvery {
             mockDataStoreService.getLastVersionReviewed()
         } returns MainViewModel.CURRENT_VERSION - 1
-        coEvery {
+        coJustRun {
             mockDataStoreService.setLastVersionReviewed(any<Int>())
-        } returns Unit
+        }
 
         // Mock all the completion listeners
         val requestFlowTask = mockk<Task<ReviewInfo>>()

@@ -1,8 +1,5 @@
-package com.abhiek.ezrecipes.data
+package com.abhiek.ezrecipes.data.terms
 
-import com.abhiek.ezrecipes.data.terms.MockTermsService
-import com.abhiek.ezrecipes.data.terms.TermsRepository
-import com.abhiek.ezrecipes.data.terms.TermsResult
 import com.abhiek.ezrecipes.utils.Constants
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*

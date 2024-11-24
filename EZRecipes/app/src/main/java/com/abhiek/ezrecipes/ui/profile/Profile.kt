@@ -33,8 +33,9 @@ fun Profile(profileViewModel: ProfileViewModel, deepLinkAction: String? = null) 
 
     val context = LocalContext.current
 
-    LaunchedEffect(deepLinkAction) {
-        if (deepLinkAction == null) return@LaunchedEffect
+    LaunchedEffect(Unit, deepLinkAction) {
+        // Check if the user is authenticated every time the profile tab is launched or deep linked
+        profileViewModel.getChef()
 
         when (deepLinkAction) {
             Constants.ProfileActions.VERIFY_EMAIL -> {
