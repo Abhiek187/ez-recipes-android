@@ -3,14 +3,12 @@ package com.abhiek.ezrecipes.ui.profile
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -55,15 +53,10 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             header = stringResource(R.string.profile_favorites),
             expandByDefault = false
         ) {
-            SkeletonLoader(
-                modifier = Modifier
-                    .height(350.dp)
-                    .width(350.dp)
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(4.dp)),
-                // TODO: change to a loading condition
-                isVisible = true
-            ) {
+            // TODO: change to a loading condition
+            if (true) {
+                RecipeCardLoader()
+            } else {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier
@@ -85,14 +78,9 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             header = stringResource(R.string.profile_recently_viewed),
             expandByDefault = false
         ) {
-            SkeletonLoader(
-                modifier = Modifier
-                    .height(350.dp)
-                    .width(350.dp)
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(4.dp)),
-                isVisible = true
-            ) {
+            if (true) {
+                RecipeCardLoader()
+            } else {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier
@@ -114,14 +102,9 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             header = stringResource(R.string.profile_ratings),
             expandByDefault = false
         ) {
-            SkeletonLoader(
-                modifier = Modifier
-                    .height(350.dp)
-                    .width(350.dp)
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(4.dp)),
-                isVisible = true
-            ) {
+            if (true) {
+                RecipeCardLoader()
+            } else {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier

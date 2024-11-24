@@ -1,36 +1,33 @@
 package com.abhiek.ezrecipes.ui.util
 
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
-import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.toPx
 
 // Source: https://stackoverflow.com/a/78910106
 @Composable
 fun SkeletonLoader(
-    modifier: Modifier = Modifier,
-    isVisible: Boolean = true,
-    content: @Composable BoxScope.() -> Unit
+    modifier: Modifier = Modifier
 ) {
+    var width by remember { mutableFloatStateOf(0f) }
+
     val shimmerColors = listOf(
         Color.LightGray,
         Color.LightGray.copy(alpha = 0.7f),
@@ -40,9 +37,9 @@ fun SkeletonLoader(
     val transition = rememberInfiniteTransition(label = "")
     val translateAnim by transition.animateFloat(
         initialValue = 0f,
-        targetValue = 1000f,
+        targetValue = (width * 1.2).toPx,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1700, delayMillis = 200),
+            animation = tween(durationMillis = 1700),
             repeatMode = RepeatMode.Restart
         ),
         label = ""
@@ -54,17 +51,16 @@ fun SkeletonLoader(
         end = Offset(x = translateAnim, y = 0f)
     )
 
-    if (isVisible) {
-        Box(modifier = modifier.background(brush)) {
-            Box(modifier = Modifier
-                .matchParentSize()
-                .graphicsLayer { alpha = 1f })
-        }
-    } else {
-        Box(modifier = modifier) {
-            content()
-        }
-
+    Box(
+        modifier = modifier
+            .background(brush)
+            .onGloballyPositioned { coordinates ->
+                width = coordinates.size.width.toFloat()
+            }
+    ) {
+        Box(modifier = Modifier
+            .matchParentSize()
+            .graphicsLayer { alpha = 1f })
     }
 }
 
@@ -74,32 +70,56 @@ fun SkeletonLoader(
 @OrientationPreviews
 @Composable
 private fun SkeletonLoaderPreview() {
+    val loaderHeight = 20.dp
+
     EZRecipesTheme {
         Surface {
-            Row {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.padding(8.dp)
+            ) {
                 SkeletonLoader(
                     modifier = Modifier
-                        .height(100.dp)
-                        .padding(4.dp)
-                        .weight(0.3f)
-                        .clip(RoundedCornerShape(4.dp)),
-                    isVisible = true
+                        .height(loaderHeight * 2)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(4.dp))
+                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                        contentDescription = ""
+                    SkeletonLoader(
+                        modifier = Modifier
+                            .height(loaderHeight)
+                            .weight(1f)
+                            .clip(RoundedCornerShape(4.dp))
+                    )
+                    Spacer(
+                        modifier = Modifier.weight(1f)
+                    )
+                    SkeletonLoader(
+                        modifier = Modifier
+                            .height(loaderHeight)
+                            .weight(1f)
+                            .clip(RoundedCornerShape(4.dp))
                     )
                 }
-                SkeletonLoader(
-                    modifier = Modifier
-                        .height(100.dp)
-                        .padding(4.dp)
-                        .weight(0.7f)
-                        .clip(RoundedCornerShape(4.dp)),
-                    isVisible = true
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = "Content to display after content has loaded"
+                    SkeletonLoader(
+                        modifier = Modifier
+                            .height(loaderHeight)
+                            .weight(0.3f)
+                            .clip(RoundedCornerShape(4.dp))
+                    )
+                    Spacer(
+                        modifier = Modifier.weight(1f)
+                    )
+                    SkeletonLoader(
+                        modifier = Modifier
+                            .height(loaderHeight)
+                            .weight(0.3f)
+                            .clip(RoundedCornerShape(4.dp))
                     )
                 }
             }
