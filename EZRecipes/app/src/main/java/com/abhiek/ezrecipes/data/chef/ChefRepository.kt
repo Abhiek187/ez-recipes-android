@@ -8,9 +8,11 @@ import retrofit2.Response
 
 class ChefRepository(private val chefService: ChefService) {
     private fun <T> parseResponse(response: Response<T>): ChefResult<T> {
-        // isSuccessful means a 2xx response code
-        return if (response.isSuccessful && response.body() != null) {
-            ChefResult.Success(response.body()!!)
+        // Empty bodies are ok as long as a 2xx response is returned
+        return if (response.isSuccessful) {
+            // Unit:Kotlin::Void:Java
+            @Suppress("UNCHECKED_CAST")
+            ChefResult.Success(response.body() ?: Unit as T)
         } else {
             val errorString = response.errorBody()?.string()
 
@@ -56,7 +58,7 @@ class ChefRepository(private val chefService: ChefService) {
         }
     }
 
-    suspend fun deleteChef(token: String): ChefResult<String> {
+    suspend fun deleteChef(token: String): ChefResult<Void> {
         return try {
             val response = chefService.deleteChef(token)
             parseResponse(response)
@@ -86,7 +88,7 @@ class ChefRepository(private val chefService: ChefService) {
         }
     }
 
-    suspend fun logout(token: String): ChefResult<String> {
+    suspend fun logout(token: String): ChefResult<Void> {
         return try {
             val response = chefService.logout(token)
             parseResponse(response)

@@ -96,7 +96,7 @@ internal class ChefRepositoryTest {
         val response = chefRepository.deleteChef(mockToken)
 
         assertTrue(response is ChefResult.Success)
-        assertEquals((response as ChefResult.Success).response, "")
+        assertEquals((response as ChefResult.Success).response, Unit)
     }
 
     @Test
@@ -150,7 +150,7 @@ internal class ChefRepositoryTest {
         val response = chefRepository.logout(mockToken)
 
         assertTrue(response is ChefResult.Success)
-        assertEquals((response as ChefResult.Success).response, "")
+        assertEquals((response as ChefResult.Success).response, Unit)
     }
 
     @Test

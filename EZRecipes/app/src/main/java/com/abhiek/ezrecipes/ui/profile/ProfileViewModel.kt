@@ -210,6 +210,34 @@ class ProfileViewModel(
         }
     }
 
+    fun logout() {
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val result = if (token != null) {
+                chefRepository.logout(token)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+            isLoading = false
+
+            when (result) {
+                is ChefResult.Success -> {
+                    recipeError = null
+                    showAlert = false
+
+                    clearToken()
+                    chef = null
+                    authState = AuthState.UNAUTHENTICATED
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    showAlert = token != null && job?.isCancelled == false
+                }
+            }
+        }
+    }
+
 //    fun getRecipeById(id: Int) {
 //        job = viewModelScope.launch {
 //            isLoading = true

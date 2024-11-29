@@ -27,7 +27,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.Accordion
-import com.abhiek.ezrecipes.ui.util.SkeletonLoader
+import com.abhiek.ezrecipes.ui.util.ErrorAlert
 
 @Composable
 fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
@@ -123,7 +123,9 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
         }
 
         Button(
-            onClick = { println("Logout") },
+            onClick = {
+                profileViewModel.logout()
+            },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = stringResource(R.string.logout))
@@ -150,6 +152,15 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             Text(
                 text = stringResource(R.string.delete_account),
                 color = MaterialTheme.colorScheme.onError
+            )
+        }
+
+        if (profileViewModel.showAlert) {
+            ErrorAlert(
+                message = profileViewModel.recipeError?.error,
+                onDismiss = {
+                    profileViewModel.showAlert = false
+                }
             )
         }
     }

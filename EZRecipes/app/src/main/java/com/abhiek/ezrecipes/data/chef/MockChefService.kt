@@ -53,9 +53,9 @@ object MockChefService: ChefService {
         }
     }
 
-    override suspend fun deleteChef(token: String): Response<String> {
+    override suspend fun deleteChef(token: String): Response<Void> {
         return if (isSuccess) {
-            Response.success("")
+            Response.success(null)
         } else {
             Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
         }
@@ -77,9 +77,9 @@ object MockChefService: ChefService {
         }
     }
 
-    override suspend fun logout(token: String): Response<String> {
+    override suspend fun logout(token: String): Response<Void> {
         return if (isSuccess) {
-            Response.success("")
+            Response.success(null)
         } else {
             Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
         }
