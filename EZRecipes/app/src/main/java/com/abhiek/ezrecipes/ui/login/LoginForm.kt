@@ -96,7 +96,7 @@ fun LoginForm(
                 Text(stringResource(R.string.username_field))
             },
             supportingText = {
-                if (usernameEmpty) {
+                if (usernameTouched && usernameEmpty) {
                     Text(stringResource(R.string.field_required, "Username"))
                 }
             },
@@ -132,7 +132,7 @@ fun LoginForm(
                 }
             },
             supportingText = {
-                if (passwordEmpty) {
+                if (passwordTouched && passwordEmpty) {
                     Text(stringResource(R.string.field_required, "Password"))
                 }
             },

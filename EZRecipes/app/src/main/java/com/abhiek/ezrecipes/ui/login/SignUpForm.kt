@@ -101,9 +101,9 @@ fun SignUpForm(
                 Text(stringResource(R.string.email_field))
             },
             supportingText = {
-                if (emailEmpty) {
+                if (emailTouched && emailEmpty) {
                     Text(stringResource(R.string.field_required, "Email"))
-                } else if (emailInvalid) {
+                } else if (emailTouched && emailInvalid) {
                     Text(stringResource(R.string.email_invalid))
                 }
             },
@@ -139,9 +139,9 @@ fun SignUpForm(
                 }
             },
             supportingText = {
-                if (passwordEmpty) {
+                if (passwordTouched && passwordEmpty) {
                     Text(stringResource(R.string.field_required, "Password"))
-                } else if (passwordTooShort) {
+                } else if (passwordTouched && passwordTooShort) {
                     Text(stringResource(R.string.password_min_length))
                 }
             },
@@ -179,7 +179,7 @@ fun SignUpForm(
                 }
             },
             supportingText = {
-                if (passwordsDoNotMatch) {
+                if (passwordConfirmTouched && passwordsDoNotMatch) {
                     Text(stringResource(R.string.password_match))
                 } else {
                     Text(stringResource(R.string.password_min_length))
