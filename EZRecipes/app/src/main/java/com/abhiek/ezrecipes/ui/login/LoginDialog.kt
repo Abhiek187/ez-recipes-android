@@ -46,7 +46,47 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
             val navController = rememberNavController()
 
             NavHost(navController = navController, startDestination = Routes.LOGIN) {
-                composable(Routes.LOGIN) { LoginForm(navController) }
+                composable(Routes.LOGIN) {
+                    LoginForm(
+                        profileViewModel = profileViewModel,
+                        onSignup = {
+                            navController.navigate(Routes.SIGN_UP) {
+                                // Close the modal whenever the user navigates back
+                                popUpTo(
+                                    navController.currentBackStackEntry?.destination?.route
+                                        ?: return@navigate
+                                ) {
+                                    inclusive =  true
+                                }
+                                launchSingleTop = true
+                            }
+                        },
+                        onForgotPassword = {
+                            navController.navigate(Routes.FORGOT_PASSWORD) {
+                                popUpTo(
+                                    navController.currentBackStackEntry?.destination?.route
+                                        ?: return@navigate
+                                ) {
+                                    inclusive =  true
+                                }
+                                launchSingleTop = true
+                            }
+                        },
+                        onVerifyEmail = { email ->
+                            navController.navigate(
+                                Routes.VERIFY_EMAIL.replace("{email}", email)
+                            ) {
+                                popUpTo(
+                                    navController.currentBackStackEntry?.destination?.route
+                                        ?: return@navigate
+                                ) {
+                                    inclusive =  true
+                                }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
                 composable(Routes.SIGN_UP) {
                     SignUpForm(
                         profileViewModel = profileViewModel,

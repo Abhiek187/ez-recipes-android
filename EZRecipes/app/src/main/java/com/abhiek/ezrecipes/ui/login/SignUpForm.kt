@@ -17,10 +17,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -112,6 +109,8 @@ fun SignUpForm(
             },
             isError = emailTouched && (emailEmpty || emailInvalid),
             keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
@@ -133,9 +132,9 @@ fun SignUpForm(
                 ) {
                     Icon(
                         imageVector = if (showPassword) Icons.Filled.Visibility
-                        else Icons.Filled.VisibilityOff,
+                            else Icons.Filled.VisibilityOff,
                         contentDescription = if (showPassword) "Hide password"
-                        else "Show password"
+                            else "Show password"
                     )
                 }
             },
@@ -148,8 +147,10 @@ fun SignUpForm(
             },
             isError = passwordTouched && (passwordEmpty || passwordTooShort),
             visualTransformation = if (showPassword) VisualTransformation.None
-            else PasswordVisualTransformation(),
+                else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Next
             ),
@@ -171,9 +172,9 @@ fun SignUpForm(
                 ) {
                     Icon(
                         imageVector = if (showPassword) Icons.Filled.Visibility
-                        else Icons.Filled.VisibilityOff,
+                            else Icons.Filled.VisibilityOff,
                         contentDescription = if (showPassword) "Hide password"
-                        else "Show password"
+                            else "Show password"
                     )
                 }
             },
@@ -186,8 +187,10 @@ fun SignUpForm(
             },
             isError = passwordConfirmTouched && passwordsDoNotMatch,
             visualTransformation = if (showPassword) VisualTransformation.None
-            else PasswordVisualTransformation(),
+                else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
@@ -231,7 +234,6 @@ private data class SignUpFormState(
 )
 
 private class SignUpFormPreviewParameterProvider: PreviewParameterProvider<SignUpFormState> {
-    // Show previews of the default home screen, with the progress bar, and with an alert
     override val values = sequenceOf(
         SignUpFormState(isLoading = false, showAlert = false),
         SignUpFormState(isLoading = true, showAlert = false),

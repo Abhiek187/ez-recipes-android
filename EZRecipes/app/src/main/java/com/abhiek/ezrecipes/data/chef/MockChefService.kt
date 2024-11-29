@@ -7,11 +7,13 @@ import retrofit2.Response
 
 object MockChefService: ChefService {
     var isSuccess = true
+    var isEmailVerified = true
+
     val chef = Constants.Mocks.CHEF
     val loginResponse = LoginResponse(
         uid = chef.uid,
         token = chef.token,
-        emailVerified = true
+        emailVerified = isEmailVerified
     )
     val chefEmailResponse = ChefEmailResponse(
         kind = "identitytoolkit#GetOobConfirmationCodeResponse",
