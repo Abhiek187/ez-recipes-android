@@ -121,6 +121,9 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
                         email = backStackEntry.arguments?.getString("email"),
                         onResend = {
                             profileViewModel.sendVerificationEmail()
+                        },
+                        onLogout = {
+                            profileViewModel.logout()
                         }
                     )
                 }

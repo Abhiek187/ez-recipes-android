@@ -39,8 +39,8 @@ import com.abhiek.ezrecipes.utils.Constants
 @Composable
 fun SignUpForm(
     profileViewModel: ProfileViewModel,
-    onLogin: () -> Unit,
-    onVerifyEmail: (email: String) -> Unit
+    onLogin: () -> Unit = {},
+    onVerifyEmail: (email: String) -> Unit = {}
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -263,7 +263,7 @@ private fun SignUpFormPreview(
 
     EZRecipesTheme {
         Surface {
-            SignUpForm(profileViewModel, {}, {})
+            SignUpForm(profileViewModel)
         }
     }
 }

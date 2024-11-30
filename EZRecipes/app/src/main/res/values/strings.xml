@@ -151,7 +151,9 @@
     <string name="email_verify_header">You\'re Almost There!</string>
     <string name="email_verify_body">
         We just need to verify your email before you can put on the chef\'s hat.
-        Check your email for a magic link sent to %1$s
+        Check your email for a magic link sent to %1$s\n\n
+
+        ⚠️ We will delete accounts from our system if they\'re not verified within 1 week.
     </string>
     <string name="email_verify_retry_text">Didn\'t receive an email?</string>
     <string name="email_verify_retry_link">Resend</string>

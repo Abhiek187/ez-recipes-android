@@ -37,9 +37,9 @@ import com.abhiek.ezrecipes.ui.util.ErrorAlert
 @Composable
 fun LoginForm(
     profileViewModel: ProfileViewModel,
-    onSignup: () -> Unit,
-    onForgotPassword: () -> Unit,
-    onVerifyEmail: (email: String) -> Unit
+    onSignup: () -> Unit = {},
+    onForgotPassword: () -> Unit = {},
+    onVerifyEmail: (email: String) -> Unit = {}
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -57,7 +57,7 @@ fun LoginForm(
         // Check if the user signed up, but didn't verify their email yet
         if (profileViewModel.chef?.emailVerified == false) {
             profileViewModel.sendVerificationEmail()
-            onVerifyEmail(username)
+            onVerifyEmail(profileViewModel.chef!!.email)
         }
     }
 
@@ -223,7 +223,7 @@ private fun LoginFormPreview(
 
     EZRecipesTheme {
         Surface {
-            LoginForm(profileViewModel, {}, {}, {})
+            LoginForm(profileViewModel)
         }
     }
 }

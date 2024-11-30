@@ -308,6 +308,7 @@ internal class ProfileViewModelTest {
         assertFalse(viewModel.showAlert)
         assertNull(viewModel.chef)
         assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertFalse(viewModel.openLoginDialog)
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }
@@ -341,6 +342,7 @@ internal class ProfileViewModelTest {
         assertFalse(viewModel.showAlert)
         assertNull(viewModel.chef)
         assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertFalse(viewModel.openLoginDialog)
 
         coVerify { mockDataStoreService.getToken() }
         coVerify { mockDataStoreService.deleteToken() }
