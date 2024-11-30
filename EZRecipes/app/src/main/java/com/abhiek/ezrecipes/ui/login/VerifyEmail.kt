@@ -30,6 +30,9 @@ fun VerifyEmail(
     var enableResend by remember { mutableStateOf(false) }
     var secondsRemaining by remember { mutableIntStateOf(Constants.EMAIL_COOLDOWN_SECONDS) }
 
+    val emailText = email ?: "your email address"
+    val emailStartIndex = 114 // don't change the string and make me recount ;P
+
     LaunchedEffect(enableResend) {
         if (!enableResend) {
             secondsRemaining = Constants.EMAIL_COOLDOWN_SECONDS
@@ -54,10 +57,10 @@ fun VerifyEmail(
             text = boldAnnotatedString(
                 text = stringResource(
                     R.string.email_verify_body,
-                    email ?: "your email address"
+                    emailText
                 ),
-                startIndex = 114, // don't change the string and make me recount ;P
-                endIndex = 114 + (email ?: "your email address").length
+                startIndex = emailStartIndex,
+                endIndex = emailStartIndex + emailText.length
             ),
             style = MaterialTheme.typography.bodyLarge
         )
