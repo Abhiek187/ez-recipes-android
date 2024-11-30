@@ -296,4 +296,53 @@ internal class ProfileViewModelTest {
         assertNull(viewModel.chef)
         assertEquals(viewModel.recipeError, mockChefService.tokenError)
     }
+
+    @Test
+    fun logoutSuccess() = runTest {
+        // Given a valid token
+        // When logging out
+        viewModel.logout()
+
+        // Then the user is unauthenticated
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertNull(viewModel.chef)
+        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+        coVerify { mockDataStoreService.deleteToken() }
+    }
+
+    @Test
+    fun logoutError() = runTest {
+        // Given a valid token
+        // When logging out and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.logout()
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+    }
+
+    @Test
+    fun logoutNoToken() = runTest {
+        // Given no token
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When logging out
+        viewModel.logout()
+
+        // Then the user is unauthenticated
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertNull(viewModel.chef)
+        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+
+        coVerify { mockDataStoreService.getToken() }
+        coVerify { mockDataStoreService.deleteToken() }
+    }
 }

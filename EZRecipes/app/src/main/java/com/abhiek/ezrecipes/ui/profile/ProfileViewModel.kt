@@ -217,7 +217,8 @@ class ProfileViewModel(
             val result = if (token != null) {
                 chefRepository.logout(token)
             } else {
-                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+                // Assume the user should be signed out since there's no auth token
+                ChefResult.Success(null)
             }
             isLoading = false
 
@@ -232,7 +233,7 @@ class ProfileViewModel(
                 }
                 is ChefResult.Error -> {
                     recipeError = result.recipeError
-                    showAlert = token != null && job?.isCancelled == false
+                    showAlert = job?.isCancelled == false
                 }
             }
         }

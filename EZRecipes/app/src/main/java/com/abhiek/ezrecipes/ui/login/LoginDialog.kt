@@ -31,8 +31,8 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
-            usePlatformDefaultWidth = false, // Occupy full screen width
-            decorFitsSystemWindows = false // Allow custom layout around system bars
+            usePlatformDefaultWidth = false, // occupy full screen width
+            decorFitsSystemWindows = false // allow custom layout around system bars
         )
     ) {
         // Add a background so the dialog appears on top of the main content
