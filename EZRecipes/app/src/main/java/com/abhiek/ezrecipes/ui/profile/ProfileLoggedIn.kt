@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
@@ -27,7 +29,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.Accordion
-import com.abhiek.ezrecipes.ui.util.SkeletonLoader
+import com.abhiek.ezrecipes.ui.util.ErrorAlert
 
 @Composable
 fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
@@ -123,10 +125,23 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
         }
 
         Button(
-            onClick = { println("Logout") },
+            onClick = {
+                profileViewModel.logout()
+            },
+            enabled = !profileViewModel.isLoading,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text(text = stringResource(R.string.logout))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = stringResource(R.string.logout))
+                if (profileViewModel.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+            }
         }
         Button(
             onClick = { println("Change Email") },
@@ -152,7 +167,28 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
                 color = MaterialTheme.colorScheme.onError
             )
         }
+
+        if (profileViewModel.showAlert) {
+            ErrorAlert(
+                message = profileViewModel.recipeError?.error,
+                onDismiss = {
+                    profileViewModel.showAlert = false
+                }
+            )
+        }
     }
+}
+
+private data class ProfileLoggedInState(
+    val isLoading: Boolean
+)
+
+private class ProfileLoggedInPreviewParameterProvider:
+    PreviewParameterProvider<ProfileLoggedInState> {
+    override val values = sequenceOf(
+        ProfileLoggedInState(isLoading = false),
+        ProfileLoggedInState(isLoading = true)
+    )
 }
 
 @DevicePreviews
@@ -160,7 +196,9 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
 @FontPreviews
 @OrientationPreviews
 @Composable
-private fun ProfileLoggedInPreview() {
+private fun ProfileLoggedInPreview(
+    @PreviewParameter(ProfileLoggedInPreviewParameterProvider::class) state: ProfileLoggedInState
+) {
     val context = LocalContext.current
 
     val chefService = MockChefService
@@ -171,6 +209,7 @@ private fun ProfileLoggedInPreview() {
         dataStoreService = DataStoreService(context)
     )
     profileViewModel.chef = chefService.chef
+    profileViewModel.isLoading = state.isLoading
 
     EZRecipesTheme {
         Surface {

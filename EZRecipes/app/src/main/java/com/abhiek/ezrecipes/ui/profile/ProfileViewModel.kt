@@ -172,6 +172,74 @@ class ProfileViewModel(
         }
     }
 
+    fun login(username: String, password: String) {
+        val loginCredentials = LoginCredentials(username, password)
+
+        job = viewModelScope.launch {
+            isLoading = true
+            val result = chefRepository.login(loginCredentials)
+            isLoading = false
+
+            when (result) {
+                is ChefResult.Success -> {
+                    val loginResponse = result.response
+                    recipeError = null
+                    showAlert = false
+
+                    saveToken(loginResponse.token)
+                    chef = Chef(
+                        uid = loginResponse.uid,
+                        email = username,
+                        emailVerified = loginResponse.emailVerified,
+                        ratings = mapOf(),
+                        recentRecipes = mapOf(),
+                        favoriteRecipes = listOf(),
+                        token = loginResponse.token
+                    )
+
+                    if (loginResponse.emailVerified) {
+                        authState = AuthState.AUTHENTICATED
+                        openLoginDialog = false
+                    }
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    showAlert = job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun logout() {
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val result = if (token != null) {
+                chefRepository.logout(token)
+            } else {
+                // Assume the user should be signed out since there's no auth token
+                ChefResult.Success(null)
+            }
+            isLoading = false
+
+            when (result) {
+                is ChefResult.Success -> {
+                    recipeError = null
+                    showAlert = false
+
+                    clearToken()
+                    chef = null
+                    authState = AuthState.UNAUTHENTICATED
+                    openLoginDialog = false
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    showAlert = job?.isCancelled == false
+                }
+            }
+        }
+    }
+
 //    fun getRecipeById(id: Int) {
 //        job = viewModelScope.launch {
 //            isLoading = true

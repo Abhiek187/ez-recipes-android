@@ -17,10 +17,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -42,8 +39,8 @@ import com.abhiek.ezrecipes.utils.Constants
 @Composable
 fun SignUpForm(
     profileViewModel: ProfileViewModel,
-    onLogin: () -> Unit,
-    onVerifyEmail: (email: String) -> Unit
+    onLogin: () -> Unit = {},
+    onVerifyEmail: (email: String) -> Unit = {}
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -104,14 +101,16 @@ fun SignUpForm(
                 Text(stringResource(R.string.email_field))
             },
             supportingText = {
-                if (emailEmpty) {
+                if (emailTouched && emailEmpty) {
                     Text(stringResource(R.string.field_required, "Email"))
-                } else if (emailInvalid) {
+                } else if (emailTouched && emailInvalid) {
                     Text(stringResource(R.string.email_invalid))
                 }
             },
             isError = emailTouched && (emailEmpty || emailInvalid),
             keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
@@ -133,23 +132,25 @@ fun SignUpForm(
                 ) {
                     Icon(
                         imageVector = if (showPassword) Icons.Filled.Visibility
-                        else Icons.Filled.VisibilityOff,
+                            else Icons.Filled.VisibilityOff,
                         contentDescription = if (showPassword) "Hide password"
-                        else "Show password"
+                            else "Show password"
                     )
                 }
             },
             supportingText = {
-                if (passwordEmpty) {
+                if (passwordTouched && passwordEmpty) {
                     Text(stringResource(R.string.field_required, "Password"))
-                } else if (passwordTooShort) {
+                } else if (passwordTouched && passwordTooShort) {
                     Text(stringResource(R.string.password_min_length))
                 }
             },
             isError = passwordTouched && (passwordEmpty || passwordTooShort),
             visualTransformation = if (showPassword) VisualTransformation.None
-            else PasswordVisualTransformation(),
+                else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Next
             ),
@@ -171,14 +172,14 @@ fun SignUpForm(
                 ) {
                     Icon(
                         imageVector = if (showPassword) Icons.Filled.Visibility
-                        else Icons.Filled.VisibilityOff,
+                            else Icons.Filled.VisibilityOff,
                         contentDescription = if (showPassword) "Hide password"
-                        else "Show password"
+                            else "Show password"
                     )
                 }
             },
             supportingText = {
-                if (passwordsDoNotMatch) {
+                if (passwordConfirmTouched && passwordsDoNotMatch) {
                     Text(stringResource(R.string.password_match))
                 } else {
                     Text(stringResource(R.string.password_min_length))
@@ -186,8 +187,10 @@ fun SignUpForm(
             },
             isError = passwordConfirmTouched && passwordsDoNotMatch,
             visualTransformation = if (showPassword) VisualTransformation.None
-            else PasswordVisualTransformation(),
+                else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
@@ -231,7 +234,6 @@ private data class SignUpFormState(
 )
 
 private class SignUpFormPreviewParameterProvider: PreviewParameterProvider<SignUpFormState> {
-    // Show previews of the default home screen, with the progress bar, and with an alert
     override val values = sequenceOf(
         SignUpFormState(isLoading = false, showAlert = false),
         SignUpFormState(isLoading = true, showAlert = false),
@@ -261,7 +263,7 @@ private fun SignUpFormPreview(
 
     EZRecipesTheme {
         Surface {
-            SignUpForm(profileViewModel, {}, {})
+            SignUpForm(profileViewModel)
         }
     }
 }

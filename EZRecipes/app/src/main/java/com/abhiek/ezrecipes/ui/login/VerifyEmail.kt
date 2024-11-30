@@ -1,9 +1,6 @@
 package com.abhiek.ezrecipes.ui.login
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.*
@@ -24,10 +21,17 @@ import kotlinx.coroutines.delay
 import java.util.Locale
 
 @Composable
-fun VerifyEmail(email: String? = null, onResend: () -> Unit = {}) {
+fun VerifyEmail(
+    email: String? = null,
+    onResend: () -> Unit = {},
+    onLogout: () -> Unit = {}
+) {
     // Throttle the number of times the user can resend the verification email to satisfy API limits
     var enableResend by remember { mutableStateOf(false) }
     var secondsRemaining by remember { mutableIntStateOf(Constants.EMAIL_COOLDOWN_SECONDS) }
+
+    val emailText = email ?: "your email address"
+    val emailStartIndex = 114 // don't change the string and make me recount ;P
 
     LaunchedEffect(enableResend) {
         if (!enableResend) {
@@ -53,44 +57,62 @@ fun VerifyEmail(email: String? = null, onResend: () -> Unit = {}) {
             text = boldAnnotatedString(
                 text = stringResource(
                     R.string.email_verify_body,
-                    email ?: "your email address"
+                    emailText
                 ),
-                startIndex = 114 // don't change the string and make me recount ;P
+                startIndex = emailStartIndex,
+                endIndex = emailStartIndex + emailText.length
             ),
             style = MaterialTheme.typography.bodyLarge
         )
-        Row(
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = stringResource(R.string.email_verify_retry_text),
-                style = MaterialTheme.typography.bodyMedium
-            )
-            TextButton(
-                onClick = {
-                    onResend()
-                    enableResend = false
-                },
-                enabled = enableResend
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(R.string.email_verify_retry_link),
+                    text = stringResource(R.string.email_verify_retry_text),
                     style = MaterialTheme.typography.bodyMedium
                 )
+                TextButton(
+                    onClick = {
+                        onResend()
+                        enableResend = false
+                    },
+                    enabled = enableResend
+                ) {
+                    Text(
+                        text = stringResource(R.string.email_verify_retry_link),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                if (!enableResend) {
+                    Icon(
+                        imageVector = Icons.Filled.Schedule,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                    Text(
+                        text = String.format(
+                            Locale.getDefault(),
+                            "%02d:%02d",
+                            secondsRemaining / 60, secondsRemaining % 60
+                        ),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
-            if (!enableResend) {
-                Icon(
-                    imageVector = Icons.Filled.Schedule,
-                    contentDescription = null,
-                    modifier = Modifier.padding(end = 4.dp)
-                )
+            Button(
+                onClick = {
+                    onLogout()
+                },
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(end = 8.dp)
+            ) {
                 Text(
-                    text = String.format(
-                        Locale.getDefault(),
-                        "%02d:%02d",
-                        secondsRemaining / 60, secondsRemaining % 60
-                    ),
-                    style = MaterialTheme.typography.bodyMedium
+                    text = stringResource(R.string.logout),
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }

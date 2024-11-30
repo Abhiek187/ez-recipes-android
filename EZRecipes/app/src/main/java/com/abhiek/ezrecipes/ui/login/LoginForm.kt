@@ -1,6 +1,5 @@
 package com.abhiek.ezrecipes.ui.login
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,34 +12,54 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.*
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.chef.ChefRepository
+import com.abhiek.ezrecipes.data.chef.MockChefService
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
-import com.abhiek.ezrecipes.utils.Routes
+import com.abhiek.ezrecipes.ui.util.ErrorAlert
 
 @Composable
-fun LoginForm(navController: NavController) {
+fun LoginForm(
+    profileViewModel: ProfileViewModel,
+    onSignup: () -> Unit = {},
+    onForgotPassword: () -> Unit = {},
+    onVerifyEmail: (email: String) -> Unit = {}
+) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
+
+    // Focus
+    var usernameTouched by remember { mutableStateOf(false) }
+    var passwordTouched by remember { mutableStateOf(false) }
 
     // Errors
     val usernameEmpty = username.isEmpty()
     val passwordEmpty = password.isEmpty()
 
-    val context = LocalContext.current
+    LaunchedEffect(profileViewModel.chef) {
+        // Check if the user signed up, but didn't verify their email yet
+        if (profileViewModel.chef?.emailVerified == false) {
+            profileViewModel.sendVerificationEmail()
+            onVerifyEmail(profileViewModel.chef!!.email)
+        }
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -59,16 +78,7 @@ fun LoginForm(navController: NavController) {
             )
             TextButton(
                 onClick = {
-                    navController.navigate(Routes.SIGN_UP) {
-                        // Close the modal whenever the user navigates back
-                        popUpTo(
-                            navController.currentBackStackEntry?.destination?.route
-                                ?: return@navigate
-                        ) {
-                            inclusive =  true
-                        }
-                        launchSingleTop = true
-                    }
+                    onSignup()
                 }
             ) {
                 Text(
@@ -86,15 +96,20 @@ fun LoginForm(navController: NavController) {
                 Text(stringResource(R.string.username_field))
             },
             supportingText = {
-                if (usernameEmpty) {
+                if (usernameTouched && usernameEmpty) {
                     Text(stringResource(R.string.field_required, "Username"))
                 }
             },
-            isError = usernameEmpty,
+            isError = usernameTouched && usernameEmpty,
             keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
-            )
+            ),
+            modifier = Modifier.onFocusChanged {
+                if (it.isFocused) usernameTouched = true
+            }
         )
         TextField(
             value = password,
@@ -117,29 +132,26 @@ fun LoginForm(navController: NavController) {
                 }
             },
             supportingText = {
-                if (passwordEmpty) {
+                if (passwordTouched && passwordEmpty) {
                     Text(stringResource(R.string.field_required, "Password"))
                 }
             },
-            isError = passwordEmpty,
+            isError = passwordTouched && passwordEmpty,
             visualTransformation = if (showPassword) VisualTransformation.None
                 else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
-            )
+            ),
+            modifier = Modifier.onFocusChanged {
+                if (it.isFocused) passwordTouched = true
+            }
         )
         TextButton(
             onClick = {
-                navController.navigate(Routes.FORGOT_PASSWORD) {
-                    popUpTo(
-                        navController.currentBackStackEntry?.destination?.route
-                            ?: return@navigate
-                    ) {
-                        inclusive =  true
-                    }
-                    launchSingleTop = true
-                }
+                onForgotPassword()
             }
         ) {
             Text(
@@ -147,20 +159,46 @@ fun LoginForm(navController: NavController) {
                 style = MaterialTheme.typography.titleLarge
             )
         }
-        Button(
-            onClick = {
-                Toast.makeText(
-                    context,
-                    "Username: $username, Password: $password",
-                    Toast.LENGTH_SHORT
-                ).show()
-            },
-            enabled = !usernameEmpty && !passwordEmpty,
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.align(Alignment.End)
         ) {
-            Text(stringResource(R.string.login))
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .alpha(if (profileViewModel.isLoading) 1f else 0f)
+            )
+            Button(
+                onClick = {
+                    profileViewModel.login(username, password)
+                },
+                enabled = !usernameEmpty && !passwordEmpty && !profileViewModel.isLoading
+            ) {
+                Text(stringResource(R.string.login))
+            }
+        }
+        if (profileViewModel.showAlert) {
+            ErrorAlert(
+                message = profileViewModel.recipeError?.error,
+                onDismiss = {
+                    profileViewModel.showAlert = false
+                }
+            )
         }
     }
+}
+
+private data class LoginFormState(
+    val isLoading: Boolean,
+    val showAlert: Boolean
+)
+
+private class LoginFormPreviewParameterProvider: PreviewParameterProvider<LoginFormState> {
+    override val values = sequenceOf(
+        LoginFormState(isLoading = false, showAlert = false),
+        LoginFormState(isLoading = true, showAlert = false),
+        LoginFormState(isLoading = false, showAlert = true)
+    )
 }
 
 @DevicePreviews
@@ -168,12 +206,24 @@ fun LoginForm(navController: NavController) {
 @FontPreviews
 @OrientationPreviews
 @Composable
-private fun LoginFormPreview() {
-    val navController = rememberNavController()
+private fun LoginFormPreview(
+    @PreviewParameter(LoginFormPreviewParameterProvider::class) state: LoginFormState
+) {
+    val context = LocalContext.current
+
+    val chefService = MockChefService
+    val recipeService = MockRecipeService
+    val profileViewModel = ProfileViewModel(
+        chefRepository = ChefRepository(chefService),
+        recipeRepository = RecipeRepository(recipeService),
+        dataStoreService = DataStoreService(context)
+    )
+    profileViewModel.isLoading = state.isLoading
+    profileViewModel.showAlert = state.showAlert
 
     EZRecipesTheme {
         Surface {
-            LoginForm(navController)
+            LoginForm(profileViewModel)
         }
     }
 }

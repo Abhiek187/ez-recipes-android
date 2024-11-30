@@ -31,8 +31,8 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
-            usePlatformDefaultWidth = false, // Occupy full screen width
-            decorFitsSystemWindows = false // Allow custom layout around system bars
+            usePlatformDefaultWidth = false, // occupy full screen width
+            decorFitsSystemWindows = false // allow custom layout around system bars
         )
     ) {
         // Add a background so the dialog appears on top of the main content
@@ -46,7 +46,47 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
             val navController = rememberNavController()
 
             NavHost(navController = navController, startDestination = Routes.LOGIN) {
-                composable(Routes.LOGIN) { LoginForm(navController) }
+                composable(Routes.LOGIN) {
+                    LoginForm(
+                        profileViewModel = profileViewModel,
+                        onSignup = {
+                            navController.navigate(Routes.SIGN_UP) {
+                                // Close the modal whenever the user navigates back
+                                popUpTo(
+                                    navController.currentBackStackEntry?.destination?.route
+                                        ?: return@navigate
+                                ) {
+                                    inclusive =  true
+                                }
+                                launchSingleTop = true
+                            }
+                        },
+                        onForgotPassword = {
+                            navController.navigate(Routes.FORGOT_PASSWORD) {
+                                popUpTo(
+                                    navController.currentBackStackEntry?.destination?.route
+                                        ?: return@navigate
+                                ) {
+                                    inclusive =  true
+                                }
+                                launchSingleTop = true
+                            }
+                        },
+                        onVerifyEmail = { email ->
+                            navController.navigate(
+                                Routes.VERIFY_EMAIL.replace("{email}", email)
+                            ) {
+                                popUpTo(
+                                    navController.currentBackStackEntry?.destination?.route
+                                        ?: return@navigate
+                                ) {
+                                    inclusive =  true
+                                }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
                 composable(Routes.SIGN_UP) {
                     SignUpForm(
                         profileViewModel = profileViewModel,
@@ -81,6 +121,9 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
                         email = backStackEntry.arguments?.getString("email"),
                         onResend = {
                             profileViewModel.sendVerificationEmail()
+                        },
+                        onLogout = {
+                            profileViewModel.logout()
                         }
                     )
                 }

@@ -6,7 +6,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @Preview(
     name = "Portrait",
     group = "Orientations",
-    device = Devices.PHONE,
+    device = "spec:width=411dp,height=891dp",
     showSystemUi = true
 )
 @Preview(

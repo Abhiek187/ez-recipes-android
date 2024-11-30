@@ -7,11 +7,13 @@ import retrofit2.Response
 
 object MockChefService: ChefService {
     var isSuccess = true
+    var isEmailVerified = true
+
     val chef = Constants.Mocks.CHEF
     val loginResponse = LoginResponse(
         uid = chef.uid,
         token = chef.token,
-        emailVerified = true
+        emailVerified = isEmailVerified
     )
     val chefEmailResponse = ChefEmailResponse(
         kind = "identitytoolkit#GetOobConfirmationCodeResponse",
@@ -51,9 +53,9 @@ object MockChefService: ChefService {
         }
     }
 
-    override suspend fun deleteChef(token: String): Response<String> {
+    override suspend fun deleteChef(token: String): Response<Void> {
         return if (isSuccess) {
-            Response.success("")
+            Response.success(null)
         } else {
             Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
         }
@@ -75,9 +77,9 @@ object MockChefService: ChefService {
         }
     }
 
-    override suspend fun logout(token: String): Response<String> {
+    override suspend fun logout(token: String): Response<Void> {
         return if (isSuccess) {
-            Response.success("")
+            Response.success(null)
         } else {
             Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
         }

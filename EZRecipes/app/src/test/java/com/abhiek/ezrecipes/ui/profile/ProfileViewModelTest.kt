@@ -16,6 +16,7 @@ import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -75,6 +76,13 @@ internal class ProfileViewModelTest {
         mockEncryptor()
     }
 
+    @AfterEach
+    fun tearDown() {
+        // Revert back to the defaults
+        mockChefService.isSuccess = true
+        mockChefService.isEmailVerified = true
+    }
+
     @Test
     fun createAccountSuccess() = runTest {
         // Given the user's credentials
@@ -82,7 +90,6 @@ internal class ProfileViewModelTest {
         val password = "test1234"
 
         // When creating an account
-        mockChefService.isSuccess = true
         viewModel.createAccount(username, password)
 
         // Then a new chef should be created
@@ -121,7 +128,6 @@ internal class ProfileViewModelTest {
     fun sendVerificationEmailSuccess() = runTest {
         // Given a valid token
         // When sending a verification email
-        mockChefService.isSuccess = true
         viewModel.sendVerificationEmail()
 
         // Then the email should be sent
@@ -156,7 +162,6 @@ internal class ProfileViewModelTest {
         coEvery { mockDataStoreService.getToken() } returns null
 
         // When sending a verification email
-        mockChefService.isSuccess = true
         viewModel.sendVerificationEmail()
 
         // Then an error alert isn't shown
@@ -170,7 +175,6 @@ internal class ProfileViewModelTest {
     fun getChefSuccess() = runTest {
         // Given a valid token
         // When getting the chef's profile
-        mockChefService.isSuccess = true
         viewModel.getChef()
 
         // Then the chef is saved and the user is authenticated
@@ -210,7 +214,6 @@ internal class ProfileViewModelTest {
         coEvery { mockDataStoreService.getToken() } returns null
 
         // When getting the chef's profile
-        mockChefService.isSuccess = true
         viewModel.getChef()
 
         // Then the user is unauthenticated
@@ -218,6 +221,128 @@ internal class ProfileViewModelTest {
         assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
         assertFalse(viewModel.showAlert)
         assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+
+        coVerify { mockDataStoreService.getToken() }
+        coVerify { mockDataStoreService.deleteToken() }
+    }
+
+    @Test
+    fun loginSuccess() = runTest {
+        // Given the user's credentials
+        val username = "test@example.com"
+        val password = "test1234"
+
+        // When logging in
+        viewModel.login(username, password)
+
+        // Then the user should be authenticated
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertEquals(viewModel.chef, Chef(
+            uid = mockChefService.loginResponse.uid,
+            email = username,
+            emailVerified = mockChefService.loginResponse.emailVerified,
+            ratings = mapOf(),
+            recentRecipes = mapOf(),
+            favoriteRecipes = listOf(),
+            token = mockChefService.loginResponse.token
+        ))
+        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertFalse(viewModel.openLoginDialog)
+
+        verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun loginEmailNotVerified() = runTest {
+        // Given the user hasn't verified their email
+        val username = "test@example.com"
+        val password = "test1234"
+
+        // When logging in
+        mockChefService.isEmailVerified = false
+        viewModel.createAccount(username, password)
+
+        // Then a new chef should be created, but the user shouldn't be authenticated
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertEquals(viewModel.chef, Chef(
+            uid = mockChefService.loginResponse.uid,
+            email = username,
+            emailVerified = mockChefService.loginResponse.emailVerified,
+            ratings = mapOf(),
+            recentRecipes = mapOf(),
+            favoriteRecipes = listOf(),
+            token = mockChefService.loginResponse.token
+        ))
+        assertNotEquals(viewModel.authState, AuthState.AUTHENTICATED)
+
+        verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun loginError() = runTest {
+        // Given the user's credentials
+        val username = "test@example.com"
+        val password = "test1234"
+
+        // When logging in and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.createAccount(username, password)
+
+        // Then an error is shown
+        assertNull(viewModel.chef)
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+    }
+
+    @Test
+    fun logoutSuccess() = runTest {
+        // Given a valid token
+        // When logging out
+        viewModel.logout()
+
+        // Then the user is unauthenticated
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertNull(viewModel.chef)
+        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertFalse(viewModel.openLoginDialog)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+        coVerify { mockDataStoreService.deleteToken() }
+    }
+
+    @Test
+    fun logoutError() = runTest {
+        // Given a valid token
+        // When logging out and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.logout()
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+    }
+
+    @Test
+    fun logoutNoToken() = runTest {
+        // Given no token
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When logging out
+        viewModel.logout()
+
+        // Then the user is unauthenticated
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertNull(viewModel.chef)
+        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertFalse(viewModel.openLoginDialog)
 
         coVerify { mockDataStoreService.getToken() }
         coVerify { mockDataStoreService.deleteToken() }
