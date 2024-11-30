@@ -111,6 +111,7 @@
     <string name="results_placeholder">Use the filters to search for your favorite recipes!</string>
 
     <!-- Profile Screen -->
+    <string name="profile_loading">Getting your profile ready… 🧑‍🍳</string>
     <string name="profile_header">Chef %1$s</string>
     <string name="profile_favorites">💖 Favorites</string>
     <string name="profile_recently_viewed">⌚ Recently Viewed</string>
