@@ -172,6 +172,34 @@ internal class ProfileViewModelTest {
     }
 
     @Test
+    fun resetPasswordSuccess() = runTest {
+        // Given an email
+        val email = "test@example.com"
+
+        // When resetting the password
+        viewModel.resetPassword(email)
+
+        // Then an email should be sent
+        assertTrue(viewModel.emailSent)
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+    }
+
+    @Test
+    fun resetPasswordError() = runTest {
+        // Given an email
+        val email = "test@example.com"
+
+        // When resetting the password and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.resetPassword(email)
+
+        // Then an error is shown
+        assertFalse(viewModel.emailSent)
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+    }
+
+    @Test
     fun getChefSuccess() = runTest {
         // Given a valid token
         // When getting the chef's profile

@@ -163,7 +163,9 @@
     </string>
     <string name="forget_password_submit">Submit</string>
     <string name="forget_password_confirm">
-        We sent an email to %1$s. Follow the instructions to reset your password.
+        We sent an email to %1$s. Follow the instructions to reset your password.\n\n
+
+        If you didn\'t receive an email, you may not have created an account with this email.
     </string>
 
     <string name="change_email_field">New Email</string>

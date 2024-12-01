@@ -35,6 +35,7 @@ class ProfileViewModel(
     var ratedRecipes by mutableStateOf<List<Recipe>>(listOf())
     var openLoginDialog by mutableStateOf(false)
     var showAlert by mutableStateOf(false)
+    var emailSent by mutableStateOf(false)
 
     companion object {
         private const val TAG = "ProfileViewModel"
@@ -133,6 +134,32 @@ class ProfileViewModel(
                 is ChefResult.Error -> {
                     recipeError = result.recipeError
                     showAlert = token != null && job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun resetPassword(email: String) {
+        val fields = ChefUpdate(
+            type = ChefUpdateType.PASSWORD,
+            email = email
+        )
+
+        job = viewModelScope.launch {
+            isLoading = true
+            val result = chefRepository.updateChef(fields)
+            isLoading = false
+
+            when (result) {
+                is ChefResult.Success -> {
+                    // result.response isn't needed
+                    emailSent = true
+                    recipeError = null
+                    showAlert = false
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    showAlert = job?.isCancelled == false
                 }
             }
         }
