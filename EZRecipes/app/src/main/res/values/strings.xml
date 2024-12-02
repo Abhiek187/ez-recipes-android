@@ -104,7 +104,7 @@
     <string name="culture_label">Cuisine</string>
     <string name="expand_alt">Expand dropdown</string>
     <string name="collapse_alt">Collapse dropdown</string>
-    <string name="submit_button">Apply</string>
+    <string name="apply_button">Apply</string>
     <string name="no_results">No recipes found</string>
 
     <string name="results_title">Results</string>
@@ -161,7 +161,7 @@
     <string name="forget_password_header">
         No problem! Enter your email so we can reset your password.
     </string>
-    <string name="forget_password_submit">Submit</string>
+    <string name="submit_button">Submit</string>
     <string name="forget_password_confirm">
         We sent an email to %1$s. Follow the instructions to reset your password.\n\n
 
@@ -174,9 +174,6 @@
     </string>
     <string name="change_email_success">Email updated successfully!</string>
     <string name="change_password_field">New Password</string>
-    <string name="change_password_confirm">
-        We sent an email to %1$s. Follow the instructions to change your password.
-    </string>
     <string name="change_password_success">Password updated successfully!</string>
     <string name="delete_account_header">Are You Sure?</string>
     <string name="delete_account_sub_header">

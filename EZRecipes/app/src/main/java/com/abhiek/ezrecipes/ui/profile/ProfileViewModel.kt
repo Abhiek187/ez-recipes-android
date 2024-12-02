@@ -267,6 +267,106 @@ class ProfileViewModel(
         }
     }
 
+    fun updateEmail(newEmail: String) {
+        val fields = ChefUpdate(
+            type = ChefUpdateType.EMAIL,
+            email = newEmail
+        )
+
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val result = if (token != null) {
+                chefRepository.updateChef(fields, token)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+            isLoading = false
+
+            when (result) {
+                is ChefResult.Success -> {
+                    val updateResponse = result.response
+                    emailSent = true
+                    recipeError = null
+                    showAlert = false
+
+                    updateResponse.token?.let { newToken ->
+                        saveToken(newToken)
+                    }
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    showAlert = token != null && job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun updatePassword(newPassword: String) {
+        val fields = ChefUpdate(
+            type = ChefUpdateType.PASSWORD,
+            email = chef?.email ?: "",
+            password = newPassword
+        )
+
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val result = if (token != null) {
+                chefRepository.updateChef(fields, token)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+            isLoading = false
+
+            when (result) {
+                is ChefResult.Success -> {
+                    val updateResponse = result.response
+                    emailSent = true
+                    recipeError = null
+                    showAlert = false
+
+                    updateResponse.token?.let { newToken ->
+                        saveToken(newToken)
+                    }
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    showAlert = token != null && job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun deleteAccount() {
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val result = if (token != null) {
+                chefRepository.deleteChef(token)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+            isLoading = false
+
+            when (result) {
+                is ChefResult.Success -> {
+                    recipeError = null
+                    showAlert = false
+
+                    clearToken()
+                    chef = null
+                    authState = AuthState.UNAUTHENTICATED
+                    openLoginDialog = false
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    showAlert = token != null && job?.isCancelled == false
+                }
+            }
+        }
+    }
+
 //    fun getRecipeById(id: Int) {
 //        job = viewModelScope.launch {
 //            isLoading = true
