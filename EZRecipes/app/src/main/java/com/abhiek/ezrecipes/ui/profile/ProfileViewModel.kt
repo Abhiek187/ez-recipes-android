@@ -36,6 +36,8 @@ class ProfileViewModel(
     var openLoginDialog by mutableStateOf(false)
     var showAlert by mutableStateOf(false)
     var emailSent by mutableStateOf(false)
+    var passwordUpdated by mutableStateOf(false)
+    var accountDeleted by mutableStateOf(false)
 
     companion object {
         private const val TAG = "ProfileViewModel"
@@ -322,7 +324,7 @@ class ProfileViewModel(
             when (result) {
                 is ChefResult.Success -> {
                     val updateResponse = result.response
-                    emailSent = true
+                    passwordUpdated = true
                     recipeError = null
                     showAlert = false
 
@@ -357,6 +359,7 @@ class ProfileViewModel(
                     clearToken()
                     chef = null
                     authState = AuthState.UNAUTHENTICATED
+                    accountDeleted = true
                 }
                 is ChefResult.Error -> {
                     recipeError = result.recipeError

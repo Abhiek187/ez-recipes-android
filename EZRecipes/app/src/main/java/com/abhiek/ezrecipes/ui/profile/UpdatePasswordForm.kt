@@ -35,7 +35,7 @@ import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.Constants
 
 @Composable
-fun UpdatePasswordForm(profileViewModel: ProfileViewModel) {
+fun UpdatePasswordForm(profileViewModel: ProfileViewModel, onDismiss: () -> Unit = {}) {
     var password by remember { mutableStateOf("") }
     var passwordConfirm by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
@@ -49,6 +49,12 @@ fun UpdatePasswordForm(profileViewModel: ProfileViewModel) {
     val passwordTooShort = password.length < Constants.PASSWORD_MIN_LENGTH
     val passwordsDoNotMatch = password != passwordConfirm
 
+    LaunchedEffect(profileViewModel.passwordUpdated) {
+        if (profileViewModel.passwordUpdated) {
+            onDismiss()
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.padding(16.dp)
@@ -59,7 +65,7 @@ fun UpdatePasswordForm(profileViewModel: ProfileViewModel) {
                 password = it
             },
             label = {
-                Text(stringResource(R.string.password_field))
+                Text(stringResource(R.string.change_password_field))
             },
             trailingIcon = {
                 IconButton(

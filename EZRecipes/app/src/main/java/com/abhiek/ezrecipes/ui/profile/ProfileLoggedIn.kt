@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui.profile
 
+import android.widget.Toast
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,7 +16,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
@@ -36,6 +36,21 @@ import com.abhiek.ezrecipes.utils.Routes
 @Composable
 fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
     var dialogToShow by remember { mutableStateOf<String?>(null) }
+
+    val context = LocalContext.current
+
+    val onDismiss = {
+        dialogToShow = null
+
+        // Show toast messages depending on how the dialog was closed
+        if (profileViewModel.passwordUpdated) {
+            Toast.makeText(context, R.string.change_password_success, Toast.LENGTH_SHORT).show()
+            profileViewModel.passwordUpdated = false
+        } else if (profileViewModel.accountDeleted) {
+            Toast.makeText(context, R.string.delete_account_success, Toast.LENGTH_SHORT).show()
+            profileViewModel.accountDeleted = false
+        }
+    }
 
     LaunchedEffect(Unit) {
         // Start loading all the recipe cards
@@ -189,20 +204,18 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
 
         dialogToShow?.let { dialog ->
             Dialog(
-                onDismissRequest = {
-                    dialogToShow = null
-                }
+                onDismissRequest = onDismiss
             ) {
                 Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .wrapContentHeight(Alignment.CenterVertically),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     when (dialog) {
-                        Routes.UPDATE_EMAIL -> UpdateEmailForm(profileViewModel)
-                        Routes.UPDATE_PASSWORD -> UpdatePasswordForm(profileViewModel)
-                        Routes.DELETE_ACCOUNT -> DeleteAccountForm(profileViewModel)
+                        Routes.UPDATE_EMAIL ->
+                            UpdateEmailForm(profileViewModel)
+                        Routes.UPDATE_PASSWORD ->
+                            UpdatePasswordForm(profileViewModel, onDismiss)
+                        Routes.DELETE_ACCOUNT ->
+                            DeleteAccountForm(profileViewModel, onDismiss)
                     }
                 }
             }

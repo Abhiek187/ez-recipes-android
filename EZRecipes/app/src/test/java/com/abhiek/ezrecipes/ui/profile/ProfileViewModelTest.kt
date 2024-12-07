@@ -407,6 +407,7 @@ internal class ProfileViewModelTest {
         viewModel.updateEmail(newEmail)
 
         // Then an error is shown
+        assertFalse(viewModel.emailSent)
         assertEquals(viewModel.recipeError, mockChefService.tokenError)
 
         coVerify { mockDataStoreService.getToken() }
@@ -423,6 +424,7 @@ internal class ProfileViewModelTest {
         viewModel.updateEmail(newEmail)
 
         // Then an error alert isn't shown
+        assertFalse(viewModel.emailSent)
         assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
         assertFalse(viewModel.showAlert)
 
@@ -438,7 +440,7 @@ internal class ProfileViewModelTest {
         viewModel.updatePassword(newPassword)
 
         // Then the password should be updated
-        assertTrue(viewModel.emailSent)
+        assertTrue(viewModel.passwordUpdated)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
 
@@ -460,6 +462,7 @@ internal class ProfileViewModelTest {
         viewModel.updatePassword(newPassword)
 
         // Then an error is shown
+        assertFalse(viewModel.passwordUpdated)
         assertEquals(viewModel.recipeError, mockChefService.tokenError)
 
         coVerify { mockDataStoreService.getToken() }
@@ -476,6 +479,7 @@ internal class ProfileViewModelTest {
         viewModel.updatePassword(newPassword)
 
         // Then an error alert isn't shown
+        assertFalse(viewModel.passwordUpdated)
         assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
         assertFalse(viewModel.showAlert)
 
@@ -491,6 +495,7 @@ internal class ProfileViewModelTest {
         // Then the chef should be deleted and unauthenticated
         assertNull(viewModel.chef)
         assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertTrue(viewModel.accountDeleted)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
 
@@ -508,6 +513,7 @@ internal class ProfileViewModelTest {
         viewModel.deleteAccount()
 
         // Then an error is shown
+        assertFalse(viewModel.accountDeleted)
         assertEquals(viewModel.recipeError, mockChefService.tokenError)
 
         coVerify { mockDataStoreService.getToken() }
@@ -523,6 +529,7 @@ internal class ProfileViewModelTest {
         viewModel.deleteAccount()
 
         // Then an error alert isn't shown
+        assertFalse(viewModel.accountDeleted)
         assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
         assertFalse(viewModel.showAlert)
 

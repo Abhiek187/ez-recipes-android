@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
+import com.abhiek.ezrecipes.data.models.AuthState
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -32,9 +33,15 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
 
 @Composable
-fun DeleteAccountForm(profileViewModel: ProfileViewModel) {
+fun DeleteAccountForm(profileViewModel: ProfileViewModel, onDismiss: () -> Unit = {}) {
     var username by remember { mutableStateOf("") }
     val usernameMatches = username == profileViewModel.chef?.email
+
+    LaunchedEffect(profileViewModel.authState) {
+        if (profileViewModel.authState == AuthState.UNAUTHENTICATED) {
+            onDismiss()
+        }
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
