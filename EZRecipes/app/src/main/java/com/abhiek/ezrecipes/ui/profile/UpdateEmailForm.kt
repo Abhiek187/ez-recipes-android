@@ -35,7 +35,7 @@ import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.boldAnnotatedString
 
 @Composable
-fun UpdateEmailDialog(profileViewModel: ProfileViewModel) {
+fun UpdateEmailForm(profileViewModel: ProfileViewModel) {
     var email by remember { mutableStateOf("") }
     var emailTouched by remember { mutableStateOf(false) }
 
@@ -153,7 +153,7 @@ private fun UpdateEmailDialogPreview(
 
     EZRecipesTheme {
         Surface {
-            UpdateEmailDialog(profileViewModel)
+            UpdateEmailForm(profileViewModel)
         }
     }
 }

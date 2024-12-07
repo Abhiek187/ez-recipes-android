@@ -35,7 +35,7 @@ import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.Constants
 
 @Composable
-fun UpdatePasswordDialog(profileViewModel: ProfileViewModel) {
+fun UpdatePasswordForm(profileViewModel: ProfileViewModel) {
     var password by remember { mutableStateOf("") }
     var passwordConfirm by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
@@ -200,7 +200,7 @@ private fun UpdatePasswordDialogPreview(
 
     EZRecipesTheme {
         Surface {
-            UpdatePasswordDialog(profileViewModel)
+            UpdatePasswordForm(profileViewModel)
         }
     }
 }

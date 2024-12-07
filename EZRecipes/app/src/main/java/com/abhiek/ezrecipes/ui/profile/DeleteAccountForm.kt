@@ -32,7 +32,7 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
 
 @Composable
-fun DeleteAccountDialog(profileViewModel: ProfileViewModel) {
+fun DeleteAccountForm(profileViewModel: ProfileViewModel) {
     var username by remember { mutableStateOf("") }
     val usernameMatches = username == profileViewModel.chef?.email
 
@@ -132,7 +132,7 @@ private fun DeleteAccountDialogPreview(
 
     EZRecipesTheme {
         Surface {
-            DeleteAccountDialog(profileViewModel)
+            DeleteAccountForm(profileViewModel)
         }
     }
 }
