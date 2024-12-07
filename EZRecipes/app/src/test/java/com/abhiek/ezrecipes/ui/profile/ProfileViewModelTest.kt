@@ -375,4 +375,157 @@ internal class ProfileViewModelTest {
         coVerify { mockDataStoreService.getToken() }
         coVerify { mockDataStoreService.deleteToken() }
     }
+
+    @Test
+    fun updateEmailSuccess() = runTest {
+        // Given a valid token
+        val newEmail = "mock@example.com"
+
+        // When updating the chef's email
+        viewModel.updateEmail(newEmail)
+
+        // Then an email should be sent
+        assertTrue(viewModel.emailSent)
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+
+        assertNotNull(mockChefService.chefEmailResponse.token)
+        verify { Encryptor.encrypt(mockChefService.chefEmailResponse.token!!) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun updateEmailError() = runTest {
+        // Given a valid token
+        val newEmail = "mock@example.com"
+
+        // When updating the chef's email and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.updateEmail(newEmail)
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+    }
+
+    @Test
+    fun updateEmailNoToken() = runTest {
+        // Given no token
+        val newEmail = "mock@example.com"
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When updating the chef's email
+        viewModel.updateEmail(newEmail)
+
+        // Then an error alert isn't shown
+        assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
+        assertFalse(viewModel.showAlert)
+
+        coVerify { mockDataStoreService.getToken() }
+    }
+
+    @Test
+    fun updatePasswordSuccess() = runTest {
+        // Given a valid token
+        val newPassword = "mockPassword"
+
+        // When updating the chef's password
+        viewModel.updatePassword(newPassword)
+
+        // Then the password should be updated
+        assertTrue(viewModel.emailSent)
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+
+        assertNotNull(mockChefService.chefEmailResponse.token)
+        verify { Encryptor.encrypt(mockChefService.chefEmailResponse.token!!) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun updatePasswordError() = runTest {
+        // Given a valid token
+        val newPassword = "mockPassword"
+
+        // When updating the chef's password and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.updatePassword(newPassword)
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+    }
+
+    @Test
+    fun updatePasswordNoToken() = runTest {
+        // Given no token
+        val newPassword = "mockPassword"
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When updating the chef's password
+        viewModel.updatePassword(newPassword)
+
+        // Then an error alert isn't shown
+        assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
+        assertFalse(viewModel.showAlert)
+
+        coVerify { mockDataStoreService.getToken() }
+    }
+
+    @Test
+    fun deleteAccountSuccess() = runTest {
+        // Given a valid token
+        // When deleting the chef's account
+        viewModel.deleteAccount()
+
+        // Then the chef should be deleted and unauthenticated
+        assertNull(viewModel.chef)
+        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+
+        coVerify { mockDataStoreService.deleteToken() }
+    }
+
+    @Test
+    fun deleteAccountError() = runTest {
+        // Given a valid token
+        // When deleting the chef's account and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.deleteAccount()
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+    }
+
+    @Test
+    fun deleteAccountNoToken() = runTest {
+        // Given no token
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When deleting the chef's account
+        viewModel.deleteAccount()
+
+        // Then an error alert isn't shown
+        assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
+        assertFalse(viewModel.showAlert)
+
+        coVerify { mockDataStoreService.getToken() }
+    }
 }

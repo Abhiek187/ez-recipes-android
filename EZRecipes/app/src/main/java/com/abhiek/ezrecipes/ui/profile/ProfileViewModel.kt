@@ -357,7 +357,6 @@ class ProfileViewModel(
                     clearToken()
                     chef = null
                     authState = AuthState.UNAUTHENTICATED
-                    openLoginDialog = false
                 }
                 is ChefResult.Error -> {
                     recipeError = result.recipeError
