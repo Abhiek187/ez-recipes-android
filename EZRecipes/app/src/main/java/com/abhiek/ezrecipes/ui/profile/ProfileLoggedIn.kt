@@ -191,11 +191,7 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             Dialog(
                 onDismissRequest = {
                     dialogToShow = null
-                },
-                properties = DialogProperties(
-                    usePlatformDefaultWidth = false,
-                    decorFitsSystemWindows = false
-                )
+                }
             ) {
                 Surface(
                     modifier = Modifier

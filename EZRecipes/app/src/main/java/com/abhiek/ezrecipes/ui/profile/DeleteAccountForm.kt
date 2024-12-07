@@ -38,7 +38,7 @@ fun DeleteAccountForm(profileViewModel: ProfileViewModel) {
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier.padding(16.dp)
     ) {
         Text(
             text = stringResource(R.string.delete_account_header),
