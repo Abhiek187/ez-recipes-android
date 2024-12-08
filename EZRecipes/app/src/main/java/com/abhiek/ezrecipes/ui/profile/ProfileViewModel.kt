@@ -323,7 +323,7 @@ class ProfileViewModel(
 
             when (result) {
                 is ChefResult.Success -> {
-                    val updateResponse = result.response
+                    // result.response isn't needed
                     passwordUpdated = true
                     recipeError = null
                     showAlert = false
