@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -87,7 +88,15 @@ fun DeleteAccountForm(profileViewModel: ProfileViewModel, onDismiss: () -> Unit 
                     containerColor = MaterialTheme.colorScheme.error
                 )
             ) {
-                Text(stringResource(R.string.delete_account))
+                Text(
+                    text = stringResource(R.string.delete_account),
+                    // If the button is disabled, use the default text color instead of on red
+                    color = if (!usernameMatches || profileViewModel.isLoading) {
+                        Color.Unspecified
+                    } else {
+                        MaterialTheme.colorScheme.onError
+                    }
+                )
             }
         }
         if (profileViewModel.showAlert) {
