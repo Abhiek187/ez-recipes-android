@@ -48,7 +48,7 @@ fun SubmitButton(searchViewModel: SearchViewModel, enabled: Boolean) {
                 enabled = enabled,
                 modifier = Modifier.weight(1f)
             ) {
-                Text(stringResource(R.string.submit_button))
+                Text(stringResource(R.string.apply_button))
             }
             CircularProgressIndicator(
                 modifier = Modifier

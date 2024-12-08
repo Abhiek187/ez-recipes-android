@@ -5,8 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -15,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
@@ -30,9 +30,16 @@ import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.Accordion
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
+import com.abhiek.ezrecipes.utils.Routes
 
 @Composable
 fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
+    var dialogToShow by remember { mutableStateOf<String?>(null) }
+
+    val onDismiss = {
+        dialogToShow = null
+    }
+
     LaunchedEffect(Unit) {
         // Start loading all the recipe cards
         profileViewModel.getAllChefRecipes()
@@ -144,19 +151,25 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             }
         }
         Button(
-            onClick = { println("Change Email") },
+            onClick = {
+                dialogToShow = Routes.UPDATE_EMAIL
+            },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = stringResource(R.string.change_email))
         }
         Button(
-            onClick = { println("Change Password") },
+            onClick = {
+                dialogToShow = Routes.UPDATE_PASSWORD
+            },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = stringResource(R.string.change_password))
         }
         Button(
-            onClick = { println("Delete Account") },
+            onClick = {
+                dialogToShow = Routes.DELETE_ACCOUNT
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.error
             ),
@@ -175,6 +188,25 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
                     profileViewModel.showAlert = false
                 }
             )
+        }
+
+        dialogToShow?.let { dialog ->
+            Dialog(
+                onDismissRequest = onDismiss
+            ) {
+                Surface(
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    when (dialog) {
+                        Routes.UPDATE_EMAIL ->
+                            UpdateEmailForm(profileViewModel)
+                        Routes.UPDATE_PASSWORD ->
+                            UpdatePasswordForm(profileViewModel, onDismiss)
+                        Routes.DELETE_ACCOUNT ->
+                            DeleteAccountForm(profileViewModel, onDismiss)
+                    }
+                }
+            }
         }
     }
 }

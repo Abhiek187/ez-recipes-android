@@ -127,7 +127,9 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
                         }
                     )
                 }
-                composable(Routes.FORGOT_PASSWORD) { ForgotPasswordForm() }
+                composable(Routes.FORGOT_PASSWORD) {
+                    ForgotPasswordForm(profileViewModel)
+                }
             }
         }
     }

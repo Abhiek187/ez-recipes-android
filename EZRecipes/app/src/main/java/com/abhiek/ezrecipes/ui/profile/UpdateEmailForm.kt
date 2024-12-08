@@ -1,4 +1,4 @@
-package com.abhiek.ezrecipes.ui.login
+package com.abhiek.ezrecipes.ui.profile
 
 import android.util.Patterns
 import androidx.compose.foundation.layout.Arrangement
@@ -30,15 +30,12 @@ import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
-import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.boldAnnotatedString
 
 @Composable
-fun ForgotPasswordForm(
-    profileViewModel: ProfileViewModel
-) {
+fun UpdateEmailForm(profileViewModel: ProfileViewModel) {
     var email by remember { mutableStateOf("") }
     var emailTouched by remember { mutableStateOf(false) }
 
@@ -51,20 +48,16 @@ fun ForgotPasswordForm(
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier.padding(16.dp)
     ) {
         if (!profileViewModel.emailSent) {
-            Text(
-                text = stringResource(R.string.forget_password_header),
-                style = MaterialTheme.typography.headlineSmall
-            )
             TextField(
                 value = email,
                 onValueChange = {
                     email = it
                 },
                 label = {
-                    Text(stringResource(R.string.email_field))
+                    Text(stringResource(R.string.change_email_field))
                 },
                 supportingText = {
                     if (emailTouched && emailEmpty) {
@@ -95,7 +88,7 @@ fun ForgotPasswordForm(
                 )
                 Button(
                     onClick = {
-                        profileViewModel.resetPassword(email)
+                        profileViewModel.updateEmail(email)
                     },
                     enabled = !emailEmpty && !emailInvalid && !profileViewModel.isLoading
                 ) {
@@ -113,7 +106,7 @@ fun ForgotPasswordForm(
         } else {
             Text(
                 text = boldAnnotatedString(
-                    text = stringResource(R.string.forget_password_confirm, email),
+                    text = stringResource(R.string.change_email_confirm, email),
                     startIndex = 19,
                     endIndex = 20 + email.length
                 ),
@@ -123,17 +116,17 @@ fun ForgotPasswordForm(
     }
 }
 
-private data class ForgotPasswordFormState(
+private data class UpdateEmailDialogState(
     val isLoading: Boolean,
     val showAlert: Boolean
 )
 
-private class ForgotPasswordFormPreviewParameterProvider:
-    PreviewParameterProvider<ForgotPasswordFormState> {
+private class UpdateEmailDialogPreviewParameterProvider :
+    PreviewParameterProvider<UpdateEmailDialogState> {
     override val values = sequenceOf(
-        ForgotPasswordFormState(isLoading = false, showAlert = false),
-        ForgotPasswordFormState(isLoading = true, showAlert = false),
-        ForgotPasswordFormState(isLoading = false, showAlert = true)
+        UpdateEmailDialogState(isLoading = false, showAlert = false),
+        UpdateEmailDialogState(isLoading = true, showAlert = false),
+        UpdateEmailDialogState(isLoading = false, showAlert = true)
     )
 }
 
@@ -142,9 +135,9 @@ private class ForgotPasswordFormPreviewParameterProvider:
 @FontPreviews
 @OrientationPreviews
 @Composable
-private fun ForgotPasswordFormPreview(
-    @PreviewParameter(ForgotPasswordFormPreviewParameterProvider::class)
-    state: ForgotPasswordFormState
+private fun UpdateEmailDialogPreview(
+    @PreviewParameter(UpdateEmailDialogPreviewParameterProvider::class)
+    state: UpdateEmailDialogState
 ) {
     val context = LocalContext.current
 
@@ -160,7 +153,7 @@ private fun ForgotPasswordFormPreview(
 
     EZRecipesTheme {
         Surface {
-            ForgotPasswordForm(profileViewModel)
+            UpdateEmailForm(profileViewModel)
         }
     }
 }

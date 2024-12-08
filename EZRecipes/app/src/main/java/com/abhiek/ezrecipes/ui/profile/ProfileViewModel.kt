@@ -35,6 +35,9 @@ class ProfileViewModel(
     var ratedRecipes by mutableStateOf<List<Recipe>>(listOf())
     var openLoginDialog by mutableStateOf(false)
     var showAlert by mutableStateOf(false)
+    var emailSent by mutableStateOf(false)
+    var passwordUpdated by mutableStateOf(false)
+    var accountDeleted by mutableStateOf(false)
 
     companion object {
         private const val TAG = "ProfileViewModel"
@@ -138,6 +141,32 @@ class ProfileViewModel(
         }
     }
 
+    fun resetPassword(email: String) {
+        val fields = ChefUpdate(
+            type = ChefUpdateType.PASSWORD,
+            email = email
+        )
+
+        job = viewModelScope.launch {
+            isLoading = true
+            val result = chefRepository.updateChef(fields)
+            isLoading = false
+
+            when (result) {
+                is ChefResult.Success -> {
+                    // result.response isn't needed
+                    emailSent = true
+                    recipeError = null
+                    showAlert = false
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    showAlert = job?.isCancelled == false
+                }
+            }
+        }
+    }
+
     fun getChef() {
         job = viewModelScope.launch {
             isLoading = true
@@ -235,6 +264,106 @@ class ProfileViewModel(
                 is ChefResult.Error -> {
                     recipeError = result.recipeError
                     showAlert = job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun updateEmail(newEmail: String) {
+        val fields = ChefUpdate(
+            type = ChefUpdateType.EMAIL,
+            email = newEmail
+        )
+
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val result = if (token != null) {
+                chefRepository.updateChef(fields, token)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+            isLoading = false
+
+            when (result) {
+                is ChefResult.Success -> {
+                    val updateResponse = result.response
+                    emailSent = true
+                    recipeError = null
+                    showAlert = false
+
+                    updateResponse.token?.let { newToken ->
+                        saveToken(newToken)
+                    }
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    showAlert = token != null && job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun updatePassword(newPassword: String) {
+        val fields = ChefUpdate(
+            type = ChefUpdateType.PASSWORD,
+            email = chef?.email ?: "",
+            password = newPassword
+        )
+
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val result = if (token != null) {
+                chefRepository.updateChef(fields, token)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+            isLoading = false
+
+            when (result) {
+                is ChefResult.Success -> {
+                    // result.response isn't needed
+                    passwordUpdated = true
+                    recipeError = null
+                    showAlert = false
+
+                    // The token will be revoked, so sign out the user
+                    clearToken()
+                    authState = AuthState.UNAUTHENTICATED
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    showAlert = token != null && job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun deleteAccount() {
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val result = if (token != null) {
+                chefRepository.deleteChef(token)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+            isLoading = false
+
+            when (result) {
+                is ChefResult.Success -> {
+                    recipeError = null
+                    showAlert = false
+
+                    clearToken()
+                    chef = null
+                    authState = AuthState.UNAUTHENTICATED
+                    accountDeleted = true
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    showAlert = token != null && job?.isCancelled == false
                 }
             }
         }

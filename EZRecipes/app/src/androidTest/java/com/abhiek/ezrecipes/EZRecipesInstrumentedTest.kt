@@ -303,7 +303,7 @@ internal class EZRecipesInstrumentedTest {
             .onNodeWithText(activity.getString(R.string.calorie_invalid_range_error))
         calorieRangeError.assertExists()
         val submitButton = composeTestRule
-            .onNodeWithText(activity.getString(R.string.submit_button))
+            .onNodeWithText(activity.getString(R.string.apply_button))
         submitButton.assertIsNotEnabled()
 
         composeTestRule

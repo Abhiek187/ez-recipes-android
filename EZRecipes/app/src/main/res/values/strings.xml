@@ -104,7 +104,7 @@
     <string name="culture_label">Cuisine</string>
     <string name="expand_alt">Expand dropdown</string>
     <string name="collapse_alt">Collapse dropdown</string>
-    <string name="submit_button">Apply</string>
+    <string name="apply_button">Apply</string>
     <string name="no_results">No recipes found</string>
 
     <string name="results_title">Results</string>
@@ -116,6 +116,7 @@
     <string name="profile_favorites">💖 Favorites</string>
     <string name="profile_recently_viewed">⌚ Recently Viewed</string>
     <string name="profile_ratings">⭐ Ratings</string>
+    <!-- Newlines add additional spacing before each line (but is ok for a bulleted list) -->
     <string name="login_message">
         Signing up for an account is free and gives you great perks, including:\n
         &#8226; Saving your favorite recipes\n
@@ -151,9 +152,9 @@
     <string name="email_verify_header">You\'re Almost There!</string>
     <string name="email_verify_body">
         We just need to verify your email before you can put on the chef\'s hat.
-        Check your email for a magic link sent to %1$s\n\n
+        Check your email for a magic link sent to %1$s\n\n⚠️
 
-        ⚠️ We will delete accounts from our system if they\'re not verified within 1 week.
+        We will delete accounts from our system if they\'re not verified within 1 week.
     </string>
     <string name="email_verify_retry_text">Didn\'t receive an email?</string>
     <string name="email_verify_retry_link">Resend</string>
@@ -161,25 +162,27 @@
     <string name="forget_password_header">
         No problem! Enter your email so we can reset your password.
     </string>
-    <string name="forget_password_submit">Submit</string>
+    <string name="submit_button">Submit</string>
     <string name="forget_password_confirm">
-        We sent an email to %1$s. Follow the instructions to reset your password.
+        We sent an email to %1$s. Follow the instructions to reset your password.\n\nIf
+
+        you didn\'t receive an email, you may not have created an account with this email.
     </string>
 
     <string name="change_email_field">New Email</string>
     <string name="change_email_confirm">
         We sent an email to %1$s. Follow the instructions to change your email.
     </string>
-    <string name="change_email_success">Email updated successfully!</string>
-    <string name="change_password_field">New Password</string>
-    <string name="change_password_confirm">
-        We sent an email to %1$s. Follow the instructions to change your password.
+    <string name="change_email_success">
+        Email updated successfully! Please sign in again.
     </string>
-    <string name="change_password_success">Password updated successfully!</string>
+    <string name="change_password_field">New Password</string>
+    <string name="change_password_success">
+        Password updated successfully! Please sign in again.
+    </string>
     <string name="delete_account_header">Are You Sure?</string>
     <string name="delete_account_sub_header">
-        You will lose access to your favorite recipes.\n
-        Enter your username to confirm.
+        You will lose access to your favorite recipes.\nEnter your username to confirm.
     </string>
     <string name="delete_account_success">Your account has been deleted.</string>
 </resources>

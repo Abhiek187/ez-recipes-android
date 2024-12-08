@@ -1,6 +1,7 @@
 package com.abhiek.ezrecipes.data.chef
 
 import com.abhiek.ezrecipes.data.models.ChefUpdate
+import com.abhiek.ezrecipes.data.models.ChefUpdateType
 import com.abhiek.ezrecipes.data.models.LoginCredentials
 import com.abhiek.ezrecipes.utils.Constants
 import kotlinx.coroutines.test.runTest
@@ -19,7 +20,7 @@ internal class ChefRepositoryTest {
         password = "test1234"
     )
     private val mockChefUpdate = ChefUpdate(
-        type = "password",
+        type = ChefUpdateType.PASSWORD,
         email = "test@example.com",
         password = "test1234"
     )
