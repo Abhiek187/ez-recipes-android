@@ -1,6 +1,5 @@
 package com.abhiek.ezrecipes.ui.profile
 
-import android.widget.Toast
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -37,19 +36,8 @@ import com.abhiek.ezrecipes.utils.Routes
 fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
     var dialogToShow by remember { mutableStateOf<String?>(null) }
 
-    val context = LocalContext.current
-
     val onDismiss = {
         dialogToShow = null
-
-        // Show toast messages depending on how the dialog was closed
-        if (profileViewModel.passwordUpdated) {
-            Toast.makeText(context, R.string.change_password_success, Toast.LENGTH_SHORT).show()
-            profileViewModel.passwordUpdated = false
-        } else if (profileViewModel.accountDeleted) {
-            Toast.makeText(context, R.string.delete_account_success, Toast.LENGTH_SHORT).show()
-            profileViewModel.accountDeleted = false
-        }
     }
 
     LaunchedEffect(Unit) {

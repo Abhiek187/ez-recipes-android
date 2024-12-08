@@ -328,9 +328,9 @@ class ProfileViewModel(
                     recipeError = null
                     showAlert = false
 
-                    updateResponse.token?.let { newToken ->
-                        saveToken(newToken)
-                    }
+                    // The token will be revoked, so sign out the user
+                    clearToken()
+                    authState = AuthState.UNAUTHENTICATED
                 }
                 is ChefResult.Error -> {
                     recipeError = result.recipeError

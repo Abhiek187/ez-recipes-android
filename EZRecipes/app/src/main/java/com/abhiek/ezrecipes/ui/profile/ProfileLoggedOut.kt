@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui.profile
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -8,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +30,19 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
 fun ProfileLoggedOut(profileViewModel: ProfileViewModel) {
+    val context = LocalContext.current
+
+    LaunchedEffect(profileViewModel.passwordUpdated, profileViewModel.accountDeleted) {
+        // Show toast messages after actions that force the user to be signed out
+        if (profileViewModel.passwordUpdated) {
+            Toast.makeText(context, R.string.change_password_success, Toast.LENGTH_SHORT).show()
+            profileViewModel.passwordUpdated = false
+        } else if (profileViewModel.accountDeleted) {
+            Toast.makeText(context, R.string.delete_account_success, Toast.LENGTH_SHORT).show()
+            profileViewModel.accountDeleted = false
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.padding(8.dp)

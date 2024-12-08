@@ -173,9 +173,13 @@
     <string name="change_email_confirm">
         We sent an email to %1$s. Follow the instructions to change your email.
     </string>
-    <string name="change_email_success">Email updated successfully!</string>
+    <string name="change_email_success">
+        Email updated successfully! Please sign in again.
+    </string>
     <string name="change_password_field">New Password</string>
-    <string name="change_password_success">Password updated successfully!</string>
+    <string name="change_password_success">
+        Password updated successfully! Please sign in again.
+    </string>
     <string name="delete_account_header">Are You Sure?</string>
     <string name="delete_account_sub_header">
         You will lose access to your favorite recipes.\nEnter your username to confirm.

@@ -439,17 +439,16 @@ internal class ProfileViewModelTest {
         // When updating the chef's password
         viewModel.updatePassword(newPassword)
 
-        // Then the password should be updated
+        // Then the password should be updated and the user should be signed out
         assertTrue(viewModel.passwordUpdated)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
+        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }
 
-        assertNotNull(mockChefService.chefEmailResponse.token)
-        verify { Encryptor.encrypt(mockChefService.chefEmailResponse.token!!) }
-        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+        coVerify { mockDataStoreService.deleteToken() }
     }
 
     @Test
