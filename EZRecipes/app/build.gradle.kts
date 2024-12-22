@@ -73,10 +73,10 @@ android {
 }
 
 dependencies {
-    val composeBomVersion = "2024.11.00"
+    val composeBomVersion = "2024.12.01"
     val lifecycleVersion = "2.8.7"
     val activityVersion = "1.9.3"
-    val materialVersion = "1.7.5"
+    val materialVersion = "1.7.6"
     val material3Version = "1.3.1"
     val retrofitVersion = "2.11.0"
     val roomVersion = "2.6.1"
@@ -96,7 +96,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:$materialVersion")
     implementation("androidx.compose.material3:material3:$material3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
-    implementation("androidx.navigation:navigation-compose:2.8.4")
+    implementation("androidx.navigation:navigation-compose:2.8.5")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // AsyncImage
