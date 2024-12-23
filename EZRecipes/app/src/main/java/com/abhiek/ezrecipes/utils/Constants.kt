@@ -355,7 +355,10 @@ object Constants {
                         )
                     )
                 )
-            )
+            ),
+            totalRatings = 3,
+            averageRating = 3.5,
+            views = 25
         )
         //endregion
         //region Spicy, more culture & types
@@ -508,7 +511,10 @@ object Constants {
                         )
                     )
                 )
-            )
+            ),
+            totalRatings = 538,
+            averageRating = 4.714,
+            views = 1804
         )
         //endregion
         val TERMS = listOf(
