@@ -26,6 +26,6 @@ data class Recipe(
     val instructions: List<Instruction>,
     var token: String? = null, // searchSequenceToken for pagination
     var totalRatings: Int? = null,
-    var averageRatings: Double? = null,
-    var views: Int? = null,
+    var averageRating: Double? = null,
+    var views: Int? = null
 )

@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,6 +33,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.boldAnnotatedString
 import com.abhiek.ezrecipes.utils.contentEquals
+import com.abhiek.ezrecipes.utils.toShorthand
 
 @Composable
 fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Unit) {
@@ -94,16 +96,32 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
             isSustainable = recipe.isSustainable
         )
 
-        // Recipe time and buttons
-        Text(
-            text = boldAnnotatedString(
-                // 2nd arg = count, 3rd arg = formatter args
-                text = context.resources.getQuantityString(R.plurals.recipe_time, recipe.time, recipe.time),
-                endIndex = 5 // "Time:".length = 5
-            ),
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
+        // Recipe time, views, and buttons
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Text(
+                text = boldAnnotatedString(
+                    // 2nd arg = count, 3rd arg = formatter args
+                    text = context.resources.getQuantityString(R.plurals.recipe_time, recipe.time, recipe.time),
+                    endIndex = 5 // "Time:".length = 5
+                ),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            Spacer(
+                modifier = Modifier.weight(1f)
+            )
+            Icon(
+                imageVector = Icons.Filled.Visibility,
+                contentDescription = "views"
+            )
+            Text(
+                text = recipe.views?.toShorthand() ?: "0"
+            )
+        }
 
         if (recipe.types.isNotEmpty() && !(recipe.types contentEquals listOf(MealType.UNKNOWN))) {
             Text(

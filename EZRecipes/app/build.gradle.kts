@@ -73,15 +73,15 @@ android {
 }
 
 dependencies {
-    val composeBomVersion = "2024.11.00"
+    val composeBomVersion = "2024.12.01"
     val lifecycleVersion = "2.8.7"
     val activityVersion = "1.9.3"
-    val materialVersion = "1.7.5"
+    val materialVersion = "1.7.6"
     val material3Version = "1.3.1"
     val retrofitVersion = "2.11.0"
     val roomVersion = "2.6.1"
     val googlePlayVersion = "2.0.2"
-    val jupiterVersion = "5.11.3"
+    val jupiterVersion = "5.11.4"
     val espressoVersion = "3.6.1"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
@@ -96,7 +96,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:$materialVersion")
     implementation("androidx.compose.material3:material3:$material3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
-    implementation("androidx.navigation:navigation-compose:2.8.4")
+    implementation("androidx.navigation:navigation-compose:2.8.5")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // AsyncImage
@@ -120,8 +120,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
-    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+    testImplementation("io.mockk:mockk:1.13.14")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

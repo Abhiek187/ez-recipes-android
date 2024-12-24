@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -212,7 +213,8 @@ fun SignUpForm(
                     profileViewModel.createAccount(email, password)
                 },
                 enabled = !emailEmpty && !emailInvalid && !passwordEmpty && !passwordTooShort &&
-                        !passwordsDoNotMatch && !profileViewModel.isLoading
+                        !passwordsDoNotMatch && !profileViewModel.isLoading,
+                modifier = Modifier.testTag("sign_up_button")
             ) {
                 Text(stringResource(R.string.sign_up_header))
             }

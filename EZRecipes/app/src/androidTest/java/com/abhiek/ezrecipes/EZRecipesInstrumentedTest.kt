@@ -159,8 +159,9 @@ internal class EZRecipesInstrumentedTest {
         shareButton.performClick()
         intended(shareIntent)
 
+        val screenshotName = "recipe-screen"
         shotNum = 1
-        screenshot("recipe-screen", shotNum)
+        screenshot(screenshotName, shotNum)
         shotNum += 1
 
         // Since the recipe loaded will be random, check all the elements that are guaranteed
@@ -206,7 +207,7 @@ internal class EZRecipesInstrumentedTest {
             .onNodeWithText(activity.getString(R.string.summary))
             .performScrollTo()
             .assertExists()
-        screenshot("recipe-screen", shotNum)
+        screenshot(screenshotName, shotNum)
         shotNum += 1
 
         // "Ingredients" appear in each step card
@@ -215,21 +216,21 @@ internal class EZRecipesInstrumentedTest {
             .onFirst()
             .performScrollTo()
             .assertExists()
-        screenshot("recipe-screen", shotNum)
+        screenshot(screenshotName, shotNum)
         shotNum += 1
 
         composeTestRule
             .onNodeWithText(activity.getString(R.string.steps))
             .performScrollTo()
             .assertExists()
-        screenshot("recipe-screen", shotNum)
+        screenshot(screenshotName, shotNum)
         shotNum += 1
 
         composeTestRule
             .onNodeWithText(activity.getString(R.string.attribution))
             .performScrollTo()
             .assertExists()
-        screenshot("recipe-screen", shotNum)
+        screenshot(screenshotName, shotNum)
         shotNum += 1
 
         // Check that clicking the show another recipe button disables the button
@@ -253,6 +254,7 @@ internal class EZRecipesInstrumentedTest {
         // Use the hamburger menu on large screens
         val hamburgerMenu = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
+        val screenshotName = "search-screen"
         var shotNum = 1
 
         if (hamburgerMenu.isDisplayed()) {
@@ -262,7 +264,7 @@ internal class EZRecipesInstrumentedTest {
             composeTestRule
                 .onNodeWithContentDescription(activity.getString(R.string.app_logo_alt))
                 .assertExists()
-            screenshot("search-screen", shotNum)
+            screenshot(screenshotName, shotNum)
             shotNum += 1
         }
 
@@ -282,7 +284,7 @@ internal class EZRecipesInstrumentedTest {
             resultsPlaceholder.assertExists()
         }
 
-        screenshot("search-screen", shotNum)
+        screenshot(screenshotName, shotNum)
         shotNum += 1
         composeTestRule
             .onNodeWithText(activity.getString(R.string.query_section))
@@ -400,7 +402,7 @@ internal class EZRecipesInstrumentedTest {
             .performScrollTo()
             .performClick()
         cuisineDropdown.performClick()
-        screenshot("search-screen", shotNum)
+        screenshot(screenshotName, shotNum)
         shotNum += 1
 
         // Submit the form and wait for results
@@ -419,7 +421,7 @@ internal class EZRecipesInstrumentedTest {
                 resultsTitle.isDisplayed()
             }
         }
-        screenshot("search-screen", shotNum)
+        screenshot(screenshotName, shotNum)
         shotNum += 1
     }
 
@@ -445,6 +447,50 @@ internal class EZRecipesInstrumentedTest {
                 .fetchSemanticsNodes()
                 .isEmpty()
         }
-        screenshot("glossary-view")
+        screenshot("glossary-screen")
+    }
+
+    @LargeTest
+    @Test
+    fun profileScreen() {
+        val hamburgerMenu = composeTestRule
+            .onNodeWithContentDescription(activity.getString(R.string.hamburger_menu_alt))
+
+        if (hamburgerMenu.isDisplayed()) {
+            hamburgerMenu.performClick()
+        }
+
+        val profileTab = composeTestRule
+            .onNodeWithText(activity.getString(R.string.profile_tab))
+        profileTab.performClick()
+
+        // Wait until the profile loads (should be logged out)
+        composeTestRule.waitUntil(timeoutMillis = 30_000) {
+            composeTestRule
+                .onNodeWithText(activity.getString(R.string.profile_loading))
+                .isNotDisplayed()
+        }
+
+        val screenshotName = "profile-screen"
+        var shotNum = 1
+        screenshot(screenshotName, shotNum)
+        shotNum += 1
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.login_message))
+            .assertExists()
+
+        val loginButton = composeTestRule
+            .onNodeWithText(activity.getString(R.string.login))
+        loginButton
+            .assertExists()
+            .performClick()
+
+        // Check all the validations on the login, create account, & forget password forms
+        val profileTest = ProfileTest(
+            composeTestRule, activity, ::screenshot, screenshotName, shotNum
+        )
+        profileTest.testSignIn()
+        profileTest.testSignUp()
+        profileTest.testForgetPassword()
     }
 }

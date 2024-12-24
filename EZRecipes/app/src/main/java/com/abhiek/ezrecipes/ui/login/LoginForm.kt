@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -172,7 +173,8 @@ fun LoginForm(
                 onClick = {
                     profileViewModel.login(username, password)
                 },
-                enabled = !usernameEmpty && !passwordEmpty && !profileViewModel.isLoading
+                enabled = !usernameEmpty && !passwordEmpty && !profileViewModel.isLoading,
+                modifier = Modifier.testTag("login_dialog_button")
             ) {
                 Text(stringResource(R.string.login))
             }
