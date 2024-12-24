@@ -94,10 +94,12 @@ class RecipeRepository(
     suspend fun saveRecentRecipe(recipe: Recipe) {
         if (recentRecipeDao == null) return
         // If the recipe already exists, replace the timestamp with the current time
+        // Also make sure all recipe stats are up-to-date
         val existingRecipe = recentRecipeDao.getRecipeById(recipe.id)
 
         if (existingRecipe != null) {
             existingRecipe.timestamp = System.currentTimeMillis()
+            existingRecipe.recipe = recipe
             recentRecipeDao.insert(existingRecipe)
             return
         }

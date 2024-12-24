@@ -8,5 +8,5 @@ import com.abhiek.ezrecipes.utils.Constants
 data class RecentRecipe(
     @PrimaryKey val id: Int, // extract id from recipe to detect duplicates
     var timestamp: Long,
-    val recipe: Recipe
+    var recipe: Recipe
 )
