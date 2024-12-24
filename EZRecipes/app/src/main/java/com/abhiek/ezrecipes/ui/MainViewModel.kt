@@ -13,6 +13,7 @@ import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.recipe.RecipeResult
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.models.RecipeError
+import com.abhiek.ezrecipes.data.models.RecipeUpdate
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.utils.Constants
 import com.google.android.play.core.review.ReviewManager
@@ -100,9 +101,28 @@ class MainViewModel(
         }
     }
 
-    fun incrementRecipesViewed() {
+    fun incrementRecipesViewed(recipe: Recipe) {
         viewModelScope.launch {
+            // Recipe view updates can occur in the background without impacting the UX
             dataStoreService.incrementRecipesViewed()
+
+            // A token isn't needed for recipe view updates
+            val recipeViewUpdate = RecipeUpdate(view = true)
+            val result = recipeRepository.updateRecipe(
+                id = recipe.id,
+                fields = recipeViewUpdate
+            )
+
+            when (result) {
+                is RecipeResult.Success -> {
+                    Log.d(TAG, "Recipe view count updated successfully")
+                }
+                is RecipeResult.Error -> {
+                    Log.w(TAG, "Failed to update the recipe view count :: error: ${
+                        result.recipeError.error
+                    }")
+                }
+            }
         }
     }
 

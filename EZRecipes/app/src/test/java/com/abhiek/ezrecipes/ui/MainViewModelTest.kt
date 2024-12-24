@@ -126,7 +126,7 @@ internal class MainViewModelTest {
     fun incrementRecipesViewed() = runTest {
         // Given an instance of MainViewModel
         // When incrementRecipesViewed() is called
-        viewModel.incrementRecipesViewed()
+        viewModel.incrementRecipesViewed(mockService.recipes[1])
 
         // Then the corresponding DataStore method should be called
         coVerify { mockDataStoreService.incrementRecipesViewed() }

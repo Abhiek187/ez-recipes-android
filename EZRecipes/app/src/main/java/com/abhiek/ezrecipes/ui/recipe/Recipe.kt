@@ -31,7 +31,7 @@ fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: Stri
     LaunchedEffect(viewModel.recipe) {
         viewModel.recipe?.let { recipe ->
             viewModel.saveRecentRecipe(recipe)
-            viewModel.incrementRecipesViewed()
+            viewModel.incrementRecipesViewed(recipe)
         }
     }
 
