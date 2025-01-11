@@ -6,6 +6,6 @@ data class Chef(
     var emailVerified: Boolean,
     val ratings: Map<String, Int>,
     val recentRecipes: Map<String, String>,
-    var favoriteRecipes: List<String>,
+    val favoriteRecipes: List<String>,
     val token: String
 )

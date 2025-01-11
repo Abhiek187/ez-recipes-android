@@ -39,19 +39,13 @@ fun RecipeCard(
     profileViewModel: ProfileViewModel,
     onClick: () -> Unit
 ) {
-    var isFavorite by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
+    val isFavorite = profileViewModel.chef?.favoriteRecipes?.contains(recipe.id.toString()) ?: false
     val calories = recipe.nutrients.firstOrNull { nutrient -> nutrient.name == "Calories" }
 
     LaunchedEffect(Unit) {
         profileViewModel.getChef()
-    }
-    LaunchedEffect(profileViewModel.chef?.favoriteRecipes) {
-        if (profileViewModel.chef != null) {
-            val favoriteRecipes = profileViewModel.chef?.favoriteRecipes
-            isFavorite = favoriteRecipes?.contains(recipe.id.toString()) ?: false
-        }
     }
 
     ElevatedCard(

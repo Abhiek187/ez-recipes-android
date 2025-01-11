@@ -42,7 +42,6 @@ fun TopBar(
     drawerState: DrawerState? = null,
     profileViewModel: ProfileViewModel
 ) {
-    var isFavorite by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -50,15 +49,11 @@ fun TopBar(
     val isRecipeRoute = currentRoute == Routes.RECIPE
     val recipeId = navBackStackEntry?.arguments?.getString("id")
 
+    val isFavorite = profileViewModel.chef?.favoriteRecipes?.contains(recipeId) ?: false
+
     // Check if the recipe is one of the chef's favorites
     LaunchedEffect(Unit) {
         profileViewModel.getChef()
-    }
-    LaunchedEffect(profileViewModel.chef?.favoriteRecipes) {
-        if (profileViewModel.chef != null) {
-            val favoriteRecipes = profileViewModel.chef?.favoriteRecipes
-            isFavorite = favoriteRecipes?.contains(recipeId) ?: false
-        }
     }
 
     fun shareRecipe(id: String) {

@@ -442,14 +442,13 @@ class ProfileViewModel(
             when (result) {
                 is RecipeResult.Success -> {
                     Log.d(TAG, "Recipe favorite status updated successfully")
-
-                    if (chef != null) {
-                        if (isFavorite) {
-                            chef!!.favoriteRecipes += recipeId.toString()
+                    chef = chef?.copy(
+                        favoriteRecipes = if (isFavorite) {
+                            chef!!.favoriteRecipes + recipeId.toString()
                         } else {
-                            chef!!.favoriteRecipes -= recipeId.toString()
+                            chef!!.favoriteRecipes - recipeId.toString()
                         }
-                    }
+                    )
 
                     result.response.token?.let { newToken ->
                         saveToken(newToken)
