@@ -129,14 +129,6 @@ internal class EZRecipesInstrumentedTest {
         favoriteButton.assertExists()
         unFavoriteButton.assertDoesNotExist()
 
-        favoriteButton.performClick()
-        favoriteButton.assertDoesNotExist()
-        unFavoriteButton.assertExists()
-
-        unFavoriteButton.performClick()
-        favoriteButton.assertExists()
-        unFavoriteButton.assertDoesNotExist()
-
         // Check that the share button opens the Sharesheet
         val shareButton = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.share_alt))

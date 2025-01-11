@@ -441,7 +441,6 @@ class ProfileViewModel(
 
             when (result) {
                 is RecipeResult.Success -> {
-                    Log.d(TAG, "Recipe favorite status updated successfully")
                     chef = chef?.copy(
                         favoriteRecipes = if (isFavorite) {
                             chef!!.favoriteRecipes + recipeId.toString()

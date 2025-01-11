@@ -41,6 +41,7 @@ internal class ProfileViewModelTest {
     private fun mockLog() {
         mockkStatic(Log::class)
         every { Log.d(any(), any<String>()) } returns 0
+        every { Log.w(any(), any<String>()) } returns 0
         every { Log.e(any(), any<String>()) } returns 0
     }
 
@@ -532,6 +533,77 @@ internal class ProfileViewModelTest {
         assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
         assertFalse(viewModel.showAlert)
 
+        coVerify { mockDataStoreService.getToken() }
+    }
+
+    @Test
+    fun favoriteRecipeSuccess() = runTest {
+        // Given a recipe and a valid token
+        val recipeId = 1
+        viewModel.getChef()
+
+        // When adding the recipe to favorites
+        viewModel.toggleFavoriteRecipe(recipeId, true)
+
+        // Then the recipe should appear in the chef's favorites
+        assertTrue(viewModel.chef?.favoriteRecipes?.contains(recipeId.toString()) ?: false)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+
+        assertNotNull(mockChefService.chefEmailResponse.token)
+        verify { Encryptor.encrypt(mockChefService.chefEmailResponse.token!!) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun unFavoriteRecipeSuccess() = runTest {
+        // Given a recipe and a valid token
+        val recipeId = 1
+        viewModel.getChef()
+
+        // When removing the recipe from favorites
+        viewModel.toggleFavoriteRecipe(recipeId, false)
+
+        // Then the recipe shouldn't appear in the chef's favorites
+        assertFalse(viewModel.chef?.favoriteRecipes?.contains(recipeId.toString()) ?: true)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+
+        assertNotNull(mockChefService.chefEmailResponse.token)
+        verify { Encryptor.encrypt(mockChefService.chefEmailResponse.token!!) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun toggleFavoriteRecipeError() = runTest {
+        // Given a recipe and a valid token
+        val recipeId = 1
+        viewModel.getChef()
+
+        // When toggling a recipe as a favorite and an error occurs
+        mockRecipeService.isSuccess = false
+        viewModel.toggleFavoriteRecipe(recipeId, true)
+
+        // Then an error is logged
+        println(viewModel.chef?.favoriteRecipes)
+        assertFalse(viewModel.chef?.favoriteRecipes?.contains(recipeId.toString()) ?: true)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+    }
+
+    @Test
+    fun toggleFavoriteRecipeNoToken() = runTest {
+        // Given no token
+        val recipeId = 1
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When toggling a recipe as a favorite
+        viewModel.toggleFavoriteRecipe(recipeId, true)
+
+        // Then an error is logged
         coVerify { mockDataStoreService.getToken() }
     }
 }
