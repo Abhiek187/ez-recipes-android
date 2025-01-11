@@ -16,22 +16,43 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.chef.ChefRepository
+import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Recipe
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.boldAnnotatedString
 import kotlin.math.roundToInt
 
 @Composable
-fun RecipeCard(recipe: Recipe, width: Dp? = null, onClick: () -> Unit) {
+fun RecipeCard(
+    recipe: Recipe,
+    width: Dp? = null,
+    profileViewModel: ProfileViewModel,
+    onClick: () -> Unit
+) {
     var isFavorite by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     val calories = recipe.nutrients.firstOrNull { nutrient -> nutrient.name == "Calories" }
+
+    LaunchedEffect(Unit) {
+        profileViewModel.getChef()
+    }
+    LaunchedEffect(profileViewModel.chef?.favoriteRecipes) {
+        if (profileViewModel.chef != null) {
+            val favoriteRecipes = profileViewModel.chef?.favoriteRecipes
+            isFavorite = favoriteRecipes?.contains(recipe.id.toString()) ?: false
+        }
+    }
 
     ElevatedCard(
         modifier = Modifier
@@ -63,12 +84,20 @@ fun RecipeCard(recipe: Recipe, width: Dp? = null, onClick: () -> Unit) {
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.weight(1f)
                 )
-                IconButton(onClick = { isFavorite = !isFavorite }) {
+                IconButton(onClick = {
+                    profileViewModel.toggleFavoriteRecipe(recipe.id, !isFavorite)
+                }) {
                     Icon(
-                        imageVector = if (isFavorite) Icons.Filled.Favorite
-                            else Icons.Filled.FavoriteBorder,
-                        contentDescription = if (isFavorite) stringResource(R.string.un_favorite_alt)
-                            else stringResource(R.string.favorite_alt),
+                        imageVector = if (isFavorite) {
+                            Icons.Filled.Favorite
+                        } else {
+                            Icons.Filled.FavoriteBorder
+                        },
+                        contentDescription = if (isFavorite) {
+                            stringResource(R.string.un_favorite_alt)
+                        } else {
+                            stringResource(R.string.favorite_alt)
+                        },
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -103,9 +132,21 @@ fun RecipeCard(recipe: Recipe, width: Dp? = null, onClick: () -> Unit) {
 @OrientationPreviews
 @Composable
 private fun RecipeCardPreview() {
+    val context = LocalContext.current
+    val chefService = MockChefService
+    val recipeService = MockRecipeService
+    val profileViewModel = ProfileViewModel(
+        chefRepository = ChefRepository(chefService),
+        recipeRepository = RecipeRepository(recipeService),
+        dataStoreService = DataStoreService(context)
+    )
+
     EZRecipesTheme {
         Surface {
-            RecipeCard(Constants.Mocks.PINEAPPLE_SALAD) {}
+            RecipeCard(
+                recipe = Constants.Mocks.PINEAPPLE_SALAD,
+                profileViewModel = profileViewModel
+            ) {}
         }
     }
 }

@@ -16,10 +16,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.chef.ChefRepository
+import com.abhiek.ezrecipes.data.chef.MockChefService
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Routes
@@ -33,14 +39,27 @@ fun TopBar(
     scope: CoroutineScope,
     navController: NavHostController,
     widthSizeClass: WindowWidthSizeClass,
-    drawerState: DrawerState? = null
+    drawerState: DrawerState? = null,
+    profileViewModel: ProfileViewModel
 ) {
     var isFavorite by remember { mutableStateOf(false) }
-    // Get a context variable like in activities
     val context = LocalContext.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val isRecipeRoute = currentRoute == Routes.RECIPE
+    val recipeId = navBackStackEntry?.arguments?.getString("id")
+
+    // Check if the recipe is one of the chef's favorites
+    LaunchedEffect(Unit) {
+        profileViewModel.getChef()
+    }
+    LaunchedEffect(profileViewModel.chef?.favoriteRecipes) {
+        if (profileViewModel.chef != null) {
+            val favoriteRecipes = profileViewModel.chef?.favoriteRecipes
+            isFavorite = favoriteRecipes?.contains(recipeId) ?: false
+        }
+    }
 
     fun shareRecipe(id: String) {
         // Create a Sharesheet to share the recipe with others
@@ -74,19 +93,25 @@ fun TopBar(
         },
         // Add a favorite and share button on the right side if we're on the recipe screen
         actions = {
-            if (currentRoute == Routes.RECIPE) {
-                IconButton(onClick = { isFavorite = !isFavorite }) {
+            if (isRecipeRoute && recipeId?.toIntOrNull() != null) {
+                IconButton(onClick = {
+                    profileViewModel.toggleFavoriteRecipe(recipeId.toInt(), !isFavorite)
+                }) {
                     Icon(
-                        if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                        if (isFavorite) stringResource(R.string.un_favorite_alt) else stringResource(
-                            R.string.favorite_alt
-                        )
+                        imageVector = if (isFavorite) {
+                            Icons.Filled.Favorite
+                        } else {
+                            Icons.Filled.FavoriteBorder
+                        },
+                        contentDescription = if (isFavorite) {
+                            stringResource(R.string.un_favorite_alt)
+                        } else {
+                            stringResource(R.string.favorite_alt)
+                        }
                     )
                 }
                 IconButton(onClick = {
-                    navBackStackEntry?.arguments?.getString("id")?.let { recipeId ->
-                        shareRecipe(recipeId)
-                    }
+                    shareRecipe(recipeId)
                 }) {
                     Icon(Icons.Filled.Share, stringResource(R.string.share_alt))
                 }
@@ -112,7 +137,16 @@ fun TopBarPreview() {
     val windowSize = currentWindowSize()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
+    val context = LocalContext.current
+    val chefService = MockChefService
+    val recipeService = MockRecipeService
+    val profileViewModel = ProfileViewModel(
+        chefRepository = ChefRepository(chefService),
+        recipeRepository = RecipeRepository(recipeService),
+        dataStoreService = DataStoreService(context)
+    )
+
     EZRecipesTheme {
-        TopBar(scope, navController, windowSize.widthSizeClass, drawerState)
+        TopBar(scope, navController, windowSize.widthSizeClass, drawerState, profileViewModel)
     }
 }

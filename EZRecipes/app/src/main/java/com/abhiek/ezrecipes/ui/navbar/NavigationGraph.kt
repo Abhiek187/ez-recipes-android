@@ -81,7 +81,7 @@ fun NavigationGraph(
                 { slideRightEnter() }
             } else null
         ) {
-            Home(mainViewModel) {
+            Home(mainViewModel, profileViewModel) {
                 navController.navigate(
                     Routes.RECIPE.replace(
                         "{id}", mainViewModel.recipe?.id.toString()
@@ -132,6 +132,7 @@ fun NavigationGraph(
                     SearchResults(
                         mainViewModel,
                         searchViewModel,
+                        profileViewModel,
                         modifier = Modifier.weight(
                             if (widthSizeClass == WindowWidthSizeClass.Medium) 1f else 2f
                         )
@@ -154,7 +155,7 @@ fun NavigationGraph(
             popEnterTransition = { slideRightEnter() },
             popExitTransition = { slideRightExit() }
         ) {
-            SearchResults(mainViewModel, searchViewModel) {
+            SearchResults(mainViewModel, searchViewModel, profileViewModel) {
                 navController.navigate(
                     Routes.RECIPE.replace(
                         "{id}", mainViewModel.recipe?.id.toString()

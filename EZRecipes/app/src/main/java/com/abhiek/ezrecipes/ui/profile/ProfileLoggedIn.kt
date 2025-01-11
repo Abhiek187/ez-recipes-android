@@ -76,7 +76,8 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
                     for (recipe in profileViewModel.favoriteRecipes) {
                         RecipeCard(
                             recipe = recipe,
-                            width = 350.dp
+                            width = 350.dp,
+                            profileViewModel = profileViewModel
                         ) {}
                     }
                 }
@@ -100,7 +101,8 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
                     for (recipe in profileViewModel.recentRecipes) {
                         RecipeCard(
                             recipe = recipe,
-                            width = 350.dp
+                            width = 350.dp,
+                            profileViewModel = profileViewModel
                         ) {}
                     }
                 }
@@ -124,7 +126,8 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
                     for (recipe in profileViewModel.ratedRecipes) {
                         RecipeCard(
                             recipe = recipe,
-                            width = 350.dp
+                            width = 350.dp,
+                            profileViewModel = profileViewModel
                         ) {}
                     }
                 }
