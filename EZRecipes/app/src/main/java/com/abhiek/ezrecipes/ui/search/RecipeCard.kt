@@ -78,9 +78,15 @@ fun RecipeCard(
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.weight(1f)
                 )
-                IconButton(onClick = {
-                    profileViewModel.toggleFavoriteRecipe(recipe.id, !isFavorite)
-                }) {
+                IconButton(
+                    onClick = {
+                        profileViewModel.toggleFavoriteRecipe(recipe.id, !isFavorite)
+                    },
+                    enabled = profileViewModel.chef != null,
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
                     Icon(
                         imageVector = if (isFavorite) {
                             Icons.Filled.Favorite
@@ -91,8 +97,7 @@ fun RecipeCard(
                             stringResource(R.string.un_favorite_alt)
                         } else {
                             stringResource(R.string.favorite_alt)
-                        },
-                        tint = MaterialTheme.colorScheme.primary
+                        }
                     )
                 }
             }

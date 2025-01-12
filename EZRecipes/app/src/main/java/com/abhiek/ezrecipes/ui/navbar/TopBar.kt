@@ -89,9 +89,12 @@ fun TopBar(
         // Add a favorite and share button on the right side if we're on the recipe screen
         actions = {
             if (isRecipeRoute && recipeId?.toIntOrNull() != null) {
-                IconButton(onClick = {
-                    profileViewModel.toggleFavoriteRecipe(recipeId.toInt(), !isFavorite)
-                }) {
+                IconButton(
+                    onClick = {
+                        profileViewModel.toggleFavoriteRecipe(recipeId.toInt(), !isFavorite)
+                    },
+                    enabled = profileViewModel.chef != null
+                ) {
                     Icon(
                         imageVector = if (isFavorite) {
                             Icons.Filled.Favorite
