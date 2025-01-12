@@ -430,4 +430,36 @@ class ProfileViewModel(
             }
         }
     }
+
+    fun toggleFavoriteRecipe(recipeId: Int, isFavorite: Boolean) {
+        viewModelScope.launch {
+            isLoading = true
+            val recipeUpdate = RecipeUpdate(isFavorite = isFavorite)
+            val token = getToken()
+            val result = recipeRepository.updateRecipe(recipeId, recipeUpdate, token)
+            isLoading = false
+
+            when (result) {
+                is RecipeResult.Success -> {
+                    chef = chef?.copy(
+                        favoriteRecipes = if (isFavorite) {
+                            chef!!.favoriteRecipes + recipeId.toString()
+                        } else {
+                            chef!!.favoriteRecipes - recipeId.toString()
+                        }
+                    )
+
+                    result.response.token?.let { newToken ->
+                        saveToken(newToken)
+                    }
+                }
+                is RecipeResult.Error -> {
+                    Log.w(
+                        TAG, "Failed to update the recipe favorite status :: error: ${
+                        result.recipeError.error
+                    }")
+                }
+            }
+        }
+    }
 }

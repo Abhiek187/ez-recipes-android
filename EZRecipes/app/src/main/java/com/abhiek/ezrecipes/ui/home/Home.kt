@@ -22,6 +22,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.chef.ChefRepository
+import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.RecentRecipe
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
@@ -33,6 +35,7 @@ import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
@@ -44,6 +47,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun Home(
     mainViewModel: MainViewModel,
+    profileViewModel: ProfileViewModel,
     onNavigateToRecipe: () -> Unit
 ) {
     val context = LocalContext.current
@@ -171,7 +175,8 @@ fun Home(
                     mainViewModel.recentRecipes.forEach { recentRecipe ->
                         RecipeCard(
                             recipe = recentRecipe.recipe,
-                            width = 350.dp
+                            width = 350.dp,
+                            profileViewModel = profileViewModel
                         ) {
                             mainViewModel.recipe = recentRecipe.recipe
                             onNavigateToRecipe()
@@ -229,9 +234,16 @@ private fun HomePreview(
         RecentRecipe(recipe.id, System.currentTimeMillis(), recipe)
     }
 
+    val chefService = MockChefService
+    val profileViewModel = ProfileViewModel(
+        chefRepository = ChefRepository(chefService),
+        recipeRepository = RecipeRepository(recipeService),
+        dataStoreService = DataStoreService(context)
+    )
+
     EZRecipesTheme {
         Surface {
-            Home(viewModel) {}
+            Home(viewModel, profileViewModel) {}
         }
     }
 }

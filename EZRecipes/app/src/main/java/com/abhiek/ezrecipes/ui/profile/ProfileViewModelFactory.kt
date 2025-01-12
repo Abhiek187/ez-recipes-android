@@ -15,10 +15,10 @@ class ProfileViewModelFactory(private val context: Context): ViewModelProvider.F
         if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
             return ProfileViewModel(
                 chefRepository = ChefRepository(
-                    chefService = ChefService.instance
+                    chefService = ChefService.getInstance(context)
                 ),
                 recipeRepository = RecipeRepository(
-                    recipeService = RecipeService.instance
+                    recipeService = RecipeService.getInstance(context)
                 ),
                 dataStoreService = DataStoreService(context)
             ) as T

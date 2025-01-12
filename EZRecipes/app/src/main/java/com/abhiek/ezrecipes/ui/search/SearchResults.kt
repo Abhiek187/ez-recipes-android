@@ -20,6 +20,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.chef.ChefRepository
+import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
@@ -30,6 +32,7 @@ import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
 import com.google.android.play.core.review.testing.FakeReviewManager
@@ -38,6 +41,7 @@ import com.google.android.play.core.review.testing.FakeReviewManager
 fun SearchResults(
     mainViewModel: MainViewModel,
     searchViewModel: SearchViewModel,
+    profileViewModel: ProfileViewModel,
     modifier: Modifier = Modifier,
     onNavigateToRecipe: () -> Unit
 ) {
@@ -79,7 +83,7 @@ fun SearchResults(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(searchViewModel.recipes) { recipe ->
-                    RecipeCard(recipe) {
+                    RecipeCard(recipe = recipe, profileViewModel = profileViewModel) {
                         mainViewModel.recipe = recipe
                         onNavigateToRecipe()
                     }
@@ -134,9 +138,16 @@ private fun SearchResultsPreview(
     val searchViewModel = SearchViewModel(RecipeRepository((recipeService)))
     searchViewModel.recipes = recipes
 
+    val chefService = MockChefService
+    val profileViewModel = ProfileViewModel(
+        chefRepository = ChefRepository(chefService),
+        recipeRepository = RecipeRepository(recipeService),
+        dataStoreService = DataStoreService(context)
+    )
+
     EZRecipesTheme {
         Surface {
-            SearchResults(recipeViewModel, searchViewModel) {}
+            SearchResults(recipeViewModel, searchViewModel, profileViewModel) {}
         }
     }
 }
