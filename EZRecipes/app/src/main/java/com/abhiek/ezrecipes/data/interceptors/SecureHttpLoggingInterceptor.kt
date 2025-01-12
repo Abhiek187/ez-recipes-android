@@ -1,4 +1,4 @@
-package com.abhiek.ezrecipes.data.chef
+package com.abhiek.ezrecipes.data.interceptors
 
 import android.util.Log
 import okhttp3.Headers

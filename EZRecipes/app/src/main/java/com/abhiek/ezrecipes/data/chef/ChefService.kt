@@ -1,5 +1,7 @@
 package com.abhiek.ezrecipes.data.chef
 
+import com.abhiek.ezrecipes.data.interceptors.CacheInterceptor
+import com.abhiek.ezrecipes.data.interceptors.SecureHttpLoggingInterceptor
 import com.abhiek.ezrecipes.data.models.*
 import com.abhiek.ezrecipes.utils.Constants
 import okhttp3.OkHttpClient
@@ -49,13 +51,17 @@ interface ChefService {
     companion object {
         private lateinit var chefService: ChefService
 
-        val instance: ChefService
-            get() {
+        fun getInstance(
+            // Need to inject the cache interceptor to pass the context properly
+            cacheInterceptor: CacheInterceptor
+        ): ChefService {
                 if (Companion::chefService.isInitialized) return chefService
 
                 val loggingInterceptor = SecureHttpLoggingInterceptor()
                 val httpClient = OkHttpClient().newBuilder()
+                    .cache(cacheInterceptor.cache)
                     .addInterceptor(loggingInterceptor)
+                    .addInterceptor(cacheInterceptor)
                     .readTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
                     .connectTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
                     .build()
