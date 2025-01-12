@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.data.chef
 
+import android.content.Context
 import com.abhiek.ezrecipes.data.interceptors.CacheInterceptor
 import com.abhiek.ezrecipes.data.interceptors.SecureHttpLoggingInterceptor
 import com.abhiek.ezrecipes.data.models.*
@@ -51,29 +52,32 @@ interface ChefService {
     companion object {
         private lateinit var chefService: ChefService
 
-        fun getInstance(
-            // Need to inject the cache interceptor to pass the context properly
-            cacheInterceptor: CacheInterceptor
-        ): ChefService {
-                if (Companion::chefService.isInitialized) return chefService
+        fun getInstance(context: Context): ChefService {
+            if (Companion::chefService.isInitialized) return chefService
 
-                val loggingInterceptor = SecureHttpLoggingInterceptor()
-                val httpClient = OkHttpClient().newBuilder()
-                    .cache(cacheInterceptor.cache)
-                    .addInterceptor(loggingInterceptor)
-                    .addInterceptor(cacheInterceptor)
-                    .readTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                    .connectTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                    .build()
+            val loggingInterceptor = SecureHttpLoggingInterceptor()
+            val cacheInterceptor = CacheInterceptor(
+                context = context,
+                sizeInMB = 1,
+                age = 5,
+                units = TimeUnit.MINUTES
+            )
+            val httpClient = OkHttpClient().newBuilder()
+                .cache(cacheInterceptor.cache)
+                .addInterceptor(loggingInterceptor)
+                .addInterceptor(cacheInterceptor)
+                .readTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .connectTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .build()
 
-                val retrofit = Retrofit.Builder()
-                    .baseUrl(Constants.SERVER_BASE_URL + Constants.CHEFS_PATH)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .client(httpClient)
-                    .build()
+            val retrofit = Retrofit.Builder()
+                .baseUrl(Constants.SERVER_BASE_URL + Constants.CHEFS_PATH)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient)
+                .build()
 
-                chefService = retrofit.create(ChefService::class.java)
-                return chefService
-            }
+            chefService = retrofit.create(ChefService::class.java)
+            return chefService
+        }
     }
 }

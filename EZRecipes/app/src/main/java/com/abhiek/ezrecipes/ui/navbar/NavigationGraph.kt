@@ -51,7 +51,7 @@ fun NavigationGraph(
         factory = MainViewModelFactory(context)
     )
     val searchViewModel = viewModel<SearchViewModel>(
-        factory = SearchViewModelFactory()
+        factory = SearchViewModelFactory(context)
     )
     val glossaryViewModel = viewModel<GlossaryViewModel>(
         factory = GlossaryViewModelFactory(context)
