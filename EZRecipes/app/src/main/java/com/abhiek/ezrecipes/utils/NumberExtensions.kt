@@ -50,3 +50,23 @@ fun Int.toShorthand(): String {
         }
     }
 }
+
+/**
+ * Rounds a number to the specified number of decimal places. Trailing zeros are removed.
+ *
+ * @param places the number of decimal places to round to
+ * @return the rounded number as a String
+ * @throws IllegalArgumentException if `places` is negative
+ */
+fun Double.round(places: Int): String {
+    if (places < 0) {
+        throw IllegalArgumentException("The number of decimal places must be non-negative")
+    }
+
+    val roundedString = "%.${places}f".format(this)
+    return if (roundedString.contains('.')) {
+        roundedString.trimEnd('0').trimEnd('.')
+    } else {
+        roundedString
+    }
+}
