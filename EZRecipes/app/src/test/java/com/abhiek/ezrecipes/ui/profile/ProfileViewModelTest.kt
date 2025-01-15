@@ -80,6 +80,7 @@ internal class ProfileViewModelTest {
     @AfterEach
     fun tearDown() {
         // Revert back to the defaults
+        mockRecipeService.isSuccess = true
         mockChefService.isSuccess = true
         mockChefService.isEmailVerified = true
     }
@@ -587,7 +588,6 @@ internal class ProfileViewModelTest {
         viewModel.toggleFavoriteRecipe(recipeId, true)
 
         // Then an error is logged
-        println(viewModel.chef?.favoriteRecipes)
         assertFalse(viewModel.chef?.favoriteRecipes?.contains(recipeId.toString()) ?: true)
 
         coVerify { mockDataStoreService.getToken() }
@@ -602,6 +602,59 @@ internal class ProfileViewModelTest {
 
         // When toggling a recipe as a favorite
         viewModel.toggleFavoriteRecipe(recipeId, true)
+
+        // Then an error is logged
+        coVerify { mockDataStoreService.getToken() }
+    }
+
+    @Test
+    fun rateRecipeSuccess() = runTest {
+        // Given a recipe and a valid token
+        val recipeId = 1
+        val rating = 4
+        viewModel.getChef()
+
+        // When rating the recipe
+        viewModel.rateRecipe(recipeId, rating)
+
+        // Then the rating should be saved with the chef
+        assertEquals(viewModel.chef?.ratings?.get(recipeId.toString()), rating)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+
+        assertNotNull(mockChefService.chefEmailResponse.token)
+        verify { Encryptor.encrypt(mockChefService.chefEmailResponse.token!!) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun rateRecipeError() = runTest {
+        // Given a recipe and a valid token
+        val recipeId = 1
+        val rating = 4
+        viewModel.getChef()
+
+        // When rating the recipe and an error occurs
+        mockRecipeService.isSuccess = false
+        viewModel.rateRecipe(recipeId, rating)
+
+        // Then an error is logged
+        assertFalse(viewModel.chef?.ratings?.contains(recipeId.toString()) ?: true)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+    }
+
+    @Test
+    fun rateRecipeNoToken() = runTest {
+        // Given no token
+        val recipeId = 1
+        val rating = 4
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When rating the recipe
+        viewModel.rateRecipe(recipeId, rating)
 
         // Then an error is logged
         coVerify { mockDataStoreService.getToken() }

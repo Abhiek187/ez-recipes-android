@@ -454,8 +454,34 @@ class ProfileViewModel(
                     }
                 }
                 is RecipeResult.Error -> {
-                    Log.w(
-                        TAG, "Failed to update the recipe favorite status :: error: ${
+                    Log.w(TAG, "Failed to update the recipe favorite status :: error: ${
+                        result.recipeError.error
+                    }")
+                }
+            }
+        }
+    }
+
+    fun rateRecipe(recipeId: Int, rating: Int) {
+        viewModelScope.launch {
+            isLoading = true
+            val recipeUpdate = RecipeUpdate(rating = rating)
+            val token = getToken()
+            val result = recipeRepository.updateRecipe(recipeId, recipeUpdate, token)
+            isLoading = false
+
+            when (result) {
+                is RecipeResult.Success -> {
+                    chef = chef?.copy(
+                        ratings = chef!!.ratings + (recipeId.toString() to rating)
+                    )
+
+                    result.response.token?.let { newToken ->
+                        saveToken(newToken)
+                    }
+                }
+                is RecipeResult.Error -> {
+                    Log.w(TAG, "Failed to rate the recipe :: error: ${
                         result.recipeError.error
                     }")
                 }
