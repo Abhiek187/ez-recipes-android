@@ -12,8 +12,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -50,7 +52,11 @@ fun Accordion(
                 imageVector = Icons.Default.run {
                     if (isExpanded) KeyboardArrowUp else KeyboardArrowDown
                 },
-                contentDescription = if (isExpanded) "Expanded" else "Collapsed",
+                contentDescription = if (isExpanded) {
+                    stringResource(R.string.accordion_collapse)
+                } else {
+                    stringResource(R.string.accordion_expand)
+                },
                 tint = MaterialTheme.colorScheme.onSurface.copy(
                     alpha = 0.6f
                 )

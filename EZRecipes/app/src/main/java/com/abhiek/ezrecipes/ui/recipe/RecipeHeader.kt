@@ -115,7 +115,7 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
             )
             Icon(
                 imageVector = Icons.Filled.Visibility,
-                contentDescription = "views"
+                contentDescription = stringResource(R.string.views_alt)
             )
             Text(
                 text = recipe.views?.toShorthand() ?: "0"

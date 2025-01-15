@@ -69,16 +69,16 @@ internal class ProfileTest(
         passwordField.performTextInput("password")
         // The eye icon appears twice on the sign up form
         composeTestRule
-            .onAllNodesWithContentDescription("Hide password")
+            .onAllNodesWithContentDescription(activity.getString(R.string.password_hide))
             .assertCountEquals(0)
         composeTestRule
-            .onAllNodesWithContentDescription("Show password")
+            .onAllNodesWithContentDescription(activity.getString(R.string.password_show))
             .assertCountEquals(1)
             .onFirst()
             .performClick()
             .assertDoesNotExist()
         composeTestRule
-            .onAllNodesWithContentDescription("Hide password")
+            .onAllNodesWithContentDescription(activity.getString(R.string.password_hide))
             .assertCountEquals(1)
             .onFirst()
             .performClick()
@@ -131,16 +131,16 @@ internal class ProfileTest(
             .assertCountEquals(2)
         passwordField.performTextInput("word")
         composeTestRule
-            .onAllNodesWithContentDescription("Hide password")
+            .onAllNodesWithContentDescription(activity.getString(R.string.password_hide))
             .assertCountEquals(0)
         composeTestRule
-            .onAllNodesWithContentDescription("Show password")
+            .onAllNodesWithContentDescription(activity.getString(R.string.password_show))
             .assertCountEquals(2)
             .onFirst()
             .performClick()
             .assertDoesNotExist()
         composeTestRule
-            .onAllNodesWithContentDescription("Hide password")
+            .onAllNodesWithContentDescription(activity.getString(R.string.password_hide))
             .assertCountEquals(2)
             .onFirst()
             .performClick()
@@ -169,16 +169,16 @@ internal class ProfileTest(
         passwordMatchError.assertExists()
         confirmPasswordField.performTextInput("password")
         composeTestRule
-            .onAllNodesWithContentDescription("Hide password")
+            .onAllNodesWithContentDescription(activity.getString(R.string.password_hide))
             .assertCountEquals(0)
         composeTestRule
-            .onAllNodesWithContentDescription("Show password")
+            .onAllNodesWithContentDescription(activity.getString(R.string.password_show))
             .assertCountEquals(2)
             .onLast()
             .performClick()
             .assertDoesNotExist()
         composeTestRule
-            .onAllNodesWithContentDescription("Hide password")
+            .onAllNodesWithContentDescription(activity.getString(R.string.password_hide))
             .assertCountEquals(2)
             .onLast()
             .performClick()

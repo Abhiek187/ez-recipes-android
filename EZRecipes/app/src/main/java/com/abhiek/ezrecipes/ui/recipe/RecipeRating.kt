@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -49,19 +50,19 @@ fun RecipeRating(averageRating: Double?, totalRatings: Int?, modifier: Modifier 
                 if (i < stars || (i == stars && averageRating >= stars)) {
                     Icon(
                         imageVector = Icons.Filled.Star,
-                        contentDescription = "Filled star",
+                        contentDescription = stringResource(R.string.star_filled),
                         tint = starColor
                     )
                 } else if (i == stars && averageRating < stars) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.StarHalf,
-                        contentDescription = "Half star",
+                        contentDescription = stringResource(R.string.star_half),
                         tint = starColor
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.StarRate,
-                        contentDescription = "Empty star",
+                        contentDescription = stringResource(R.string.star_empty),
                         tint = starColor
                     )
                 }
