@@ -29,7 +29,7 @@ import com.abhiek.ezrecipes.utils.toShorthand
 import kotlin.math.roundToInt
 
 @Composable
-fun RecipeRating(averageRating: Double?, totalRatings: Int) {
+fun RecipeRating(averageRating: Double?, totalRatings: Int?, modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
     val stars = averageRating?.roundToInt() ?: 0
@@ -41,7 +41,8 @@ fun RecipeRating(averageRating: Double?, totalRatings: Int) {
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
     ) {
         if (averageRating != null) {
             for (i in 1..5) {
@@ -67,14 +68,12 @@ fun RecipeRating(averageRating: Double?, totalRatings: Int) {
             }
         }
         Text(
-            text = if (averageRating != null) {
+            text = if (averageRating != null && totalRatings != null) {
                 "(${averageRating.round(places = 1)}/5, " + context.resources.getQuantityString(
                     R.plurals.ratings, totalRatings, totalRatings.toShorthand()
                 ) + ")"
             } else {
-                "(" + context.resources.getQuantityString(
-                    R.plurals.ratings, totalRatings, totalRatings.toShorthand()
-                ) + ")"
+                "(0 ratings)"
             }
         )
     }
@@ -82,12 +81,12 @@ fun RecipeRating(averageRating: Double?, totalRatings: Int) {
 
 private data class RecipeRatingState(
     val averageRating: Double?,
-    val totalRatings: Int
+    val totalRatings: Int?
 )
 
 private class RecipeRatingPreviewParameterProvider: PreviewParameterProvider<RecipeRatingState> {
     override val values = sequenceOf(
-        RecipeRatingState(averageRating = null, totalRatings = 0),
+        RecipeRatingState(averageRating = null, totalRatings = null),
         RecipeRatingState(averageRating = 5.0, totalRatings = 1),
         RecipeRatingState(averageRating = 4.1, totalRatings = 1934),
         RecipeRatingState(averageRating = 2.5, totalRatings = 10),

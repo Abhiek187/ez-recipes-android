@@ -56,7 +56,6 @@
 
     <string name="recipe_meal_types">Great for: %1$s</string>
     <string name="recipe_cuisines">Cuisines: %1$s</string>
-    <string name="made_button">I Made This!</string>
     <string name="show_recipe_button">Show Me Another Recipe!</string>
 
     <string name="nutrition_facts">Nutrition Facts</string>
