@@ -105,7 +105,12 @@ fun NavigationGraph(
             popEnterTransition = { slideRightEnter() },
             popExitTransition = { slideRightExit() }
         ) { backStackEntry ->
-            Recipe(mainViewModel, isWideScreen, backStackEntry.arguments?.getString("id"))
+            Recipe(
+                mainViewModel,
+                profileViewModel,
+                isWideScreen,
+                backStackEntry.arguments?.getString("id")
+            )
         }
         composable(
             Routes.SEARCH,

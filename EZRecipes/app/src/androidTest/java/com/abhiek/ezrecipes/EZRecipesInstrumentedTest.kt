@@ -163,10 +163,7 @@ internal class EZRecipesInstrumentedTest {
             .onNodeWithContentDescription(activity.getString(R.string.recipe_link))
             .assertHasClickAction()
 
-        // Check that the two recipe buttons are clickable
-        val madeButton = composeTestRule
-            .onNodeWithContentDescription(activity.getString(R.string.made_button))
-        madeButton.assertHasClickAction()
+        // Check that the recipe button is clickable
         val showRecipeButton = composeTestRule
             .onNodeWithContentDescription(activity.getString(R.string.show_recipe_button))
         showRecipeButton.assertHasClickAction()

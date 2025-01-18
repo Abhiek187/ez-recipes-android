@@ -1,6 +1,7 @@
 package com.abhiek.ezrecipes.utils
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 
@@ -24,5 +25,26 @@ internal class NumberExtensionsTest {
         // Build.VERSION.SDK_INT will always be 0 in unit tests
         val actualStr = inputNum.toShorthand()
         assertEquals(expectedStr, actualStr)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "0,0,0",
+        "0.5,0,1",
+        "1.8175,2,1.82",
+        "3.14159265359,5,3.14159",
+        "4.2047,2,4.2",
+        "666,1,666",
+        "666,-1,?"
+    )
+    fun round(inputNum: Double, places: Int, expectedNum: String) {
+        if (places < 0) {
+            assertThrows(IllegalArgumentException::class.java) {
+                inputNum.round(places)
+            }
+        } else {
+            val actualNum = inputNum.round(places)
+            assertEquals(expectedNum, actualNum)
+        }
     }
 }

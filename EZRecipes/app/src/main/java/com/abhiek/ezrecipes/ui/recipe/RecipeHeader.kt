@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
-import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -36,7 +35,13 @@ import com.abhiek.ezrecipes.utils.contentEquals
 import com.abhiek.ezrecipes.utils.toShorthand
 
 @Composable
-fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Unit) {
+fun RecipeHeader(
+    recipe: Recipe,
+    isLoading: Boolean,
+    myRating: Int? = null,
+    onRate: (Int) -> Unit = {},
+    onClickFindRecipe: () -> Unit = {}
+) {
     val context = LocalContext.current
 
     // Make the image caption clickable
@@ -116,12 +121,19 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
             )
             Icon(
                 imageVector = Icons.Filled.Visibility,
-                contentDescription = "views"
+                contentDescription = stringResource(R.string.views_alt)
             )
             Text(
                 text = recipe.views?.toShorthand() ?: "0"
             )
         }
+        RecipeRating(
+            averageRating = recipe.averageRating,
+            totalRatings = recipe.totalRatings ?: 0,
+            myRating = myRating,
+            onRate = onRate,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
 
         if (recipe.types.isNotEmpty() && !(recipe.types contentEquals listOf(MealType.UNKNOWN))) {
             Text(
@@ -164,38 +176,11 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     modifier = Modifier.size(50.dp), // avoid the oval shape
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error
-                    ),
-                    onClick = { println("Nice! Hope it was tasty!") },
-                    // Reduce padding to make the icon take up more space
-                    contentPadding = PaddingValues(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Restaurant,
-                        contentDescription = stringResource(R.string.made_button),
-                        tint = MaterialTheme.colorScheme.onError
-                    )
-                }
-                Text(
-                    text = stringResource(R.string.made_button),
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Button(
-                    modifier = Modifier.size(50.dp),
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary,
                         contentColor = MaterialTheme.colorScheme.onTertiary
                     ),
                     onClick = { onClickFindRecipe() },
+                    // Reduce padding to make the icon take up more space
                     contentPadding = PaddingValues(8.dp),
                     enabled = !isLoading
                 ) {
@@ -211,10 +196,9 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
                     style = MaterialTheme.typography.labelLarge
                 )
             }
-        }
-
-        if (isLoading) {
-            CircularProgressIndicator()
+            if (isLoading) {
+                CircularProgressIndicator()
+            }
         }
     }
 }
@@ -237,7 +221,7 @@ private fun RecipeHeaderPreview(
             RecipeHeader(
                 recipe = MockRecipeService.recipes[2],
                 isLoading = isLoading,
-                onClickFindRecipe = {}
+                myRating = 4
             )
         }
     }

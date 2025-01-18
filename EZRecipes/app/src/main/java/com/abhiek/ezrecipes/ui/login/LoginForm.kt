@@ -127,8 +127,11 @@ fun LoginForm(
                     Icon(
                         imageVector = if (showPassword) Icons.Filled.Visibility
                             else Icons.Filled.VisibilityOff,
-                        contentDescription = if (showPassword) "Hide password"
-                            else "Show password"
+                        contentDescription = if (showPassword) {
+                            stringResource(R.string.password_hide)
+                        } else {
+                            stringResource(R.string.password_show)
+                        }
                     )
                 }
             },

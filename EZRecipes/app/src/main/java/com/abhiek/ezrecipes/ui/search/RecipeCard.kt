@@ -27,6 +27,7 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
+import com.abhiek.ezrecipes.ui.recipe.RecipeRating
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.boldAnnotatedString
@@ -101,6 +102,16 @@ fun RecipeCard(
                     )
                 }
             }
+
+            RecipeRating(
+                averageRating = recipe.averageRating,
+                totalRatings = recipe.totalRatings ?: 0,
+                myRating = profileViewModel.chef?.ratings?.get(recipe.id.toString()),
+                enabled = profileViewModel.chef != null,
+                onRate = { rating ->
+                    profileViewModel.rateRecipe(rating, recipe.id)
+                }
+            )
 
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,

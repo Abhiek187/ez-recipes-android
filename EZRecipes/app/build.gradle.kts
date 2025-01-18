@@ -73,9 +73,9 @@ android {
 }
 
 dependencies {
-    val composeBomVersion = "2024.12.01"
+    val composeBomVersion = "2025.01.00"
     val lifecycleVersion = "2.8.7"
-    val activityVersion = "1.9.3"
+    val activityVersion = "1.10.0"
     val materialVersion = "1.7.6"
     val material3Version = "1.3.1"
     val retrofitVersion = "2.11.0"
@@ -97,7 +97,7 @@ dependencies {
     implementation("androidx.compose.material3:material3:$material3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
     implementation("androidx.navigation:navigation-compose:2.8.5")
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore-preferences:1.1.2")
 
     // AsyncImage
     implementation("io.coil-kt:coil-compose:2.7.0")
@@ -121,7 +121,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
-    testImplementation("io.mockk:mockk:1.13.14")
+    testImplementation("io.mockk:mockk:1.13.16")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

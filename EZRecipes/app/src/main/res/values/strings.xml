@@ -49,10 +49,22 @@
         <item quantity="one">Time: %1$d minute</item>
         <item quantity="other">Time: %1$d minutes</item>
     </plurals>
+    <string name="views_alt">views</string>
+    <string name="star_rating_none">No ratings available</string>
+    <string name="star_rating_average">Average rating: %1$d out of 5 stars</string>
+    <string name="star_rating_user">Your rating: %1$d out of 5 stars</string>
+    <plurals name="star_rating_input">
+        <item quantity="one">Rate %1$d star</item>
+        <item quantity="other">Rate %1$d stars</item>
+    </plurals>
+    <plurals name="total_ratings">
+        <item quantity="one">%1$s rating</item>
+        <item quantity="other">%1$s ratings</item>
+    </plurals>
+    <string name="rating_error">You must be signed in to rate this recipe</string>
 
     <string name="recipe_meal_types">Great for: %1$s</string>
     <string name="recipe_cuisines">Cuisines: %1$s</string>
-    <string name="made_button">I Made This!</string>
     <string name="show_recipe_button">Show Me Another Recipe!</string>
 
     <string name="nutrition_facts">Nutrition Facts</string>
@@ -116,6 +128,8 @@
     <string name="profile_favorites">💖 Favorites</string>
     <string name="profile_recently_viewed">⌚ Recently Viewed</string>
     <string name="profile_ratings">⭐ Ratings</string>
+    <string name="accordion_expand">Expand</string>
+    <string name="accordion_collapse">Collapse</string>
     <!-- Newlines add additional spacing before each line (but is ok for a bulleted list) -->
     <string name="login_message">
         Signing up for an account is free and gives you great perks, including:\n
@@ -135,6 +149,8 @@
     <string name="sign_in_sub_header">Don\'t have an account?</string>
     <string name="username_field">Username</string>
     <string name="password_field">Password</string>
+    <string name="password_show">Show password</string>
+    <string name="password_hide">Hide password</string>
     <string name="password_forget">Forgot password?</string>
     <string name="sign_in_success">Signed in successfully!</string>
     <string name="sign_out_success">Signed out successfully!</string>
