@@ -36,6 +36,7 @@ fun RecipeRating(
     averageRating: Double?,
     totalRatings: Int,
     myRating: Int? = null,
+    enabled: Boolean = true,
     onRate: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -67,60 +68,61 @@ fun RecipeRating(
     ) {
         for (i in 1..5) {
             IconButton(
-                onClick = { onRate(i) }
+                onClick = { onRate(i) },
+                enabled = enabled,
+                colors = IconButtonDefaults.iconButtonColors(
+                    contentColor = starColor
+                )
             ) {
                 if (i < stars || (i == stars && starRating >= stars)) {
                     Icon(
                         imageVector = Icons.Filled.Star,
                         contentDescription = context.resources.getQuantityString(
                             R.plurals.star_rating_input, i, i
-                        ),
-                        tint = starColor
+                        )
                     )
                 } else if (i == stars && starRating < stars) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.StarHalf,
                         contentDescription = context.resources.getQuantityString(
                             R.plurals.star_rating_input, i, i
-                        ),
-                        tint = starColor
+                        )
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.StarRate,
                         contentDescription = context.resources.getQuantityString(
                             R.plurals.star_rating_input, i, i
-                        ),
-                        tint = starColor
+                        )
                     )
                 }
             }
         }
         Text(
-            text = if (averageRating != null) {
-                "(${averageRating.round(places = 1)}/5, " + context.resources.getQuantityString(
-                    R.plurals.total_ratings, totalRatings, totalRatings.toShorthand()
-                ) + ")"
-            } else {
-                "(0 ratings)"
-            }
+            text = "(" + (if (averageRating != null) {
+                "${averageRating.round(places = 1)}/5, "
+            } else "") + context.resources.getQuantityString(
+                R.plurals.total_ratings, totalRatings, totalRatings.toShorthand()
+            ) + ")"
         )
     }
 }
 
 private data class RecipeRatingState(
-    val averageRating: Double?,
-    val totalRatings: Int,
-    val myRating: Int?
+    val averageRating: Double? = null,
+    val totalRatings: Int = 0,
+    val myRating: Int? = null,
+    val enabled: Boolean = true
 )
 
 private class RecipeRatingPreviewParameterProvider: PreviewParameterProvider<RecipeRatingState> {
     override val values = sequenceOf(
-        RecipeRatingState(averageRating = null, totalRatings = 0, myRating = null),
-        RecipeRatingState(averageRating = 5.0, totalRatings = 1, myRating = null),
-        RecipeRatingState(averageRating = 4.1, totalRatings = 1934, myRating = null),
-        RecipeRatingState(averageRating = 2.5, totalRatings = 10, myRating = null),
-        RecipeRatingState(averageRating = 3.625, totalRatings = 582, myRating = null),
+        RecipeRatingState(),
+        RecipeRatingState(enabled = false),
+        RecipeRatingState(averageRating = 5.0, totalRatings = 1),
+        RecipeRatingState(averageRating = 4.1, totalRatings = 1934),
+        RecipeRatingState(averageRating = 2.5, totalRatings = 10),
+        RecipeRatingState(averageRating = 3.625, totalRatings = 582),
         RecipeRatingState(averageRating = 1.0, totalRatings = 8, myRating = 3)
     )
 }
@@ -141,7 +143,8 @@ private fun RecipeRatingPreview(
                 RecipeRating(
                     averageRating = state.averageRating,
                     totalRatings = state.totalRatings,
-                    myRating = state.myRating
+                    myRating = state.myRating,
+                    enabled = state.enabled
                 )
             }
         }
