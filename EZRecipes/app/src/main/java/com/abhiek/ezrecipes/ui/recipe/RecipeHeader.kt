@@ -35,7 +35,13 @@ import com.abhiek.ezrecipes.utils.contentEquals
 import com.abhiek.ezrecipes.utils.toShorthand
 
 @Composable
-fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Unit) {
+fun RecipeHeader(
+    recipe: Recipe,
+    isLoading: Boolean,
+    myRating: Int? = null,
+    onRate: (Int) -> Unit = {},
+    onClickFindRecipe: () -> Unit = {}
+) {
     val context = LocalContext.current
 
     // Make the image caption clickable
@@ -124,6 +130,8 @@ fun RecipeHeader(recipe: Recipe, isLoading: Boolean, onClickFindRecipe: () -> Un
         RecipeRating(
             averageRating = recipe.averageRating,
             totalRatings = recipe.totalRatings ?: 0,
+            myRating = myRating,
+            onRate = onRate,
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
@@ -213,7 +221,7 @@ private fun RecipeHeaderPreview(
             RecipeHeader(
                 recipe = MockRecipeService.recipes[2],
                 isLoading = isLoading,
-                onClickFindRecipe = {}
+                myRating = 4
             )
         }
     }

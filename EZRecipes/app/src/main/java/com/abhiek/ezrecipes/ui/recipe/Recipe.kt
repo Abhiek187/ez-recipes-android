@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui.recipe
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,6 +14,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.chef.ChefRepository
+import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.AppDatabase
@@ -22,23 +25,43 @@ import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.currentWindowSize
 import com.google.android.play.core.review.testing.FakeReviewManager
 
 @Composable
-fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: String? = null) {
-    LaunchedEffect(viewModel.recipe) {
-        viewModel.recipe?.let { recipe ->
-            viewModel.saveRecentRecipe(recipe)
-            viewModel.incrementRecipesViewed(recipe)
+fun Recipe(
+    mainViewModel: MainViewModel,
+    profileViewModel: ProfileViewModel,
+    isWideScreen: Boolean,
+    recipeIdString: String? = null
+) {
+    val context = LocalContext.current
+
+    fun rateRecipe(rating: Int, recipeId: Int) {
+        if (profileViewModel.chef == null) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.rating_error),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            profileViewModel.rateRecipe(recipeId, rating)
         }
     }
 
-    if (viewModel.recipe == null) {
+    LaunchedEffect(mainViewModel.recipe) {
+        mainViewModel.recipe?.let { recipe ->
+            mainViewModel.saveRecentRecipe(recipe)
+            mainViewModel.incrementRecipesViewed(recipe)
+        }
+    }
+
+    if (mainViewModel.recipe == null) {
         // If this composable was opened due to a deep link, use the recipeId to load the recipe
         recipeIdString?.toIntOrNull()?.let { recipeId ->
-            viewModel.getRecipeById(recipeId)
+            mainViewModel.getRecipeById(recipeId)
         }
 
         // Shouldn't be seen normally
@@ -48,13 +71,15 @@ fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: Stri
                 modifier = Modifier.padding(8.dp)
             )
 
-            if (viewModel.isLoading) {
+            if (mainViewModel.isLoading) {
                 CircularProgressIndicator()
             }
         }
     }
 
-    viewModel.recipe?.let { recipe ->
+    mainViewModel.recipe?.let { recipe ->
+        val chefRating = profileViewModel.chef?.ratings?.get(recipe.id.toString())
+
         // Make the column scrollable
         Column(
             modifier = Modifier
@@ -77,20 +102,30 @@ fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: Stri
                 ) {
                     RecipeHeader(
                         recipe = recipe,
-                        isLoading = viewModel.isLoading
-                    ) {
-                        // Load another recipe in the same view
-                        viewModel.getRandomRecipe()
-                    }
+                        isLoading = mainViewModel.isLoading,
+                        myRating = chefRating,
+                        onRate = { rating ->
+                            rateRecipe(rating, recipe.id)
+                        },
+                        onClickFindRecipe = {
+                            // Load another recipe in the same view
+                            mainViewModel.getRandomRecipe()
+                        }
+                    )
                     NutritionLabel(recipe = recipe)
                 }
             } else {
                 RecipeHeader(
                     recipe = recipe,
-                    isLoading = viewModel.isLoading
-                ) {
-                    viewModel.getRandomRecipe()
-                }
+                    isLoading = mainViewModel.isLoading,
+                    myRating = chefRating,
+                    onRate = { rating ->
+                        rateRecipe(rating, recipe.id)
+                    },
+                    onClickFindRecipe = {
+                        mainViewModel.getRandomRecipe()
+                    }
+                )
                 NutritionLabel(recipe = recipe)
             }
 
@@ -137,19 +172,30 @@ fun Recipe(viewModel: MainViewModel, isWideScreen: Boolean, recipeIdString: Stri
 private fun RecipePreview() {
     val context = LocalContext.current
     val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
+    val recipeService = MockRecipeService
 
     val viewModel = MainViewModel(
-        recipeRepository = RecipeRepository(MockRecipeService, recentRecipeDao),
+        recipeRepository = RecipeRepository(recipeService, recentRecipeDao),
         dataStoreService = DataStoreService(context),
         reviewManager = FakeReviewManager(context)
     )
     viewModel.getRandomRecipe()
     val windowSize = currentWindowSize()
 
+    val chefService = MockChefService
+    val profileViewModel = ProfileViewModel(
+        chefRepository = ChefRepository(chefService),
+        recipeRepository = RecipeRepository(recipeService),
+        dataStoreService = DataStoreService(context)
+    )
+
     EZRecipesTheme {
         Surface {
-            // Copy the Recipe composable so the ViewModel loads in the preview
-            Recipe(viewModel, windowSize.widthSizeClass == WindowWidthSizeClass.Expanded)
+            Recipe(
+                viewModel,
+                profileViewModel,
+                windowSize.widthSizeClass == WindowWidthSizeClass.Expanded
+            )
         }
     }
 }

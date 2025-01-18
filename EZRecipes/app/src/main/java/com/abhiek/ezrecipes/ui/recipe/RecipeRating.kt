@@ -34,7 +34,7 @@ import kotlin.math.roundToInt
 @Composable
 fun RecipeRating(
     averageRating: Double?,
-    totalRatings: Int?,
+    totalRatings: Int,
     myRating: Int? = null,
     onRate: (Int) -> Unit = {},
     modifier: Modifier = Modifier
@@ -42,8 +42,9 @@ fun RecipeRating(
     val context = LocalContext.current
 
     // If the user has rated the recipe, show their rating instead of the average
-    val starRating = myRating?.toDouble() ?: averageRating
-    val stars = starRating?.roundToInt() ?: 0
+    // If there are no ratings, show all empty stars
+    val starRating = myRating?.toDouble() ?: averageRating ?: 0.0
+    val stars = starRating.roundToInt()
     val starColor = if (isSystemInDarkTheme()) {
         if (myRating != null) Orange700 else MaterialTheme.colorScheme.tertiary
     } else {
@@ -51,10 +52,9 @@ fun RecipeRating(
     }
 
     Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.clearAndSetSemantics {
-            contentDescription = if (starRating == null) {
+            contentDescription = if (starRating == 0.0) {
                 context.getString(R.string.star_rating_none)
             } else {
                 context.getString(
@@ -65,41 +65,39 @@ fun RecipeRating(
             role = Role.Image
         }
     ) {
-        if (starRating != null) {
-            for (i in 1..5) {
-                IconButton(
-                    onClick = { onRate(i) }
-                ) {
-                    if (i < stars || (i == stars && starRating >= stars)) {
-                        Icon(
-                            imageVector = Icons.Filled.Star,
-                            contentDescription = context.resources.getQuantityString(
-                                R.plurals.star_rating_input, i, i
-                            ),
-                            tint = starColor
-                        )
-                    } else if (i == stars && starRating < stars) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.StarHalf,
-                            contentDescription = context.resources.getQuantityString(
-                                R.plurals.star_rating_input, i, i
-                            ),
-                            tint = starColor
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Outlined.StarRate,
-                            contentDescription = context.resources.getQuantityString(
-                                R.plurals.star_rating_input, i, i
-                            ),
-                            tint = starColor
-                        )
-                    }
+        for (i in 1..5) {
+            IconButton(
+                onClick = { onRate(i) }
+            ) {
+                if (i < stars || (i == stars && starRating >= stars)) {
+                    Icon(
+                        imageVector = Icons.Filled.Star,
+                        contentDescription = context.resources.getQuantityString(
+                            R.plurals.star_rating_input, i, i
+                        ),
+                        tint = starColor
+                    )
+                } else if (i == stars && starRating < stars) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.StarHalf,
+                        contentDescription = context.resources.getQuantityString(
+                            R.plurals.star_rating_input, i, i
+                        ),
+                        tint = starColor
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.StarRate,
+                        contentDescription = context.resources.getQuantityString(
+                            R.plurals.star_rating_input, i, i
+                        ),
+                        tint = starColor
+                    )
                 }
             }
         }
         Text(
-            text = if (averageRating != null && totalRatings != null) {
+            text = if (averageRating != null) {
                 "(${averageRating.round(places = 1)}/5, " + context.resources.getQuantityString(
                     R.plurals.total_ratings, totalRatings, totalRatings.toShorthand()
                 ) + ")"
@@ -112,13 +110,13 @@ fun RecipeRating(
 
 private data class RecipeRatingState(
     val averageRating: Double?,
-    val totalRatings: Int?,
+    val totalRatings: Int,
     val myRating: Int?
 )
 
 private class RecipeRatingPreviewParameterProvider: PreviewParameterProvider<RecipeRatingState> {
     override val values = sequenceOf(
-        RecipeRatingState(averageRating = null, totalRatings = null, myRating = null),
+        RecipeRatingState(averageRating = null, totalRatings = 0, myRating = null),
         RecipeRatingState(averageRating = 5.0, totalRatings = 1, myRating = null),
         RecipeRatingState(averageRating = 4.1, totalRatings = 1934, myRating = null),
         RecipeRatingState(averageRating = 2.5, totalRatings = 10, myRating = null),

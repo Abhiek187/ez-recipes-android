@@ -61,6 +61,7 @@
         <item quantity="one">%1$s rating</item>
         <item quantity="other">%1$s ratings</item>
     </plurals>
+    <string name="rating_error">You must be signed in to rate this recipe</string>
 
     <string name="recipe_meal_types">Great for: %1$s</string>
     <string name="recipe_cuisines">Cuisines: %1$s</string>
