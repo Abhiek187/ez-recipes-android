@@ -50,13 +50,17 @@
         <item quantity="other">Time: %1$d minutes</item>
     </plurals>
     <string name="views_alt">views</string>
-    <plurals name="ratings">
+    <string name="star_rating_none">No ratings available</string>
+    <string name="star_rating_average">Average rating: %1$d out of 5 stars</string>
+    <string name="star_rating_user">Your rating: %1$d out of 5 stars</string>
+    <plurals name="star_rating_input">
+        <item quantity="one">Rate %1$d star</item>
+        <item quantity="other">Rate %1$d stars</item>
+    </plurals>
+    <plurals name="total_ratings">
         <item quantity="one">%1$s rating</item>
         <item quantity="other">%1$s ratings</item>
     </plurals>
-    <string name="star_filled">filled star</string>
-    <string name="star_half">half star</string>
-    <string name="star_empty">empty star</string>
 
     <string name="recipe_meal_types">Great for: %1$s</string>
     <string name="recipe_cuisines">Cuisines: %1$s</string>
