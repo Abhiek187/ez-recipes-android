@@ -26,7 +26,7 @@ fun <T> Dropdown(
     value: T?,
     label: @Composable () -> Unit,
     customContent: (T) -> @Composable () -> Unit = { option -> { Text(option.toString()) } },
-    onSelectOption: (option: T) -> Unit
+    onSelectOption: (option: T?) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
@@ -67,6 +67,11 @@ fun <T> Dropdown(
                     with(LocalDensity.current) { textFieldSize.width.toDp() }
                 )
         ) {
+            // Add an option to clear the user's selection
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.option_none)) },
+                onClick = { onSelectOption(null) }
+            )
             options.forEach { option ->
                 DropdownMenuItem(
                     text = customContent(option),
