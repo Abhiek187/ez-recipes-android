@@ -1,11 +1,13 @@
 package com.abhiek.ezrecipes.ui.search
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -30,8 +33,10 @@ import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.theme.Amber700
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.CheckboxRow
+import com.abhiek.ezrecipes.ui.util.Dropdown
 import com.abhiek.ezrecipes.ui.util.FormError
 import com.abhiek.ezrecipes.ui.util.MultiSelectDropdown
 import com.abhiek.ezrecipes.utils.Constants
@@ -230,6 +235,39 @@ fun FilterForm(
             )
         }
 
+        Dropdown(
+            options = (1..5).toList(),
+            value = searchViewModel.recipeFilter.rating,
+            label = { Text(stringResource(R.string.rating_label)) },
+            customContent = { option -> {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    for (i in 1..option) {
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = null,
+                            tint = if (isSystemInDarkTheme()) {
+                                MaterialTheme.colorScheme.tertiary
+                            } else {
+                                Amber700
+                            }
+                        )
+                    }
+                    Text(
+                        text = option.toString(),
+                        textAlign = TextAlign.End,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            } },
+            onSelectOption = { option ->
+                searchViewModel.recipeFilter = searchViewModel.recipeFilter.copy(rating = option)
+            }
+        )
         MultiSelectDropdown(
             options = SpiceLevel.entries.filter { spiceLevel ->
                 // Don't filter by unknown
