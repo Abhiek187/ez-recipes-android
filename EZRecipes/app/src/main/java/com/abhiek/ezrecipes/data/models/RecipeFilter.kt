@@ -14,6 +14,7 @@ data class RecipeFilter(
     var glutenFree: Boolean = false,
     var healthy: Boolean = false,
     var cheap: Boolean = false,
+    var rating: Int? = null,
     var sustainable: Boolean = false,
     var spiceLevel: List<SpiceLevel> = listOf(),
     var type: List<MealType> = listOf(),
@@ -31,7 +32,9 @@ data class RecipeFilter(
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
             .create()
         val json = gson.toJson(this)
-        val map = gson.fromJson<Map<String, Any>>(json, object: TypeToken<Map<String, Any>>() {}.type)
+        val map = gson.fromJson<Map<String, Any>>(
+            json, object: TypeToken<Map<String, Any>>() {}.type
+        )
         return map.filter { (key, _) -> !omittedKeys.contains(key) }
     }
 }

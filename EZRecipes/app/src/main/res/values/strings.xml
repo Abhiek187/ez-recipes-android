@@ -111,6 +111,7 @@
     <string name="cheap_label">Cheap</string>
     <string name="sustainable_label">Sustainable</string>
 
+    <string name="rating_label">Rating</string>
     <string name="spice_label">Spice Level</string>
     <string name="type_label">Meal Type</string>
     <string name="culture_label">Cuisine</string>

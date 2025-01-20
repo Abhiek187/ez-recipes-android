@@ -342,6 +342,18 @@ internal class EZRecipesInstrumentedTest {
             .performClick()
             .performClick()
 
+        val ratingDropdown = composeTestRule
+            .onNodeWithText(activity.getString(R.string.rating_label))
+        ratingDropdown
+            .performScrollTo()
+            .performClick()
+        for (rating in 1..5) {
+            composeTestRule
+                .onNodeWithText(rating.toString())
+                .performClick()
+        }
+        ratingDropdown.performClick()
+
         val spiceLevelDropdown = composeTestRule
             .onNodeWithText(activity.getString(R.string.spice_label))
         spiceLevelDropdown
