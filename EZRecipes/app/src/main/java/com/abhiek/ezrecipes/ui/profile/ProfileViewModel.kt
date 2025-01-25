@@ -14,8 +14,17 @@ import com.abhiek.ezrecipes.data.recipe.RecipeResult
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Encryptor
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
+data class RecipeState(
+    val recipe: Recipe? = null,
+    val isLoading: Boolean = false,
+    val error: String? = null
+)
 
 class ProfileViewModel(
     private val chefRepository: ChefRepository,
@@ -30,14 +39,18 @@ class ProfileViewModel(
     var authState by mutableStateOf(AuthState.LOADING)
     var isLoading by mutableStateOf(false)
     var chef by mutableStateOf<Chef?>(null)
-    var favoriteRecipes by mutableStateOf<List<Recipe>>(listOf())
-    var recentRecipes by mutableStateOf<List<Recipe>>(listOf())
-    var ratedRecipes by mutableStateOf<List<Recipe>>(listOf())
     var openLoginDialog by mutableStateOf(false)
     var showAlert by mutableStateOf(false)
     var emailSent by mutableStateOf(false)
     var passwordUpdated by mutableStateOf(false)
     var accountDeleted by mutableStateOf(false)
+
+    private val _favoriteRecipes = MutableStateFlow(listOf<RecipeState>())
+    private val _recentRecipes = MutableStateFlow(listOf<RecipeState>())
+    private val _ratedRecipes = MutableStateFlow(listOf<RecipeState>())
+    val favoriteRecipes: StateFlow<List<RecipeState>> = _favoriteRecipes.asStateFlow()
+    var recentRecipes: StateFlow<List<RecipeState>> = _recentRecipes.asStateFlow()
+    var ratedRecipes: StateFlow<List<RecipeState>> = _ratedRecipes.asStateFlow()
 
     companion object {
         private const val TAG = "ProfileViewModel"
@@ -369,64 +382,101 @@ class ProfileViewModel(
         }
     }
 
-//    fun getRecipeById(id: Int) {
-//        job = viewModelScope.launch {
-//            isLoading = true
-//            val result = recipeRepository.getRecipeById(id)
-//            isLoading = false
-//
-//            when (result) {
-//                is RecipeResult.Success -> {
-//                    recipe = result.response
-//                    recipeError = null
-//                }
-//                is RecipeResult.Error -> {
-//                    recipe = null
-//                    recipeError = result.recipeError
-//                }
-//            }
-//        }
-//    }
+    fun getAllFavoriteRecipes() {
+        val chef = this.chef ?: return
 
-    fun getAllChefRecipes() {
-        if (chef == null) return
+        viewModelScope.launch {
+            val recipeIds = chef.favoriteRecipes.mapNotNull { it.toIntOrNull() }
 
-        for (id in chef!!.favoriteRecipes) {
-            id.toIntOrNull()?.let { recipeId ->
-                viewModelScope.launch {
-                    val result = recipeRepository.getRecipeById(recipeId)
+            // Initialize the state with loading states
+            val initialRecipeStates = recipeIds.map { RecipeState(isLoading = true) }
+            _favoriteRecipes.update { initialRecipeStates }
 
-                    if (result is RecipeResult.Success) {
-                        favoriteRecipes += result.response
+            // Use coroutineScope to ensure all child coroutines complete before exiting
+            coroutineScope {
+                // Fetch all recipes in parallel
+                recipeIds.mapIndexed { index, recipeId ->
+                    launch {
+                        val result = recipeRepository.getRecipeById(recipeId)
+                        val recipeState = when (result) {
+                            is RecipeResult.Success -> RecipeState(recipe = result.response)
+                            is RecipeResult.Error -> RecipeState(error = result.recipeError.error)
+                        }
+
+                        // Update the state for this specific recipe
+                        _favoriteRecipes.update { currentState ->
+                            currentState.toMutableList().apply {
+                                this[index] = recipeState
+                            }
+                        }
                     }
                 }
-                //getRecipeById(recipeId)
             }
         }
+    }
 
-        for ((id, timestamp) in chef!!.recentRecipes.entries) {
-            id.toIntOrNull()?.let { recipeId ->
-                viewModelScope.launch {
-                    val result = recipeRepository.getRecipeById(recipeId)
+    fun getAllRecentRecipes() {
+        val chef = this.chef ?: return
 
-                    if (result is RecipeResult.Success) {
-                        recentRecipes += result.response
+        viewModelScope.launch {
+            val recipeIds = chef.recentRecipes.mapNotNull { (id, timestamp) -> id.toIntOrNull() }
+
+            // Initialize the state with loading states
+            val initialRecipeStates = recipeIds.map { RecipeState(isLoading = true) }
+            _recentRecipes.update { initialRecipeStates }
+
+            // Use coroutineScope to ensure all child coroutines complete before exiting
+            coroutineScope {
+                // Fetch all recipes in parallel
+                recipeIds.mapIndexed { index, recipeId ->
+                    launch {
+                        val result = recipeRepository.getRecipeById(recipeId)
+                        val recipeState = when (result) {
+                            is RecipeResult.Success -> RecipeState(recipe = result.response)
+                            is RecipeResult.Error -> RecipeState(error = result.recipeError.error)
+                        }
+
+                        // Update the state for this specific recipe
+                        _recentRecipes.update { currentState ->
+                            currentState.toMutableList().apply {
+                                this[index] = recipeState
+                            }
+                        }
                     }
                 }
-                //getRecipeById(recipeId)
             }
         }
+    }
 
-        for ((id, rating) in chef!!.ratings.entries) {
-            id.toIntOrNull()?.let { recipeId ->
-                viewModelScope.launch {
-                    val result = recipeRepository.getRecipeById(recipeId)
+    fun getAllRatedRecipes() {
+        val chef = this.chef ?: return
 
-                    if (result is RecipeResult.Success) {
-                        ratedRecipes += result.response
+        viewModelScope.launch {
+            val recipeIds = chef.ratings.mapNotNull { (id, rating) -> id.toIntOrNull() }
+
+            // Initialize the state with loading states
+            val initialRecipeStates = recipeIds.map { RecipeState(isLoading = true) }
+            _ratedRecipes.update { initialRecipeStates }
+
+            // Use coroutineScope to ensure all child coroutines complete before exiting
+            coroutineScope {
+                // Fetch all recipes in parallel
+                recipeIds.mapIndexed { index, recipeId ->
+                    launch {
+                        val result = recipeRepository.getRecipeById(recipeId)
+                        val recipeState = when (result) {
+                            is RecipeResult.Success -> RecipeState(recipe = result.response)
+                            is RecipeResult.Error -> RecipeState(error = result.recipeError.error)
+                        }
+
+                        // Update the state for this specific recipe
+                        _ratedRecipes.update { currentState ->
+                            currentState.toMutableList().apply {
+                                this[index] = recipeState
+                            }
+                        }
                     }
                 }
-                //getRecipeById(recipeId)
             }
         }
     }
