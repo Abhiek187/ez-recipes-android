@@ -70,12 +70,12 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
             ) {
-                for (recipeState in favoriteRecipes) {
-                    if (recipeState.isLoading) {
+                for (recipe in favoriteRecipes) {
+                    if (recipe == null) {
                         RecipeCardLoader()
-                    } else if (recipeState.recipe != null) {
+                    } else {
                         RecipeCard(
-                            recipe = recipeState.recipe,
+                            recipe = recipe,
                             width = 350.dp,
                             profileViewModel = profileViewModel
                         ) {}
@@ -91,12 +91,12 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
                 profileViewModel.getAllRecentRecipes()
             }
         ) {
-            for (recipeState in recentRecipes) {
-                if (recipeState.isLoading) {
+            for (recipe in recentRecipes) {
+                if (recipe == null) {
                     RecipeCardLoader()
-                } else if (recipeState.recipe != null) {
+                } else {
                     RecipeCard(
-                        recipe = recipeState.recipe,
+                        recipe = recipe,
                         width = 350.dp,
                         profileViewModel = profileViewModel
                     ) {}
@@ -111,12 +111,12 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
                 profileViewModel.getAllRatedRecipes()
             }
         ) {
-            for (recipeState in ratedRecipes) {
-                if (recipeState.isLoading) {
+            for (recipe in ratedRecipes) {
+                if (recipe == null) {
                     RecipeCardLoader()
-                } else if (recipeState.recipe != null) {
+                } else {
                     RecipeCard(
-                        recipe = recipeState.recipe,
+                        recipe = recipe,
                         width = 350.dp,
                         profileViewModel = profileViewModel
                     ) {}
