@@ -90,7 +90,7 @@ fun Home(
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP &&
-                context.getActivity()?.isChangingConfigurations != true) {
+                activity?.isChangingConfigurations != true) {
                 // Stop any network calls while switching tabs,
                 // except when rotating or folding the screen
                 mainViewModel.job?.cancel()
