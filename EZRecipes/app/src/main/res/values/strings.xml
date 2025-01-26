@@ -43,6 +43,8 @@
     <!-- Recipe Screen -->
     <string name="no_recipe">No recipe loaded</string>
     <string name="recipe_link">Open recipe source</string>
+    <!-- Formatter syntax: -->
+    <!-- https://developer.android.com/reference/java/util/Formatter.html#format-string-syntax -->
     <string name="image_copyright">Image © %1$s</string>
 
     <plurals name="recipe_time">
@@ -51,7 +53,8 @@
     </plurals>
     <string name="views_alt">views</string>
     <string name="star_rating_none">No ratings available</string>
-    <string name="star_rating_average">Average rating: %1$d out of 5 stars</string>
+    <!-- f = double, d = int -->
+    <string name="star_rating_average">Average rating: %1$.1f out of 5 stars</string>
     <string name="star_rating_user">Your rating: %1$d out of 5 stars</string>
     <plurals name="star_rating_input">
         <item quantity="one">Rate %1$d star</item>
