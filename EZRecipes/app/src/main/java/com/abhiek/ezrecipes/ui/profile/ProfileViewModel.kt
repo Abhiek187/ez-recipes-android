@@ -212,12 +212,10 @@ class ProfileViewModel(
 
         job = viewModelScope.launch {
             isLoading = true
-            val result = chefRepository.login(loginCredentials)
-            isLoading = false
 
-            when (result) {
+            when (val loginResult = chefRepository.login(loginCredentials)) {
                 is ChefResult.Success -> {
-                    val loginResponse = result.response
+                    val loginResponse = loginResult.response
                     recipeError = null
                     showAlert = false
 
@@ -232,13 +230,29 @@ class ProfileViewModel(
                         token = loginResponse.token
                     )
 
+                    // Fetch the rest of the chef's profile
+                    val chefResult = chefRepository.getChef(loginResponse.token)
+                    isLoading = false
+
+                    when (chefResult) {
+                        is ChefResult.Success -> {
+                            val chefResponse = chefResult.response
+                            chef = chefResponse
+                        }
+                        is ChefResult.Error -> {
+                            recipeError = chefResult.recipeError
+                            showAlert = job?.isCancelled == false
+                        }
+                    }
+
                     if (loginResponse.emailVerified) {
                         authState = AuthState.AUTHENTICATED
                         openLoginDialog = false
                     }
                 }
                 is ChefResult.Error -> {
-                    recipeError = result.recipeError
+                    isLoading = false
+                    recipeError = loginResult.recipeError
                     showAlert = job?.isCancelled == false
                 }
             }

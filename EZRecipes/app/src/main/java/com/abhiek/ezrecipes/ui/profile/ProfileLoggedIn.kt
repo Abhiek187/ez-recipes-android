@@ -114,7 +114,6 @@ fun ProfileLoggedIn(
         ) {
             loadRecipeCards(favoriteRecipes)
         }
-
         Accordion(
             header = stringResource(R.string.profile_recently_viewed),
             expandByDefault = false,
@@ -127,7 +126,6 @@ fun ProfileLoggedIn(
         ) {
             loadRecipeCards(recentRecipes)
         }
-
         Accordion(
             header = stringResource(R.string.profile_ratings),
             expandByDefault = false,
