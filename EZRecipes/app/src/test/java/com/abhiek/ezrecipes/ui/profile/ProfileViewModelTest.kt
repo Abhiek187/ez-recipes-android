@@ -270,11 +270,11 @@ internal class ProfileViewModelTest {
         assertFalse(viewModel.showAlert)
         assertEquals(viewModel.chef, Chef(
             uid = mockChefService.loginResponse.uid,
-            email = username,
+            email = mockChefService.chef.email,
             emailVerified = mockChefService.loginResponse.emailVerified,
-            ratings = mapOf(),
-            recentRecipes = mapOf(),
-            favoriteRecipes = listOf(),
+            ratings = mockChefService.chef.ratings,
+            recentRecipes = mockChefService.chef.recentRecipes,
+            favoriteRecipes = mockChefService.chef.favoriteRecipes,
             token = mockChefService.loginResponse.token
         ))
         assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
