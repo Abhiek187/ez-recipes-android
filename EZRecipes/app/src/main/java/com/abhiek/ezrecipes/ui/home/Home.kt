@@ -48,7 +48,7 @@ import kotlinx.coroutines.delay
 fun Home(
     mainViewModel: MainViewModel,
     profileViewModel: ProfileViewModel,
-    onNavigateToRecipe: () -> Unit
+    onNavigateToRecipe: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val activity = context.getActivity()
@@ -243,7 +243,7 @@ private fun HomePreview(
 
     EZRecipesTheme {
         Surface {
-            Home(viewModel, profileViewModel) {}
+            Home(viewModel, profileViewModel)
         }
     }
 }

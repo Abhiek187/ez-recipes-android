@@ -19,6 +19,7 @@ import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Chef
+import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -33,8 +34,16 @@ import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.Routes
 
 @Composable
-fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
+fun ProfileLoggedIn(
+    chef: Chef,
+    profileViewModel: ProfileViewModel,
+    onNavigateToRecipe: (Recipe) -> Unit = {}
+) {
     var dialogToShow by remember { mutableStateOf<String?>(null) }
+    var didExpandFavorites by remember { mutableStateOf(false) }
+    var didExpandRecent by remember { mutableStateOf(false) }
+    var didExpandRates by remember { mutableStateOf(false) }
+
     val favoriteRecipes by profileViewModel.favoriteRecipes.collectAsState()
     val recentRecipes by profileViewModel.recentRecipes.collectAsState()
     val ratedRecipes by profileViewModel.ratedRecipes.collectAsState()
@@ -60,7 +69,11 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             header = stringResource(R.string.profile_favorites),
             expandByDefault = false,
             onExpand = {
-                profileViewModel.getAllFavoriteRecipes()
+                // Only fetch the recipes once per load
+                if (!didExpandFavorites) {
+                    profileViewModel.getAllFavoriteRecipes()
+                    didExpandFavorites = true
+                }
             }
         ) {
             Row(
@@ -77,8 +90,11 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
                         RecipeCard(
                             recipe = recipe,
                             width = 350.dp,
-                            profileViewModel = profileViewModel
-                        ) {}
+                            profileViewModel = profileViewModel,
+                            chefCopy = chef
+                        ) {
+                            onNavigateToRecipe(recipe)
+                        }
                     }
                 }
             }
@@ -88,7 +104,10 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             header = stringResource(R.string.profile_recently_viewed),
             expandByDefault = false,
             onExpand = {
-                profileViewModel.getAllRecentRecipes()
+                if (!didExpandRecent) {
+                    profileViewModel.getAllRecentRecipes()
+                    didExpandRecent = true
+                }
             }
         ) {
             for (recipe in recentRecipes) {
@@ -98,8 +117,11 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
                     RecipeCard(
                         recipe = recipe,
                         width = 350.dp,
-                        profileViewModel = profileViewModel
-                    ) {}
+                        profileViewModel = profileViewModel,
+                        chefCopy = chef
+                    ) {
+                        onNavigateToRecipe(recipe)
+                    }
                 }
             }
         }
@@ -108,7 +130,10 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
             header = stringResource(R.string.profile_ratings),
             expandByDefault = false,
             onExpand = {
-                profileViewModel.getAllRatedRecipes()
+                if (!didExpandRates) {
+                    profileViewModel.getAllRatedRecipes()
+                    didExpandRates = true
+                }
             }
         ) {
             for (recipe in ratedRecipes) {
@@ -118,8 +143,11 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
                     RecipeCard(
                         recipe = recipe,
                         width = 350.dp,
-                        profileViewModel = profileViewModel
-                    ) {}
+                        profileViewModel = profileViewModel,
+                        chefCopy = chef
+                    ) {
+                        onNavigateToRecipe(recipe)
+                    }
                 }
             }
         }
