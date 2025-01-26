@@ -27,6 +27,8 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 fun Accordion(
     header: String,
     expandByDefault: Boolean = true,
+    onExpand: () -> Unit = {},
+    onCollapse: () -> Unit = {},
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
@@ -40,6 +42,7 @@ fun Accordion(
                 .padding(8.dp)
                 .clickable {
                     isExpanded = !isExpanded
+                    if (isExpanded) onExpand() else onCollapse()
                 }
         ) {
             Text(

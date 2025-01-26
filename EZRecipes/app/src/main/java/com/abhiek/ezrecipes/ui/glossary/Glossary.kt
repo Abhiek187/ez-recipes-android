@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -23,6 +24,9 @@ import com.abhiek.ezrecipes.utils.boldAnnotatedString
 
 @Composable
 fun Glossary(terms: List<Term>) {
+    // Sort all the terms alphabetically for ease of reference
+    val sortedTerms = remember(terms) { terms.sortedBy { term -> term.word } }
+
     if (terms.isEmpty()) {
         // Show that the terms are loading
         Box(
@@ -35,9 +39,8 @@ fun Glossary(terms: List<Term>) {
         LazyColumn(
             modifier = Modifier.padding(8.dp)
         ) {
-            // Sort all the terms alphabetically for ease of reference
             itemsIndexed(
-                items = terms.sortedBy { it.word },
+                items = sortedTerms,
                 key = { _, term -> term._id }
             ) { index, term ->
                 Text(

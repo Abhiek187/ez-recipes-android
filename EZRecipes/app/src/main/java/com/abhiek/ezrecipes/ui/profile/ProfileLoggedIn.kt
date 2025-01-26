@@ -19,6 +19,7 @@ import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Chef
+import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -33,16 +34,58 @@ import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.Routes
 
 @Composable
-fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
+fun ProfileLoggedIn(
+    chef: Chef,
+    profileViewModel: ProfileViewModel,
+    onNavigateToRecipe: (Recipe) -> Unit = {}
+) {
     var dialogToShow by remember { mutableStateOf<String?>(null) }
+    var didExpandFavorites by remember { mutableStateOf(false) }
+    var didExpandRecent by remember { mutableStateOf(false) }
+    var didExpandRates by remember { mutableStateOf(false) }
+
+    val favoriteRecipes by profileViewModel.favoriteRecipes.collectAsState()
+    val recentRecipes by profileViewModel.recentRecipes.collectAsState()
+    val ratedRecipes by profileViewModel.ratedRecipes.collectAsState()
 
     val onDismiss = {
         dialogToShow = null
     }
 
-    LaunchedEffect(Unit) {
-        // Start loading all the recipe cards
-        profileViewModel.getAllChefRecipes()
+    @Composable
+    fun loadRecipeCards(recipes: List<Recipe?>) {
+        if (recipes.isEmpty()) {
+            Text(
+                text = stringResource(R.string.no_results),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            )
+        } else {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                for (recipe in recipes) {
+                    if (recipe == null) {
+                        RecipeCardLoader()
+                    } else {
+                        RecipeCard(
+                            recipe = recipe,
+                            width = 350.dp,
+                            profileViewModel = profileViewModel,
+                            chefCopy = chef
+                        ) {
+                            onNavigateToRecipe(recipe)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     Column(
@@ -60,78 +103,40 @@ fun ProfileLoggedIn(chef: Chef, profileViewModel: ProfileViewModel) {
 
         Accordion(
             header = stringResource(R.string.profile_favorites),
-            expandByDefault = false
-        ) {
-            // TODO: change to a loading condition
-            if (true) {
-                RecipeCardLoader()
-            } else {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState())
-                ) {
-                    for (recipe in profileViewModel.favoriteRecipes) {
-                        RecipeCard(
-                            recipe = recipe,
-                            width = 350.dp,
-                            profileViewModel = profileViewModel
-                        ) {}
-                    }
+            expandByDefault = false,
+            onExpand = {
+                // Only fetch the recipes once per load
+                if (!didExpandFavorites) {
+                    profileViewModel.getAllFavoriteRecipes()
+                    didExpandFavorites = true
                 }
             }
+        ) {
+            loadRecipeCards(favoriteRecipes)
         }
-
         Accordion(
             header = stringResource(R.string.profile_recently_viewed),
-            expandByDefault = false
-        ) {
-            if (true) {
-                RecipeCardLoader()
-            } else {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState())
-                ) {
-                    for (recipe in profileViewModel.recentRecipes) {
-                        RecipeCard(
-                            recipe = recipe,
-                            width = 350.dp,
-                            profileViewModel = profileViewModel
-                        ) {}
-                    }
+            expandByDefault = false,
+            onExpand = {
+                if (!didExpandRecent) {
+                    profileViewModel.getAllRecentRecipes()
+                    didExpandRecent = true
                 }
             }
+        ) {
+            loadRecipeCards(recentRecipes)
         }
-
         Accordion(
             header = stringResource(R.string.profile_ratings),
-            expandByDefault = false
-        ) {
-            if (true) {
-                RecipeCardLoader()
-            } else {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState())
-                ) {
-                    for (recipe in profileViewModel.ratedRecipes) {
-                        RecipeCard(
-                            recipe = recipe,
-                            width = 350.dp,
-                            profileViewModel = profileViewModel
-                        ) {}
-                    }
+            expandByDefault = false,
+            onExpand = {
+                if (!didExpandRates) {
+                    profileViewModel.getAllRatedRecipes()
+                    didExpandRates = true
                 }
             }
+        ) {
+            loadRecipeCards(ratedRecipes)
         }
 
         Button(

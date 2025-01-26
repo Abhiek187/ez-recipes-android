@@ -48,7 +48,7 @@ import kotlinx.coroutines.delay
 fun Home(
     mainViewModel: MainViewModel,
     profileViewModel: ProfileViewModel,
-    onNavigateToRecipe: () -> Unit
+    onNavigateToRecipe: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val activity = context.getActivity()
@@ -90,7 +90,7 @@ fun Home(
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP &&
-                context.getActivity()?.isChangingConfigurations != true) {
+                activity?.isChangingConfigurations != true) {
                 // Stop any network calls while switching tabs,
                 // except when rotating or folding the screen
                 mainViewModel.job?.cancel()
@@ -243,7 +243,7 @@ private fun HomePreview(
 
     EZRecipesTheme {
         Surface {
-            Home(viewModel, profileViewModel) {}
+            Home(viewModel, profileViewModel)
         }
     }
 }

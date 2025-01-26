@@ -18,6 +18,7 @@ import coil.compose.AsyncImage
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
+import com.abhiek.ezrecipes.data.models.Chef
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
@@ -38,15 +39,20 @@ fun RecipeCard(
     recipe: Recipe,
     width: Dp? = null,
     profileViewModel: ProfileViewModel,
+    chefCopy: Chef? = null,
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
 
-    val isFavorite = profileViewModel.chef?.favoriteRecipes?.contains(recipe.id.toString()) ?: false
+    val chef = chefCopy ?: profileViewModel.chef
+    val isFavorite = chef?.favoriteRecipes?.contains(recipe.id.toString()) ?: false
     val calories = recipe.nutrients.firstOrNull { nutrient -> nutrient.name == "Calories" }
 
     LaunchedEffect(Unit) {
-        profileViewModel.getChef()
+        // Avoid fetching the chef if it's already available
+        if (chefCopy == null) {
+            profileViewModel.getChef()
+        }
     }
 
     ElevatedCard(
@@ -83,7 +89,7 @@ fun RecipeCard(
                     onClick = {
                         profileViewModel.toggleFavoriteRecipe(recipe.id, !isFavorite)
                     },
-                    enabled = profileViewModel.chef != null,
+                    enabled = chef != null,
                     colors = IconButtonDefaults.iconButtonColors(
                         contentColor = MaterialTheme.colorScheme.primary
                     )
@@ -106,8 +112,8 @@ fun RecipeCard(
             RecipeRating(
                 averageRating = recipe.averageRating,
                 totalRatings = recipe.totalRatings ?: 0,
-                myRating = profileViewModel.chef?.ratings?.get(recipe.id.toString()),
-                enabled = profileViewModel.chef != null,
+                myRating = chef?.ratings?.get(recipe.id.toString()),
+                enabled = chef != null,
                 onRate = { rating ->
                     profileViewModel.rateRecipe(rating, recipe.id)
                 }

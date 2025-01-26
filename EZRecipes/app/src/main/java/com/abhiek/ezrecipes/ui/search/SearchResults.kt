@@ -25,9 +25,7 @@ import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
-import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.data.storage.DataStoreService
-import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -35,16 +33,18 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
-import com.google.android.play.core.review.testing.FakeReviewManager
 
 @Composable
 fun SearchResults(
-    mainViewModel: MainViewModel,
     searchViewModel: SearchViewModel,
     profileViewModel: ProfileViewModel,
     modifier: Modifier = Modifier,
-    onNavigateToRecipe: () -> Unit
+    onNavigateToRecipe: (Recipe) -> Unit = {}
 ) {
+    LaunchedEffect(Unit) {
+        profileViewModel.getChef()
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.padding(8.dp)
@@ -82,10 +82,16 @@ fun SearchResults(
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(searchViewModel.recipes) { recipe ->
-                    RecipeCard(recipe = recipe, profileViewModel = profileViewModel) {
-                        mainViewModel.recipe = recipe
-                        onNavigateToRecipe()
+                items(
+                    items = searchViewModel.recipes,
+                    key = { recipe -> recipe.id }
+                ) { recipe ->
+                    RecipeCard(
+                        recipe = recipe,
+                        profileViewModel = profileViewModel,
+                        chefCopy = profileViewModel.chef
+                    ) {
+                        onNavigateToRecipe(recipe)
                     }
                 }
                 // Invisible detector when the user scrolls to the bottom of the list
@@ -128,13 +134,6 @@ private fun SearchResultsPreview(
 ) {
     val context = LocalContext.current
     val recipeService = MockRecipeService
-    val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
-
-    val recipeViewModel = MainViewModel(
-        recipeRepository = RecipeRepository(recipeService, recentRecipeDao),
-        dataStoreService = DataStoreService(context),
-        reviewManager = FakeReviewManager(context)
-    )
     val searchViewModel = SearchViewModel(RecipeRepository((recipeService)))
     searchViewModel.recipes = recipes
 
@@ -147,7 +146,7 @@ private fun SearchResultsPreview(
 
     EZRecipesTheme {
         Surface {
-            SearchResults(recipeViewModel, searchViewModel, profileViewModel) {}
+            SearchResults(searchViewModel, profileViewModel)
         }
     }
 }

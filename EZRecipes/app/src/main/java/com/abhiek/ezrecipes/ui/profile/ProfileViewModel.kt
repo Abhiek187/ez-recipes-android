@@ -14,8 +14,10 @@ import com.abhiek.ezrecipes.data.recipe.RecipeResult
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Encryptor
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class ProfileViewModel(
     private val chefRepository: ChefRepository,
@@ -30,14 +32,18 @@ class ProfileViewModel(
     var authState by mutableStateOf(AuthState.LOADING)
     var isLoading by mutableStateOf(false)
     var chef by mutableStateOf<Chef?>(null)
-    var favoriteRecipes by mutableStateOf<List<Recipe>>(listOf())
-    var recentRecipes by mutableStateOf<List<Recipe>>(listOf())
-    var ratedRecipes by mutableStateOf<List<Recipe>>(listOf())
     var openLoginDialog by mutableStateOf(false)
     var showAlert by mutableStateOf(false)
     var emailSent by mutableStateOf(false)
     var passwordUpdated by mutableStateOf(false)
     var accountDeleted by mutableStateOf(false)
+
+    private val _favoriteRecipes = MutableStateFlow(listOf<Recipe?>())
+    private val _recentRecipes = MutableStateFlow(listOf<Recipe?>())
+    private val _ratedRecipes = MutableStateFlow(listOf<Recipe?>())
+    val favoriteRecipes = _favoriteRecipes.asStateFlow()
+    val recentRecipes = _recentRecipes.asStateFlow()
+    val ratedRecipes = _ratedRecipes.asStateFlow()
 
     companion object {
         private const val TAG = "ProfileViewModel"
@@ -206,12 +212,10 @@ class ProfileViewModel(
 
         job = viewModelScope.launch {
             isLoading = true
-            val result = chefRepository.login(loginCredentials)
-            isLoading = false
 
-            when (result) {
+            when (val loginResult = chefRepository.login(loginCredentials)) {
                 is ChefResult.Success -> {
-                    val loginResponse = result.response
+                    val loginResponse = loginResult.response
                     recipeError = null
                     showAlert = false
 
@@ -226,13 +230,29 @@ class ProfileViewModel(
                         token = loginResponse.token
                     )
 
+                    // Fetch the rest of the chef's profile
+                    val chefResult = chefRepository.getChef(loginResponse.token)
+                    isLoading = false
+
+                    when (chefResult) {
+                        is ChefResult.Success -> {
+                            val chefResponse = chefResult.response
+                            chef = chefResponse
+                        }
+                        is ChefResult.Error -> {
+                            recipeError = chefResult.recipeError
+                            showAlert = job?.isCancelled == false
+                        }
+                    }
+
                     if (loginResponse.emailVerified) {
                         authState = AuthState.AUTHENTICATED
                         openLoginDialog = false
                     }
                 }
                 is ChefResult.Error -> {
-                    recipeError = result.recipeError
+                    isLoading = false
+                    recipeError = loginResult.recipeError
                     showAlert = job?.isCancelled == false
                 }
             }
@@ -369,64 +389,123 @@ class ProfileViewModel(
         }
     }
 
-//    fun getRecipeById(id: Int) {
-//        job = viewModelScope.launch {
-//            isLoading = true
-//            val result = recipeRepository.getRecipeById(id)
-//            isLoading = false
-//
-//            when (result) {
-//                is RecipeResult.Success -> {
-//                    recipe = result.response
-//                    recipeError = null
-//                }
-//                is RecipeResult.Error -> {
-//                    recipe = null
-//                    recipeError = result.recipeError
-//                }
-//            }
-//        }
-//    }
+    fun getAllFavoriteRecipes() {
+        val chef = this.chef ?: return
 
-    fun getAllChefRecipes() {
-        if (chef == null) return
+        viewModelScope.launch {
+            val recipeIds = chef.favoriteRecipes.mapNotNull { it.toIntOrNull() }
 
-        for (id in chef!!.favoriteRecipes) {
-            id.toIntOrNull()?.let { recipeId ->
-                viewModelScope.launch {
-                    val result = recipeRepository.getRecipeById(recipeId)
+            // null = loading
+            val initialRecipes = recipeIds.map { null }
+            _favoriteRecipes.update { initialRecipes }
 
-                    if (result is RecipeResult.Success) {
-                        favoriteRecipes += result.response
+            // Use coroutineScope to ensure all child coroutines complete before exiting
+            coroutineScope {
+                // Fetch all recipes in parallel
+                val jobs = recipeIds.mapIndexed { index, recipeId ->
+                    async {
+                        when (val result = recipeRepository.getRecipeById(recipeId)) {
+                            is RecipeResult.Success -> {
+                                // Update the state for this specific recipe
+                                _favoriteRecipes.update { currentState ->
+                                    currentState.toMutableList().apply {
+                                        this[index] = result.response
+                                    }
+                                }
+                            }
+                            is RecipeResult.Error -> {
+                                Log.w(TAG, "Failed to get recipe $recipeId :: error: ${
+                                    result.recipeError.error
+                                }")
+                            }
+                        }
                     }
                 }
-                //getRecipeById(recipeId)
+
+                // Remove all recipes that failed to load
+                jobs.awaitAll()
+                _favoriteRecipes.update { currentState ->
+                    currentState.filterNotNull()
+                }
             }
         }
+    }
 
-        for ((id, timestamp) in chef!!.recentRecipes.entries) {
-            id.toIntOrNull()?.let { recipeId ->
-                viewModelScope.launch {
-                    val result = recipeRepository.getRecipeById(recipeId)
+    fun getAllRecentRecipes() {
+        val chef = this.chef ?: return
 
-                    if (result is RecipeResult.Success) {
-                        recentRecipes += result.response
+        viewModelScope.launch {
+            // Sort the recipe IDs by most recent timestamp
+            val recipeIds = chef.recentRecipes
+                .mapNotNull { (id, timestamp) -> id.toIntOrNull() to timestamp }
+                .sortedByDescending { it.second }
+                .mapNotNull { it.first }
+
+            val initialRecipes = recipeIds.map { null }
+            _recentRecipes.update { initialRecipes }
+
+            coroutineScope {
+                // Fetch all recipes in parallel
+                val jobs = recipeIds.mapIndexed { index, recipeId ->
+                    async {
+                        when (val result = recipeRepository.getRecipeById(recipeId)) {
+                            is RecipeResult.Success -> {
+                                _recentRecipes.update { currentState ->
+                                    currentState.toMutableList().apply {
+                                        this[index] = result.response
+                                    }
+                                }
+                            }
+                            is RecipeResult.Error -> {
+                                Log.w(TAG, "Failed to get recipe $recipeId :: error: ${
+                                    result.recipeError.error
+                                }")
+                            }
+                        }
                     }
                 }
-                //getRecipeById(recipeId)
+
+                jobs.awaitAll()
+                _recentRecipes.update { currentState ->
+                    currentState.filterNotNull()
+                }
             }
         }
+    }
 
-        for ((id, rating) in chef!!.ratings.entries) {
-            id.toIntOrNull()?.let { recipeId ->
-                viewModelScope.launch {
-                    val result = recipeRepository.getRecipeById(recipeId)
+    fun getAllRatedRecipes() {
+        val chef = this.chef ?: return
 
-                    if (result is RecipeResult.Success) {
-                        ratedRecipes += result.response
+        viewModelScope.launch {
+            val recipeIds = chef.ratings.mapNotNull { (id, _) -> id.toIntOrNull() }
+
+            val initialRecipes = recipeIds.map { null }
+            _ratedRecipes.update { initialRecipes }
+
+            coroutineScope {
+                val jobs = recipeIds.mapIndexed { index, recipeId ->
+                    async {
+                        when (val result = recipeRepository.getRecipeById(recipeId)) {
+                            is RecipeResult.Success -> {
+                                _ratedRecipes.update { currentState ->
+                                    currentState.toMutableList().apply {
+                                        this[index] = result.response
+                                    }
+                                }
+                            }
+                            is RecipeResult.Error -> {
+                                Log.w(TAG, "Failed to get recipe $recipeId :: error: ${
+                                    result.recipeError.error
+                                }")
+                            }
+                        }
                     }
                 }
-                //getRecipeById(recipeId)
+
+                jobs.awaitAll()
+                _ratedRecipes.update { currentState ->
+                    currentState.filterNotNull()
+                }
             }
         }
     }

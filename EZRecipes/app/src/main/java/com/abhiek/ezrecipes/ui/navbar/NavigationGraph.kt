@@ -135,16 +135,16 @@ fun NavigationGraph(
                         modifier = Modifier.weight(1f)
                     ) {}
                     SearchResults(
-                        mainViewModel,
                         searchViewModel,
                         profileViewModel,
                         modifier = Modifier.weight(
                             if (widthSizeClass == WindowWidthSizeClass.Medium) 1f else 2f
                         )
-                    ) {
+                    ) { recipe ->
+                        mainViewModel.recipe = recipe
                         navController.navigate(
                             Routes.RECIPE.replace(
-                                "{id}", mainViewModel.recipe?.id.toString()
+                                "{id}", recipe.id.toString()
                             )
                         ) {
                             launchSingleTop = true
@@ -160,10 +160,11 @@ fun NavigationGraph(
             popEnterTransition = { slideRightEnter() },
             popExitTransition = { slideRightExit() }
         ) {
-            SearchResults(mainViewModel, searchViewModel, profileViewModel) {
+            SearchResults(searchViewModel, profileViewModel) { recipe ->
+                mainViewModel.recipe = recipe
                 navController.navigate(
                     Routes.RECIPE.replace(
-                        "{id}", mainViewModel.recipe?.id.toString()
+                        "{id}", recipe.id.toString()
                     )
                 ) {
                     launchSingleTop = true
@@ -182,11 +183,26 @@ fun NavigationGraph(
                     uriPattern = "${Constants.RECIPE_WEB_ORIGIN}/${Routes.PROFILE}"
                 }
             ),
+            exitTransition = if (mainViewModel.recipe != null) {
+                { slideLeftExit() }
+            } else null,
+            popEnterTransition = if (mainViewModel.recipe != null) {
+                { slideRightEnter() }
+            } else null
         ) { backStackEntry ->
             Profile(
                 profileViewModel,
                 deepLinkAction = backStackEntry.arguments?.getString("action")
-            )
+            ) { recipe ->
+                mainViewModel.recipe = recipe
+                navController.navigate(
+                    Routes.RECIPE.replace(
+                        "{id}", recipe.id.toString()
+                    )
+                ) {
+                    launchSingleTop = true
+                }
+            }
         }
     }
 }
