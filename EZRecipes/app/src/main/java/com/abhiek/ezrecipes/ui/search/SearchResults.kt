@@ -82,7 +82,10 @@ fun SearchResults(
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(searchViewModel.recipes) { recipe ->
+                items(
+                    items = searchViewModel.recipes,
+                    key = { recipe -> recipe.id }
+                ) { recipe ->
                     RecipeCard(
                         recipe = recipe,
                         profileViewModel = profileViewModel,
