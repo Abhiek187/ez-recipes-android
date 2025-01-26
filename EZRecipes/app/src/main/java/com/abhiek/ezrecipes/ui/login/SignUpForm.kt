@@ -72,7 +72,7 @@ fun SignUpForm(
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
-            .padding(8.dp)
+            .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
         Text(
