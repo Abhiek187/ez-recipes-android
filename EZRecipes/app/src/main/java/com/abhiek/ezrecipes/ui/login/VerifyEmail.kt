@@ -1,6 +1,8 @@
 package com.abhiek.ezrecipes.ui.login
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.*
@@ -47,7 +49,9 @@ fun VerifyEmail(
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier
+            .padding(8.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Text(
             text = stringResource(R.string.email_verify_header),
@@ -72,7 +76,8 @@ fun VerifyEmail(
             ) {
                 Text(
                     text = stringResource(R.string.email_verify_retry_text),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f, false)
                 )
                 TextButton(
                     onClick = {
