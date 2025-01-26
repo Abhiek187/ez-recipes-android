@@ -52,6 +52,42 @@ fun ProfileLoggedIn(
         dialogToShow = null
     }
 
+    @Composable
+    fun loadRecipeCards(recipes: List<Recipe?>) {
+        if (recipes.isEmpty()) {
+            Text(
+                text = stringResource(R.string.no_results),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            )
+        } else {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                for (recipe in recipes) {
+                    if (recipe == null) {
+                        RecipeCardLoader()
+                    } else {
+                        RecipeCard(
+                            recipe = recipe,
+                            width = 350.dp,
+                            profileViewModel = profileViewModel,
+                            chefCopy = chef
+                        ) {
+                            onNavigateToRecipe(recipe)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
@@ -76,28 +112,7 @@ fun ProfileLoggedIn(
                 }
             }
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                for (recipe in favoriteRecipes) {
-                    if (recipe == null) {
-                        RecipeCardLoader()
-                    } else {
-                        RecipeCard(
-                            recipe = recipe,
-                            width = 350.dp,
-                            profileViewModel = profileViewModel,
-                            chefCopy = chef
-                        ) {
-                            onNavigateToRecipe(recipe)
-                        }
-                    }
-                }
-            }
+            loadRecipeCards(favoriteRecipes)
         }
 
         Accordion(
@@ -110,20 +125,7 @@ fun ProfileLoggedIn(
                 }
             }
         ) {
-            for (recipe in recentRecipes) {
-                if (recipe == null) {
-                    RecipeCardLoader()
-                } else {
-                    RecipeCard(
-                        recipe = recipe,
-                        width = 350.dp,
-                        profileViewModel = profileViewModel,
-                        chefCopy = chef
-                    ) {
-                        onNavigateToRecipe(recipe)
-                    }
-                }
-            }
+            loadRecipeCards(recentRecipes)
         }
 
         Accordion(
@@ -136,20 +138,7 @@ fun ProfileLoggedIn(
                 }
             }
         ) {
-            for (recipe in ratedRecipes) {
-                if (recipe == null) {
-                    RecipeCardLoader()
-                } else {
-                    RecipeCard(
-                        recipe = recipe,
-                        width = 350.dp,
-                        profileViewModel = profileViewModel,
-                        chefCopy = chef
-                    ) {
-                        onNavigateToRecipe(recipe)
-                    }
-                }
-            }
+            loadRecipeCards(ratedRecipes)
         }
 
         Button(
