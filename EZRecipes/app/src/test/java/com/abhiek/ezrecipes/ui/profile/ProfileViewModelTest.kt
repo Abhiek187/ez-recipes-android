@@ -538,6 +538,84 @@ internal class ProfileViewModelTest {
     }
 
     @Test
+    fun getAllFavoriteRecipesSuccess() = runTest {
+        // Given a chef with favorite recipes
+        viewModel.getChef()
+
+        // When getting all favorite recipes
+        viewModel.getAllFavoriteRecipes()
+
+        // Then all the recipes are fetched
+        assertEquals(viewModel.favoriteRecipes.value.size,
+            mockChefService.chef.favoriteRecipes.size)
+    }
+
+    @Test
+    fun getAllFavoriteRecipesError() = runTest {
+        // Given a chef with favorite recipes
+        viewModel.getChef()
+
+        // When getting all favorite recipes and an error occurs
+        mockRecipeService.isSuccess = false
+        viewModel.getAllFavoriteRecipes()
+
+        // Then no recipes are fetched
+        assertEquals(viewModel.favoriteRecipes.value.size, 0)
+    }
+
+    @Test
+    fun getAllRecentRecipesSuccess() = runTest {
+        // Given a chef with recent recipes
+        viewModel.getChef()
+
+        // When getting all recent recipes
+        viewModel.getAllRecentRecipes()
+
+        // Then all the recipes are fetched
+        assertEquals(viewModel.recentRecipes.value.size,
+            mockChefService.chef.recentRecipes.size)
+    }
+
+    @Test
+    fun getAllRecentRecipesError() = runTest {
+        // Given a chef with recent recipes
+        viewModel.getChef()
+
+        // When getting all recent recipes and an error occurs
+        mockRecipeService.isSuccess = false
+        viewModel.getAllRecentRecipes()
+
+        // Then no recipes are fetched
+        assertEquals(viewModel.recentRecipes.value.size, 0)
+    }
+
+    @Test
+    fun getAllRatedRecipesSuccess() = runTest {
+        // Given a chef with rated recipes
+        viewModel.getChef()
+
+        // When getting all rated recipes
+        viewModel.getAllRatedRecipes()
+
+        // Then all the recipes are fetched
+        assertEquals(viewModel.ratedRecipes.value.size,
+            mockChefService.chef.ratings.size)
+    }
+
+    @Test
+    fun getAllRatedRecipesError() = runTest {
+        // Given a chef with rated recipes
+        viewModel.getChef()
+
+        // When getting all rated recipes and an error occurs
+        mockRecipeService.isSuccess = false
+        viewModel.getAllRatedRecipes()
+
+        // Then no recipes are fetched
+        assertEquals(viewModel.ratedRecipes.value.size, 0)
+    }
+
+    @Test
     fun favoriteRecipeSuccess() = runTest {
         // Given a recipe and a valid token
         val recipeId = 1
