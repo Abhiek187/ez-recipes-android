@@ -421,7 +421,11 @@ class ProfileViewModel(
         val chef = this.chef ?: return
 
         viewModelScope.launch {
-            val recipeIds = chef.recentRecipes.mapNotNull { (id, timestamp) -> id.toIntOrNull() }
+            // Sort the recipe IDs by most recent timestamp
+            val recipeIds = chef.recentRecipes
+                .mapNotNull { (id, timestamp) -> id.toIntOrNull() to timestamp }
+                .sortedByDescending { it.second }
+                .mapNotNull { it.first }
 
             val initialRecipes = recipeIds.map { null }
             _recentRecipes.update { initialRecipes }
@@ -459,7 +463,7 @@ class ProfileViewModel(
         val chef = this.chef ?: return
 
         viewModelScope.launch {
-            val recipeIds = chef.ratings.mapNotNull { (id, rating) -> id.toIntOrNull() }
+            val recipeIds = chef.ratings.mapNotNull { (id, _) -> id.toIntOrNull() }
 
             val initialRecipes = recipeIds.map { null }
             _ratedRecipes.update { initialRecipes }
@@ -485,7 +489,7 @@ class ProfileViewModel(
                 }
 
                 jobs.awaitAll()
-                _favoriteRecipes.update { currentState ->
+                _ratedRecipes.update { currentState ->
                     currentState.filterNotNull()
                 }
             }
