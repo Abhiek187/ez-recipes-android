@@ -76,7 +76,7 @@ dependencies {
     val composeBomVersion = "2025.01.00"
     val lifecycleVersion = "2.8.7"
     val activityVersion = "1.10.0"
-    val materialVersion = "1.7.6"
+    val materialVersion = "1.7.7"
     val material3Version = "1.3.1"
     val coroutineVersion = "1.10.1"
     val retrofitVersion = "2.11.0"
