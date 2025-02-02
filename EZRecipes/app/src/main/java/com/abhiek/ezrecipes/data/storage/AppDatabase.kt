@@ -1,14 +1,21 @@
 package com.abhiek.ezrecipes.data.storage
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
 import com.abhiek.ezrecipes.data.models.RecentRecipe
 import com.abhiek.ezrecipes.utils.Constants
 
-@Database(entities = [RecentRecipe::class], version = Constants.Room.DATABASE_VERSION)
+@Database(
+    entities = [RecentRecipe::class],
+    version = Constants.Room.VERSION_IS_FAVORITE,
+    autoMigrations = [
+        // Add isFavorite column
+        AutoMigration(
+            from = Constants.Room.VERSION_INITIAL,
+            to = Constants.Room.VERSION_IS_FAVORITE
+        )
+    ]
+)
 @TypeConverters(Converters::class)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun recentRecipeDao(): RecentRecipeDao

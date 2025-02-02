@@ -33,8 +33,9 @@ object Constants {
 
     object Room {
         const val DATABASE_NAME = "AppDatabase"
-        const val DATABASE_VERSION = 1
         const val RECENT_RECIPE_TABLE = "RecentRecipe"
+        const val VERSION_INITIAL = 1
+        const val VERSION_IS_FAVORITE = 2
     }
 
     object ProfileActions {

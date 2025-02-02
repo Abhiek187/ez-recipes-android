@@ -65,6 +65,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    sourceSets {
+        // Adds exported schema location as test app assets
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
 }
 
 dependencies {
@@ -126,6 +130,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-intents:$espressoVersion")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("tools.fastlane:screengrab:2.1.1")
+    androidTestImplementation("androidx.room:room-testing:$roomVersion")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
