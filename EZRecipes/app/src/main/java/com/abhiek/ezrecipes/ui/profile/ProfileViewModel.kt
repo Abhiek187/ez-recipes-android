@@ -527,6 +527,7 @@ class ProfileViewModel(
                             chef!!.favoriteRecipes - recipeId.toString()
                         }
                     )
+                    recipeRepository.toggleFavoriteRecentRecipe(recipeId)
 
                     result.response.token?.let { newToken ->
                         saveToken(newToken)

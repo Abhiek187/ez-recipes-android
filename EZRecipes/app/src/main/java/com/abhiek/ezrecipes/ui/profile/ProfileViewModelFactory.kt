@@ -7,6 +7,7 @@ import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.ChefService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.recipe.RecipeService
+import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 
 class ProfileViewModelFactory(private val context: Context): ViewModelProvider.Factory {
@@ -18,7 +19,8 @@ class ProfileViewModelFactory(private val context: Context): ViewModelProvider.F
                     chefService = ChefService.getInstance(context)
                 ),
                 recipeRepository = RecipeRepository(
-                    recipeService = RecipeService.getInstance(context)
+                    recipeService = RecipeService.getInstance(context),
+                    recentRecipeDao = AppDatabase.getInstance(context).recentRecipeDao()
                 ),
                 dataStoreService = DataStoreService(context)
             ) as T
