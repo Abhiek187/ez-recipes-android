@@ -115,7 +115,7 @@ fun RecipeCard(
                 myRating = chef?.ratings?.get(recipe.id.toString()),
                 enabled = chef != null,
                 onRate = { rating ->
-                    profileViewModel.rateRecipe(rating, recipe.id)
+                    profileViewModel.rateRecipe(recipe.id, rating)
                 }
             )
 

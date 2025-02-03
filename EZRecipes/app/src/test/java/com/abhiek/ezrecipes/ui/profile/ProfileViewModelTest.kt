@@ -63,6 +63,7 @@ internal class ProfileViewModelTest {
         mockChefService = MockChefService
         mockRecipeService = MockRecipeService
         mockDataStoreService = mockkClass(DataStoreService::class) {
+            coJustRun { incrementRecipesViewed() }
             coEvery { getToken() } returns mockEncryptedToken
             coJustRun { saveToken(any()) }
             coJustRun { deleteToken() }
@@ -613,6 +614,55 @@ internal class ProfileViewModelTest {
 
         // Then no recipes are fetched
         assertEquals(viewModel.ratedRecipes.value.size, 0)
+    }
+
+    @Test
+    fun updateRecipeViewsSuccess() = runTest {
+        // Given a recipe and a valid token
+        val recipe = mockRecipeService.recipes[0]
+        viewModel.getChef()
+
+        // When updating the recipe views
+        viewModel.updateRecipeViews(recipe)
+
+        // Then the recipe views should be updated
+        assertEquals(viewModel.chef?.recentRecipes?.contains(recipe.id.toString()), true)
+
+        coVerify { mockDataStoreService.incrementRecipesViewed() }
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun updateRecipeViewsError() = runTest {
+        // Given a recipe and a valid token
+        val recipe = mockRecipeService.recipes[0]
+        viewModel.getChef()
+
+        // When updating the recipe views and an error occurs
+        mockRecipeService.isSuccess = false
+        viewModel.updateRecipeViews(recipe)
+
+        // Then an error is logged
+        coVerify { mockDataStoreService.incrementRecipesViewed() }
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+    }
+
+    @Test
+    fun updateRecipeViewsNoToken() = runTest {
+        // Given a recipe and no token
+        val recipe = mockRecipeService.recipes[0]
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When updating the recipe views
+        viewModel.updateRecipeViews(recipe)
+
+        // Then an error is logged
+        coVerify { mockDataStoreService.incrementRecipesViewed() }
+        coVerify { mockDataStoreService.getToken() }
     }
 
     @Test
