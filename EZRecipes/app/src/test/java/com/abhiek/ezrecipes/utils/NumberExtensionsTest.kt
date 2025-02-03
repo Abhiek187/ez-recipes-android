@@ -47,4 +47,23 @@ internal class NumberExtensionsTest {
             assertEquals(expectedNum, actualNum)
         }
     }
+
+    @ParameterizedTest
+    @CsvSource(
+        // UNIX = Date.parse(ISO)
+        // ISO = new Date(UNIX).toISOString()
+        "2024-10-17T02:54:07.471Z,1729133647471",
+        "2024-10-17T22:28:27.387Z,1729204107387",
+        "2025-02-02T22:56:02.697Z,1738536962697",
+        "1970-01-01T00:00:00.000Z,0",
+        "1969-12-31T23:59:59.999Z,-1",
+        "2038-01-19T03:14:08.000Z,2147483648000"
+    )
+    fun toISODateString(expectedISOString: String, timestamp: Long) {
+        // Given a Unix timestamp
+        // When converted to an ISO string
+        val actualISOString = timestamp.toISODateString()
+        // Then it should match the expected value
+        assertEquals(expectedISOString, actualISOString)
+    }
 }

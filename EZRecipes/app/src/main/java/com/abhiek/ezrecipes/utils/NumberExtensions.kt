@@ -8,7 +8,11 @@ import android.os.Build
 import android.util.TypedValue
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 /**
  * Converts a measurement in dp to px using the device's display metrics.
@@ -68,5 +72,24 @@ fun Double.round(places: Int): String {
         roundedString.trimEnd('0').trimEnd('.')
     } else {
         roundedString
+    }
+}
+
+/**
+ * Converts a Unix timestamp in milliseconds to an ISO 8601 date string
+ *
+ * @return the ISO date string
+ */
+fun Long.toISODateString(): String {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        Instant.ofEpochMilli(this).toString()
+    } else {
+        // SimpleDateFormat is not thread-safe, so create a new instance each time
+        val dateFormat = SimpleDateFormat(
+            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+            Locale.getDefault()
+        )
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        dateFormat.format(Date(this))
     }
 }
