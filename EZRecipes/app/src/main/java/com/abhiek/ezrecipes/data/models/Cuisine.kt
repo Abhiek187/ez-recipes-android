@@ -37,6 +37,7 @@ enum class Cuisine {
     CENTRAL_AMERICAN,
     BBQ,
     BARBECUE,
+    SCANDINAVIAN,
     UNKNOWN;
 
     override fun toString(): String {

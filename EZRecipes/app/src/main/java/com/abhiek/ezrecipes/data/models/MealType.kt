@@ -31,6 +31,7 @@ enum class MealType {
     COCKTAIL,
     MOCKTAIL,
     SEASONING,
+    BATTER,
     UNKNOWN;
 
     override fun toString(): String {
