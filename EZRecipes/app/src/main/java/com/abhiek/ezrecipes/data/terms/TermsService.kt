@@ -1,5 +1,7 @@
 package com.abhiek.ezrecipes.data.terms
 
+import android.content.Context
+import com.abhiek.ezrecipes.data.interceptors.UserAgentInterceptor
 import com.abhiek.ezrecipes.data.models.Term
 import com.abhiek.ezrecipes.utils.Constants
 import okhttp3.OkHttpClient
@@ -18,32 +20,33 @@ interface TermsService {
         private lateinit var termsService: TermsService
 
         // Initialize the Retrofit service when first referencing the singleton
-        val instance: TermsService
-            get() {
-                if (Companion::termsService.isInitialized) return termsService
+        fun getInstance(context: Context): TermsService {
+            if (Companion::termsService.isInitialized) return termsService
 
-                // Log request and response lines and their respective headers and bodies
-                val loggingInterceptor = HttpLoggingInterceptor().setLevel(
-                    HttpLoggingInterceptor.Level.BODY
-                )
-                loggingInterceptor.redactHeader("Authorization")
-                loggingInterceptor.redactHeader("Cookie")
-                // Extend the default timeout of 10 seconds to account for cold starts
-                val httpClient = OkHttpClient().newBuilder()
-                    .addInterceptor(loggingInterceptor)
-                    .readTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                    .connectTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                    .build()
+            // Log request and response lines and their respective headers and bodies
+            val loggingInterceptor = HttpLoggingInterceptor().setLevel(
+                HttpLoggingInterceptor.Level.BODY
+            )
+            loggingInterceptor.redactHeader("Authorization")
+            loggingInterceptor.redactHeader("Cookie")
+            val userAgentInterceptor = UserAgentInterceptor(context)
 
-                // Convert responses to GSON (Google JSON)
-                val retrofit = Retrofit.Builder()
-                    .baseUrl(Constants.SERVER_BASE_URL + Constants.TERMS_PATH)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .client(httpClient)
-                    .build()
+            val httpClient = OkHttpClient().newBuilder()
+                .addInterceptor(loggingInterceptor)
+                .addInterceptor(userAgentInterceptor)
+                .readTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .connectTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .build()
 
-                termsService = retrofit.create(TermsService::class.java)
-                return termsService
-            }
+            // Convert responses to GSON (Google JSON)
+            val retrofit = Retrofit.Builder()
+                .baseUrl(Constants.SERVER_BASE_URL + Constants.TERMS_PATH)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient)
+                .build()
+
+            termsService = retrofit.create(TermsService::class.java)
+            return termsService
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.abhiek.ezrecipes.data.chef
 import android.content.Context
 import com.abhiek.ezrecipes.data.interceptors.CacheInterceptor
 import com.abhiek.ezrecipes.data.interceptors.SecureHttpLoggingInterceptor
+import com.abhiek.ezrecipes.data.interceptors.UserAgentInterceptor
 import com.abhiek.ezrecipes.data.models.*
 import com.abhiek.ezrecipes.utils.Constants
 import okhttp3.OkHttpClient
@@ -62,10 +63,13 @@ interface ChefService {
                 age = 5,
                 units = TimeUnit.MINUTES
             )
+            val userAgentInterceptor = UserAgentInterceptor(context)
+
             val httpClient = OkHttpClient().newBuilder()
                 .cache(cacheInterceptor.cache)
                 .addInterceptor(loggingInterceptor)
                 .addInterceptor(cacheInterceptor)
+                .addInterceptor(userAgentInterceptor)
                 .readTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .connectTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .build()

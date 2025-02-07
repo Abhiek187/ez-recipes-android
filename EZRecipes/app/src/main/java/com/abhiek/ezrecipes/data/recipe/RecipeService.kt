@@ -5,6 +5,7 @@ import com.abhiek.ezrecipes.data.adapters.CuisineTypeAdapter
 import com.abhiek.ezrecipes.data.adapters.MealTypeAdapter
 import com.abhiek.ezrecipes.data.adapters.SpiceLevelTypeAdapter
 import com.abhiek.ezrecipes.data.interceptors.CacheInterceptor
+import com.abhiek.ezrecipes.data.interceptors.UserAgentInterceptor
 import com.abhiek.ezrecipes.data.models.*
 import com.abhiek.ezrecipes.utils.Constants
 import com.google.gson.GsonBuilder
@@ -72,12 +73,14 @@ interface RecipeService {
                 age = 5,
                 units = TimeUnit.MINUTES
             )
+            val userAgentInterceptor = UserAgentInterceptor(context)
 
-            // Extend the default timeout of 10 seconds to account for cold starts
             val httpClient = OkHttpClient().newBuilder()
                 .cache(cacheInterceptor.cache)
                 .addInterceptor(loggingInterceptor)
                 .addInterceptor(cacheInterceptor)
+                .addInterceptor(userAgentInterceptor)
+                // Extend the default timeout of 10 seconds to account for cold starts
                 .readTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .connectTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .build()
