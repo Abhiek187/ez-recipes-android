@@ -8,6 +8,8 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+val okHttpVersion = "4.12.0"
+
 android {
     namespace = "com.abhiek.ezrecipes"
     compileSdk = 35
@@ -25,6 +27,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        // Expose build variables to the app
+        buildConfigField("String", "OK_HTTP_VERSION", "\"$okHttpVersion\"")
     }
 
     // Uncomment to test a release build
@@ -102,7 +107,7 @@ dependencies {
     implementation(platform("com.squareup.retrofit2:retrofit-bom:$retrofitVersion"))
     implementation("com.squareup.retrofit2:retrofit")
     implementation("com.squareup.retrofit2:converter-gson")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:$okHttpVersion")
     // Room
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
