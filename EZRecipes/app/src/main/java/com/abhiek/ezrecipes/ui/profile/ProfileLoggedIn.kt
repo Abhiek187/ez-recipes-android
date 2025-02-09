@@ -32,6 +32,7 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.Accordion
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.Routes
+import com.abhiek.ezrecipes.utils.toShorthand
 
 @Composable
 fun ProfileLoggedIn(
@@ -39,6 +40,8 @@ fun ProfileLoggedIn(
     profileViewModel: ProfileViewModel,
     onNavigateToRecipe: (Recipe) -> Unit = {}
 ) {
+    val context = LocalContext.current
+
     var dialogToShow by remember { mutableStateOf<String?>(null) }
     var didExpandFavorites by remember { mutableStateOf(false) }
     var didExpandRecent by remember { mutableStateOf(false) }
@@ -100,6 +103,39 @@ fun ProfileLoggedIn(
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.fillMaxWidth()
         )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                // Set the height to make the dividers visible
+                .height(IntrinsicSize.Min)
+        ) {
+            val numFavoriteRecipes = chef.favoriteRecipes.size
+            val numViewedRecipes = chef.recentRecipes.size
+            val numRatedRecipes = chef.ratings.size
+
+            Text(
+                text = context.resources.getQuantityString(
+                    R.plurals.favorites, numFavoriteRecipes, numFavoriteRecipes.toShorthand()
+                ),
+                style = MaterialTheme.typography.bodyLarge
+            )
+            VerticalDivider()
+            Text(
+                text = context.resources.getQuantityString(
+                    R.plurals.recipes_viewed, numViewedRecipes, numViewedRecipes.toShorthand()
+                ),
+                style = MaterialTheme.typography.bodyLarge
+            )
+            VerticalDivider()
+            Text(
+                text = context.resources.getQuantityString(
+                    R.plurals.ratings, numRatedRecipes, numRatedRecipes.toShorthand()
+                ),
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
 
         Accordion(
             header = stringResource(R.string.profile_favorites),
