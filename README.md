@@ -28,13 +28,17 @@ Chefs can either find a random recipe or search for one using various filters, i
 
 The app features a glossary to easily look up the meaning of common terms found in recipes. This will better assist newer chefs in learning how to cook, prep certain ingredients, and use certain kitchen tools. Think [How to Stock](https://github.com/Abhiek187/how-to-stock), but for cooking food instead of managing finances.
 
+Creating an account is free and unlocks more exciting features for chefs. This includes favoriting, rating, and syncing recipes across the web and mobile apps. For example, chefs can browse recipes on the web app and open them on the mobile app to cook them in the kitchen.
+
 ## Features
 
 - Android app created using Jetpack Compose and MVVM architecture
 - Material Design UI
 - Responsive and accessible mobile design
 - REST APIs to a custom [server](https://github.com/Abhiek187/ez-recipes-server) using Retrofit, which fetches recipe information from [spoonacular](https://spoonacular.com/food-api) and MongoDB
+- Account management using Firebase Authentication
 - Offline data storage using DataStore and Room
+- Encryption of sensitive data using the Android Keystore
 - App Links to open recipes from the web app to the mobile app
 - Automated testing and deployment using CI/CD pipelines in GitHub Actions and Fastlane
 - Mermaid to write diagrams as code
