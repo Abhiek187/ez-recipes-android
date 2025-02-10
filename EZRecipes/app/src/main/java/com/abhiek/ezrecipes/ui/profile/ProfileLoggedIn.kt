@@ -1,6 +1,5 @@
 package com.abhiek.ezrecipes.ui.profile
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -19,7 +18,6 @@ import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Chef
-import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -27,9 +25,7 @@ import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
-import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
-import com.abhiek.ezrecipes.ui.util.Accordion
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.Routes
 import com.abhiek.ezrecipes.utils.toShorthand
@@ -37,58 +33,14 @@ import com.abhiek.ezrecipes.utils.toShorthand
 @Composable
 fun ProfileLoggedIn(
     chef: Chef,
-    profileViewModel: ProfileViewModel,
-    onNavigateToRecipe: (Recipe) -> Unit = {}
+    profileViewModel: ProfileViewModel
 ) {
     val context = LocalContext.current
 
     var dialogToShow by remember { mutableStateOf<String?>(null) }
-    var didExpandFavorites by remember { mutableStateOf(false) }
-    var didExpandRecent by remember { mutableStateOf(false) }
-    var didExpandRates by remember { mutableStateOf(false) }
-
-    val favoriteRecipes by profileViewModel.favoriteRecipes.collectAsState()
-    val recentRecipes by profileViewModel.recentRecipes.collectAsState()
-    val ratedRecipes by profileViewModel.ratedRecipes.collectAsState()
 
     val onDismiss = {
         dialogToShow = null
-    }
-
-    @Composable
-    fun loadRecipeCards(recipes: List<Recipe?>) {
-        if (recipes.isEmpty()) {
-            Text(
-                text = stringResource(R.string.no_results),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-            )
-        } else {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                for (recipe in recipes) {
-                    if (recipe == null) {
-                        RecipeCardLoader()
-                    } else {
-                        RecipeCard(
-                            recipe = recipe,
-                            width = 350.dp,
-                            profileViewModel = profileViewModel,
-                            chefCopy = chef
-                        ) {
-                            onNavigateToRecipe(recipe)
-                        }
-                    }
-                }
-            }
-        }
     }
 
     Column(
@@ -135,44 +87,6 @@ fun ProfileLoggedIn(
                 ),
                 style = MaterialTheme.typography.bodyLarge
             )
-        }
-
-        Accordion(
-            header = stringResource(R.string.profile_favorites),
-            expandByDefault = false,
-            onExpand = {
-                // Only fetch the recipes once per load
-                if (!didExpandFavorites) {
-                    profileViewModel.getAllFavoriteRecipes()
-                    didExpandFavorites = true
-                }
-            }
-        ) {
-            loadRecipeCards(favoriteRecipes)
-        }
-        Accordion(
-            header = stringResource(R.string.profile_recently_viewed),
-            expandByDefault = false,
-            onExpand = {
-                if (!didExpandRecent) {
-                    profileViewModel.getAllRecentRecipes()
-                    didExpandRecent = true
-                }
-            }
-        ) {
-            loadRecipeCards(recentRecipes)
-        }
-        Accordion(
-            header = stringResource(R.string.profile_ratings),
-            expandByDefault = false,
-            onExpand = {
-                if (!didExpandRates) {
-                    profileViewModel.getAllRatedRecipes()
-                    didExpandRates = true
-                }
-            }
-        ) {
-            loadRecipeCards(ratedRecipes)
         }
 
         Button(

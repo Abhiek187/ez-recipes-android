@@ -18,7 +18,6 @@ import coil.compose.AsyncImage
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
-import com.abhiek.ezrecipes.data.models.Chef
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
@@ -39,18 +38,17 @@ fun RecipeCard(
     recipe: Recipe,
     width: Dp? = null,
     profileViewModel: ProfileViewModel,
-    chefCopy: Chef? = null,
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
 
-    val chef = chefCopy ?: profileViewModel.chef
+    val chef = profileViewModel.chef
     val isFavorite = chef?.favoriteRecipes?.contains(recipe.id.toString()) ?: false
     val calories = recipe.nutrients.firstOrNull { nutrient -> nutrient.name == "Calories" }
 
     LaunchedEffect(Unit) {
         // Avoid fetching the chef if it's already available
-        if (chefCopy == null) {
+        if (chef == null) {
             profileViewModel.getChef()
         }
     }

@@ -38,7 +38,13 @@
         <item>Mixing things up… 🥘</item>
         <item>Shaking things up… 🍲</item>
     </string-array>
-    <string name="recently_viewed">Recently Viewed</string>
+
+    <string name="profile_favorites">💖 Favorites</string>
+    <string name="profile_recently_viewed">⌚ Recently Viewed</string>
+    <string name="profile_ratings">⭐ Ratings</string>
+    <string name="accordion_expand">Expand</string>
+    <string name="accordion_collapse">Collapse</string>
+    <string name="sign_in_for_recipes">Sign in to view your saved recipes</string>
 
     <!-- Recipe Screen -->
     <string name="no_recipe">No recipe loaded</string>
@@ -143,11 +149,6 @@
         <item quantity="other">%1$s ratings</item>
     </plurals>
 
-    <string name="profile_favorites">💖 Favorites</string>
-    <string name="profile_recently_viewed">⌚ Recently Viewed</string>
-    <string name="profile_ratings">⭐ Ratings</string>
-    <string name="accordion_expand">Expand</string>
-    <string name="accordion_collapse">Collapse</string>
     <!-- Newlines add additional spacing before each line (but is ok for a bulleted list) -->
     <string name="login_message">
         Signing up for an account is free and gives you great perks, including:\n

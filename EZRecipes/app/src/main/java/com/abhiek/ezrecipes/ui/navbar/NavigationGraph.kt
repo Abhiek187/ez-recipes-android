@@ -81,11 +81,10 @@ fun NavigationGraph(
                 { slideRightEnter() }
             } else null
         ) {
-            Home(mainViewModel, profileViewModel) {
+            Home(mainViewModel, profileViewModel) { recipe ->
+                mainViewModel.recipe = recipe
                 navController.navigate(
-                    Routes.RECIPE.replace(
-                        "{id}", mainViewModel.recipe?.id.toString()
-                    )
+                    Routes.RECIPE.replace("{id}", recipe.id.toString())
                 ) {
                     // Only have one copy of the recipe destination in the back stack
                     launchSingleTop = true
@@ -193,16 +192,7 @@ fun NavigationGraph(
             Profile(
                 profileViewModel,
                 deepLinkAction = backStackEntry.arguments?.getString("action")
-            ) { recipe ->
-                mainViewModel.recipe = recipe
-                navController.navigate(
-                    Routes.RECIPE.replace(
-                        "{id}", recipe.id.toString()
-                    )
-                ) {
-                    launchSingleTop = true
-                }
-            }
+            )
         }
     }
 }
