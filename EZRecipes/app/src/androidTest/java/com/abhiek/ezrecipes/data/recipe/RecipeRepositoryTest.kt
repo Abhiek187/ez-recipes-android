@@ -122,4 +122,29 @@ internal class RecipeRepositoryTest {
         val newTimestamp = recentRecipeDao.getRecipeById(mockService.recipes[0].id)?.timestamp ?: -1
         assertTrue(newTimestamp > oldTimestamp)
     }
+
+    @Test
+    fun toggleFavoriteRecentRecipe() = runTest {
+        // Given a database with a favorite recipe
+        val recipe = mockService.recipes[0]
+        val recentRecipe = RecentRecipe(
+            id = recipe.id,
+            timestamp = System.currentTimeMillis(),
+            recipe = recipe,
+            isFavorite = true
+        )
+        recentRecipeDao.insert(recentRecipe)
+
+        // When the favorite attribute is toggled
+        recipeRepository.toggleFavoriteRecentRecipe(recipe.id)
+
+        // Then the recipe's favorite status should be updated
+        var newRecipe = recentRecipeDao.getRecipeById(recipe.id)
+        assertNotNull(newRecipe)
+        assertFalse(newRecipe!!.isFavorite)
+
+        recipeRepository.toggleFavoriteRecentRecipe(recipe.id)
+        newRecipe = recentRecipeDao.getRecipeById(recipe.id)
+        assertTrue(newRecipe!!.isFavorite)
+    }
 }

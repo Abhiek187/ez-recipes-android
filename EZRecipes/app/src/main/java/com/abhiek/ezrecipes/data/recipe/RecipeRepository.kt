@@ -119,4 +119,13 @@ class RecipeRepository(
         )
         recentRecipeDao.insert(newRecipe)
     }
+
+    suspend fun toggleFavoriteRecentRecipe(recipeId: Int) {
+        if (recentRecipeDao == null) return
+        // If the recipe doesn't exist, return early
+        val existingRecipe = recentRecipeDao.getRecipeById(recipeId) ?: return
+
+        existingRecipe.isFavorite = !existingRecipe.isFavorite
+        recentRecipeDao.insert(existingRecipe)
+    }
 }

@@ -14,6 +14,7 @@ import com.abhiek.ezrecipes.data.recipe.RecipeResult
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Encryptor
+import com.abhiek.ezrecipes.utils.toISODateString
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -510,6 +511,42 @@ class ProfileViewModel(
         }
     }
 
+    fun updateRecipeViews(recipe: Recipe) {
+        viewModelScope.launch {
+            // Recipe view updates can occur in the background without impacting the UX
+            dataStoreService.incrementRecipesViewed()
+
+            val recipeViewUpdate = RecipeUpdate(view = true)
+            val token = getToken()
+            val result = recipeRepository.updateRecipe(
+                id = recipe.id,
+                fields = recipeViewUpdate,
+                token = token
+            )
+
+            when (result) {
+                is RecipeResult.Success -> {
+                    Log.d(TAG, "Recipe view count updated successfully")
+                    val currentDate = System.currentTimeMillis().toISODateString()
+                    chef = chef?.copy(
+                        recentRecipes = chef!!.recentRecipes + (recipe.id.toString() to currentDate)
+                    )
+                    recipeRepository.saveRecentRecipe(recipe)
+
+                    result.response.token?.let { newToken ->
+                        saveToken(newToken)
+                    }
+                }
+                is RecipeResult.Error -> {
+                    Log.w(
+                        TAG, "Failed to update the recipe view count :: error: ${
+                        result.recipeError.error
+                    }")
+                }
+            }
+        }
+    }
+
     fun toggleFavoriteRecipe(recipeId: Int, isFavorite: Boolean) {
         viewModelScope.launch {
             isLoading = true
@@ -527,6 +564,7 @@ class ProfileViewModel(
                             chef!!.favoriteRecipes - recipeId.toString()
                         }
                     )
+                    recipeRepository.toggleFavoriteRecentRecipe(recipeId)
 
                     result.response.token?.let { newToken ->
                         saveToken(newToken)

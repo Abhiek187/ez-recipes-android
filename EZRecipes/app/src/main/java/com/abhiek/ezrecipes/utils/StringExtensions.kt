@@ -1,8 +1,11 @@
 package com.abhiek.ezrecipes.utils
 
+import android.os.Build
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.*
 
 /**
@@ -48,4 +51,27 @@ fun boldAnnotatedString(
         start = startIndex,
         end = endIndex ?: text.length
     )
+}
+
+/**
+ * Converts an ISO 8601 date string to a Unix timestamp
+ *
+ * @return the Unix timestamp in milliseconds, or null if the string is invalid
+ */
+fun String.toUnixTimestamp(): Long? {
+    return try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Instant.parse(this).toEpochMilli()
+        } else {
+            val dateFormat = SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                Locale.getDefault()
+            )
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val date = dateFormat.parse(this)
+            date?.time
+        }
+    } catch (e: Exception) {
+        null
+    }
 }

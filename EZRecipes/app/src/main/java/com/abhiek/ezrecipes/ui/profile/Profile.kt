@@ -24,7 +24,6 @@ import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.AuthState
-import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -39,8 +38,7 @@ import com.abhiek.ezrecipes.utils.getActivity
 @Composable
 fun Profile(
     profileViewModel: ProfileViewModel,
-    deepLinkAction: String? = null,
-    onNavigateToRecipe: (Recipe) -> Unit = {}
+    deepLinkAction: String? = null
 ) {
     val authState = profileViewModel.authState
     val chef = profileViewModel.chef
@@ -95,7 +93,7 @@ fun Profile(
     }
 
     if (authState == AuthState.AUTHENTICATED && chef != null) {
-        ProfileLoggedIn(chef, profileViewModel, onNavigateToRecipe)
+        ProfileLoggedIn(chef, profileViewModel)
     } else if (authState == AuthState.UNAUTHENTICATED) {
         ProfileLoggedOut(profileViewModel)
     } else {

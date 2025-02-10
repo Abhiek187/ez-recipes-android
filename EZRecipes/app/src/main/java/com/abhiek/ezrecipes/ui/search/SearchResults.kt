@@ -88,8 +88,7 @@ fun SearchResults(
                 ) { recipe ->
                     RecipeCard(
                         recipe = recipe,
-                        profileViewModel = profileViewModel,
-                        chefCopy = profileViewModel.chef
+                        profileViewModel = profileViewModel
                     ) {
                         onNavigateToRecipe(recipe)
                     }

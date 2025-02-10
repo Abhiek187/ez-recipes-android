@@ -48,9 +48,7 @@ internal class MainViewModelTest {
     fun setUp() {
         mockService = MockRecipeService
         recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
-        mockDataStoreService = mockkClass(DataStoreService::class) {
-            coJustRun { incrementRecipesViewed() }
-        }
+        mockDataStoreService = mockkClass(DataStoreService::class)
         mockReviewManager = spyk(FakeReviewManager(context))
 
         viewModel = MainViewModel(
@@ -120,16 +118,6 @@ internal class MainViewModelTest {
         assertEquals(viewModel.recipeError, mockService.recipeError)
         assertFalse(viewModel.isLoading)
         assertFalse(viewModel.isRecipeLoaded)
-    }
-
-    @Test
-    fun incrementRecipesViewed() = runTest {
-        // Given an instance of MainViewModel
-        // When incrementRecipesViewed() is called
-        viewModel.incrementRecipesViewed(mockService.recipes[1])
-
-        // Then the corresponding DataStore method should be called
-        coVerify { mockDataStoreService.incrementRecipesViewed() }
     }
 
     @Test

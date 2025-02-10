@@ -33,8 +33,9 @@ object Constants {
 
     object Room {
         const val DATABASE_NAME = "AppDatabase"
-        const val DATABASE_VERSION = 1
         const val RECENT_RECIPE_TABLE = "RecentRecipe"
+        const val VERSION_INITIAL = 1
+        const val VERSION_IS_FAVORITE = 2
     }
 
     object ProfileActions {
@@ -553,8 +554,8 @@ object Constants {
                 "663849" to 3
             ),
             recentRecipes = mapOf(
-                "641024" to "2024-10-17T02:54:07.471+00:00",
-                "663849" to "2024-10-17T22:28:27.387+00:00"
+                "641024" to "2024-10-17T02:54:07.471Z",
+                "663849" to "2024-10-17T22:28:27.387Z"
             ),
             favoriteRecipes = listOf("641024"),
             token = "e30.e30.e30"

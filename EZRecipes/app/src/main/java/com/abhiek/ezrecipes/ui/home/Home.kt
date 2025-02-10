@@ -1,9 +1,5 @@
 package com.abhiek.ezrecipes.ui.home
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -24,6 +21,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
+import com.abhiek.ezrecipes.data.models.AuthState
 import com.abhiek.ezrecipes.data.models.RecentRecipe
 import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
@@ -36,8 +34,10 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
+import com.abhiek.ezrecipes.ui.profile.RecipeCardLoader
 import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.ui.util.Accordion
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.getActivity
@@ -48,7 +48,8 @@ import kotlinx.coroutines.delay
 fun Home(
     mainViewModel: MainViewModel,
     profileViewModel: ProfileViewModel,
-    onNavigateToRecipe: () -> Unit = {}
+    expandAccordions: Boolean = false,
+    onNavigateToRecipe: (recipe: Recipe) -> Unit = {}
 ) {
     val context = LocalContext.current
     val activity = context.getActivity()
@@ -56,12 +57,25 @@ fun Home(
 
     val defaultLoadingMessage = ""
     var loadingMessage by remember { mutableStateOf(defaultLoadingMessage) }
+    var didExpandFavorites by remember { mutableStateOf(false) }
+    var didExpandRecent by remember { mutableStateOf(false) }
+    var didExpandRates by remember { mutableStateOf(false) }
+
+    val favoriteRecipes by profileViewModel.favoriteRecipes.collectAsState()
+    val recentRecipes by profileViewModel.recentRecipes.collectAsState()
+    val ratedRecipes by profileViewModel.ratedRecipes.collectAsState()
+
+    val isLoggedIn = profileViewModel.authState == AuthState.AUTHENTICATED
+    val isFetchingChef = profileViewModel.authState == AuthState.LOADING
 
     LaunchedEffect(Unit) {
         mainViewModel.fetchRecentRecipes()
 
         if (activity != null) {
             mainViewModel.presentReviewIfQualified(activity)
+        }
+        if (!isLoggedIn) {
+            profileViewModel.getChef()
         }
     }
 
@@ -79,8 +93,8 @@ fun Home(
     // Don't call this when navigating back
     if (mainViewModel.isRecipeLoaded) {
         LaunchedEffect(mainViewModel.recipe) {
-            if (mainViewModel.recipe != null) {
-                onNavigateToRecipe()
+            mainViewModel.recipe?.let { recipe ->
+                onNavigateToRecipe(recipe)
                 mainViewModel.isRecipeLoaded = false
             }
         }
@@ -101,6 +115,84 @@ fun Home(
 
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    @Composable
+    fun loadRecipeCards(recipes: List<Recipe?>, showWhenOffline: Boolean = false) {
+        if (!isLoggedIn) {
+            if (showWhenOffline) {
+                // Show what's stored on the device while the chef isn't signed in
+                if (mainViewModel.recentRecipes.isEmpty()) {
+                    Text(
+                        text = stringResource(R.string.no_results),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp)
+                    )
+                } else {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier
+                            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState())
+                    ) {
+                        mainViewModel.recentRecipes.forEach { recentRecipe ->
+                            RecipeCard(
+                                recipe = recentRecipe.recipe,
+                                width = 350.dp,
+                                profileViewModel = profileViewModel
+                            ) {
+                                onNavigateToRecipe(recentRecipe.recipe)
+                            }
+                        }
+                    }
+                }
+            } else if (isFetchingChef) {
+                // Show the recipe cards loading while waiting for both the auth state & recipes
+                RecipeCardLoader()
+            } else {
+                // Encourage the user to sign in to see these recipes
+                Text(
+                    text = stringResource(R.string.sign_in_for_recipes),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                )
+            }
+        } else if (recipes.isEmpty()) {
+            Text(
+                text = stringResource(R.string.no_results),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            )
+        } else {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                for (recipe in recipes) {
+                    if (recipe == null) {
+                        RecipeCardLoader()
+                    } else {
+                        RecipeCard(
+                            recipe = recipe,
+                            width = 350.dp,
+                            profileViewModel = profileViewModel
+                        ) {
+                            onNavigateToRecipe(recipe)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -147,65 +239,73 @@ fun Home(
             )
         }
 
-        // Recently viewed recipes
-        // Smoothly fade in the recipe cards if they're slow to fetch from Room
-        AnimatedVisibility(
-            visible = mainViewModel.recentRecipes.isNotEmpty(),
-            enter = fadeIn(
-                tween(300, easing = LinearEasing)
-            )
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(R.string.recently_viewed),
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                HorizontalDivider()
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState())
-                ) {
-                    mainViewModel.recentRecipes.forEach { recentRecipe ->
-                        RecipeCard(
-                            recipe = recentRecipe.recipe,
-                            width = 350.dp,
-                            profileViewModel = profileViewModel
-                        ) {
-                            mainViewModel.recipe = recentRecipe.recipe
-                            onNavigateToRecipe()
-                        }
-                    }
+        // Saved recipes
+        Accordion(
+            header = stringResource(R.string.profile_favorites),
+            expandByDefault = expandAccordions,
+            onExpand = {
+                // Only fetch the recipes once per load
+                if (isLoggedIn && !didExpandFavorites) {
+                    profileViewModel.getAllFavoriteRecipes()
+                    didExpandFavorites = true
                 }
             }
+        ) {
+            loadRecipeCards(favoriteRecipes)
+        }
+        Accordion(
+            header = stringResource(R.string.profile_recently_viewed),
+            expandByDefault = expandAccordions,
+            onExpand = {
+                if (isLoggedIn && !didExpandRecent) {
+                    profileViewModel.getAllRecentRecipes()
+                    didExpandRecent = true
+                }
+            }
+        ) {
+            loadRecipeCards(recentRecipes, showWhenOffline = true)
+        }
+        Accordion(
+            header = stringResource(R.string.profile_ratings),
+            expandByDefault = expandAccordions,
+            onExpand = {
+                if (isLoggedIn && !didExpandRates) {
+                    profileViewModel.getAllRatedRecipes()
+                    didExpandRates = true
+                }
+            }
+        ) {
+            loadRecipeCards(ratedRecipes)
         }
     }
 }
 
 // Show different previews for each possible state of the home screen
 private data class HomeState(
-    val isLoading: Boolean,
-    val showAlert: Boolean,
-    val recentRecipes: List<Recipe>
+    val isLoading: Boolean = false,
+    val showAlert: Boolean = false,
+    val recentRecipes: List<Recipe> = listOf(),
+    val authState: AuthState = AuthState.UNAUTHENTICATED,
+    // Expand the accordions by default to make it easier to distinguish each preview
+    val expandAccordions: Boolean = true
 )
 
 private class HomePreviewParameterProvider: PreviewParameterProvider<HomeState> {
     // Show previews of the default home screen, with the progress bar, and with an alert
     override val values = sequenceOf(
-        HomeState(isLoading = false, showAlert = false, recentRecipes = listOf(
+        HomeState(recentRecipes = listOf(
             Constants.Mocks.PINEAPPLE_SALAD,
             Constants.Mocks.CHOCOLATE_CUPCAKE,
             Constants.Mocks.THAI_BASIL_CHICKEN
         )),
-        HomeState(isLoading = false, showAlert = false, recentRecipes = listOf()),
-        HomeState(isLoading = true, showAlert = false, recentRecipes = listOf()),
-        HomeState(isLoading = false, showAlert = true, recentRecipes = listOf())
+        HomeState(
+            authState = AuthState.AUTHENTICATED,
+            expandAccordions = false
+        ),
+        HomeState(authState = AuthState.LOADING),
+        HomeState(),
+        HomeState(isLoading = true),
+        HomeState(showAlert = true)
     )
 }
 
@@ -221,16 +321,16 @@ private fun HomePreview(
     val recipeService = MockRecipeService
     val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
 
-    val viewModel = MainViewModel(
+    val mainViewModel = MainViewModel(
         recipeRepository = RecipeRepository(recipeService, recentRecipeDao),
         dataStoreService = DataStoreService(context),
         reviewManager = FakeReviewManager(context)
     )
-    val (isLoading, showAlert, recentRecipes) = state
-    viewModel.isLoading = isLoading
-    viewModel.showRecipeAlert = showAlert // show the fallback alert in the preview
+    val (isLoading, showAlert, recentRecipes, authState, expandAccordions) = state
+    mainViewModel.isLoading = isLoading
+    mainViewModel.showRecipeAlert = showAlert // show the fallback alert in the preview
     recipeService.isSuccess = !showAlert // show the alert after clicking the find recipe button
-    viewModel.recentRecipes = recentRecipes.map { recipe ->
+    mainViewModel.recentRecipes = recentRecipes.map { recipe ->
         RecentRecipe(recipe.id, System.currentTimeMillis(), recipe)
     }
 
@@ -240,10 +340,14 @@ private fun HomePreview(
         recipeRepository = RecipeRepository(recipeService),
         dataStoreService = DataStoreService(context)
     )
+    profileViewModel.authState = authState
+    if (authState == AuthState.AUTHENTICATED) {
+        profileViewModel.chef = chefService.chef
+    }
 
     EZRecipesTheme {
         Surface {
-            Home(viewModel, profileViewModel)
+            Home(mainViewModel, profileViewModel, expandAccordions)
         }
     }
 }

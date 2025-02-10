@@ -53,8 +53,9 @@ fun Recipe(
 
     LaunchedEffect(mainViewModel.recipe) {
         mainViewModel.recipe?.let { recipe ->
+            // If logged in, save recipe to chef's profile. Otherwise, save to temporary storage.
             mainViewModel.saveRecentRecipe(recipe)
-            mainViewModel.incrementRecipesViewed(recipe)
+            profileViewModel.updateRecipeViews(recipe)
         }
     }
 
