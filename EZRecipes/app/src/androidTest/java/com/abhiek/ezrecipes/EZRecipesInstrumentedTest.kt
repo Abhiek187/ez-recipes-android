@@ -107,6 +107,32 @@ internal class EZRecipesInstrumentedTest {
         screenshot("home-screen", shotNum)
         shotNum += 1
 
+        // The accordions should be present, but not display any recipes
+        val favoriteAccordion = composeTestRule
+            .onNodeWithText(activity.getString(R.string.profile_favorites))
+        val recentAccordion = composeTestRule
+            .onNodeWithText(activity.getString(R.string.profile_recently_viewed))
+        val ratingAccordion = composeTestRule
+            .onNodeWithText(activity.getString(R.string.profile_ratings))
+        val signInMessage = composeTestRule
+            .onNodeWithText(activity.getString(R.string.sign_in_for_recipes))
+        composeTestRule
+            .onAllNodesWithContentDescription(activity.getString(R.string.accordion_expand))
+            .assertCountEquals(3)
+        composeTestRule
+            .onAllNodesWithContentDescription(activity.getString(R.string.accordion_collapse))
+            .assertCountEquals(0)
+
+        favoriteAccordion.performClick()
+        signInMessage.assertExists()
+        favoriteAccordion.performClick()
+        recentAccordion.performClick()
+        signInMessage.assertDoesNotExist()
+        recentAccordion.performClick()
+        ratingAccordion.performClick()
+        signInMessage.assertExists()
+        ratingAccordion.performClick()
+
         // After clicking the find recipe button, it should be disabled
         findRecipeButton.performClick()
         findRecipeButton.assertIsNotEnabled()
