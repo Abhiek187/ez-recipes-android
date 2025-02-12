@@ -1,0 +1,6 @@
+- Accounts are here! With accounts, it's now possible to save your favorite recipes & sync them between devices.
+- The home screen now shows your favorite, recently viewed, and rated recipes
+- Recipes now display a view count and rating
+- In exchange for the "I Made This!" button, the favorite button is now fully functional for chefs with accounts
+- Recipes can now be filtered by their average rating
+- More meal types and cuisines than you can chew on
