@@ -1,0 +1,1 @@
+Remove storage permissions for improved user privacy

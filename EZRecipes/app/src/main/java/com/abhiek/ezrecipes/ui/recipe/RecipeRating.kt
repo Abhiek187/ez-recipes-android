@@ -31,6 +31,7 @@ import com.abhiek.ezrecipes.utils.round
 import com.abhiek.ezrecipes.utils.toShorthand
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RecipeRating(
     averageRating: Double?,
@@ -52,8 +53,7 @@ fun RecipeRating(
         if (myRating != null) Orange900 else Amber700
     }
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    FlowRow(
         modifier = modifier.clearAndSetSemantics {
             contentDescription = if (starRating == 0.0) {
                 context.getString(R.string.star_rating_none)
@@ -103,7 +103,10 @@ fun RecipeRating(
                 "${averageRating.round(places = 1)}/5, "
             } else "") + context.resources.getQuantityString(
                 R.plurals.total_ratings, totalRatings, totalRatings.toShorthand()
-            ) + ")"
+            ) + ")",
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .weight(1f, false)
         )
     }
 }
