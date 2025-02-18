@@ -144,10 +144,6 @@
         <item quantity="one">%1$s recipe viewed</item>
         <item quantity="other">%1$s recipes viewed</item>
     </plurals>
-    <plurals name="ratings">
-        <item quantity="one">%1$s rating</item>
-        <item quantity="other">%1$s ratings</item>
-    </plurals>
 
     <!-- Newlines add additional spacing before each line (but is ok for a bulleted list) -->
     <string name="login_message">

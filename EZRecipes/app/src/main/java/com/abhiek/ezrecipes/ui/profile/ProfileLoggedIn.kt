@@ -83,7 +83,7 @@ fun ProfileLoggedIn(
             VerticalDivider()
             Text(
                 text = context.resources.getQuantityString(
-                    R.plurals.ratings, numRatedRecipes, numRatedRecipes.toShorthand()
+                    R.plurals.total_ratings, numRatedRecipes, numRatedRecipes.toShorthand()
                 ),
                 style = MaterialTheme.typography.bodyLarge
             )
