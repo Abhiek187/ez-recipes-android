@@ -77,7 +77,7 @@ android {
 }
 
 dependencies {
-    val composeBomVersion = "2025.02.00"
+    val composeBomVersion = "2025.03.00"
     val lifecycleVersion = "2.8.7"
     val activityVersion = "1.10.1"
     val materialVersion = "1.7.8"
@@ -86,7 +86,7 @@ dependencies {
     val retrofitVersion = "2.11.0"
     val roomVersion = "2.6.1"
     val googlePlayVersion = "2.0.2"
-    val jupiterVersion = "5.12.0"
+    val jupiterVersion = "5.12.1"
     val espressoVersion = "3.6.1"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
@@ -101,7 +101,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:$materialVersion")
     implementation("androidx.compose.material3:material3:$material3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
-    implementation("androidx.navigation:navigation-compose:2.8.8")
+    implementation("androidx.navigation:navigation-compose:2.8.9")
     implementation("androidx.datastore:datastore-preferences:1.1.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
 

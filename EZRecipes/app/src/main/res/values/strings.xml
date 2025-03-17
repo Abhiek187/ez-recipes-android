@@ -147,7 +147,7 @@
 
     <!-- Newlines add additional spacing before each line (but is ok for a bulleted list) -->
     <string name="login_message">
-        Signing up for an account is free and gives you great perks, including:\n
+        Signing up for an account is free and gives you great perks, including:\n\n
         &#8226; Saving your favorite recipes\n
         &#8226; Saving more than 10 recently viewed recipes\n
         &#8226; Rating recipes\n
