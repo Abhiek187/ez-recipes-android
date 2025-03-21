@@ -52,9 +52,9 @@ flowchart LR
 
 A(Checkout repository) --> B(Enable Kernel-based Virtual Machine)
 B --> C(Install Java 17)
-C --> D(Make gradlew executable:\nchmod u+x gradlew)
+C --> D(Make gradlew executable:<br>chmod u+x gradlew)
 D --> E(Install Ruby & Fastlane)
-E --> F(Run unit tests:\ngradlew test -p .)
+E --> F(Run unit tests:<br>gradlew test -p .)
 ```
 
 ### Instrumented Tests
@@ -64,7 +64,7 @@ flowchart LR
 
 A(Checkout repository) --> B(Enable Kernel-based Virtual Machine)
 B --> C(Install Java 17)
-C --> D(Make gradlew executable:\nchmod u+x gradlew)
+C --> D(Make gradlew executable:<br>chmod u+x gradlew)
 D -->|API 30, 32, 34| E
 E --> F(Upload build reports)
 
@@ -78,7 +78,7 @@ K --> L(Configure AVD with 2 cores)
 L --> M(Boot up the emulator)
 M --> N(Press the menu button)
 N --> O(Disable animations)
-O --> P(Run instrumented tests:\ngradlew connectedAndroidTest)
+O --> P(Run instrumented tests:<br>gradlew connectedAndroidTest)
 P --> Q(Kill emulator)
 end
 ```
@@ -107,8 +107,8 @@ direction TB
 D(Sync local metadata from Google Play) --> E(Write release notes for the next version code)
 E --> F{Major, minor, or patch update?}
 F --> G(Update the version name and increment the version code)
-G --> H(Clean cache:\ngradlew clean)
-H --> I(Build app & generate an AAB:\ngradlew assembleRelease)
+G --> H(Clean cache:<br>gradlew clean)
+H --> I(Build app & generate an AAB:<br>gradlew assembleRelease)
 I --> J(Sign AAB using the upload key)
 end
 
