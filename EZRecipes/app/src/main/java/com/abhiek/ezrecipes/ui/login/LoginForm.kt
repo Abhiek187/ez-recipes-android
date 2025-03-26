@@ -14,11 +14,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -113,9 +116,13 @@ fun LoginForm(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
-            modifier = Modifier.onFocusChanged {
-                if (it.isFocused) usernameTouched = true
-            }
+            modifier = Modifier
+                .semantics {
+                    contentType = ContentType.Username + ContentType.EmailAddress
+                }
+                .onFocusChanged {
+                    if (it.isFocused) usernameTouched = true
+                }
         )
         TextField(
             value = password,
@@ -154,9 +161,11 @@ fun LoginForm(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
-            modifier = Modifier.onFocusChanged {
-                if (it.isFocused) passwordTouched = true
-            }
+            modifier = Modifier
+                .semantics { contentType = ContentType.Password }
+                .onFocusChanged {
+                    if (it.isFocused) passwordTouched = true
+                }
         )
         TextButton(
             onClick = {
