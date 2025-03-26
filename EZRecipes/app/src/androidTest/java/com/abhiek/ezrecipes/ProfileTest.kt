@@ -121,14 +121,17 @@ internal class ProfileTest(
         // The min length message can appear below both password fields
         passwordRequiredError.assertDoesNotExist()
         composeTestRule
-            .onAllNodesWithText(activity.getString(R.string.password_min_length))
+            .onAllNodesWithText(activity.getString(R.string.password_min_length_info))
             .assertCountEquals(1)
         passwordField.requestFocus()
         passwordRequiredError.assertExists()
         passwordField.performTextInput("pass")
         composeTestRule
-            .onAllNodesWithText(activity.getString(R.string.password_min_length))
-            .assertCountEquals(2)
+            .onAllNodesWithText(activity.getString(R.string.password_min_length_error))
+            .assertCountEquals(1)
+        composeTestRule
+            .onAllNodesWithText(activity.getString(R.string.password_min_length_info))
+            .assertCountEquals(1)
         passwordField.performTextInput("word")
         composeTestRule
             .onAllNodesWithContentDescription(activity.getString(R.string.password_hide))
@@ -159,12 +162,12 @@ internal class ProfileTest(
         val passwordMatchError = composeTestRule
             .onNodeWithText(activity.getString(R.string.password_match))
         composeTestRule
-            .onAllNodesWithText(activity.getString(R.string.password_min_length))
+            .onAllNodesWithText(activity.getString(R.string.password_min_length_info))
             .assertCountEquals(1)
         passwordMatchError.assertDoesNotExist()
         confirmPasswordField.requestFocus()
         composeTestRule
-            .onAllNodesWithText(activity.getString(R.string.password_min_length))
+            .onAllNodesWithText(activity.getString(R.string.password_min_length_info))
             .assertCountEquals(0)
         passwordMatchError.assertExists()
         confirmPasswordField.performTextInput("password")

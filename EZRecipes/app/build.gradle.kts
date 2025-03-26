@@ -77,6 +77,7 @@ android {
 }
 
 dependencies {
+    // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
     val composeBomVersion = "2025.03.00"
     val lifecycleVersion = "2.8.7"
     val activityVersion = "1.10.1"
@@ -96,7 +97,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
     implementation("androidx.activity:activity-compose:$activityVersion")
     implementation("androidx.activity:activity-ktx:$activityVersion")
-    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui:1.8.0-rc01") // TODO: remove once autofill is out of beta
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material-icons-extended:$materialVersion")
     implementation("androidx.compose.material3:material3:$material3Version")

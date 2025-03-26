@@ -15,11 +15,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -120,9 +123,13 @@ fun SignUpForm(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
-            modifier = Modifier.onFocusChanged {
-                if (it.isFocused) emailTouched = true
-            }
+            modifier = Modifier
+                .semantics {
+                    contentType = ContentType.NewUsername + ContentType.EmailAddress
+                }
+                .onFocusChanged {
+                    if (it.isFocused) emailTouched = true
+                }
         )
         TextField(
             value = password,
@@ -151,7 +158,7 @@ fun SignUpForm(
                 if (passwordTouched && passwordEmpty) {
                     Text(stringResource(R.string.field_required, "Password"))
                 } else if (passwordTouched && passwordTooShort) {
-                    Text(stringResource(R.string.password_min_length))
+                    Text(stringResource(R.string.password_min_length_error))
                 }
             },
             isError = passwordTouched && (passwordEmpty || passwordTooShort),
@@ -163,9 +170,11 @@ fun SignUpForm(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Next
             ),
-            modifier = Modifier.onFocusChanged {
-                if (it.isFocused) passwordTouched = true
-            }
+            modifier = Modifier
+                .semantics { contentType = ContentType.NewPassword }
+                .onFocusChanged {
+                    if (it.isFocused) passwordTouched = true
+                }
         )
         TextField(
             value = passwordConfirm,
@@ -194,7 +203,7 @@ fun SignUpForm(
                 if (passwordConfirmTouched && passwordsDoNotMatch) {
                     Text(stringResource(R.string.password_match))
                 } else {
-                    Text(stringResource(R.string.password_min_length))
+                    Text(stringResource(R.string.password_min_length_info))
                 }
             },
             isError = passwordConfirmTouched && passwordsDoNotMatch,
@@ -206,9 +215,11 @@ fun SignUpForm(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
-            modifier = Modifier.onFocusChanged {
-                if (it.isFocused) passwordConfirmTouched = true
-            }
+            modifier = Modifier
+                .semantics { contentType = ContentType.NewPassword }
+                .onFocusChanged {
+                    if (it.isFocused) passwordConfirmTouched = true
+                }
         )
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),

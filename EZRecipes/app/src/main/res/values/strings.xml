@@ -176,8 +176,10 @@
     <string name="password_confirm_field">Confirm Password</string>
     <string name="field_required">Error: %1$s is required</string>
     <string name="email_invalid">Error: Invalid email</string>
-    <string name="password_min_length">Password must be at least 8 characters long</string>
-    <string name="password_too_short">Error: Password must be at least 8 characters long</string>
+    <string name="password_min_length_info">Password must be at least 8 characters long</string>
+    <string name="password_min_length_error">
+        Error: Password must be at least 8 characters long
+    </string>
     <string name="password_match">Error: Passwords do not match</string>
 
     <string name="email_verify_header">You\'re Almost There!</string>
