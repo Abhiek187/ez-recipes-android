@@ -151,7 +151,7 @@ fun SignUpForm(
                 if (passwordTouched && passwordEmpty) {
                     Text(stringResource(R.string.field_required, "Password"))
                 } else if (passwordTouched && passwordTooShort) {
-                    Text(stringResource(R.string.password_min_length))
+                    Text(stringResource(R.string.password_min_length_error))
                 }
             },
             isError = passwordTouched && (passwordEmpty || passwordTooShort),
@@ -194,7 +194,7 @@ fun SignUpForm(
                 if (passwordConfirmTouched && passwordsDoNotMatch) {
                     Text(stringResource(R.string.password_match))
                 } else {
-                    Text(stringResource(R.string.password_min_length))
+                    Text(stringResource(R.string.password_min_length_info))
                 }
             },
             isError = passwordConfirmTouched && passwordsDoNotMatch,
