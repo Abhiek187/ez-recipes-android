@@ -293,18 +293,18 @@ internal class ProfileViewModelTest {
 
         // When logging in
         mockChefService.isEmailVerified = false
-        viewModel.createAccount(username, password)
+        viewModel.login(username, password)
 
         // Then a new chef should be created, but the user shouldn't be authenticated
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
         assertEquals(viewModel.chef, Chef(
             uid = mockChefService.loginResponse.uid,
-            email = username,
-            emailVerified = mockChefService.loginResponse.emailVerified,
-            ratings = mapOf(),
-            recentRecipes = mapOf(),
-            favoriteRecipes = listOf(),
+            email = mockChefService.chef.email,
+            emailVerified = false,
+            ratings = mockChefService.chef.ratings,
+            recentRecipes = mockChefService.chef.recentRecipes,
+            favoriteRecipes = mockChefService.chef.favoriteRecipes,
             token = mockChefService.loginResponse.token
         ))
         assertNotEquals(viewModel.authState, AuthState.AUTHENTICATED)
@@ -321,7 +321,7 @@ internal class ProfileViewModelTest {
 
         // When logging in and an error occurs
         mockChefService.isSuccess = false
-        viewModel.createAccount(username, password)
+        viewModel.login(username, password)
 
         // Then an error is shown
         assertNull(viewModel.chef)

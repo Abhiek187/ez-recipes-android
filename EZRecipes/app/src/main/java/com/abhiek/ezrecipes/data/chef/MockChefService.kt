@@ -28,7 +28,9 @@ object MockChefService: ChefService {
 
     override suspend fun getChef(token: String): Response<Chef> {
         return if (isSuccess) {
-            Response.success(chef)
+            Response.success(chef.copy(
+                emailVerified = isEmailVerified
+            ))
         } else {
             Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
         }
@@ -36,7 +38,9 @@ object MockChefService: ChefService {
 
     override suspend fun createChef(credentials: LoginCredentials): Response<LoginResponse> {
         return if (isSuccess) {
-            Response.success(loginResponse)
+            Response.success(loginResponse.copy(
+                emailVerified = isEmailVerified
+            ))
         } else {
             Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
         }
@@ -71,7 +75,9 @@ object MockChefService: ChefService {
 
     override suspend fun login(credentials: LoginCredentials): Response<LoginResponse> {
         return if (isSuccess) {
-            Response.success(loginResponse)
+            Response.success(loginResponse.copy(
+                emailVerified = isEmailVerified
+            ))
         } else {
             Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
         }
