@@ -215,7 +215,7 @@
     </string>
     <string name="delete_account_header">Are You Sure?</string>
     <string name="delete_account_sub_header">
-        You will lose access to your favorite recipes.\nEnter your username to confirm.
+        You will lose access to your favorite recipes.\n\nEnter your username to confirm.
     </string>
     <string name="delete_account_success">Your account has been deleted.</string>
 </resources>
