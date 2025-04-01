@@ -97,7 +97,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
     implementation("androidx.activity:activity-compose:$activityVersion")
     implementation("androidx.activity:activity-ktx:$activityVersion")
-    implementation("androidx.compose.ui:ui:1.8.0-rc01") // TODO: remove once autofill is out of beta
+    implementation("androidx.compose.ui:ui:1.8.0-rc02") // TODO: remove once autofill is out of beta
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material-icons-extended:$materialVersion")
     implementation("androidx.compose.material3:material3:$material3Version")
