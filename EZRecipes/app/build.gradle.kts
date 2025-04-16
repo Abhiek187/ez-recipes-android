@@ -78,30 +78,28 @@ android {
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2025.03.00"
+    val composeBomVersion = "2025.04.00"
     val lifecycleVersion = "2.8.7"
     val activityVersion = "1.10.1"
-    val materialVersion = "1.7.8"
-    val material3Version = "1.3.1"
-    val coroutineVersion = "1.10.1"
+    val coroutineVersion = "1.10.2"
     val retrofitVersion = "2.11.0"
-    val roomVersion = "2.6.1"
+    val roomVersion = "2.7.0"
     val googlePlayVersion = "2.0.2"
-    val jupiterVersion = "5.12.1"
+    val jupiterVersion = "5.12.2"
     val espressoVersion = "3.6.1"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
-    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
     implementation("androidx.activity:activity-compose:$activityVersion")
     implementation("androidx.activity:activity-ktx:$activityVersion")
-    implementation("androidx.compose.ui:ui:1.8.0-rc01") // TODO: remove once autofill is out of beta
+    implementation("androidx.compose.ui:ui:1.8.0-rc03") // TODO: remove once autofill is out of beta
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material:material-icons-extended:$materialVersion")
-    implementation("androidx.compose.material3:material3:$material3Version")
-    implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.navigation:navigation-compose:2.8.9")
     implementation("androidx.datastore:datastore-preferences:1.1.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
@@ -128,7 +126,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion")
-    testImplementation("io.mockk:mockk:1.13.17")
+    testImplementation("io.mockk:mockk:1.14.0")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
