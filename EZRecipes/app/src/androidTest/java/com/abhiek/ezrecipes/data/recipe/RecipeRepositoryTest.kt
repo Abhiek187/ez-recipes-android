@@ -52,7 +52,7 @@ internal class RecipeRepositoryTest {
 
     @After
     fun tearDown() {
-        db.clearAllTables()
+        db.close()
     }
 
     @Test
