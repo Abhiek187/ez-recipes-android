@@ -36,10 +36,10 @@ import kotlin.math.roundToInt
 fun RecipeRating(
     averageRating: Double?,
     totalRatings: Int,
+    modifier: Modifier = Modifier,
     myRating: Int? = null,
     enabled: Boolean = true,
-    onRate: (Int) -> Unit = {},
-    modifier: Modifier = Modifier
+    onRate: (Int) -> Unit = {}
 ) {
     val context = LocalContext.current
 

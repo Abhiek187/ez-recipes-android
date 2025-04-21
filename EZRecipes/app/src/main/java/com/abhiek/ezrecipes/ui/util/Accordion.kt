@@ -26,11 +26,11 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 @Composable
 fun Accordion(
     header: String,
+    modifier: Modifier = Modifier,
     expandByDefault: Boolean = true,
     onExpand: () -> Unit = {},
     onCollapse: () -> Unit = {},
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     var isExpanded by remember { mutableStateOf(expandByDefault) }
 
