@@ -57,11 +57,10 @@ fun RecipeRating(
         modifier = modifier.clearAndSetSemantics {
             contentDescription = if (starRating == 0.0) {
                 context.getString(R.string.star_rating_none)
+            } else if (myRating != null) {
+                context.getString(R.string.star_rating_user, myRating)
             } else {
-                context.getString(
-                    if (myRating != null) R.string.star_rating_user else R.string.star_rating_average,
-                    starRating
-                )
+                context.getString(R.string.star_rating_average, starRating)
             }
             role = Role.Image
         }
