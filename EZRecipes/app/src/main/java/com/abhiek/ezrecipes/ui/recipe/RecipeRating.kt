@@ -31,7 +31,6 @@ import com.abhiek.ezrecipes.utils.round
 import com.abhiek.ezrecipes.utils.toShorthand
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RecipeRating(
     averageRating: Double?,

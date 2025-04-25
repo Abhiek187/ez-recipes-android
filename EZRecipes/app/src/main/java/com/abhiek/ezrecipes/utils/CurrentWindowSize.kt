@@ -3,7 +3,7 @@ package com.abhiek.ezrecipes.utils
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 
@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun currentWindowSize(): WindowSizeClass {
-    val configuration = LocalConfiguration.current
-    val size = DpSize(configuration.screenWidthDp.dp, configuration.screenHeightDp.dp)
+    val containerSize = LocalWindowInfo.current.containerSize
+    val size = DpSize(containerSize.width.dp, containerSize.height.dp)
     return WindowSizeClass.calculateFromSize(size)
 }
