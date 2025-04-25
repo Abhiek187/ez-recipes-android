@@ -78,9 +78,7 @@ android {
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    // TODO: re-enable autofill once ui version 1.8.0 is stable and the below Accordion bug is fixed:
-    // java.lang.IllegalStateException: Asking for measurement result of unmeasured layout modifier
-    val composeBomVersion = "2025.04.00"
+    val composeBomVersion = "2025.04.01"
     val lifecycleVersion = "2.8.7"
     val activityVersion = "1.10.1"
     val coroutineVersion = "1.10.2"
