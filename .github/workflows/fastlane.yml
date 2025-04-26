@@ -98,7 +98,7 @@ jobs:
           arch: x86_64
           target: google_apis
           working-directory: "./EZRecipes"
-          script: ./gradlew connectedAndroidTest
+          script: mkdir -p EZRecipes/app/build/reports && ./gradlew -d connectedAndroidTest >> EZRecipes/app/build/reports/gradle.log 2>&1
 
       # The test results are shown as a webpage instead of on the command line
       - name: Upload reports

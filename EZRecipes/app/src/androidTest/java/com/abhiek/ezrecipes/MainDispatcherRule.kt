@@ -12,7 +12,7 @@ import org.junit.runner.Description
 // Reusable JUnit4 Rule to override the Main dispatcher (used in viewModelScope)
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainDispatcherRule(
-    private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher(),
+    internal val testDispatcher: TestDispatcher = UnconfinedTestDispatcher(),
 ) : TestWatcher() {
     override fun starting(description: Description?) {
         Dispatchers.setMain(testDispatcher)

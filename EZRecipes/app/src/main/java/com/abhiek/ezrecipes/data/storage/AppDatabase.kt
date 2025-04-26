@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.room.*
 import com.abhiek.ezrecipes.data.models.RecentRecipe
 import com.abhiek.ezrecipes.utils.Constants
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
 
 @Database(
     entities = [RecentRecipe::class],
@@ -30,15 +33,22 @@ abstract class AppDatabase: RoomDatabase() {
          *
          * @param context the application context
          * @param inMemory if true, use an in-memory database
+         * @param dispatcher the coroutine dispatcher to use
          * @return a database instance
          */
-        fun getInstance(context: Context, inMemory: Boolean = false): AppDatabase {
+        fun getInstance(
+            context: Context,
+            inMemory: Boolean = false,
+            dispatcher: CoroutineDispatcher = Dispatchers.IO
+        ): AppDatabase {
             return if (Companion::db.isInitialized) {
                 db
             } else if (inMemory) {
                 db = Room.inMemoryDatabaseBuilder(
                     context, AppDatabase::class.java
-                ).build()
+                ).setQueryExecutor(dispatcher.asExecutor())
+                    .setTransactionExecutor(dispatcher.asExecutor())
+                    .build()
                 db
             } else {
                 db = Room.databaseBuilder(

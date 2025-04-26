@@ -18,6 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+//    @Ignore("Room under maintenance")
 @RunWith(AndroidJUnit4::class)
 internal class RecipeRepositoryTest {
     private lateinit var recentRecipeDao: RecentRecipeDao
@@ -35,14 +36,18 @@ internal class RecipeRepositoryTest {
                 timestamp = System.currentTimeMillis(),
                 recipe = recipe
             )
-//            recentRecipeDao.insert(recentRecipe)
+            recentRecipeDao.insert(recentRecipe)
         }
     }
 
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = AppDatabase.getInstance(context, inMemory = true)
+        db = AppDatabase.getInstance(
+            context,
+            inMemory = true,
+            dispatcher = mainDispatcherRule.testDispatcher
+        )
         // Clear any data stored from previous instrumented tests
         db.clearAllTables()
         recentRecipeDao = db.recentRecipeDao()
@@ -68,7 +73,7 @@ internal class RecipeRepositoryTest {
         assertTrue(recentRecipes.isEmpty())
     }
 
-//    @Ignore("Room under maintenance")
+
     @Test
     fun fetchRecentRecipesNotEmpty() = runTest {
         // Given a database with mock recipes
@@ -84,7 +89,6 @@ internal class RecipeRepositoryTest {
         )
     }
 
-//    @Ignore("Room under maintenance")
     @Test
     fun saveNewRecentRecipe() = runTest {
         // Given a database with recipes
@@ -97,7 +101,6 @@ internal class RecipeRepositoryTest {
         assertEquals(recentRecipeDao.getAll().size, mockService.recipes.size + 1)
     }
 
-//    @Ignore("Room under maintenance")
     @Test
     fun saveNewRecentRecipeBeyondMax() = runTest {
         // Given a database with the max number of recipes
@@ -113,7 +116,6 @@ internal class RecipeRepositoryTest {
         assertEquals(recentRecipeDao.getAll().size, Constants.MAX_RECENT_RECIPES)
     }
 
-//    @Ignore("Room under maintenance")
     @Test
     fun saveExistingRecentRecipe() = runTest {
         // Given a database with recipes
@@ -128,7 +130,6 @@ internal class RecipeRepositoryTest {
         assertTrue(newTimestamp > oldTimestamp)
     }
 
-//    @Ignore("Room under maintenance")
     @Test
     fun toggleFavoriteRecentRecipe() = runTest {
         // Given a database with a favorite recipe
@@ -139,7 +140,7 @@ internal class RecipeRepositoryTest {
             recipe = recipe,
             isFavorite = true
         )
-//        recentRecipeDao.insert(recentRecipe)
+        recentRecipeDao.insert(recentRecipe)
 
         // When the favorite attribute is toggled
         recipeRepository.toggleFavoriteRecentRecipe(recipe.id)
