@@ -35,7 +35,7 @@ internal class RecipeRepositoryTest {
                 timestamp = System.currentTimeMillis(),
                 recipe = recipe
             )
-            recentRecipeDao.insert(recentRecipe)
+//            recentRecipeDao.insert(recentRecipe)
         }
     }
 
@@ -62,10 +62,10 @@ internal class RecipeRepositoryTest {
         prepopulateDatabase(listOf())
 
         // When fetchRecentRecipes() is called
-//        val recentRecipes = recipeRepository.fetchRecentRecipes()
+        val recentRecipes = recipeRepository.fetchRecentRecipes()
 
         // Then recentRecipes should return an empty list
-//        assertTrue(recentRecipes.isEmpty())
+        assertTrue(recentRecipes.isEmpty())
     }
 
 //    @Ignore("Room under maintenance")
@@ -75,13 +75,13 @@ internal class RecipeRepositoryTest {
         prepopulateDatabase(mockService.recipes)
 
         // When fetchRecentRecipes() is called
-//        val recentRecipes = recipeRepository.fetchRecentRecipes()
+        val recentRecipes = recipeRepository.fetchRecentRecipes()
 
         // Then recentRecipes should return the mock recipes
-//        assertEquals(
-//            recentRecipes.map { it.recipe }.sortedBy { it.id },
-//            mockService.recipes.sortedBy { it.id }
-//        )
+        assertEquals(
+            recentRecipes.map { it.recipe }.sortedBy { it.id },
+            mockService.recipes.sortedBy { it.id }
+        )
     }
 
 //    @Ignore("Room under maintenance")
@@ -91,10 +91,10 @@ internal class RecipeRepositoryTest {
         prepopulateDatabase(mockService.recipes)
 
         // When a new recipe is added
-//        recipeRepository.saveRecentRecipe(mockService.recipes[0].copy(id = 2))
+        recipeRepository.saveRecentRecipe(mockService.recipes[0].copy(id = 2))
 
         // Then the number of recipes should increase by 1
-//        assertEquals(recentRecipeDao.getAll().size, mockService.recipes.size + 1)
+        assertEquals(recentRecipeDao.getAll().size, mockService.recipes.size + 1)
     }
 
 //    @Ignore("Room under maintenance")
@@ -107,10 +107,10 @@ internal class RecipeRepositoryTest {
         prepopulateDatabase(recipes)
 
         // When a new recipe is added
-//        recipeRepository.saveRecentRecipe(mockService.recipes[0])
+        recipeRepository.saveRecentRecipe(mockService.recipes[0])
 
         // Then the oldest recipe is deleted
-//        assertEquals(recentRecipeDao.getAll().size, Constants.MAX_RECENT_RECIPES)
+        assertEquals(recentRecipeDao.getAll().size, Constants.MAX_RECENT_RECIPES)
     }
 
 //    @Ignore("Room under maintenance")
@@ -118,14 +118,14 @@ internal class RecipeRepositoryTest {
     fun saveExistingRecentRecipe() = runTest {
         // Given a database with recipes
         prepopulateDatabase(mockService.recipes)
-//        val oldTimestamp = recentRecipeDao.getRecipeById(mockService.recipes[0].id)?.timestamp ?: -1
+        val oldTimestamp = recentRecipeDao.getRecipeById(mockService.recipes[0].id)?.timestamp ?: -1
 
         // When an existing recipe is added
-//        recipeRepository.saveRecentRecipe(mockService.recipes[0])
+        recipeRepository.saveRecentRecipe(mockService.recipes[0])
 
         // Then its timestamp is updated
-//        val newTimestamp = recentRecipeDao.getRecipeById(mockService.recipes[0].id)?.timestamp ?: -1
-//        assertTrue(newTimestamp > oldTimestamp)
+        val newTimestamp = recentRecipeDao.getRecipeById(mockService.recipes[0].id)?.timestamp ?: -1
+        assertTrue(newTimestamp > oldTimestamp)
     }
 
 //    @Ignore("Room under maintenance")
@@ -139,18 +139,18 @@ internal class RecipeRepositoryTest {
             recipe = recipe,
             isFavorite = true
         )
-        recentRecipeDao.insert(recentRecipe)
+//        recentRecipeDao.insert(recentRecipe)
 
         // When the favorite attribute is toggled
-//        recipeRepository.toggleFavoriteRecentRecipe(recipe.id)
+        recipeRepository.toggleFavoriteRecentRecipe(recipe.id)
 
         // Then the recipe's favorite status should be updated
-//        var newRecipe = recentRecipeDao.getRecipeById(recipe.id)
-//        assertNotNull(newRecipe)
-//        assertFalse(newRecipe!!.isFavorite)
-//
-//        recipeRepository.toggleFavoriteRecentRecipe(recipe.id)
-//        newRecipe = recentRecipeDao.getRecipeById(recipe.id)
-//        assertTrue(newRecipe!!.isFavorite)
+        var newRecipe = recentRecipeDao.getRecipeById(recipe.id)
+        assertNotNull(newRecipe)
+        assertFalse(newRecipe!!.isFavorite)
+
+        recipeRepository.toggleFavoriteRecentRecipe(recipe.id)
+        newRecipe = recentRecipeDao.getRecipeById(recipe.id)
+        assertTrue(newRecipe!!.isFavorite)
     }
 }
