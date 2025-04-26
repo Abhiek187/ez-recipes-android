@@ -68,7 +68,7 @@ internal class RecipeRepositoryTest {
         // Then recentRecipes should return an empty list
         assertTrue(recentRecipes.isEmpty())
     }
-    
+
     @Test
     fun fetchRecentRecipesNotEmpty() = runTest {
         // Given a database with mock recipes
