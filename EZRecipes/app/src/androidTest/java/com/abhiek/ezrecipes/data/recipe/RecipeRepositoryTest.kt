@@ -43,10 +43,7 @@ internal class RecipeRepositoryTest {
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = AppDatabase.getInstance(
-            context,
-            inMemory = true
-        )
+        db = AppDatabase.getInstance(context, inMemory = true)
         // Clear any data stored from previous instrumented tests
         db.clearAllTables()
         recentRecipeDao = db.recentRecipeDao()
@@ -71,8 +68,7 @@ internal class RecipeRepositoryTest {
         // Then recentRecipes should return an empty list
         assertTrue(recentRecipes.isEmpty())
     }
-
-
+    
     @Test
     fun fetchRecentRecipesNotEmpty() = runTest {
         // Given a database with mock recipes
