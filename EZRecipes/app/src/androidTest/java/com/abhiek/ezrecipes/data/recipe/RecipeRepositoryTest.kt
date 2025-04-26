@@ -50,7 +50,7 @@ internal class RecipeRepositoryTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = AppDatabase.getInstance(
             context,
-            inMemory = true,
+            inMemory = false,
             dispatcher = testDispatcher
         )
         // Clear any data stored from previous instrumented tests
