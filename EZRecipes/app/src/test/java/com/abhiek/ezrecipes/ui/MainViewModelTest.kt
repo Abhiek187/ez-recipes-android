@@ -47,6 +47,7 @@ internal class MainViewModelTest {
     @BeforeEach
     fun setUp() {
         every { context.getSystemService(any()) } returns activity
+        every { context.applicationContext } returns context
 
         mockService = MockRecipeService
         recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()

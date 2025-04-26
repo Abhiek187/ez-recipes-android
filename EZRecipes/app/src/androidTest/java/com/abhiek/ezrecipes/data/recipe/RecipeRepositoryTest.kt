@@ -9,8 +9,6 @@ import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.data.storage.RecentRecipeDao
 import com.abhiek.ezrecipes.utils.Constants
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.*
@@ -20,7 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-//    @Ignore("Room under maintenance")
+@Ignore("Room 2.7.0+ fails with kotlinx.coroutines.JobCancellationException: Job was cancelled")
 @RunWith(AndroidJUnit4::class)
 internal class RecipeRepositoryTest {
     private lateinit var recentRecipeDao: RecentRecipeDao
@@ -28,11 +26,8 @@ internal class RecipeRepositoryTest {
     private lateinit var mockService: MockRecipeService
     private lateinit var recipeRepository: RecipeRepository
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val testDispatcher = UnconfinedTestDispatcher()
-
     @get:Rule
-    val mainDispatcherRule = MainDispatcherRule(testDispatcher)
+    val mainDispatcherRule = MainDispatcherRule()
 
     private suspend fun prepopulateDatabase(recipes: List<Recipe>) {
         recipes.forEach { recipe ->
@@ -50,8 +45,7 @@ internal class RecipeRepositoryTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = AppDatabase.getInstance(
             context,
-            inMemory = false,
-            dispatcher = testDispatcher
+            inMemory = true
         )
         // Clear any data stored from previous instrumented tests
         db.clearAllTables()
@@ -67,7 +61,7 @@ internal class RecipeRepositoryTest {
     }
 
     @Test
-    fun fetchRecentRecipesEmpty() = runTest(testDispatcher) {
+    fun fetchRecentRecipesEmpty() = runTest {
         // Given an empty database
         prepopulateDatabase(listOf())
 
@@ -80,7 +74,7 @@ internal class RecipeRepositoryTest {
 
 
     @Test
-    fun fetchRecentRecipesNotEmpty() = runTest(testDispatcher) {
+    fun fetchRecentRecipesNotEmpty() = runTest {
         // Given a database with mock recipes
         prepopulateDatabase(mockService.recipes)
 
@@ -95,7 +89,7 @@ internal class RecipeRepositoryTest {
     }
 
     @Test
-    fun saveNewRecentRecipe() = runTest(testDispatcher) {
+    fun saveNewRecentRecipe() = runTest {
         // Given a database with recipes
         prepopulateDatabase(mockService.recipes)
 
@@ -107,7 +101,7 @@ internal class RecipeRepositoryTest {
     }
 
     @Test
-    fun saveNewRecentRecipeBeyondMax() = runTest(testDispatcher) {
+    fun saveNewRecentRecipeBeyondMax() = runTest {
         // Given a database with the max number of recipes
         val recipes = List(Constants.MAX_RECENT_RECIPES) { index ->
             mockService.recipes[0].copy(id = index)
@@ -122,7 +116,7 @@ internal class RecipeRepositoryTest {
     }
 
     @Test
-    fun saveExistingRecentRecipe() = runTest(testDispatcher) {
+    fun saveExistingRecentRecipe() = runTest {
         // Given a database with recipes
         prepopulateDatabase(mockService.recipes)
         val oldTimestamp = recentRecipeDao.getRecipeById(mockService.recipes[0].id)?.timestamp ?: -1
@@ -136,7 +130,7 @@ internal class RecipeRepositoryTest {
     }
 
     @Test
-    fun toggleFavoriteRecentRecipe() = runTest(testDispatcher) {
+    fun toggleFavoriteRecentRecipe() = runTest {
         // Given a database with a favorite recipe
         val recipe = mockService.recipes[0]
         val recentRecipe = RecentRecipe(
