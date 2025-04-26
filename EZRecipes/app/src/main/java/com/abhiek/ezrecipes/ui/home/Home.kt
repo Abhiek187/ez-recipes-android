@@ -1,6 +1,5 @@
 package com.abhiek.ezrecipes.ui.home
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -34,10 +32,7 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
-import com.abhiek.ezrecipes.ui.profile.RecipeCardLoader
-import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
-import com.abhiek.ezrecipes.ui.util.Accordion
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.getActivity
@@ -57,16 +52,8 @@ fun Home(
 
     val defaultLoadingMessage = ""
     var loadingMessage by remember { mutableStateOf(defaultLoadingMessage) }
-    var didExpandFavorites by remember { mutableStateOf(false) }
-    var didExpandRecent by remember { mutableStateOf(false) }
-    var didExpandRates by remember { mutableStateOf(false) }
-
-    val favoriteRecipes by profileViewModel.favoriteRecipes.collectAsState()
-    val recentRecipes by profileViewModel.recentRecipes.collectAsState()
-    val ratedRecipes by profileViewModel.ratedRecipes.collectAsState()
 
     val isLoggedIn = profileViewModel.authState == AuthState.AUTHENTICATED
-    val isFetchingChef = profileViewModel.authState == AuthState.LOADING
 
     LaunchedEffect(Unit) {
         mainViewModel.fetchRecentRecipes()
@@ -118,84 +105,6 @@ fun Home(
         }
     }
 
-    @Composable
-    fun loadRecipeCards(recipes: List<Recipe?>, showWhenOffline: Boolean = false) {
-        if (!isLoggedIn) {
-            if (showWhenOffline) {
-                // Show what's stored on the device while the chef isn't signed in
-                if (mainViewModel.recentRecipes.isEmpty()) {
-                    Text(
-                        text = stringResource(R.string.no_results),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp)
-                    )
-                } else {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier
-                            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                            .fillMaxWidth()
-                            .horizontalScroll(rememberScrollState())
-                    ) {
-                        mainViewModel.recentRecipes.forEach { recentRecipe ->
-                            RecipeCard(
-                                recipe = recentRecipe.recipe,
-                                width = 350.dp,
-                                profileViewModel = profileViewModel
-                            ) {
-                                onNavigateToRecipe(recentRecipe.recipe)
-                            }
-                        }
-                    }
-                }
-            } else if (isFetchingChef) {
-                // Show the recipe cards loading while waiting for both the auth state & recipes
-                RecipeCardLoader()
-            } else {
-                // Encourage the user to sign in to see these recipes
-                Text(
-                    text = stringResource(R.string.sign_in_for_recipes),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                )
-            }
-        } else if (recipes.isEmpty()) {
-            Text(
-                text = stringResource(R.string.no_results),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-            )
-        } else {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                for (recipe in recipes) {
-                    if (recipe == null) {
-                        RecipeCardLoader()
-                    } else {
-                        RecipeCard(
-                            recipe = recipe,
-                            width = 350.dp,
-                            profileViewModel = profileViewModel
-                        ) {
-                            onNavigateToRecipe(recipe)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -240,43 +149,12 @@ fun Home(
         }
 
         // Saved recipes
-        Accordion(
-            header = stringResource(R.string.profile_favorites),
-            expandByDefault = expandAccordions,
-            onExpand = {
-                // Only fetch the recipes once per load
-                if (isLoggedIn && !didExpandFavorites) {
-                    profileViewModel.getAllFavoriteRecipes()
-                    didExpandFavorites = true
-                }
-            }
-        ) {
-            loadRecipeCards(favoriteRecipes)
-        }
-        Accordion(
-            header = stringResource(R.string.profile_recently_viewed),
-            expandByDefault = expandAccordions,
-            onExpand = {
-                if (isLoggedIn && !didExpandRecent) {
-                    profileViewModel.getAllRecentRecipes()
-                    didExpandRecent = true
-                }
-            }
-        ) {
-            loadRecipeCards(recentRecipes, showWhenOffline = true)
-        }
-        Accordion(
-            header = stringResource(R.string.profile_ratings),
-            expandByDefault = expandAccordions,
-            onExpand = {
-                if (isLoggedIn && !didExpandRates) {
-                    profileViewModel.getAllRatedRecipes()
-                    didExpandRates = true
-                }
-            }
-        ) {
-            loadRecipeCards(ratedRecipes)
-        }
+        HomeAccordions(
+            mainViewModel,
+            profileViewModel,
+            expandAccordions,
+            onNavigateToRecipe
+        )
     }
 }
 

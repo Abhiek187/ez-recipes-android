@@ -22,7 +22,6 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun StepCard(step: Step) {
     ElevatedCard(

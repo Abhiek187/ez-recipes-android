@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,13 +27,13 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 @Composable
 fun Accordion(
     header: String,
+    modifier: Modifier = Modifier,
     expandByDefault: Boolean = true,
     onExpand: () -> Unit = {},
     onCollapse: () -> Unit = {},
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
-    var isExpanded by remember { mutableStateOf(expandByDefault) }
+    var isExpanded by rememberSaveable { mutableStateOf(expandByDefault) }
 
     Column(modifier) {
         Row(

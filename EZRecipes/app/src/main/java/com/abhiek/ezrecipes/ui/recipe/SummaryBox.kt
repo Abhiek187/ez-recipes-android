@@ -11,19 +11,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.theme.DefaultLinkColor
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
-import com.abhiek.ezrecipes.ui.util.HTMLText
 
 @Composable
 fun SummaryBox(summary: String) {
@@ -58,10 +63,16 @@ fun SummaryBox(summary: String) {
                 )
             }
 
-            HTMLText(
-                html = summary,
-                color = Color.Black.toArgb(),
-                fontSize = 18f
+            Text(
+                text = AnnotatedString.fromHtml(
+                    htmlString = summary,
+                    linkStyles = TextLinkStyles(SpanStyle(
+                        color = DefaultLinkColor,
+                        textDecoration = TextDecoration.Underline
+                    ))
+                ),
+                color = Color.Black,
+                fontSize = 18.sp
             )
         }
     }

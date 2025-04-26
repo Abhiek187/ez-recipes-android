@@ -31,15 +31,14 @@ import com.abhiek.ezrecipes.utils.round
 import com.abhiek.ezrecipes.utils.toShorthand
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RecipeRating(
     averageRating: Double?,
     totalRatings: Int,
+    modifier: Modifier = Modifier,
     myRating: Int? = null,
     enabled: Boolean = true,
-    onRate: (Int) -> Unit = {},
-    modifier: Modifier = Modifier
+    onRate: (Int) -> Unit = {}
 ) {
     val context = LocalContext.current
 
@@ -57,11 +56,10 @@ fun RecipeRating(
         modifier = modifier.clearAndSetSemantics {
             contentDescription = if (starRating == 0.0) {
                 context.getString(R.string.star_rating_none)
+            } else if (myRating != null) {
+                context.getString(R.string.star_rating_user, myRating)
             } else {
-                context.getString(
-                    if (myRating != null) R.string.star_rating_user else R.string.star_rating_average,
-                    starRating
-                )
+                context.getString(R.string.star_rating_average, starRating)
             }
             role = Role.Image
         }

@@ -15,3 +15,4 @@ val Amber700 = Color(0xFFFFA000)
 // Other colors
 val Orange700 = Color(0xFFF57C00)
 val Orange900 = Color(0xFFE65100)
+val DefaultLinkColor = Color(0xFF008577) // view.linkTextColors.defaultColor

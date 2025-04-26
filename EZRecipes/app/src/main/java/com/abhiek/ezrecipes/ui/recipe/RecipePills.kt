@@ -25,7 +25,6 @@ import com.abhiek.ezrecipes.ui.theme.Amber700
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.capitalizeWords
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RecipePills(
     spiceLevel: SpiceLevel,
