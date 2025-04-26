@@ -45,14 +45,16 @@ abstract class AppDatabase: RoomDatabase() {
                 db
             } else if (inMemory) {
                 db = Room.inMemoryDatabaseBuilder(
-                    context, AppDatabase::class.java
+                    context.applicationContext, AppDatabase::class.java
                 ).setQueryExecutor(dispatcher.asExecutor())
                     .setTransactionExecutor(dispatcher.asExecutor())
                     .build()
                 db
             } else {
                 db = Room.databaseBuilder(
-                    context, AppDatabase::class.java, Constants.Room.DATABASE_NAME
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    Constants.Room.DATABASE_NAME
                 ).build()
                 db
             }
