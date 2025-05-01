@@ -101,7 +101,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.navigation:navigation-compose:2.8.9")
-    implementation("androidx.datastore:datastore-preferences:1.1.4")
+    implementation("androidx.datastore:datastore-preferences:1.1.5")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
 
     // AsyncImage
