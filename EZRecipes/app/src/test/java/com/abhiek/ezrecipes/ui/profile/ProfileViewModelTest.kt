@@ -675,7 +675,7 @@ internal class ProfileViewModelTest {
         viewModel.toggleFavoriteRecipe(recipeId, true)
 
         // Then the recipe should appear in the chef's favorites
-        assertTrue(viewModel.chef?.favoriteRecipes?.contains(recipeId.toString()) ?: false)
+        assertTrue(viewModel.chef?.favoriteRecipes?.contains(recipeId.toString()) == true)
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }
@@ -695,7 +695,7 @@ internal class ProfileViewModelTest {
         viewModel.toggleFavoriteRecipe(recipeId, false)
 
         // Then the recipe shouldn't appear in the chef's favorites
-        assertFalse(viewModel.chef?.favoriteRecipes?.contains(recipeId.toString()) ?: true)
+        assertFalse(viewModel.chef?.favoriteRecipes?.contains(recipeId.toString()) != false)
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }
@@ -716,7 +716,7 @@ internal class ProfileViewModelTest {
         viewModel.toggleFavoriteRecipe(recipeId, true)
 
         // Then an error is logged
-        assertFalse(viewModel.chef?.favoriteRecipes?.contains(recipeId.toString()) ?: true)
+        assertFalse(viewModel.chef?.favoriteRecipes?.contains(recipeId.toString()) != false)
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }
@@ -768,7 +768,7 @@ internal class ProfileViewModelTest {
         viewModel.rateRecipe(recipeId, rating)
 
         // Then an error is logged
-        assertFalse(viewModel.chef?.ratings?.contains(recipeId.toString()) ?: true)
+        assertFalse(viewModel.chef?.ratings?.contains(recipeId.toString()) != false)
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }

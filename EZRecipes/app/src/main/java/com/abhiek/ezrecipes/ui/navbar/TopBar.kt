@@ -49,7 +49,7 @@ fun TopBar(
     val isRecipeRoute = currentRoute == Routes.RECIPE
     val recipeId = navBackStackEntry?.arguments?.getString("id")
 
-    val isFavorite = profileViewModel.chef?.favoriteRecipes?.contains(recipeId) ?: false
+    val isFavorite = profileViewModel.chef?.favoriteRecipes?.contains(recipeId) == true
 
     // Check if the recipe is one of the chef's favorites
     LaunchedEffect(Unit) {

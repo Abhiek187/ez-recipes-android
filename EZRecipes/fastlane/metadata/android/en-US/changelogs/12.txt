@@ -1,0 +1,5 @@
+- Enabled autofill for email and password fields
+- The home accordions stay open when navigating or rotating the screen
+- Fixed some of the error messaging in the login forms
+- Adjusted the formatting of messages in the login forms
+- Fixed how screen readers read out reviews

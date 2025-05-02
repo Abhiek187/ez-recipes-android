@@ -43,7 +43,7 @@ fun RecipeCard(
     val context = LocalContext.current
 
     val chef = profileViewModel.chef
-    val isFavorite = chef?.favoriteRecipes?.contains(recipe.id.toString()) ?: false
+    val isFavorite = chef?.favoriteRecipes?.contains(recipe.id.toString()) == true
     val calories = recipe.nutrients.firstOrNull { nutrient -> nutrient.name == "Calories" }
 
     LaunchedEffect(Unit) {
