@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.models.Cuisine
 import com.abhiek.ezrecipes.data.models.MealType
@@ -245,7 +246,7 @@ fun FilterForm(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    for (i in 1..option) {
+                    (1..option).forEach {
                         Icon(
                             imageVector = Icons.Filled.Star,
                             contentDescription = null,
@@ -366,7 +367,9 @@ private fun FilterFormPreview(
     @PreviewParameter(FilterFormPreviewParameterProvider::class) state: FilterFormState
 ) {
     val recipeService = MockRecipeService
-    val viewModel = SearchViewModel(RecipeRepository(recipeService))
+    val viewModel = viewModel {
+        SearchViewModel(RecipeRepository(recipeService))
+    }
 
     val (maxError, rangeError, isLoading, noResults) = state
     if (maxError) {

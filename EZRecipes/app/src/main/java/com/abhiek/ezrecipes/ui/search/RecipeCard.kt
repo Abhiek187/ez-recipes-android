@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
@@ -149,11 +150,13 @@ private fun RecipeCardPreview() {
     val context = LocalContext.current
     val chefService = MockChefService
     val recipeService = MockRecipeService
-    val profileViewModel = ProfileViewModel(
-        chefRepository = ChefRepository(chefService),
-        recipeRepository = RecipeRepository(recipeService),
-        dataStoreService = DataStoreService(context)
-    )
+    val profileViewModel = viewModel {
+        ProfileViewModel(
+            chefRepository = ChefRepository(chefService),
+            recipeRepository = RecipeRepository(recipeService),
+            dataStoreService = DataStoreService(context)
+        )
+    }
 
     EZRecipesTheme {
         Surface {

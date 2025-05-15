@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
@@ -137,11 +138,13 @@ private fun ProfilePreview(
 
     val chefService = MockChefService
     val recipeService = MockRecipeService
-    val profileViewModel = ProfileViewModel(
-        chefRepository = ChefRepository(chefService),
-        recipeRepository = RecipeRepository(recipeService),
-        dataStoreService = DataStoreService(context)
-    )
+    val profileViewModel = viewModel {
+        ProfileViewModel(
+            chefRepository = ChefRepository(chefService),
+            recipeRepository = RecipeRepository(recipeService),
+            dataStoreService = DataStoreService(context)
+        )
+    }
     profileViewModel.authState = state.authState
     profileViewModel.chef = chefService.chef
 

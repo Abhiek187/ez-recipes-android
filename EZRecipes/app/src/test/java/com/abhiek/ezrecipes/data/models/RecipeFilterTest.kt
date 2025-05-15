@@ -17,6 +17,7 @@ class RecipeFilterTest {
             healthy = true,
             cheap = false,
             sustainable = false,
+            rating = 3,
             spiceLevel = listOf(SpiceLevel.MILD, SpiceLevel.SPICY),
             type = listOf(MealType.ANTIPASTI),
             culture = listOf(Cuisine.ITALIAN)
@@ -29,7 +30,8 @@ class RecipeFilterTest {
         assertEquals(mapOf(
             "query" to recipeFilter.query,
             "min-cals" to recipeFilter.minCals?.toLong(),
-            "max-cals" to recipeFilter.maxCals?.toLong()
+            "max-cals" to recipeFilter.maxCals?.toLong(),
+            "rating" to recipeFilter.rating?.toLong()
         ), recipeFilterMap)
     }
 }

@@ -78,8 +78,8 @@ android {
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2025.04.01"
-    val lifecycleVersion = "2.8.7"
+    val composeBomVersion = "2025.05.00"
+    val lifecycleVersion = "2.9.0"
     val activityVersion = "1.10.1"
     val coroutineVersion = "1.10.2"
     val retrofitVersion = "2.11.0"
@@ -100,8 +100,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
-    implementation("androidx.navigation:navigation-compose:2.8.9")
-    implementation("androidx.datastore:datastore-preferences:1.1.4")
+    implementation("androidx.navigation:navigation-compose:2.9.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
 
     // AsyncImage

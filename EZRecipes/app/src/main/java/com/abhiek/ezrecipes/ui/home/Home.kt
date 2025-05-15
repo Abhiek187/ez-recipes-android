@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
@@ -199,11 +200,13 @@ private fun HomePreview(
     val recipeService = MockRecipeService
     val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
 
-    val mainViewModel = MainViewModel(
-        recipeRepository = RecipeRepository(recipeService, recentRecipeDao),
-        dataStoreService = DataStoreService(context),
-        reviewManager = FakeReviewManager(context)
-    )
+    val mainViewModel = viewModel {
+        MainViewModel(
+            recipeRepository = RecipeRepository(recipeService, recentRecipeDao),
+            dataStoreService = DataStoreService(context),
+            reviewManager = FakeReviewManager(context)
+        )
+    }
     val (isLoading, showAlert, recentRecipes, authState, expandAccordions) = state
     mainViewModel.isLoading = isLoading
     mainViewModel.showRecipeAlert = showAlert // show the fallback alert in the preview
@@ -213,11 +216,13 @@ private fun HomePreview(
     }
 
     val chefService = MockChefService
-    val profileViewModel = ProfileViewModel(
-        chefRepository = ChefRepository(chefService),
-        recipeRepository = RecipeRepository(recipeService),
-        dataStoreService = DataStoreService(context)
-    )
+    val profileViewModel = viewModel {
+        ProfileViewModel(
+            chefRepository = ChefRepository(chefService),
+            recipeRepository = RecipeRepository(recipeService),
+            dataStoreService = DataStoreService(context)
+        )
+    }
     profileViewModel.authState = authState
     if (authState == AuthState.AUTHENTICATED) {
         profileViewModel.chef = chefService.chef

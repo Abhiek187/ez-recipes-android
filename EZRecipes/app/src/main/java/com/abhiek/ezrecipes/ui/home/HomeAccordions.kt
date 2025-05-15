@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
@@ -197,18 +198,22 @@ private fun HomeAccordionsPreview(
     val recipeService = MockRecipeService
     val recentRecipeDao = AppDatabase.getInstance(context, inMemory = true).recentRecipeDao()
 
-    val mainViewModel = MainViewModel(
-        recipeRepository = RecipeRepository(recipeService, recentRecipeDao),
-        dataStoreService = DataStoreService(context),
-        reviewManager = FakeReviewManager(context)
-    )
+    val mainViewModel = viewModel {
+        MainViewModel(
+            recipeRepository = RecipeRepository(recipeService, recentRecipeDao),
+            dataStoreService = DataStoreService(context),
+            reviewManager = FakeReviewManager(context)
+        )
+    }
 
     val chefService = MockChefService
-    val profileViewModel = ProfileViewModel(
-        chefRepository = ChefRepository(chefService),
-        recipeRepository = RecipeRepository(recipeService),
-        dataStoreService = DataStoreService(context)
-    )
+    val profileViewModel = viewModel {
+        ProfileViewModel(
+            chefRepository = ChefRepository(chefService),
+            recipeRepository = RecipeRepository(recipeService),
+            dataStoreService = DataStoreService(context)
+        )
+    }
 
     EZRecipesTheme {
         Surface {

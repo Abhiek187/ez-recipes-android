@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
@@ -98,7 +99,9 @@ private fun SubmitButtonPreview(
     @PreviewParameter(SubmitButtonPreviewParameterProvider::class) state: SubmitButtonState
 ) {
     val recipeService = MockRecipeService
-    val viewModel = SearchViewModel(RecipeRepository(recipeService))
+    val viewModel = viewModel {
+        SearchViewModel(RecipeRepository(recipeService))
+    }
     val (isLoading, showAlert) = state
     viewModel.isLoading = isLoading
     viewModel.showRecipeAlert = showAlert

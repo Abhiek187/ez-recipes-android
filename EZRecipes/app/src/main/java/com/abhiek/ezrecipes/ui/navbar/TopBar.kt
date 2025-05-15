@@ -12,6 +12,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -138,11 +139,13 @@ fun TopBarPreview() {
     val context = LocalContext.current
     val chefService = MockChefService
     val recipeService = MockRecipeService
-    val profileViewModel = ProfileViewModel(
-        chefRepository = ChefRepository(chefService),
-        recipeRepository = RecipeRepository(recipeService),
-        dataStoreService = DataStoreService(context)
-    )
+    val profileViewModel = viewModel {
+        ProfileViewModel(
+            chefRepository = ChefRepository(chefService),
+            recipeRepository = RecipeRepository(recipeService),
+            dataStoreService = DataStoreService(context)
+        )
+    }
 
     EZRecipesTheme {
         TopBar(scope, navController, windowSize.widthSizeClass, drawerState, profileViewModel)
