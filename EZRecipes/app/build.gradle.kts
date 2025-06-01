@@ -78,7 +78,7 @@ android {
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2025.05.00"
+    val composeBomVersion = "2025.05.01"
     val lifecycleVersion = "2.9.0"
     val activityVersion = "1.10.1"
     val coroutineVersion = "1.10.2"
