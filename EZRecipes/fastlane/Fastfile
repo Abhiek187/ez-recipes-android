@@ -172,9 +172,9 @@ platform :android do
     # Ask for the key store password (which should be the same as the key password)
     key_password = UI.password("Enter your key store password: ")
     # Generate a signed AAB:
-    # gradlew assembleRelease -p . -Pandroid.injected.signing.store.file=../../keystore.jks -Pandroid.injected.signing.store.password=*** -Pandroid.injected.signing.key.alias=key1 -Pandroid.injected.signing.key.password=***
+    # gradlew bundleRelease -p . -Pandroid.injected.signing.store.file=../../keystore.jks -Pandroid.injected.signing.store.password=*** -Pandroid.injected.signing.key.alias=key1 -Pandroid.injected.signing.key.password=***
     gradle(
-        task: "assemble",
+        task: "bundle",
         build_type: "Release",
         print_command: false, # don't show the password
         properties: {

@@ -108,7 +108,7 @@ D(Sync local metadata from Google Play) --> E(Write release notes for the next v
 E --> F{Major, minor, or patch update?}
 F --> G(Update the version name and increment the version code)
 G --> H(Clean cache:<br>gradlew clean)
-H --> I(Build app & generate an AAB:<br>gradlew assembleRelease)
+H --> I(Build app & generate an AAB:<br>gradlew bundleRelease)
 I --> J(Sign AAB using the upload key)
 end
 
