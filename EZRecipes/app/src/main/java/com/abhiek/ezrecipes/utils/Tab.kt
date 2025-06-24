@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.abhiek.ezrecipes.R
 
 // Routes and their associated titles and icons in the navigation graph
-sealed class Tab(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
+sealed class Tab(val route: String, @param:StringRes val resourceId: Int, val icon: ImageVector) {
     // Icons: https://fonts.google.com/icons (some require material-icons-extended)
     data object Home: Tab(Routes.HOME, R.string.home_tab, Icons.Filled.Home)
     data object Search: Tab(Routes.SEARCH, R.string.search_tab, Icons.Filled.Search)

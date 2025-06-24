@@ -12,14 +12,14 @@ val okHttpVersion = "4.12.0"
 
 android {
     namespace = "com.abhiek.ezrecipes"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         // GITHUB_ACTIONS = true if running in a workflow
         testInstrumentationRunnerArguments["ci"] = System.getenv("GITHUB_ACTIONS") ?: "null"
         applicationId = "com.abhiek.ezrecipes"
         minSdk = 23
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 12
         versionName = "3.0.1"
 
@@ -80,14 +80,14 @@ android {
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2025.05.01"
-    val lifecycleVersion = "2.9.0"
+    val composeBomVersion = "2025.06.01"
+    val lifecycleVersion = "2.9.1"
     val activityVersion = "1.10.1"
     val coroutineVersion = "1.10.2"
     val retrofitVersion = "3.0.0"
-    val roomVersion = "2.7.1"
+    val roomVersion = "2.7.2"
     val googlePlayVersion = "2.0.2"
-    val jupiterVersion = "5.13.0"
+    val jupiterVersion = "5.13.2"
     val espressoVersion = "3.6.1"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
@@ -128,7 +128,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion")
-    testImplementation("io.mockk:mockk:1.14.2")
+    testImplementation("io.mockk:mockk:1.14.4")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
