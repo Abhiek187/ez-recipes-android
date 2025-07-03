@@ -1,4 +1,4 @@
-package com.abhiek.ezrecipes.ui.profile
+package com.abhiek.ezrecipes.ui.home
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
