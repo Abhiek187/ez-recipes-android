@@ -88,7 +88,7 @@ dependencies {
     val roomVersion = "2.7.2"
     val googlePlayVersion = "2.0.2"
     val jupiterVersion = "5.13.3"
-    val espressoVersion = "3.6.1"
+    val espressoVersion = "3.7.0"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     implementation("androidx.core:core-ktx:1.16.0")
