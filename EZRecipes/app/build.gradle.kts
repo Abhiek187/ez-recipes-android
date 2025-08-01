@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
-val okHttpVersion = "4.12.0"
+val okHttpVersion = "5.1.0"
 
 android {
     namespace = "com.abhiek.ezrecipes"
