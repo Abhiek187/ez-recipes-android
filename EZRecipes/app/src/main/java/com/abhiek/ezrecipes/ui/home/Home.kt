@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -50,6 +51,7 @@ fun Home(
     val context = LocalContext.current
     val activity = context.getActivity()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val resources = LocalResources.current
 
     val defaultLoadingMessage = ""
     var loadingMessage by remember { mutableStateOf(defaultLoadingMessage) }
@@ -73,7 +75,7 @@ fun Home(
 
         while (mainViewModel.isLoading) {
             delay(3000) // 3 seconds
-            loadingMessage = context.resources.getStringArray(R.array.loading_messages).random()
+            loadingMessage = resources.getStringArray(R.array.loading_messages).random()
         }
     }
 

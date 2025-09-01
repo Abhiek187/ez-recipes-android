@@ -5,7 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -27,7 +27,7 @@ fun SubmitButton(searchViewModel: SearchViewModel, enabled: Boolean) {
     val defaultLoadingMessage = ""
     var loadingMessage by remember { mutableStateOf(defaultLoadingMessage) }
 
-    val context = LocalContext.current
+    val resources = LocalResources.current
 
     LaunchedEffect(searchViewModel.isLoading) {
         // Don't show any messages initially if the recipe loads quickly
@@ -35,7 +35,7 @@ fun SubmitButton(searchViewModel: SearchViewModel, enabled: Boolean) {
 
         while (searchViewModel.isLoading) {
             delay(3000) // 3 seconds
-            loadingMessage = context.resources.getStringArray(R.array.loading_messages).random()
+            loadingMessage = resources.getStringArray(R.array.loading_messages).random()
         }
     }
 

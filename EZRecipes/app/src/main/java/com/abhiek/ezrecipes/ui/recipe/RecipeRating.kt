@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -41,6 +42,7 @@ fun RecipeRating(
     onRate: (Int) -> Unit = {}
 ) {
     val context = LocalContext.current
+    val resources = LocalResources.current
 
     // If the user has rated the recipe, show their rating instead of the average
     // If there are no ratings, show all empty stars
@@ -75,21 +77,21 @@ fun RecipeRating(
                 if (i < stars || (i == stars && starRating >= stars)) {
                     Icon(
                         imageVector = Icons.Filled.Star,
-                        contentDescription = context.resources.getQuantityString(
+                        contentDescription = resources.getQuantityString(
                             R.plurals.star_rating_input, i, i
                         )
                     )
                 } else if (i == stars && starRating < stars) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.StarHalf,
-                        contentDescription = context.resources.getQuantityString(
+                        contentDescription = resources.getQuantityString(
                             R.plurals.star_rating_input, i, i
                         )
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.StarRate,
-                        contentDescription = context.resources.getQuantityString(
+                        contentDescription = resources.getQuantityString(
                             R.plurals.star_rating_input, i, i
                         )
                     )
@@ -99,7 +101,7 @@ fun RecipeRating(
         Text(
             text = "(" + (if (averageRating != null) {
                 "${averageRating.round(places = 1)}/5, "
-            } else "") + context.resources.getQuantityString(
+            } else "") + resources.getQuantityString(
                 R.plurals.total_ratings, totalRatings, totalRatings.toShorthand()
             ) + ")",
             modifier = Modifier

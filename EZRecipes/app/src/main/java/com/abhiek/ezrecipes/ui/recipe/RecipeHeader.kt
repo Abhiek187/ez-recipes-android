@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.style.TextAlign
@@ -42,7 +42,7 @@ fun RecipeHeader(
     onRate: (Int) -> Unit = {},
     onClickFindRecipe: () -> Unit = {}
 ) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
 
     // Make the image caption clickable
     val annotatedLinkString = buildAnnotatedString {
@@ -110,7 +110,7 @@ fun RecipeHeader(
             Text(
                 text = boldAnnotatedString(
                     // 2nd arg = count, 3rd arg = formatter args
-                    text = context.resources.getQuantityString(R.plurals.recipe_time, recipe.time, recipe.time),
+                    text = resources.getQuantityString(R.plurals.recipe_time, recipe.time, recipe.time),
                     endIndex = 5 // "Time:".length = 5
                 ),
                 style = MaterialTheme.typography.titleLarge,

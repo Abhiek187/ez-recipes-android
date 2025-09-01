@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -41,7 +42,7 @@ fun RecipeCard(
     profileViewModel: ProfileViewModel,
     onClick: () -> Unit
 ) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
 
     val chef = profileViewModel.chef
     val isFavorite = chef?.favoriteRecipes?.contains(recipe.id.toString()) == true
@@ -125,7 +126,7 @@ fun RecipeCard(
             ) {
                 Text(
                     text = boldAnnotatedString(
-                        text = context.resources.getQuantityString(R.plurals.recipe_time, recipe.time, recipe.time),
+                        text = resources.getQuantityString(R.plurals.recipe_time, recipe.time, recipe.time),
                         endIndex = 5 // "Time:".length = 5
                     ),
                     style = MaterialTheme.typography.titleMedium

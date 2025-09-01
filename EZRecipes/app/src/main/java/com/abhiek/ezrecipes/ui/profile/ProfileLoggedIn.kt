@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -36,7 +37,7 @@ fun ProfileLoggedIn(
     chef: Chef,
     profileViewModel: ProfileViewModel
 ) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
 
     var dialogToShow by remember { mutableStateOf<String?>(null) }
 
@@ -69,21 +70,21 @@ fun ProfileLoggedIn(
             val numRatedRecipes = chef.ratings.size
 
             Text(
-                text = context.resources.getQuantityString(
+                text = resources.getQuantityString(
                     R.plurals.favorites, numFavoriteRecipes, numFavoriteRecipes.toShorthand()
                 ),
                 style = MaterialTheme.typography.bodyLarge
             )
             VerticalDivider()
             Text(
-                text = context.resources.getQuantityString(
+                text = resources.getQuantityString(
                     R.plurals.recipes_viewed, numViewedRecipes, numViewedRecipes.toShorthand()
                 ),
                 style = MaterialTheme.typography.bodyLarge
             )
             VerticalDivider()
             Text(
-                text = context.resources.getQuantityString(
+                text = resources.getQuantityString(
                     R.plurals.total_ratings, numRatedRecipes, numRatedRecipes.toShorthand()
                 ),
                 style = MaterialTheme.typography.bodyLarge

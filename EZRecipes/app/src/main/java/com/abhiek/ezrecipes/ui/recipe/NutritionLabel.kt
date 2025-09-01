@@ -5,7 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -24,7 +24,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun NutritionLabel(recipe: Recipe) {
-    val context = LocalContext.current
+    val resources = LocalResources.current
     // Nutrients that should be bolded on the nutrition label
     val nutrientHeadings = listOf("Calories", "Fat", "Carbohydrates", "Protein")
 
@@ -52,7 +52,7 @@ fun NutritionLabel(recipe: Recipe) {
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = context.resources.getQuantityString(R.plurals.servings, recipe.servings, recipe.servings),
+                    text = resources.getQuantityString(R.plurals.servings, recipe.servings, recipe.servings),
                     style = MaterialTheme.typography.titleMedium
                 )
             }

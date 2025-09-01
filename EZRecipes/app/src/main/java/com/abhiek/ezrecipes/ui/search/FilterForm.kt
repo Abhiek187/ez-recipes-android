@@ -246,7 +246,7 @@ fun FilterForm(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    (1..option).forEach {
+                    (1..option).forEach { _ ->
                         Icon(
                             imageVector = Icons.Filled.Star,
                             contentDescription = null,

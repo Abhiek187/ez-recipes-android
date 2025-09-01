@@ -80,8 +80,8 @@ android {
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2025.07.00"
-    val lifecycleVersion = "2.9.2"
+    val composeBomVersion = "2025.08.01"
+    val lifecycleVersion = "2.9.3"
     val activityVersion = "1.10.1"
     val coroutineVersion = "1.10.2"
     val retrofitVersion = "3.0.0"
@@ -91,7 +91,7 @@ dependencies {
     val espressoVersion = "3.7.0"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
-    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
