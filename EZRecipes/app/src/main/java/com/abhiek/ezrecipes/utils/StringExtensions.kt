@@ -71,7 +71,7 @@ fun String.toUnixTimestamp(): Long? {
             val date = dateFormat.parse(this)
             date?.time
         }
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }
 }

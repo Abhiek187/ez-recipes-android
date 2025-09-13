@@ -132,6 +132,9 @@
 
     <string name="results_title">Results</string>
     <string name="results_placeholder">Use the filters to search for your favorite recipes!</string>
+    <string name="sort_label">Sort</string>
+    <string name="sort_alt_asc">Sort in ascending order</string>
+    <string name="sort_alt_desc">Sort in descending order</string>
 
     <!-- Profile Screen -->
     <string name="profile_loading">Getting your profile ready… 🧑‍🍳</string>

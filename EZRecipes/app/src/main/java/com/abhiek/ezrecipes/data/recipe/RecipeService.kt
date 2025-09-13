@@ -29,6 +29,7 @@ interface RecipeService {
         @QueryName healthy: String? = null,
         @QueryName cheap: String? = null,
         @QueryName sustainable: String? = null,
+        @QueryName asc: String? = null,
         // Multiple repeating query parameters
         @Query("spice-level") spiceLevels: List<SpiceLevel> = listOf(),
         @Query("type") mealTypes: List<MealType> = listOf(),

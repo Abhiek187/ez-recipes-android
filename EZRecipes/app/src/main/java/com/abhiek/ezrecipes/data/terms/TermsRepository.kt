@@ -18,7 +18,7 @@ class TermsRepository(private val termsService: TermsService) {
             val recipeError = try {
                 // Try to parse the response as a RecipeError
                 Gson().fromJson(errorString, RecipeError::class.java)
-            } catch (error: JsonSyntaxException) {
+            } catch (_: JsonSyntaxException) {
                 // Otherwise, set the error property as the raw error string
                 RecipeError(errorString ?: Constants.UNKNOWN_ERROR)
             }

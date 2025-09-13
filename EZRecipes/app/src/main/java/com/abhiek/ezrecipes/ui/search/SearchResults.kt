@@ -4,7 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,6 +30,7 @@ import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Recipe
+import com.abhiek.ezrecipes.data.models.RecipeSortField
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -33,6 +40,7 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.ui.util.Dropdown
 import com.abhiek.ezrecipes.utils.Constants
 
 @Composable
@@ -75,6 +83,53 @@ fun SearchResults(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            ) {
+                Dropdown(
+                    options = RecipeSortField.entries,
+                    value = searchViewModel.recipeFilter.sort,
+                    label = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                           Icon(
+                               imageVector = Icons.AutoMirrored.Filled.Sort,
+                               contentDescription = null
+                           )
+                            Text(stringResource(R.string.sort_label))
+                        }
+                    },
+                    onSelectOption = { option ->
+                        searchViewModel.recipeFilter = searchViewModel.recipeFilter.copy(sort = option)
+
+                        if (option != null) {
+                            searchViewModel.searchRecipes()
+                        }
+                    }
+                )
+                IconButton(
+                    onClick = {
+                        searchViewModel.recipeFilter = searchViewModel.recipeFilter.copy(
+                            asc = !searchViewModel.recipeFilter.asc
+                        )
+                        searchViewModel.searchRecipes()
+                    }
+                ) {
+                    Icon(
+                        imageVector = if (searchViewModel.recipeFilter.asc) Icons.Filled.ArrowUpward
+                        else Icons.Filled.ArrowDownward,
+                        contentDescription = if (searchViewModel.recipeFilter.asc) {
+                            stringResource(R.string.sort_alt_desc)
+                        } else {
+                            stringResource(R.string.sort_alt_asc)
+                        }
+                    )
+                }
+            }
+
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 350.dp),
                 modifier = Modifier
