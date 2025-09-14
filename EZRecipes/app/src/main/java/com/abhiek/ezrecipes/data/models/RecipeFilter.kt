@@ -38,5 +38,12 @@ data class RecipeFilter(
             json, object: TypeToken<Map<String, Any>>() {}.type
         )
         return map.filter { (key, _) -> !omittedKeys.contains(key) }
+            .entries.associate { (key, value) ->
+                if (key == "sort") {
+                    key to (value as String).replace("_", "-").lowercase()
+                } else {
+                    key to value
+                }
+            }
     }
 }

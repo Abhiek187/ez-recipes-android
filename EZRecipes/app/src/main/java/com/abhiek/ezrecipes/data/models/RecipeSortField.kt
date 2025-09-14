@@ -11,4 +11,8 @@ enum class RecipeSortField {
     override fun toString(): String {
         return name.replace("_", " ").lowercase().capitalizeWords()
     }
+
+    fun toQueryParam(): String {
+        return name.replace("_", "-").lowercase()
+    }
 }

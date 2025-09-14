@@ -105,6 +105,7 @@ fun SearchResults(
                     onSelectOption = { option ->
                         searchViewModel.recipeFilter = searchViewModel.recipeFilter.copy(sort = option)
 
+                        // Don't submit the form if the sort field isn't specified
                         if (option != null) {
                             searchViewModel.searchRecipes()
                         }
