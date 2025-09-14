@@ -122,7 +122,8 @@ fun SearchResults(
                                 searchViewModel.searchRecipes()
                                 scrollToTop()
                             }
-                        }
+                        },
+                        modifier = Modifier.width(200.dp)
                     )
                     IconButton(
                         onClick = {

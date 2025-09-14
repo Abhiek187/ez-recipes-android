@@ -25,13 +25,14 @@ fun <T> Dropdown(
     options: List<T>,
     value: T?,
     label: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
     customContent: (T) -> @Composable () -> Unit = { option -> { Text(option.toString()) } },
     onSelectOption: (option: T?) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-    Box {
+    Box(modifier = modifier) {
         OutlinedTextField(
             value = value?.toString() ?: "", // don't show "null" for empty values
             onValueChange = {},
