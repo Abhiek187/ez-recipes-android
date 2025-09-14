@@ -30,7 +30,7 @@ class SearchViewModel(
     var noRecipesFound by mutableStateOf(false)
     var showRecipeAlert by mutableStateOf(false)
 
-    fun searchRecipes(paginate: Boolean = false) {
+    fun searchRecipes(paginate: Boolean = false, fromFilterForm: Boolean = false) {
         job = viewModelScope.launch {
             noRecipesFound = false
             recipeFilter.token = if (paginate) lastToken else null
@@ -50,7 +50,7 @@ class SearchViewModel(
 
                     recipeError = null
                     // isRecipeLoaded only applies when waiting for SearchResults from FilterForm
-                    isRecipeLoaded = !paginate && recipes.isNotEmpty()
+                    isRecipeLoaded = fromFilterForm && !paginate && recipes.isNotEmpty()
                     noRecipesFound = recipes.isEmpty()
                     // Prevent subsequent calls if there are no more results
                     lastToken = result.response.lastOrNull()?.token
