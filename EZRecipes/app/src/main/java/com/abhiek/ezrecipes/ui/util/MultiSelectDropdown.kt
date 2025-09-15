@@ -27,12 +27,13 @@ fun <T> MultiSelectDropdown(
     options: List<T>,
     value: List<T>,
     label: @Composable () -> Unit,
-    onSelectOption: (option: T) -> Unit
+    onSelectOption: (option: T) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-    Box {
+    Box(modifier = modifier) {
         OutlinedTextField(
             // Show all the options that were selected
             value = value.joinToString(", "),

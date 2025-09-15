@@ -45,7 +45,7 @@ fun SubmitButton(searchViewModel: SearchViewModel, enabled: Boolean) {
             modifier = Modifier.padding(8.dp)
         ) {
             Button(
-                onClick = { searchViewModel.searchRecipes() },
+                onClick = { searchViewModel.searchRecipes(fromFilterForm = true) },
                 enabled = enabled,
                 modifier = Modifier.weight(1f)
             ) {

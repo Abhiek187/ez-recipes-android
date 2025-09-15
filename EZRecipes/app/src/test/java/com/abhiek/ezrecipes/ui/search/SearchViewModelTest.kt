@@ -33,9 +33,21 @@ internal class SearchViewModelTest {
         assertEquals(viewModel.recipes, mockService.recipes)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.isLoading)
-        assertTrue(viewModel.isRecipeLoaded)
+        assertFalse(viewModel.isRecipeLoaded)
         assertFalse(viewModel.noRecipesFound)
         assertFalse(viewModel.showRecipeAlert)
+    }
+
+    @Test
+    fun searchRecipesSuccessFromFilterForm() = runTest {
+        // Given an instance of SearchViewModel
+        // When searchRecipes() is called from the filter form
+        mockService.isSuccess = true
+        mockService.noResults = false
+        viewModel.searchRecipes(fromFilterForm = true)
+
+        // Then isRecipeLoaded should be true
+        assertTrue(viewModel.isRecipeLoaded)
     }
 
     @Test

@@ -23,7 +23,7 @@ class RecipeRepository(
             val recipeError = try {
                 // Try to parse the response as a RecipeError
                 Gson().fromJson(errorString, RecipeError::class.java)
-            } catch (error: JsonSyntaxException) {
+            } catch (_: JsonSyntaxException) {
                 // Otherwise, set the error property as the raw error string
                 RecipeError(errorString ?: Constants.UNKNOWN_ERROR)
             }
@@ -41,6 +41,7 @@ class RecipeRepository(
                 healthy = if (filter.healthy) "healthy" else null,
                 cheap = if (filter.cheap) "cheap" else null,
                 sustainable = if (filter.sustainable) "sustainable" else null,
+                asc = if (filter.asc) "asc" else null,
                 spiceLevels = filter.spiceLevel,
                 mealTypes = filter.type,
                 cuisines = filter.culture,

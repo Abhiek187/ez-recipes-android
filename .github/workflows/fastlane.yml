@@ -54,7 +54,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [ 30, 32, 34 ]
+        api-level: [ 31, 33, 35 ]
 
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/EZRecipes/Gemfile

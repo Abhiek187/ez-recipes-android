@@ -29,6 +29,7 @@ object MockRecipeService: RecipeService {
         healthy: String?,
         cheap: String?,
         sustainable: String?,
+        asc: String?,
         spiceLevels: List<SpiceLevel>,
         mealTypes: List<MealType>,
         cuisines: List<Cuisine>,

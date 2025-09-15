@@ -65,7 +65,7 @@ flowchart LR
 A(Checkout repository) --> B(Enable Kernel-based Virtual Machine)
 B --> C(Install Java 17)
 C --> D(Make gradlew executable:<br>chmod u+x gradlew)
-D -->|API 30, 32, 34| E
+D -->|API 31, 33, 35| E
 E --> F(Upload build reports)
 
 subgraph E [Run instrumented tests]

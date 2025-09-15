@@ -19,12 +19,14 @@ data class RecipeFilter(
     var spiceLevel: List<SpiceLevel> = listOf(),
     var type: List<MealType> = listOf(),
     var culture: List<Cuisine> = listOf(),
-    var token: String? = null // either an ObjectId or searchSequenceToken for pagination
+    var token: String? = null, // either an ObjectId or searchSequenceToken for pagination
+    var sort: RecipeSortField? = null,
+    var asc: Boolean = false
 ) {
     fun toMap(): Map<String, Any> {
         // Filter all the keys that aren't defined separately in the service
         val omittedKeys = listOf("vegetarian", "vegan", "gluten-free", "healthy", "cheap",
-            "sustainable", "spice-level", "type", "culture")
+            "sustainable", "spice-level", "type", "culture", "asc")
         val gson = GsonBuilder()
             // Convert all the keys to kebab-case
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
@@ -36,5 +38,12 @@ data class RecipeFilter(
             json, object: TypeToken<Map<String, Any>>() {}.type
         )
         return map.filter { (key, _) -> !omittedKeys.contains(key) }
+            .entries.associate { (key, value) ->
+                if (key == "sort") {
+                    key to (value as String).replace("_", "-").lowercase()
+                } else {
+                    key to value
+                }
+            }
     }
 }
