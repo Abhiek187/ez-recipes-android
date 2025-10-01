@@ -85,7 +85,7 @@ dependencies {
     val activityVersion = "1.11.0"
     val coroutineVersion = "1.10.2"
     val retrofitVersion = "3.0.0"
-    val roomVersion = "2.8.0"
+    val roomVersion = "2.8.1"
     val googlePlayVersion = "2.0.2"
     val jupiterVersion = "5.13.4"
     val espressoVersion = "3.7.0"
