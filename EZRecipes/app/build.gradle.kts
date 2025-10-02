@@ -80,14 +80,14 @@ android {
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2025.09.00"
-    val lifecycleVersion = "2.9.3"
+    val composeBomVersion = "2025.09.01"
+    val lifecycleVersion = "2.9.4"
     val activityVersion = "1.11.0"
     val coroutineVersion = "1.10.2"
     val retrofitVersion = "3.0.0"
-    val roomVersion = "2.8.0"
+    val roomVersion = "2.8.1"
     val googlePlayVersion = "2.0.2"
-    val jupiterVersion = "5.13.4"
+    val jupiterVersion = "6.0.0"
     val espressoVersion = "3.7.0"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
@@ -102,7 +102,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
-    implementation("androidx.navigation:navigation-compose:2.9.4")
+    implementation("androidx.navigation:navigation-compose:2.9.5")
     implementation("androidx.datastore:datastore-preferences:1.1.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
 
@@ -128,7 +128,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion")
-    testImplementation("io.mockk:mockk:1.14.5")
+    testImplementation("io.mockk:mockk:1.14.6")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
