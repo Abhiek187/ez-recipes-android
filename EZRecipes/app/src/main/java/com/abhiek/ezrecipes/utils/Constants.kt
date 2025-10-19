@@ -17,6 +17,7 @@ object Constants {
     const val UNKNOWN_ERROR = "Something went terribly wrong. Please submit a bug report to " +
             "https://github.com/Abhiek187/ez-recipes-android/issues"
     const val NO_TOKEN_FOUND = "No token found"
+    const val CREDENTIAL_TOO_OLD_ERROR = "CREDENTIAL_TOO_OLD_LOGIN_AGAIN"
 
     const val MIN_CALS = 0
     const val MAX_CALS = 2000

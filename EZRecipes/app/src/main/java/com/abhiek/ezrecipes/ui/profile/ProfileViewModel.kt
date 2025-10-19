@@ -318,8 +318,17 @@ class ProfileViewModel(
                     }
                 }
                 is ChefResult.Error -> {
-                    recipeError = result.recipeError
-                    showAlert = token != null && job?.isCancelled == false
+                    if (result.recipeError.error.contains(
+                            Constants.CREDENTIAL_TOO_OLD_ERROR
+                    )) {
+                        // Prompt the user to sign in again
+                        recipeError = null
+                        showAlert = false
+                        openLoginDialog = true
+                    } else {
+                        recipeError = result.recipeError
+                        showAlert = token != null && job?.isCancelled == false
+                    }
                 }
             }
         }
