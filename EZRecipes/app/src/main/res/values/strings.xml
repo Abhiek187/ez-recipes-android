@@ -206,6 +206,9 @@
     </string>
 
     <string name="change_email_field">New Email</string>
+    <string name="change_email_login_again">
+        This is a sensitive operation. Please sign in again.
+    </string>
     <string name="change_email_confirm">
         We sent an email to %1$s. Follow the instructions to change your email.
     </string>

@@ -23,6 +23,7 @@ import com.abhiek.ezrecipes.data.models.Chef
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
+import com.abhiek.ezrecipes.ui.login.LoginForm
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -150,21 +151,45 @@ fun ProfileLoggedIn(
             )
         }
 
-        dialogToShow?.let { dialog ->
+        if (!profileViewModel.openLoginDialog) {
+            dialogToShow?.let { dialog ->
+                Dialog(
+                    onDismissRequest = onDismiss
+                ) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        when (dialog) {
+                            Routes.UPDATE_EMAIL ->
+                                UpdateEmailForm(profileViewModel)
+
+                            Routes.UPDATE_PASSWORD ->
+                                UpdatePasswordForm(profileViewModel, onDismiss)
+
+                            Routes.DELETE_ACCOUNT ->
+                                DeleteAccountForm(profileViewModel, onDismiss)
+                        }
+                    }
+                }
+            }
+        } else {
             Dialog(
-                onDismissRequest = onDismiss
+                onDismissRequest = {
+                    profileViewModel.openLoginDialog = false
+                }
             ) {
                 Surface(
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    when (dialog) {
-                        Routes.UPDATE_EMAIL ->
-                            UpdateEmailForm(profileViewModel)
-                        Routes.UPDATE_PASSWORD ->
-                            UpdatePasswordForm(profileViewModel, onDismiss)
-                        Routes.DELETE_ACCOUNT ->
-                            DeleteAccountForm(profileViewModel, onDismiss)
-                    }
+                    LoginForm(
+                        profileViewModel = profileViewModel,
+                        isStepUp = true,
+                        onLogin = {
+                            // After logging in, go back to the previous dialog
+                            profileViewModel.openLoginDialog = false
+                            dialogToShow = Routes.UPDATE_EMAIL
+                        }
+                    )
                 }
             }
         }

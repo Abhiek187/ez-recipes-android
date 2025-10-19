@@ -1,0 +1,3 @@
+- Recipe search results can now be sorted by calories, health score, ratings, or views
+- A new prompt appears to sign in again if the credentials are too old when changing the chef's email
+- Target Android 16

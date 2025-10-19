@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
-val okHttpVersion = "5.1.0"
+val okHttpVersion = "5.2.1"
 
 android {
     namespace = "com.abhiek.ezrecipes"
@@ -20,8 +20,8 @@ android {
         applicationId = "com.abhiek.ezrecipes"
         minSdk = 23
         targetSdk = 36
-        versionCode = 12
-        versionName = "3.0.1"
+        versionCode = 13
+        versionName = "3.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -80,12 +80,12 @@ android {
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2025.09.01"
+    val composeBomVersion = "2025.10.00"
     val lifecycleVersion = "2.9.4"
     val activityVersion = "1.11.0"
     val coroutineVersion = "1.10.2"
     val retrofitVersion = "3.0.0"
-    val roomVersion = "2.8.1"
+    val roomVersion = "2.8.2"
     val googlePlayVersion = "2.0.2"
     val jupiterVersion = "6.0.0"
     val espressoVersion = "3.7.0"

@@ -44,6 +44,9 @@ import com.abhiek.ezrecipes.ui.util.ErrorAlert
 @Composable
 fun LoginForm(
     profileViewModel: ProfileViewModel,
+    // For step-up authentication, only the login screen is needed
+    isStepUp: Boolean = false,
+    onLogin: () -> Unit = {},
     onSignup: () -> Unit = {},
     onForgotPassword: () -> Unit = {},
     onVerifyEmail: (email: String) -> Unit = {}
@@ -68,6 +71,12 @@ fun LoginForm(
         }
     }
 
+    LaunchedEffect(profileViewModel.openLoginDialog) {
+        if (isStepUp && !profileViewModel.openLoginDialog) {
+            onLogin()
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
@@ -78,23 +87,30 @@ fun LoginForm(
             text = stringResource(R.string.sign_in_header),
             style = MaterialTheme.typography.headlineLarge
         )
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        if (isStepUp) {
             Text(
-                text = stringResource(R.string.sign_in_sub_header),
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.weight(1f, false)
+                text = stringResource(R.string.change_email_login_again),
+                style = MaterialTheme.typography.titleLarge
             )
-            TextButton(
-                onClick = {
-                    onSignup()
-                }
+        } else {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(R.string.sign_up_header),
-                    style = MaterialTheme.typography.titleLarge
+                    text = stringResource(R.string.sign_in_sub_header),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.weight(1f, false)
                 )
+                TextButton(
+                    onClick = {
+                        onSignup()
+                    }
+                ) {
+                    Text(
+                        text = stringResource(R.string.sign_up_header),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
             }
         }
         TextField(
@@ -168,15 +184,17 @@ fun LoginForm(
                     if (it.isFocused) passwordTouched = true
                 }
         )
-        TextButton(
-            onClick = {
-                onForgotPassword()
+        if (!isStepUp) {
+            TextButton(
+                onClick = {
+                    onForgotPassword()
+                }
+            ) {
+                Text(
+                    text = stringResource(R.string.password_forget),
+                    style = MaterialTheme.typography.titleLarge
+                )
             }
-        ) {
-            Text(
-                text = stringResource(R.string.password_forget),
-                style = MaterialTheme.typography.titleLarge
-            )
         }
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -209,15 +227,17 @@ fun LoginForm(
 }
 
 private data class LoginFormState(
-    val isLoading: Boolean,
-    val showAlert: Boolean
+    val isLoading: Boolean = false,
+    val showAlert: Boolean = false,
+    val isStepUp: Boolean = false
 )
 
 private class LoginFormPreviewParameterProvider: PreviewParameterProvider<LoginFormState> {
     override val values = sequenceOf(
-        LoginFormState(isLoading = false, showAlert = false),
-        LoginFormState(isLoading = true, showAlert = false),
-        LoginFormState(isLoading = false, showAlert = true)
+        LoginFormState(),
+        LoginFormState(isLoading = true),
+        LoginFormState(showAlert = true),
+        LoginFormState(isStepUp = true)
     )
 }
 
@@ -242,10 +262,11 @@ private fun LoginFormPreview(
     }
     profileViewModel.isLoading = state.isLoading
     profileViewModel.showAlert = state.showAlert
+    val isStepUp = state.isStepUp
 
     EZRecipesTheme {
         Surface {
-            LoginForm(profileViewModel)
+            LoginForm(profileViewModel, isStepUp)
         }
     }
 }
