@@ -103,7 +103,7 @@ jobs:
       # The test results are shown as a webpage instead of on the command line
       - name: Upload reports
         if: always() # show reports even if the previous steps fail
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: reports-${{ matrix.api-level }}
           path: ./EZRecipes/app/build/reports
