@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
-val okHttpVersion = "5.3.0"
+val okHttpVersion = "5.3.2"
 
 android {
     namespace = "com.abhiek.ezrecipes"
@@ -80,19 +80,19 @@ android {
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2025.10.01"
-    val lifecycleVersion = "2.9.4"
-    val activityVersion = "1.11.0"
+    val composeBomVersion = "2025.11.01"
+    val lifecycleVersion = "2.10.0"
+    val activityVersion = "1.12.0"
     val coroutineVersion = "1.10.2"
     val retrofitVersion = "3.0.0"
-    val roomVersion = "2.8.3"
+    val roomVersion = "2.8.4"
     val googlePlayVersion = "2.0.2"
     val jupiterVersion = "6.0.1"
     val espressoVersion = "3.7.0"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     implementation("androidx.core:core-ktx:1.17.0")
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
     implementation("androidx.activity:activity-compose:$activityVersion")
@@ -102,8 +102,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
-    implementation("androidx.navigation:navigation-compose:2.9.5")
-    implementation("androidx.datastore:datastore-preferences:1.1.7")
+    implementation("androidx.navigation:navigation-compose:2.9.6")
+    implementation("androidx.datastore:datastore-preferences:1.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
 
     // AsyncImage
