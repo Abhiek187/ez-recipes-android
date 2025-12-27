@@ -80,9 +80,9 @@ android {
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2025.11.01"
+    val composeBomVersion = "2025.12.01"
     val lifecycleVersion = "2.10.0"
-    val activityVersion = "1.12.0"
+    val activityVersion = "1.12.2"
     val coroutineVersion = "1.10.2"
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.4"
@@ -128,7 +128,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion")
-    testImplementation("io.mockk:mockk:1.14.6")
+    testImplementation("io.mockk:mockk:1.14.7")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
