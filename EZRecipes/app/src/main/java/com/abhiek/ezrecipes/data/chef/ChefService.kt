@@ -50,6 +50,23 @@ interface ChefService {
         @Header("Authorization") token: String
     ): Response<Void>
 
+    @GET("oauth")
+    suspend fun getAuthUrls(
+        @Query("redirectUrl") redirectUrl: String
+    ): Response<List<AuthUrl>>
+
+    @POST("oauth")
+    suspend fun loginWithOAuth(
+        @Body oAuthRequest: OAuthRequest,
+        @Header("Authorization") token: String? = null
+    ): Response<LoginResponse>
+
+    @DELETE("oauth")
+    suspend fun unlinkOAuthProvider(
+        @Query("providerId") providerId: Provider,
+        @Header("Authorization") token: String
+    ): Response<Token>
+
     companion object {
         private lateinit var chefService: ChefService
 

@@ -4,6 +4,7 @@ data class Chef(
     val uid: String,
     val email: String,
     val emailVerified: Boolean,
+    val providerData: List<ProviderData>,
     val ratings: Map<String, Int>,
     val recentRecipes: Map<String, String>,
     val favoriteRecipes: List<String>,

@@ -22,6 +22,8 @@
     </string>
     <!-- Android strings: https://developer.android.com/reference/android/R.string -->
     <string name="ok_button">@android:string/ok</string>
+    <string name="yes_button">Yes</string>
+    <string name="no_button">No</string>
     <string-array name="loading_messages">
         <item>Prepping the ingredients… 🍱</item>
         <item>Preheating the oven… ⏲️</item>
@@ -161,6 +163,11 @@
     <string name="change_email">Change Email</string>
     <string name="change_password">Change Password</string>
     <string name="delete_account">Delete Account</string>
+    <string name="linked_accounts">Linked Accounts</string>
+    <string name="unlink">Unlink</string>
+    <string name="link_success">Successfully linked %1$s!</string>
+    <string name="unlink_confirmation">Are you sure you want to unlink %1$s?</string>
+    <string name="unlink_success">Successfully unlinked %1$s!</string>
 
     <!-- Login Screen -->
     <string name="sign_in_header">Sign In</string>
@@ -170,6 +177,7 @@
     <string name="password_show">Show password</string>
     <string name="password_hide">Hide password</string>
     <string name="password_forget">Forgot password?</string>
+    <string name="oauth_header">Or sign in using:</string>
     <string name="sign_in_success">Signed in successfully!</string>
     <string name="sign_out_success">Signed out successfully!</string>
 
