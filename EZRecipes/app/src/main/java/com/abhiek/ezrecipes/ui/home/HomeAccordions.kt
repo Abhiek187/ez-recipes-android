@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -83,12 +84,14 @@ fun HomeAccordions(
                             .horizontalScroll(rememberScrollState())
                     ) {
                         mainViewModel.recentRecipes.forEach { recentRecipe ->
-                            RecipeCard(
-                                recipe = recentRecipe.recipe,
-                                width = 350.dp,
-                                profileViewModel = profileViewModel
-                            ) {
-                                onNavigateToRecipe(recentRecipe.recipe)
+                            key(recentRecipe.id) {
+                                RecipeCard(
+                                    recipe = recentRecipe.recipe,
+                                    width = 350.dp,
+                                    profileViewModel = profileViewModel
+                                ) {
+                                    onNavigateToRecipe(recentRecipe.recipe)
+                                }
                             }
                         }
                     }
@@ -122,16 +125,18 @@ fun HomeAccordions(
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
             ) {
-                for (recipe in recipes) {
+                recipes.forEach { recipe ->
                     if (recipe == null) {
                         RecipeCardLoader()
                     } else {
-                        RecipeCard(
-                            recipe = recipe,
-                            width = 350.dp,
-                            profileViewModel = profileViewModel
-                        ) {
-                            onNavigateToRecipe(recipe)
+                        key(recipe.id) {
+                            RecipeCard(
+                                recipe = recipe,
+                                width = 350.dp,
+                                profileViewModel = profileViewModel
+                            ) {
+                                onNavigateToRecipe(recipe)
+                            }
                         }
                     }
                 }
