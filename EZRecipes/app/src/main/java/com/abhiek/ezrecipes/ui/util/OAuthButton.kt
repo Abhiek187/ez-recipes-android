@@ -77,6 +77,8 @@ fun OAuthButton(
     val context = LocalContext.current
     val tag = "OAuthButton"
 
+    // TODO: Once 1.10.0 is stable, we can reference AuthenticateUserResultContract directly
+    // https://developer.android.com/jetpack/androidx/releases/browser#1.10.0-alpha02
     val launcher = rememberLauncherForActivityResult(AppAuthContract()) { result ->
         val authResult = when (result.resultCode) {
             AuthTabIntent.RESULT_OK -> "Received auth result, Uri: ${result.resultUri}"
