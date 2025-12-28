@@ -105,6 +105,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.6")
     implementation("androidx.datastore:datastore-preferences:1.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
+    implementation("androidx.browser:browser:1.9.0")
 
     // AsyncImage
     implementation("io.coil-kt:coil-compose:2.7.0")

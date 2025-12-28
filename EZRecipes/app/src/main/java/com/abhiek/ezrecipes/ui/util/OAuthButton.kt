@@ -1,5 +1,15 @@
 package com.abhiek.ezrecipes.ui.util
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.browser.auth.AuthTabIntent
+import androidx.browser.customtabs.CustomTabsClient
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,6 +43,35 @@ import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
 
+/**
+ * A simple data class to hold the raw results from the auth flow,
+ * since we cannot instantiate the library's internal AuthTabIntent.AuthResult.
+ */
+private data class AppAuthResult(val resultCode: Int, val resultUri: Uri?)
+
+// Based on the AuthTabIntent source code:
+// https://android.googlesource.com/platform/frameworks/support/+/androidx-main/browser/browser/src/main/java/androidx/browser/auth/AuthTabIntent.java
+private class AppAuthContract: ActivityResultContract<Intent, AppAuthResult>() {
+    override fun createIntent(context: Context, input: Intent): Intent {
+        // The contract simply passes the prepared intent through to be launched.
+        return input
+    }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): AppAuthResult {
+        // Parse the raw result into our own data class.
+        // The logic for which codes are valid is based on the AuthTabIntent source.
+        val resultUri = if (resultCode == AuthTabIntent.RESULT_OK) intent?.data else null
+        val finalResultCode = when (resultCode) {
+            AuthTabIntent.RESULT_OK,
+            AuthTabIntent.RESULT_CANCELED,
+            AuthTabIntent.RESULT_VERIFICATION_FAILED,
+            AuthTabIntent.RESULT_VERIFICATION_TIMED_OUT -> resultCode
+            else -> AuthTabIntent.RESULT_UNKNOWN_CODE
+        }
+        return AppAuthResult(finalResultCode, resultUri)
+    }
+}
+
 // Inspired by https://github.com/firebase/FirebaseUI-Android/blob/master/auth/src/main/java/com/firebase/ui/auth/ui/components/AuthProviderButton.kt
 @Composable
 fun OAuthButton(
@@ -40,9 +79,63 @@ fun OAuthButton(
     authUrl: String? = null,
     profileViewModel: ProfileViewModel
 ) {
+    val context = LocalContext.current
+    val tag = "OAuthButton"
+
+    val launcher = rememberLauncherForActivityResult(AppAuthContract()) { result ->
+        val authResult = when (result.resultCode) {
+            AuthTabIntent.RESULT_OK -> "Received auth result, Uri: ${result.resultUri}"
+            AuthTabIntent.RESULT_CANCELED -> "AuthTab canceled"
+            AuthTabIntent.RESULT_VERIFICATION_FAILED -> "Verification failed"
+            AuthTabIntent.RESULT_VERIFICATION_TIMED_OUT -> "Verification timed out"
+            else -> "Some other result"
+        }
+
+        Log.d(tag, "Auth result: $authResult")
+        if (result.resultCode != AuthTabIntent.RESULT_OK) return@rememberLauncherForActivityResult
+
+        // Extract the authorization code from the redirect and then exchange it for an ID token
+        val authCode = result.resultUri?.getQueryParameter("code")
+        if (authCode == null) {
+            Log.e(tag, "No auth code received")
+            return@rememberLauncherForActivityResult
+        }
+
+        Log.d(tag, "Login with OAuth :: code = $authCode, provider = $provider")
+//        profileViewModel.loginWithOAuth(authCode, provider)
+    }
+
     Button(
         onClick = {
-            println("Opening $authUrl")
+            if (authUrl == null) return@Button
+            val authUri = Uri.parse(authUrl)
+            val redirectUri = Uri.parse(Constants.REDIRECT_URL)
+            val host = redirectUri.host
+            val path = redirectUri.path
+            if (host == null || path == null) return@Button
+
+            // Start the authorization code flow
+            // Check if the default browser supports auth or custom tabs
+            val defaultBrowser = CustomTabsClient.getPackageName(context, listOf())
+            if (defaultBrowser == null) {
+                Toast.makeText(
+                    context,
+                    "OAuth login not supported by the default browser",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (CustomTabsClient.isAuthTabSupported(context, defaultBrowser)) {
+                Log.d(tag, "Launching auth tab")
+                val authTabIntent = AuthTabIntent.Builder()
+                    .setEphemeralBrowsingEnabled(true) // ephemeral = don't save cookies
+                    .build()
+                authTabIntent.launch(launcher, authUri, host, path)
+            } else {
+                Log.d(tag, "Launching custom tab")
+                val customTabsIntent = CustomTabsIntent.Builder()
+                    .setEphemeralBrowsingEnabled(true)
+                    .build()
+                customTabsIntent.launchUrl(context, authUri)
+            }
         },
         enabled = authUrl != null,
         colors = ButtonDefaults.buttonColors(
