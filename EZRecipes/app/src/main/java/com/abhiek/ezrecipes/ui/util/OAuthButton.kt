@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
@@ -43,23 +44,17 @@ import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
 
-/**
- * A simple data class to hold the raw results from the auth flow,
- * since we cannot instantiate the library's internal AuthTabIntent.AuthResult.
- */
+// AuthResult is private, so create a custom data class with the same fields
 private data class AppAuthResult(val resultCode: Int, val resultUri: Uri?)
 
 // Based on the AuthTabIntent source code:
 // https://android.googlesource.com/platform/frameworks/support/+/androidx-main/browser/browser/src/main/java/androidx/browser/auth/AuthTabIntent.java
 private class AppAuthContract: ActivityResultContract<Intent, AppAuthResult>() {
     override fun createIntent(context: Context, input: Intent): Intent {
-        // The contract simply passes the prepared intent through to be launched.
         return input
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): AppAuthResult {
-        // Parse the raw result into our own data class.
-        // The logic for which codes are valid is based on the AuthTabIntent source.
         val resultUri = if (resultCode == AuthTabIntent.RESULT_OK) intent?.data else null
         val finalResultCode = when (resultCode) {
             AuthTabIntent.RESULT_OK,
@@ -76,7 +71,7 @@ private class AppAuthContract: ActivityResultContract<Intent, AppAuthResult>() {
 @Composable
 fun OAuthButton(
     provider: Provider,
-    authUrl: String? = null,
+    authUrl: Uri? = null,
     profileViewModel: ProfileViewModel
 ) {
     val context = LocalContext.current
@@ -108,8 +103,7 @@ fun OAuthButton(
     Button(
         onClick = {
             if (authUrl == null) return@Button
-            val authUri = Uri.parse(authUrl)
-            val redirectUri = Uri.parse(Constants.REDIRECT_URL)
+            val redirectUri = Constants.REDIRECT_URL.toUri()
             val host = redirectUri.host
             val path = redirectUri.path
             if (host == null || path == null) return@Button
@@ -128,13 +122,13 @@ fun OAuthButton(
                 val authTabIntent = AuthTabIntent.Builder()
                     .setEphemeralBrowsingEnabled(true) // ephemeral = don't save cookies
                     .build()
-                authTabIntent.launch(launcher, authUri, host, path)
+                authTabIntent.launch(launcher, authUrl, host, path)
             } else {
                 Log.d(tag, "Launching custom tab")
                 val customTabsIntent = CustomTabsIntent.Builder()
                     .setEphemeralBrowsingEnabled(true)
                     .build()
-                customTabsIntent.launchUrl(context, authUri)
+                customTabsIntent.launchUrl(context, authUrl)
             }
         },
         enabled = authUrl != null,
@@ -192,17 +186,17 @@ private fun OAuthButtonPreview() {
             ) {
                 OAuthButton(
                     provider = Provider.GOOGLE,
-                    authUrl = Constants.Mocks.AUTH_URLS[0].authUrl,
+                    authUrl = Constants.Mocks.AUTH_URLS[0].authUrl.toUri(),
                     profileViewModel = profileViewModel
                 )
                 OAuthButton(
                     provider = Provider.FACEBOOK,
-                    authUrl = Constants.Mocks.AUTH_URLS[1].authUrl,
+                    authUrl = Constants.Mocks.AUTH_URLS[1].authUrl.toUri(),
                     profileViewModel = profileViewModel
                 )
                 OAuthButton(
                     provider = Provider.GITHUB,
-                    authUrl = Constants.Mocks.AUTH_URLS[2].authUrl,
+                    authUrl = Constants.Mocks.AUTH_URLS[2].authUrl.toUri(),
                     profileViewModel = profileViewModel
                 )
                 OAuthButton(

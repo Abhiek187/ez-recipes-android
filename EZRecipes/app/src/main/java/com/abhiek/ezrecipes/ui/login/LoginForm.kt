@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
@@ -212,7 +213,7 @@ fun LoginForm(
                 key(provider.name) {
                     OAuthButton(
                         provider = provider,
-                        authUrl = Constants.Mocks.AUTH_URLS[0].authUrl,
+                        authUrl = Constants.Mocks.AUTH_URLS[0].authUrl.toUri(),
                         profileViewModel = profileViewModel
                     )
                 }
