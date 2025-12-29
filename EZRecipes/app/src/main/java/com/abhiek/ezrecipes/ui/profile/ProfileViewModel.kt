@@ -322,7 +322,7 @@ class ProfileViewModel(
     fun loginWithOAuth(code: String, provider: Provider) {
         val oAuthRequest = OAuthRequest(
             code = code,
-            providerId = provider,
+            providerId = provider.toString(),
             redirectUrl = Constants.REDIRECT_URL
         )
 
