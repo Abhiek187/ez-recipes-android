@@ -99,7 +99,7 @@ fun OAuthButton(
         }
 
         Log.d(tag, "Login with OAuth :: code = $authCode, provider = $provider")
-//        profileViewModel.loginWithOAuth(authCode, provider)
+        profileViewModel.loginWithOAuth(authCode, provider)
     }
 
     Button(

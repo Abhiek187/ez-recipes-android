@@ -27,7 +27,6 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
@@ -44,7 +43,6 @@ import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.ui.util.OAuthButton
-import com.abhiek.ezrecipes.utils.Constants
 
 @Composable
 fun LoginForm(
@@ -67,6 +65,10 @@ fun LoginForm(
     // Errors
     val usernameEmpty = username.isEmpty()
     val passwordEmpty = password.isEmpty()
+
+    LaunchedEffect(Unit) {
+        profileViewModel.getAuthUrls()
+    }
 
     LaunchedEffect(profileViewModel.chef) {
         // Check if the user signed up, but didn't verify their email yet
@@ -213,7 +215,7 @@ fun LoginForm(
                 key(provider.name) {
                     OAuthButton(
                         provider = provider,
-                        authUrl = Constants.Mocks.AUTH_URLS[0].authUrl.toUri(),
+                        authUrl = profileViewModel.authUrls[provider],
                         profileViewModel = profileViewModel
                     )
                 }
