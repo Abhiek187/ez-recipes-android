@@ -30,6 +30,7 @@ class MainActivity : ComponentActivity() {
         handleRecipeLink(intent)
     }
 
+    // Requires android:launchMode="singleTop" to keep the same activity running
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         // Handle app link while the app is running
@@ -48,6 +49,9 @@ class MainActivity : ComponentActivity() {
 
             val action = appLinkData?.getQueryParameter("action")
             Log.d(TAG, "action = $action")
+
+            val code = appLinkData?.getQueryParameter("code")
+            Log.d(TAG, "code = $code")
         }
     }
 }

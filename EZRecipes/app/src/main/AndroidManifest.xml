@@ -33,10 +33,12 @@
         tools:targetApi="tiramisu">
         <activity
             android:name=".ui.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop">
             <tools:validation testUrl="https://ez-recipes-web.onrender.com/recipe/644783" />
             <tools:validation
                 testUrl="https://ez-recipes-web.onrender.com/profile?action=verifyEmail" />
+            <tools:validation testUrl="https://ez-recipes-web.onrender.com/oauth/callback" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -60,9 +62,21 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="https" />
-                <data android:host="ez-recipes-web.onrender.com" />
-                <data android:pathPattern="/profile" />
+                <data
+                    android:scheme="https"
+                    android:host="ez-recipes-web.onrender.com"
+                    android:pathPattern="/profile" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="ez-recipes-web.onrender.com"
+                    android:pathPattern="/oauth/callback" />
             </intent-filter>
         </activity>
     </application>

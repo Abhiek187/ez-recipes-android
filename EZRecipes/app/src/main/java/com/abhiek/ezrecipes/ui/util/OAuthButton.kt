@@ -33,6 +33,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Provider
+import com.abhiek.ezrecipes.data.models.RecipeError
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -81,7 +82,7 @@ fun OAuthButton(
     // https://developer.android.com/jetpack/androidx/releases/browser#1.10.0-alpha02
     val launcher = rememberLauncherForActivityResult(AppAuthContract()) { result ->
         val authResult = when (result.resultCode) {
-            AuthTabIntent.RESULT_OK -> "Received auth result, Uri: ${result.resultUri}"
+            AuthTabIntent.RESULT_OK -> "Success, Uri: ${result.resultUri}"
             AuthTabIntent.RESULT_CANCELED -> "AuthTab canceled"
             AuthTabIntent.RESULT_VERIFICATION_FAILED -> "Verification failed"
             AuthTabIntent.RESULT_VERIFICATION_TIMED_OUT -> "Verification timed out"
@@ -89,16 +90,23 @@ fun OAuthButton(
         }
 
         Log.d(tag, "Auth result: $authResult")
-        if (result.resultCode != AuthTabIntent.RESULT_OK) return@rememberLauncherForActivityResult
+        // Don't show an alert if the user closed the auth session
+        if (result.resultCode == AuthTabIntent.RESULT_CANCELED) {
+            return@rememberLauncherForActivityResult
+        } else if (result.resultCode != AuthTabIntent.RESULT_OK) {
+            profileViewModel.recipeError = RecipeError(authResult)
+            profileViewModel.showAlert = true
+            return@rememberLauncherForActivityResult
+        }
 
         // Extract the authorization code from the redirect and then exchange it for an ID token
         val authCode = result.resultUri?.getQueryParameter("code")
         if (authCode == null) {
-            Log.e(tag, "No auth code received")
+            profileViewModel.recipeError = RecipeError("No auth code received")
+            profileViewModel.showAlert = true
             return@rememberLauncherForActivityResult
         }
 
-        Log.d(tag, "Login with OAuth :: code = $authCode, provider = $provider")
         profileViewModel.loginWithOAuth(authCode, provider)
     }
 
@@ -116,17 +124,17 @@ fun OAuthButton(
             if (defaultBrowser == null) {
                 Toast.makeText(
                     context,
-                    "OAuth login not supported by the default browser",
+                    "OAuth login is not supported by the default browser",
                     Toast.LENGTH_SHORT
                 ).show()
             } else if (CustomTabsClient.isAuthTabSupported(context, defaultBrowser)) {
-                Log.d(tag, "Launching auth tab")
+                Log.d(tag, "Launching auth tab in $defaultBrowser")
                 val authTabIntent = AuthTabIntent.Builder()
                     .setEphemeralBrowsingEnabled(true) // ephemeral = don't save cookies
                     .build()
                 authTabIntent.launch(launcher, authUrl, host, path)
             } else {
-                Log.d(tag, "Launching custom tab")
+                Log.d(tag, "Launching custom tab in $defaultBrowser")
                 val customTabsIntent = CustomTabsIntent.Builder()
                     .setEphemeralBrowsingEnabled(true)
                     .build()

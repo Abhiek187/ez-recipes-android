@@ -30,7 +30,6 @@ class ProfileViewModel(
     var job by mutableStateOf<Job?>(null)
         private set
     var recipeError by mutableStateOf<RecipeError?>(null)
-        private set
 
     var authState by mutableStateOf(AuthState.LOADING)
     var isLoading by mutableStateOf(false)
