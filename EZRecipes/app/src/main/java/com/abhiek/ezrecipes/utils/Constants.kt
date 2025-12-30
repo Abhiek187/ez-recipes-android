@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.utils
 
+import androidx.core.net.toUri
 import com.abhiek.ezrecipes.data.models.*
 
 object Constants {
@@ -13,6 +14,7 @@ object Constants {
 
     const val RECIPE_WEB_ORIGIN = "https://ez-recipes-web.onrender.com"
     const val REDIRECT_URL = "$RECIPE_WEB_ORIGIN/oauth/callback"
+    val REDIRECT_URI = REDIRECT_URL.toUri()
 
     // Error message to fallback on in case all fails
     const val UNKNOWN_ERROR = "Something went terribly wrong. Please submit a bug report to " +

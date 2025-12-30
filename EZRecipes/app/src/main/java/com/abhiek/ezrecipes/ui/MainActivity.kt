@@ -6,14 +6,22 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
+import com.abhiek.ezrecipes.ui.profile.ProfileViewModelFactory
+import com.abhiek.ezrecipes.utils.Constants
 
 class MainActivity : ComponentActivity() {
     companion object {
         private const val TAG = "MainActivity"
     }
+
+    private val profileViewModel: ProfileViewModel by viewModels(
+        factoryProducer = { ProfileViewModelFactory(this) }
+    )
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +60,12 @@ class MainActivity : ComponentActivity() {
 
             val code = appLinkData?.getQueryParameter("code")
             Log.d(TAG, "code = $code")
+            // Only update the ViewModel if the deep link matches the OAuth callback
+            if (appLinkData?.scheme == Constants.REDIRECT_URI.scheme &&
+                appLinkData?.host == Constants.REDIRECT_URI.host &&
+                appLinkData?.path == Constants.REDIRECT_URI.path) {
+                profileViewModel.authCode = code
+            }
         }
     }
 }

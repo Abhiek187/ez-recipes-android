@@ -22,6 +22,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -78,15 +79,28 @@ fun OAuthButton(
     val context = LocalContext.current
     val tag = "OAuthButton"
 
+    fun handleAuthCode(authCode: String?) {
+        if (authCode == null) {
+            profileViewModel.recipeError = RecipeError("No auth code received")
+            profileViewModel.showAlert = true
+        } else {
+            profileViewModel.loginWithOAuth(authCode, profileViewModel.provider ?: provider)
+        }
+
+        profileViewModel.authCode = ""
+        profileViewModel.provider = null
+    }
+
+    // Auth Tab handler
     // TODO: Once 1.10.0 is stable, we can reference AuthenticateUserResultContract directly
     // https://developer.android.com/jetpack/androidx/releases/browser#1.10.0-alpha02
     val launcher = rememberLauncherForActivityResult(AppAuthContract()) { result ->
         val authResult = when (result.resultCode) {
             AuthTabIntent.RESULT_OK -> "Success, Uri: ${result.resultUri}"
             AuthTabIntent.RESULT_CANCELED -> "AuthTab canceled"
-            AuthTabIntent.RESULT_VERIFICATION_FAILED -> "Verification failed"
-            AuthTabIntent.RESULT_VERIFICATION_TIMED_OUT -> "Verification timed out"
-            else -> "Some other result"
+            AuthTabIntent.RESULT_VERIFICATION_FAILED -> "Redirect URL verification failed"
+            AuthTabIntent.RESULT_VERIFICATION_TIMED_OUT -> "Redirect URL verification timed out"
+            else -> "Unknown"
         }
 
         Log.d(tag, "Auth result: $authResult")
@@ -101,13 +115,14 @@ fun OAuthButton(
 
         // Extract the authorization code from the redirect and then exchange it for an ID token
         val authCode = result.resultUri?.getQueryParameter("code")
-        if (authCode == null) {
-            profileViewModel.recipeError = RecipeError("No auth code received")
-            profileViewModel.showAlert = true
-            return@rememberLauncherForActivityResult
-        }
+        handleAuthCode(authCode)
+    }
 
-        profileViewModel.loginWithOAuth(authCode, provider)
+    // Custom Tab handler
+    LaunchedEffect(profileViewModel.authCode) {
+        if (profileViewModel.authCode != "" && profileViewModel.provider == provider) {
+            handleAuthCode(profileViewModel.authCode)
+        }
     }
 
     Button(
@@ -139,6 +154,9 @@ fun OAuthButton(
                     .setEphemeralBrowsingEnabled(true)
                     .build()
                 customTabsIntent.launchUrl(context, authUrl)
+                // Since multiple buttons share the same composable,
+                // need to determine which provider was used
+                profileViewModel.provider = provider
             }
         },
         enabled = authUrl != null,

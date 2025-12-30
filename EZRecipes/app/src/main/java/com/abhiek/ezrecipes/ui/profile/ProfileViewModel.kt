@@ -41,6 +41,9 @@ class ProfileViewModel(
     var accountDeleted by mutableStateOf(false)
     var authUrls by mutableStateOf<Map<Provider, Uri>>(mapOf())
         private set
+    // "" = auth code not used, null = auth code missing
+    var authCode by mutableStateOf<String?>("")
+    var provider by mutableStateOf<Provider?>(null)
     var accountLinked by mutableStateOf(false)
     var accountUnlinked by mutableStateOf(false)
 
