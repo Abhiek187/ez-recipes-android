@@ -3,7 +3,7 @@ package com.abhiek.ezrecipes.data.models
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-class SpiceLevelTest {
+internal class SpiceLevelTest {
     @Test
     fun testToString() {
         assertEquals("none", SpiceLevel.NONE.toString())

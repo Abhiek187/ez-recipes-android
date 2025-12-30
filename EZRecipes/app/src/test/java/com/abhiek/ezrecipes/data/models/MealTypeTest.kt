@@ -3,7 +3,7 @@ package com.abhiek.ezrecipes.data.models
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-class MealTypeTest {
+internal class MealTypeTest {
     @Test
     fun testToString() {
         assertEquals("fingerfood", MealType.FINGERFOOD.toString())

@@ -31,4 +31,16 @@ enum class Provider(val style: ProviderStyle) {
             GITHUB -> "github.com"
         }
     }
+
+    companion object {
+        /**
+         * Converts a string to a Provider
+         *
+         * @param str the provider as a string
+         * @return the corresponding Provider, or `null` if no providers match
+         */
+        fun valueOfOrNull(str: String): Provider? {
+            return entries.firstOrNull { it.toString() == str }
+        }
+    }
 }
