@@ -74,11 +74,6 @@ fun ProfileLoggedIn(
     LaunchedEffect(Unit) {
         profileViewModel.getAuthUrls()
     }
-    LaunchedEffect(profileViewModel.chef) {
-        profileViewModel.chef?.let { newChef ->
-//            chef = newChef
-        }
-    }
     LaunchedEffect(profileViewModel.accountLinked) {
         if (profileViewModel.accountLinked) {
             Toast.makeText(
@@ -86,6 +81,7 @@ fun ProfileLoggedIn(
                 resources.getString(R.string.link_success, selectedProvider),
                 Toast.LENGTH_SHORT
             ).show()
+            profileViewModel.accountLinked = false
         }
     }
     LaunchedEffect(profileViewModel.accountUnlinked) {
@@ -95,6 +91,7 @@ fun ProfileLoggedIn(
                 resources.getString(R.string.unlink_success, selectedProvider),
                 Toast.LENGTH_SHORT
             ).show()
+            profileViewModel.accountUnlinked = false
         }
     }
 
@@ -204,8 +201,9 @@ fun ProfileLoggedIn(
         linkedAccounts.entries.forEach { (provider, emails) ->
             key(provider) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     OAuthButton(
                         provider = provider,
@@ -241,8 +239,9 @@ fun ProfileLoggedIn(
                 }
                 if (emails.isNotEmpty()) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Check,
