@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -45,6 +46,7 @@ fun Profile(
     val chef = profileViewModel.chef
 
     val context = LocalContext.current
+    val resources = LocalResources.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(Unit, deepLinkAction) {
@@ -55,21 +57,21 @@ fun Profile(
             Constants.ProfileActions.VERIFY_EMAIL -> {
                 Toast.makeText(
                     context,
-                    context.getString(R.string.email_verify_success),
+                    resources.getString(R.string.email_verify_success),
                     Toast.LENGTH_SHORT
                 ).show()
             }
             Constants.ProfileActions.CHANGE_EMAIL -> {
                 Toast.makeText(
                     context,
-                    context.getString(R.string.change_email_success),
+                    resources.getString(R.string.change_email_success),
                     Toast.LENGTH_SHORT
                 ).show()
             }
             Constants.ProfileActions.RESET_PASSWORD -> {
                 Toast.makeText(
                     context,
-                    context.getString(R.string.change_password_success),
+                    resources.getString(R.string.change_password_success),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -93,23 +95,27 @@ fun Profile(
         }
     }
 
-    if (authState == AuthState.AUTHENTICATED && chef != null) {
-        ProfileLoggedIn(chef, profileViewModel)
-    } else if (authState == AuthState.UNAUTHENTICATED) {
-        ProfileLoggedOut(profileViewModel)
-    } else {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(
-                space = 16.dp,
-                alignment = Alignment.CenterVertically
-            ),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            CircularProgressIndicator()
-            Text(
-                text = stringResource(R.string.profile_loading)
-            )
+    when (authState) {
+        AuthState.AUTHENTICATED if chef != null -> {
+            ProfileLoggedIn(chef, profileViewModel)
+        }
+        AuthState.UNAUTHENTICATED -> {
+            ProfileLoggedOut(profileViewModel)
+        }
+        else -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(
+                    space = 16.dp,
+                    alignment = Alignment.CenterVertically
+                ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+                Text(
+                    text = stringResource(R.string.profile_loading)
+                )
+            }
         }
     }
 }

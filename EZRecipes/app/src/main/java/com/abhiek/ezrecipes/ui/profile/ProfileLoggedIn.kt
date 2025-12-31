@@ -83,7 +83,7 @@ fun ProfileLoggedIn(
         if (profileViewModel.accountLinked) {
             Toast.makeText(
                 context,
-                context.getString(R.string.link_success, selectedProvider),
+                resources.getString(R.string.link_success, selectedProvider),
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -92,7 +92,7 @@ fun ProfileLoggedIn(
         if (profileViewModel.accountUnlinked) {
             Toast.makeText(
                 context,
-                context.getString(R.string.unlink_success, selectedProvider),
+                resources.getString(R.string.unlink_success, selectedProvider),
                 Toast.LENGTH_SHORT
             ).show()
         }

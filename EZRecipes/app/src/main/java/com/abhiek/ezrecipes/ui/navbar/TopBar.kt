@@ -44,6 +44,7 @@ fun TopBar(
     profileViewModel: ProfileViewModel
 ) {
     val context = LocalContext.current
+    val resources = LocalContext.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -61,7 +62,7 @@ fun TopBar(
         // Create a Sharesheet to share the recipe with others
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.share_body))
+            putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.share_body))
             putExtra(Intent.EXTRA_TEXT, "${Constants.RECIPE_WEB_ORIGIN}/recipe/$id")
             type = ClipDescription.MIMETYPE_TEXT_PLAIN
         }

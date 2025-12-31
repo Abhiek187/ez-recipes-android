@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,12 +40,13 @@ fun Recipe(
     recipeIdString: String? = null
 ) {
     val context = LocalContext.current
+    val resources = LocalResources.current
 
     fun rateRecipe(rating: Int, recipeId: Int) {
         if (profileViewModel.chef == null) {
             Toast.makeText(
                 context,
-                context.getString(R.string.rating_error),
+                resources.getString(R.string.rating_error),
                 Toast.LENGTH_SHORT
             ).show()
         } else {
