@@ -1,10 +1,12 @@
 package com.abhiek.ezrecipes.ui.profile
 
+import android.net.Uri
 import android.util.Log
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.AuthState
 import com.abhiek.ezrecipes.data.models.Chef
+import com.abhiek.ezrecipes.data.models.Provider
 import com.abhiek.ezrecipes.data.models.RecipeError
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
@@ -37,6 +39,8 @@ internal class ProfileViewModelTest {
 
     @MockK
     private lateinit var keyStore: KeyStore
+    @MockK
+    private lateinit var uri: Uri
 
     private fun mockLog() {
         mockkStatic(Log::class)
@@ -76,6 +80,8 @@ internal class ProfileViewModelTest {
 
         mockLog()
         mockEncryptor()
+        mockkStatic(Uri::class)
+        every { Uri.parse(any()) } returns uri
     }
 
     @AfterEach
@@ -102,6 +108,7 @@ internal class ProfileViewModelTest {
             uid = mockChefService.loginResponse.uid,
             email = username,
             emailVerified = mockChefService.loginResponse.emailVerified,
+            providerData = listOf(),
             ratings = mapOf(),
             recentRecipes = mapOf(),
             favoriteRecipes = listOf(),
@@ -273,6 +280,7 @@ internal class ProfileViewModelTest {
             uid = mockChefService.loginResponse.uid,
             email = mockChefService.chef.email,
             emailVerified = mockChefService.loginResponse.emailVerified,
+            providerData = mockChefService.chef.providerData,
             ratings = mockChefService.chef.ratings,
             recentRecipes = mockChefService.chef.recentRecipes,
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
@@ -302,6 +310,7 @@ internal class ProfileViewModelTest {
             uid = mockChefService.loginResponse.uid,
             email = mockChefService.chef.email,
             emailVerified = false,
+            providerData = mockChefService.chef.providerData,
             ratings = mockChefService.chef.ratings,
             recentRecipes = mockChefService.chef.recentRecipes,
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
@@ -377,6 +386,203 @@ internal class ProfileViewModelTest {
 
         coVerify { mockDataStoreService.getToken() }
         coVerify { mockDataStoreService.deleteToken() }
+    }
+
+    @Test
+    fun getAuthUrlsSuccess() = runTest {
+        // Given no network errors
+        // When getting all the auth URLs
+        viewModel.getAuthUrls()
+
+        // Then the URLs should be saved as a dictionary
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertEquals(viewModel.authUrls.size, Constants.Mocks.AUTH_URLS.size)
+        for (provider in Provider.entries) {
+            assertNotNull(viewModel.authUrls[provider])
+        }
+    }
+
+    @Test
+    fun getAuthUrlsError() = runTest {
+        // Given a network error
+        mockChefService.isSuccess = false
+        // When getting all the auth URLs
+        viewModel.getAuthUrls()
+
+        // Then the auth URLs should be empty
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+        assertTrue(viewModel.authUrls.isEmpty())
+    }
+
+    @Test
+    fun loginWithOAuthSuccess() = runTest {
+        // Given a code, provider, and token
+        val code = "abc123"
+        val provider = Provider.GOOGLE
+
+        // When linking the provider
+        viewModel.loginWithOAuth(code, provider)
+
+        // Then the chef should be updated
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertEquals(viewModel.chef, Chef(
+            uid = mockChefService.loginResponse.uid,
+            email = mockChefService.chef.email,
+            emailVerified = mockChefService.loginResponse.emailVerified,
+            providerData = mockChefService.chef.providerData,
+            ratings = mockChefService.chef.ratings,
+            recentRecipes = mockChefService.chef.recentRecipes,
+            favoriteRecipes = mockChefService.chef.favoriteRecipes,
+            token = mockChefService.loginResponse.token
+        ))
+        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertFalse(viewModel.openLoginDialog)
+        assertTrue(viewModel.accountLinked)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+
+        verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun loginWithOAuthError() = runTest {
+        // Given a code, provider, and token
+        val code = "abc123"
+        val provider = Provider.GOOGLE
+
+        // When linking the provider and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.loginWithOAuth(code, provider)
+
+        // Then an error is shown
+        assertNull(viewModel.chef)
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+
+        coVerify { mockDataStoreService.getToken() }
+        verify { Encryptor.decrypt(mockEncryptedToken) }
+    }
+
+    @Test
+    fun loginWithOAuthNoToken() = runTest {
+        // Given a code, provider, and no token
+        val code = "abc123"
+        val provider = Provider.GOOGLE
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When logging in with the provider
+        viewModel.loginWithOAuth(code, provider)
+
+        // Then the user should be authenticated
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertEquals(viewModel.chef, Chef(
+            uid = mockChefService.loginResponse.uid,
+            email = mockChefService.chef.email,
+            emailVerified = mockChefService.loginResponse.emailVerified,
+            providerData = mockChefService.chef.providerData,
+            ratings = mockChefService.chef.ratings,
+            recentRecipes = mockChefService.chef.recentRecipes,
+            favoriteRecipes = mockChefService.chef.favoriteRecipes,
+            token = mockChefService.loginResponse.token
+        ))
+        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertFalse(viewModel.openLoginDialog)
+        assertFalse(viewModel.accountLinked)
+
+        verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun loginWithOAuthEmailNotVerified() = runTest {
+        // Given a code, provider, and no token
+        val code = "abc123"
+        val provider = Provider.GOOGLE
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When logging in with the provider and the email isn't verified
+        mockChefService.isEmailVerified = false
+        viewModel.loginWithOAuth(code, provider)
+
+        // Then a new chef should be created, but the user shouldn't be authenticated
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertEquals(viewModel.chef, Chef(
+            uid = mockChefService.loginResponse.uid,
+            email = mockChefService.chef.email,
+            emailVerified = false,
+            providerData = mockChefService.chef.providerData,
+            ratings = mockChefService.chef.ratings,
+            recentRecipes = mockChefService.chef.recentRecipes,
+            favoriteRecipes = mockChefService.chef.favoriteRecipes,
+            token = mockChefService.loginResponse.token
+        ))
+        assertNotEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertFalse(viewModel.accountLinked)
+
+        verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun unlinkOAuthProviderSuccess() = runTest {
+        // Given a provider
+        val provider = Provider.FACEBOOK
+
+        // When unlinking the provider
+        viewModel.unlinkOAuthProvider(provider)
+
+        // Then the provider should be removed from the chef
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertEquals(viewModel.chef, Chef(
+            uid = mockChefService.loginResponse.uid,
+            email = mockChefService.chef.email,
+            emailVerified = mockChefService.loginResponse.emailVerified,
+            providerData = mockChefService.chef.providerData,
+            ratings = mockChefService.chef.ratings,
+            recentRecipes = mockChefService.chef.recentRecipes,
+            favoriteRecipes = mockChefService.chef.favoriteRecipes,
+            token = mockChefService.loginResponse.token
+        ))
+        assertTrue(viewModel.accountUnlinked)
+
+        verify { Encryptor.encrypt(mockChefService.mockToken.token!!) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun unlinkOAuthProviderError() = runTest {
+        // Given a provider
+        val provider = Provider.FACEBOOK
+
+        // When unlinking the provider and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.unlinkOAuthProvider(provider)
+
+        // Then an error is shown
+        assertNull(viewModel.chef)
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+        assertFalse(viewModel.accountUnlinked)
+    }
+
+    @Test
+    fun unlinkOAuthProviderNoToken() = runTest {
+        // Given a provider and no token
+        val provider = Provider.FACEBOOK
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When unlinking the provider
+        viewModel.unlinkOAuthProvider(provider)
+
+        // Then an error is shown
+        assertNull(viewModel.chef)
+        assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
+        assertFalse(viewModel.accountUnlinked)
     }
 
     @Test

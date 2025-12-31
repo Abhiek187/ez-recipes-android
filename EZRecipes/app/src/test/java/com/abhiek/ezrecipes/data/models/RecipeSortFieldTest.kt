@@ -3,7 +3,7 @@ package com.abhiek.ezrecipes.data.models
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-class RecipeSortFieldTest {
+internal class RecipeSortFieldTest {
     @Test
     fun testToString() {
         assertEquals("Calories", RecipeSortField.CALORIES.toString())

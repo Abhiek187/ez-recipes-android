@@ -3,6 +3,7 @@ package com.abhiek.ezrecipes
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import com.abhiek.ezrecipes.data.models.Provider
 import com.abhiek.ezrecipes.ui.MainActivity
 
 internal class ProfileTest(
@@ -83,6 +84,20 @@ internal class ProfileTest(
             .onFirst()
             .performClick()
             .assertDoesNotExist()
+
+        /* OAuth check:
+         * - The header is shown
+         * - The buttons are shown for all the supported providers
+         */
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.oauth_header))
+            .assertExists()
+        for (provider in Provider.entries) {
+            composeTestRule
+                .onNodeWithText(provider.name, ignoreCase = true)
+                .assertExists()
+        }
+
         loginDialogButton.assertIsEnabled()
         signUpNode.performClick()
     }

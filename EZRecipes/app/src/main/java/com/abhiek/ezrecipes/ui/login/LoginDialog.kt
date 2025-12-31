@@ -13,6 +13,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
@@ -24,6 +25,7 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Routes
 
 @Composable
@@ -43,7 +45,14 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
             val navController = rememberNavController()
 
             NavHost(navController = navController, startDestination = Routes.LOGIN) {
-                composable(Routes.LOGIN) {
+                composable(
+                    Routes.LOGIN,
+                    deepLinks = listOf(
+                        navDeepLink {
+                            uriPattern = Constants.REDIRECT_URL
+                        }
+                    )
+                ) {
                     LoginForm(
                         profileViewModel = profileViewModel,
                         onSignup = {

@@ -97,4 +97,35 @@ class ChefRepository(private val chefService: ChefService) {
             ChefResult.Error(recipeError)
         }
     }
+
+    suspend fun getAuthUrls(redirectUrl: String): ChefResult<List<AuthUrl>> {
+        return try {
+            val response = chefService.getAuthUrls(redirectUrl)
+            parseResponse(response)
+        } catch (error: Exception) {
+            val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+            ChefResult.Error(recipeError)
+        }
+    }
+
+    suspend fun loginWithOAuth(oAuthRequest: OAuthRequest, token: String? = null):
+            ChefResult<LoginResponse> {
+        return try {
+            val response = chefService.loginWithOAuth(oAuthRequest, token)
+            parseResponse(response)
+        } catch (error: Exception) {
+            val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+            ChefResult.Error(recipeError)
+        }
+    }
+
+    suspend fun unlinkOAuthProvider(providerId: Provider, token: String): ChefResult<Token> {
+        return try {
+            val response = chefService.unlinkOAuthProvider(providerId, token)
+            parseResponse(response)
+        } catch (error: Exception) {
+            val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+            ChefResult.Error(recipeError)
+        }
+    }
 }

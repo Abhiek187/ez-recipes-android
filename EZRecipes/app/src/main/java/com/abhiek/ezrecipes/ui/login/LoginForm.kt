@@ -2,6 +2,7 @@ package com.abhiek.ezrecipes.ui.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -30,6 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
+import com.abhiek.ezrecipes.data.models.Provider
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -40,6 +42,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
+import com.abhiek.ezrecipes.ui.util.OAuthButton
 
 @Composable
 fun LoginForm(
@@ -62,6 +65,10 @@ fun LoginForm(
     // Errors
     val usernameEmpty = username.isEmpty()
     val passwordEmpty = password.isEmpty()
+
+    LaunchedEffect(Unit) {
+        profileViewModel.getAuthUrls()
+    }
 
     LaunchedEffect(profileViewModel.chef) {
         // Check if the user signed up, but didn't verify their email yet
@@ -194,6 +201,24 @@ fun LoginForm(
                     text = stringResource(R.string.password_forget),
                     style = MaterialTheme.typography.titleLarge
                 )
+            }
+        }
+        Text(
+            text = stringResource(R.string.oauth_header),
+            style = MaterialTheme.typography.titleLarge
+        )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            for (provider in Provider.entries) {
+                key(provider.name) {
+                    OAuthButton(
+                        provider = provider,
+                        authUrl = profileViewModel.authUrls[provider],
+                        profileViewModel = profileViewModel
+                    )
+                }
             }
         }
         Row(

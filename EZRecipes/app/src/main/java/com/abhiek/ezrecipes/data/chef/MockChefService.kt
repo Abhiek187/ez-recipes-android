@@ -20,6 +20,7 @@ object MockChefService: ChefService {
         email = chef.email,
         token = chef.token
     )
+    val mockToken = Token(Constants.Mocks.CHEF.token)
 
     private const val TOKEN_ERROR_STRING =
         "{\"error\":\"Invalid Firebase token provided: Error: Decoding Firebase ID token failed. Make sure you passed the entire string JWT which represents an ID token. See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.\"}"
@@ -86,6 +87,38 @@ object MockChefService: ChefService {
     override suspend fun logout(token: String): Response<Void> {
         return if (isSuccess) {
             Response.success(null)
+        } else {
+            Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
+        }
+    }
+
+    override suspend fun getAuthUrls(redirectUrl: String): Response<List<AuthUrl>> {
+        return if (isSuccess) {
+            Response.success(Constants.Mocks.AUTH_URLS)
+        } else {
+            Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
+        }
+    }
+
+    override suspend fun loginWithOAuth(
+        oAuthRequest: OAuthRequest,
+        token: String?
+    ): Response<LoginResponse> {
+        return if (isSuccess) {
+            Response.success(loginResponse.copy(
+                emailVerified = isEmailVerified
+            ))
+        } else {
+            Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
+        }
+    }
+
+    override suspend fun unlinkOAuthProvider(
+        providerId: Provider,
+        token: String
+    ): Response<Token> {
+        return if (isSuccess) {
+            Response.success(mockToken)
         } else {
             Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
         }

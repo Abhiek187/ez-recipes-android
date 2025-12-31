@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.utils
 
+import androidx.core.net.toUri
 import com.abhiek.ezrecipes.data.models.*
 
 object Constants {
@@ -12,6 +13,8 @@ object Constants {
     const val EMAIL_COOLDOWN_SECONDS = 30
 
     const val RECIPE_WEB_ORIGIN = "https://ez-recipes-web.onrender.com"
+    const val REDIRECT_URL = "$RECIPE_WEB_ORIGIN/oauth/callback"
+    val REDIRECT_URI = REDIRECT_URL.toUri()
 
     // Error message to fallback on in case all fails
     const val UNKNOWN_ERROR = "Something went terribly wrong. Please submit a bug report to " +
@@ -550,6 +553,13 @@ object Constants {
             uid = "oJG5PZ8KIIfvQMDsQzOwDbu2m6O2",
             email = "test@email.com",
             emailVerified = true,
+            providerData = listOf(
+                ProviderData(email = "test@email.com", providerId = "password", uid = "test@email.com"),
+                ProviderData(email = "test@email.com", providerId = Provider.GITHUB.toString(), uid = "29958092"),
+                ProviderData(email = "test@email.com", providerId = Provider.FACEBOOK.toString(), uid = "4260456714231215"),
+                ProviderData(email = "test@email.com", providerId = Provider.GOOGLE.toString(), uid = "111444254381322957655"),
+                ProviderData(email = "test2@email2.com", providerId = Provider.GOOGLE.toString(), uid = "100853917476273280774")
+            ),
             ratings = mapOf(
                 "641024" to 5,
                 "663849" to 3
@@ -560,6 +570,11 @@ object Constants {
             ),
             favoriteRecipes = listOf("641024"),
             token = "e30.e30.e30"
+        )
+        val AUTH_URLS = listOf(
+            AuthUrl(providerId = Provider.GOOGLE, authUrl = "https://www.google.com"),
+            AuthUrl(providerId = Provider.FACEBOOK, authUrl = "https://www.facebook.com"),
+            AuthUrl(providerId = Provider.GITHUB, authUrl = "https://www.github.com")
         )
     }
 }

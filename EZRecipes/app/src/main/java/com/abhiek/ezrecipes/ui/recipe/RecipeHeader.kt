@@ -49,7 +49,7 @@ fun RecipeHeader(
         val str = stringResource(R.string.image_copyright, recipe.credit)
         val startIndex = 8 // "Image © ".length = 8
         val endIndex = str.length // exclusive
-        append(str.substring(0, startIndex))
+        append(str.take(startIndex))
 
         // Apply a blue link style to the section after the copyright symbol
         withLink(

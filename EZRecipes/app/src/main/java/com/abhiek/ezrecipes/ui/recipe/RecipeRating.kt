@@ -10,7 +10,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -41,7 +40,6 @@ fun RecipeRating(
     enabled: Boolean = true,
     onRate: (Int) -> Unit = {}
 ) {
-    val context = LocalContext.current
     val resources = LocalResources.current
 
     // If the user has rated the recipe, show their rating instead of the average
@@ -57,11 +55,11 @@ fun RecipeRating(
     FlowRow(
         modifier = modifier.clearAndSetSemantics {
             contentDescription = if (starRating == 0.0) {
-                context.getString(R.string.star_rating_none)
+                resources.getString(R.string.star_rating_none)
             } else if (myRating != null) {
-                context.getString(R.string.star_rating_user, myRating)
+                resources.getString(R.string.star_rating_user, myRating)
             } else {
-                context.getString(R.string.star_rating_average, starRating)
+                resources.getString(R.string.star_rating_average, starRating)
             }
             role = Role.Image
         }

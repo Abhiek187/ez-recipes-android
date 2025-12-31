@@ -1,9 +1,11 @@
 package com.abhiek.ezrecipes.ui.profile
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.abhiek.ezrecipes.data.chef.ChefRepository
@@ -28,7 +30,6 @@ class ProfileViewModel(
     var job by mutableStateOf<Job?>(null)
         private set
     var recipeError by mutableStateOf<RecipeError?>(null)
-        private set
 
     var authState by mutableStateOf(AuthState.LOADING)
     var isLoading by mutableStateOf(false)
@@ -38,6 +39,13 @@ class ProfileViewModel(
     var emailSent by mutableStateOf(false)
     var passwordUpdated by mutableStateOf(false)
     var accountDeleted by mutableStateOf(false)
+    var authUrls by mutableStateOf<Map<Provider, Uri>>(mapOf())
+        private set
+    // "" = auth code not used, null = auth code missing
+    var authCode by mutableStateOf<String?>("")
+    var provider by mutableStateOf<Provider?>(null)
+    var accountLinked by mutableStateOf(false)
+    var accountUnlinked by mutableStateOf(false)
 
     private val _favoriteRecipes = MutableStateFlow(listOf<Recipe?>())
     private val _recentRecipes = MutableStateFlow(listOf<Recipe?>())
@@ -104,6 +112,7 @@ class ProfileViewModel(
                         uid = loginResponse.uid,
                         email = username,
                         emailVerified = loginResponse.emailVerified,
+                        providerData = listOf(),
                         ratings = mapOf(),
                         recentRecipes = mapOf(),
                         favoriteRecipes = listOf(),
@@ -225,6 +234,7 @@ class ProfileViewModel(
                         uid = loginResponse.uid,
                         email = username,
                         emailVerified = loginResponse.emailVerified,
+                        providerData = listOf(),
                         ratings = mapOf(),
                         recentRecipes = mapOf(),
                         favoriteRecipes = listOf(),
@@ -285,6 +295,135 @@ class ProfileViewModel(
                 is ChefResult.Error -> {
                     recipeError = result.recipeError
                     showAlert = job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun getAuthUrls() {
+        job = viewModelScope.launch {
+            when (val result = chefRepository.getAuthUrls(Constants.REDIRECT_URL)) {
+                is ChefResult.Success -> {
+                    recipeError = null
+                    showAlert = false
+                    // Convert the list to a map
+                    authUrls = result.response.associate {
+                        it.providerId to it.authUrl.toUri()
+                    }
+                }
+                is ChefResult.Error -> {
+                    recipeError = result.recipeError
+                    showAlert = job?.isCancelled == false
+
+                    authUrls = mapOf()
+                }
+            }
+        }
+    }
+
+    fun loginWithOAuth(code: String, provider: Provider) {
+        val oAuthRequest = OAuthRequest(
+            code = code,
+            providerId = provider.toString(),
+            redirectUrl = Constants.REDIRECT_URL
+        )
+
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+
+            when (val result = chefRepository.loginWithOAuth(oAuthRequest, token)) {
+                is ChefResult.Success -> {
+                    val loginResponse = result.response
+                    recipeError = null
+                    showAlert = false
+
+                    saveToken(loginResponse.token)
+                    if (chef == null) {
+                        // The email will be gotten from the GET chef response
+                        chef = Chef(
+                            uid = loginResponse.uid,
+                            email = "",
+                            emailVerified = loginResponse.emailVerified,
+                            providerData = listOf(),
+                            ratings = mapOf(),
+                            recentRecipes = mapOf(),
+                            favoriteRecipes = listOf(),
+                            token = loginResponse.token
+                        )
+                    }
+
+                    // Fetch the rest of the chef's profile
+                    val chefResult = chefRepository.getChef(loginResponse.token)
+                    isLoading = false
+
+                    when (chefResult) {
+                        is ChefResult.Success -> {
+                            chef = chefResult.response
+                            accountLinked = token != null
+                        }
+                        is ChefResult.Error -> {
+                            recipeError = chefResult.recipeError
+                            showAlert = job?.isCancelled == false
+                        }
+                    }
+
+                    if (loginResponse.emailVerified) {
+                        authState = AuthState.AUTHENTICATED
+                        openLoginDialog = false
+                    }
+                }
+                is ChefResult.Error -> {
+                    isLoading = false
+                    recipeError = result.recipeError
+                    showAlert = job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun unlinkOAuthProvider(provider: Provider) {
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val unlinkResult = if (token != null) {
+                chefRepository.unlinkOAuthProvider(provider, token)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+
+            when (unlinkResult) {
+                is ChefResult.Success -> {
+                    val tokenResponse = unlinkResult.response
+                    recipeError = null
+                    showAlert = false
+
+                    val newToken = tokenResponse.token
+                    if (newToken == null) {
+                        isLoading = false
+                        return@launch
+                    }
+                    saveToken(newToken)
+
+                    // Get the chef's updated provider data
+                    val chefResult = chefRepository.getChef(newToken)
+                    isLoading = false
+
+                    when (chefResult) {
+                        is ChefResult.Success -> {
+                            chef = chefResult.response
+                            accountUnlinked = true
+                        }
+                        is ChefResult.Error -> {
+                            recipeError = chefResult.recipeError
+                            showAlert = job?.isCancelled == false
+                        }
+                    }
+                }
+                is ChefResult.Error -> {
+                    isLoading = false
+                    recipeError = unlinkResult.recipeError
+                    showAlert = token != null && job?.isCancelled == false
                 }
             }
         }

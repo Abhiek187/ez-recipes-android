@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -83,12 +86,14 @@ fun HomeAccordions(
                             .horizontalScroll(rememberScrollState())
                     ) {
                         mainViewModel.recentRecipes.forEach { recentRecipe ->
-                            RecipeCard(
-                                recipe = recentRecipe.recipe,
-                                width = 350.dp,
-                                profileViewModel = profileViewModel
-                            ) {
-                                onNavigateToRecipe(recentRecipe.recipe)
+                            key(recentRecipe.id) {
+                                RecipeCard(
+                                    recipe = recentRecipe.recipe,
+                                    width = 350.dp,
+                                    profileViewModel = profileViewModel
+                                ) {
+                                    onNavigateToRecipe(recentRecipe.recipe)
+                                }
                             }
                         }
                     }
@@ -115,14 +120,15 @@ fun HomeAccordions(
                     .padding(bottom = 8.dp)
             )
         } else {
-            Row(
+            LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
                     .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
             ) {
-                for (recipe in recipes) {
+                itemsIndexed(
+                    items = recipes,
+                    key = { index, recipe -> recipe?.id ?: index }
+                ) { _, recipe ->
                     if (recipe == null) {
                         RecipeCardLoader()
                     } else {

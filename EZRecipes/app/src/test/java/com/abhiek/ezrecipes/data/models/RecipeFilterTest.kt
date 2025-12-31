@@ -3,7 +3,7 @@ package com.abhiek.ezrecipes.data.models
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-class RecipeFilterTest {
+internal class RecipeFilterTest {
     @Test
     fun toMap() {
         // Given a RecipeFilter with all params

@@ -91,7 +91,7 @@ class SecureHttpLoggingInterceptor: Interceptor {
 
         val tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
 
-        val responseBody = response.body!!
+        val responseBody = response.body
         val contentLength = responseBody.contentLength()
 
         val responseStartMessage = StringBuilder().apply {

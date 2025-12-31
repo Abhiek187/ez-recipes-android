@@ -35,7 +35,7 @@ enum class MealType {
     UNKNOWN;
 
     override fun toString(): String {
-        if (name == "HOR_D_OEUVRE") return "hor d'oeuvre"
+        if (this == HOR_D_OEUVRE) return "hor d'oeuvre"
 
         return name.replace("_", " ").lowercase()
     }
