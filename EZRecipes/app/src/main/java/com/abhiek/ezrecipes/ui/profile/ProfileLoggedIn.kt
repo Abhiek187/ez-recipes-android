@@ -201,7 +201,10 @@ fun ProfileLoggedIn(
         linkedAccounts.entries.forEach { (provider, emails) ->
             key(provider) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        8.dp,
+                        Alignment.CenterHorizontally
+                    ),
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -227,7 +230,11 @@ fun ProfileLoggedIn(
                         ) {
                             Text(
                                 text = stringResource(R.string.unlink),
-                                color = MaterialTheme.colorScheme.onError
+                                color = if (emails.isEmpty() || profileViewModel.isLoading) {
+                                    Color.Unspecified
+                                } else {
+                                    MaterialTheme.colorScheme.onError
+                                }
                             )
                             if (profileViewModel.isLoading) {
                                 CircularProgressIndicator(
@@ -239,7 +246,10 @@ fun ProfileLoggedIn(
                 }
                 if (emails.isNotEmpty()) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                        horizontalArrangement = Arrangement.spacedBy(
+                            8.dp,
+                            Alignment.CenterHorizontally
+                        ),
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
                     ) {
