@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -118,25 +120,24 @@ fun HomeAccordions(
                     .padding(bottom = 8.dp)
             )
         } else {
-            Row(
+            LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
                     .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
             ) {
-                recipes.forEach { recipe ->
+                itemsIndexed(
+                    items = recipes,
+                    key = { index, recipe -> recipe?.id ?: index }
+                ) { _, recipe ->
                     if (recipe == null) {
                         RecipeCardLoader()
                     } else {
-                        key(recipe.id) {
-                            RecipeCard(
-                                recipe = recipe,
-                                width = 350.dp,
-                                profileViewModel = profileViewModel
-                            ) {
-                                onNavigateToRecipe(recipe)
-                            }
+                        RecipeCard(
+                            recipe = recipe,
+                            width = 350.dp,
+                            profileViewModel = profileViewModel
+                        ) {
+                            onNavigateToRecipe(recipe)
                         }
                     }
                 }
