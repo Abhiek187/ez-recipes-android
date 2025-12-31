@@ -41,7 +41,7 @@ enum class Cuisine {
     UNKNOWN;
 
     override fun toString(): String {
-        if (this == BBQ) return "BBQ"
+        if (this == BBQ) return "bbq"
 
         return name.replace("_", " ").lowercase().capitalizeWords()
     }

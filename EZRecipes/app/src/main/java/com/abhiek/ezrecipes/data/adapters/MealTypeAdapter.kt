@@ -22,7 +22,7 @@ class MealTypeAdapter: TypeAdapter<MealType>() {
 
         return try {
             MealType.valueOf(stringValue ?: "")
-        } catch (error: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             Log.w("MealTypeAdapter", "Encountered an unknown meal type: $stringValue")
             MealType.UNKNOWN
         }
