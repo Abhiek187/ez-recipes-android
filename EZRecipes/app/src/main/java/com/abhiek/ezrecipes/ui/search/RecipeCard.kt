@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService

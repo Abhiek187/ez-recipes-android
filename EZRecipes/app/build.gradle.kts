@@ -3,7 +3,6 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
 }
@@ -58,11 +57,6 @@ android {
             }
         }
     }
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(17)
-        }
-    }
     buildFeatures {
         compose = true
         buildConfig = true
@@ -74,20 +68,26 @@ android {
     }
     sourceSets {
         // Adds exported schema location as test app assets
-        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+        getByName("androidTest").assets.directories.add("$projectDir/schemas")
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2025.12.01"
+    val composeBomVersion = "2026.01.00"
     val lifecycleVersion = "2.10.0"
     val activityVersion = "1.12.2"
     val coroutineVersion = "1.10.2"
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.4"
     val googlePlayVersion = "2.0.2"
-    val jupiterVersion = "6.0.1"
+    val jupiterVersion = "6.0.2"
     val espressoVersion = "3.7.0"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
@@ -108,7 +108,7 @@ dependencies {
     implementation("androidx.browser:browser:1.9.0")
 
     // AsyncImage
-    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
     // Retrofit
     implementation(platform("com.squareup.retrofit2:retrofit-bom:$retrofitVersion"))
     implementation("com.squareup.retrofit2:retrofit")
@@ -129,7 +129,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion")
-    testImplementation("io.mockk:mockk:1.14.7")
+    testImplementation("io.mockk:mockk:1.14.9")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
