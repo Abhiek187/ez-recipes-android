@@ -67,6 +67,29 @@ interface ChefService {
         @Header("Authorization") token: String
     ): Response<Token>
 
+    @GET("passkey/create")
+    suspend fun getNewPasskeyChallenge(
+        @Header("Authorization") token: String
+    ): Response<PasskeyCreationOptions>
+
+    @GET("passkey/auth")
+    suspend fun getExistingPasskeyChallenge(
+        @Query("email") email: String
+    ): Response<PasskeyRequestOptions>
+
+    @POST("passkey/verify")
+    suspend fun validatePasskey(
+        @Body passkeyResponse: PasskeyClientResponse,
+        @Query("email") email: String? = null,
+        @Header("Authorization") token: String? = null
+    ): Response<Token>
+
+    @DELETE("passkey")
+    suspend fun deletePasskey(
+        @Query("id") id: String,
+        @Header("Authorization") token: String
+    ): Response<Token>
+
     companion object {
         private lateinit var chefService: ChefService
 

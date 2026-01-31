@@ -576,5 +576,51 @@ object Constants {
             AuthUrl(providerId = Provider.FACEBOOK, authUrl = "https://www.facebook.com"),
             AuthUrl(providerId = Provider.GITHUB, authUrl = "https://www.github.com")
         )
+        val PASSKEY_CREATION_OPTIONS = PasskeyCreationOptions(
+            challenge = "u6R7q8xK3eCCmCUpx1HR-WtuV9z2d4FCVlntZFDrsbQ",
+            rp = PasskeyCreationOptions.RelyingParty(
+                name = "EZ Recipes Web",
+                id = RECIPE_WEB_ORIGIN
+            ),
+            user = PasskeyCreationOptions.User(
+                id = "ccr9dy6B7OXMyeDW0KPEuPZ9MfKkHLtFPbhnscTXhbM",
+                name = "test@email.com",
+                displayName = ""
+            ),
+            pubKeyCredParams = listOf(
+                PasskeyCreationOptions.PubKeyCredParam(-8, "public-key"),
+                PasskeyCreationOptions.PubKeyCredParam(-7, "public-key"),
+                PasskeyCreationOptions.PubKeyCredParam(-257, "public-key")
+            ),
+            timeout = 60_000,
+            attestation = "none",
+            excludeCredentials = listOf(
+                PasskeyCreationOptions.Credential(
+                    id = "Xfo96lb073r7xKvCF3fTEg",
+                    transports = listOf("hybrid", "internal"),
+                    type = "public-key"
+                )
+            ),
+            authenticatorSelection = mapOf(
+                "userVerification" to "required"
+            ),
+            extensions = mapOf(
+                "credProps" to true
+            ),
+            hints = listOf()
+        )
+        val PASSKEY_REQUEST_OPTIONS = PasskeyRequestOptions(
+            rpId = RECIPE_WEB_ORIGIN,
+            challenge = "5Hl-eJcWE1L0G-6hOrCY2vMWIjzwBjbqn5T91DtSKbw",
+            allowCredentials = listOf(
+                PasskeyRequestOptions.Credential(
+                    id = "Xfo96lb073r7xKvCF3fTEg",
+                    transports = listOf("hybrid", "internal"),
+                    type = "public-key"
+                )
+            ),
+            timeout = 60_000,
+            userVerification = "required"
+        )
     }
 }

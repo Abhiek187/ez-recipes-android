@@ -128,4 +128,48 @@ class ChefRepository(private val chefService: ChefService) {
             ChefResult.Error(recipeError)
         }
     }
+
+    suspend fun getNewPasskeyChallenge(token: String): ChefResult<PasskeyCreationOptions> {
+        return try {
+            val response = chefService.getNewPasskeyChallenge(token)
+            parseResponse(response)
+        } catch (error: Exception) {
+            val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+            ChefResult.Error(recipeError)
+        }
+    }
+
+    suspend fun getExistingPasskeyChallenge(email: String): ChefResult<PasskeyRequestOptions> {
+        return try {
+            val response = chefService.getExistingPasskeyChallenge(email)
+            parseResponse(response)
+        } catch (error: Exception) {
+            val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+            ChefResult.Error(recipeError)
+        }
+    }
+
+    suspend fun validatePasskey(
+        passkeyResponse: PasskeyClientResponse,
+        email: String? = null,
+        token: String? = null
+    ): ChefResult<Token> {
+        return try {
+            val response = chefService.validatePasskey(passkeyResponse, email, token)
+            parseResponse(response)
+        } catch (error: Exception) {
+            val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+            ChefResult.Error(recipeError)
+        }
+    }
+
+    suspend fun deletePasskey(id: String, token: String): ChefResult<Token> {
+        return try {
+            val response = chefService.deletePasskey(id, token)
+            parseResponse(response)
+        } catch (error: Exception) {
+            val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+            ChefResult.Error(recipeError)
+        }
+    }
 }

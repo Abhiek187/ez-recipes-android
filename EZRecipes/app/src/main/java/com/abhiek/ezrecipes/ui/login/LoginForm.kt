@@ -43,6 +43,7 @@ import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.ui.util.OAuthButton
+import com.abhiek.ezrecipes.ui.util.PasskeyButton
 
 @Composable
 fun LoginForm(
@@ -221,6 +222,7 @@ fun LoginForm(
                 }
             }
         }
+        PasskeyButton(profileViewModel)
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,

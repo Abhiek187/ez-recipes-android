@@ -1,13 +1,29 @@
 package com.abhiek.ezrecipes.ui.profile
 
+import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
+import androidx.credentials.CreatePublicKeyCredentialRequest
+import androidx.credentials.CreatePublicKeyCredentialResponse
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetPublicKeyCredentialOption
+import androidx.credentials.PublicKeyCredential
+import androidx.credentials.exceptions.CreateCredentialCancellationException
+import androidx.credentials.exceptions.CreateCredentialCustomException
+import androidx.credentials.exceptions.CreateCredentialException
+import androidx.credentials.exceptions.CreateCredentialInterruptedException
+import androidx.credentials.exceptions.CreateCredentialProviderConfigurationException
+import androidx.credentials.exceptions.GetCredentialException
+import androidx.credentials.exceptions.publickeycredential.CreatePublicKeyCredentialDomException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.ChefResult
 import com.abhiek.ezrecipes.data.models.*
@@ -17,6 +33,7 @@ import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Encryptor
 import com.abhiek.ezrecipes.utils.toISODateString
+import com.google.gson.Gson
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -423,6 +440,213 @@ class ProfileViewModel(
                 is ChefResult.Error -> {
                     isLoading = false
                     recipeError = unlinkResult.recipeError
+                    showAlert = token != null && job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun loginWithPasskey(context: Context, email: String) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            recipeError = RecipeError(
+                context.getString(R.string.passkey_unsupported)
+            )
+            showAlert = true
+            return
+        }
+
+        job = viewModelScope.launch {
+            isLoading = true
+            val passkeyOptionsResult = chefRepository.getExistingPasskeyChallenge(email)
+            isLoading = false
+
+            when (passkeyOptionsResult) {
+                is ChefResult.Success -> {
+                    val passkeyRequestOptions = passkeyOptionsResult.response
+                    val credentialManager = CredentialManager.create(context)
+
+                    try {
+                        val request = GetPublicKeyCredentialOption(
+                            Gson().toJson(passkeyRequestOptions)
+                        )
+                        val getCredentialRequest = GetCredentialRequest(
+                            listOf(request)
+                        )
+                        val credentialResult = credentialManager.getCredential(
+                            context,
+                            getCredentialRequest
+                        )
+                        val credentialResponse = (credentialResult.credential as PublicKeyCredential).authenticationResponseJson
+                        val passkeyValidateResult = chefRepository.validatePasskey(
+                            Gson().fromJson(credentialResponse, PasskeyClientResponse::class.java),
+                            email
+                        )
+
+                        when (passkeyValidateResult) {
+                            is ChefResult.Success -> {
+                                recipeError = null
+                                showAlert = false
+                            }
+                            is ChefResult.Error -> {
+                                recipeError = passkeyValidateResult.recipeError
+                                showAlert = job?.isCancelled == false
+                            }
+                        }
+                    } catch (error: Exception) {
+                        error.printStackTrace()
+                        when (error) {
+                            is GetCredentialException -> {
+                                Log.e(TAG, "Get credential error :: ${error.message}")
+                            }
+                            else -> {
+                                Log.e(TAG, "Unexpected exception type ${error::class.java.name} :: ${error.message}")
+                            }
+                        }
+                    }
+                }
+                is ChefResult.Error -> {
+                    recipeError = passkeyOptionsResult.recipeError
+                    showAlert = job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun createNewPasskey(context: Context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            recipeError = RecipeError(
+                context.getString(R.string.passkey_unsupported)
+            )
+            showAlert = true
+            return
+        }
+
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val passkeyOptionsResult = if (token != null) {
+                chefRepository.getNewPasskeyChallenge(token)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+            isLoading = false
+
+            when (passkeyOptionsResult) {
+                is ChefResult.Success -> {
+                    val passkeyCreationOptions = passkeyOptionsResult.response
+                    val credentialManager = CredentialManager.create(context)
+
+                    try {
+                        val request = CreatePublicKeyCredentialRequest(
+                            Gson().toJson(passkeyCreationOptions)
+                        )
+                        val credential = credentialManager.createCredential(
+                            context,
+                            request
+                        )
+                        val credentialResponse = (credential as CreatePublicKeyCredentialResponse).registrationResponseJson
+                        val passkeyValidateResult = chefRepository.validatePasskey(
+                            Gson().fromJson(credentialResponse, PasskeyClientResponse::class.java),
+                            email = null,
+                            token
+                        )
+
+                        when (passkeyValidateResult) {
+                            is ChefResult.Success -> {
+                                recipeError = null
+                                showAlert = false
+                            }
+                            is ChefResult.Error -> {
+                                recipeError = passkeyValidateResult.recipeError
+                                showAlert = job?.isCancelled == false
+                            }
+                        }
+                    } catch (error: CreateCredentialException) {
+                        error.printStackTrace()
+                        when (error) {
+                            is CreatePublicKeyCredentialDomException -> {
+                                // Handle the passkey DOM errors thrown according to the
+                                // WebAuthn spec.
+                                Log.e(TAG, "Passkey DOM error :: ${error.message}")
+                            }
+                            is CreateCredentialCancellationException -> {
+                                // The user intentionally canceled the operation and chose not
+                                // to register the credential.
+                                Log.e(TAG, "User cancelled the operation :: ${error.message}")
+                            }
+                            is CreateCredentialInterruptedException -> {
+                                // Retry-able error. Consider retrying the call.
+                                Log.e(TAG, "Retry-able error :: ${error.message}")
+                            }
+                            is CreateCredentialProviderConfigurationException -> {
+                                // Your app is missing the provider configuration dependency.
+                                // Most likely, you're missing the
+                                // "credentials-play-services-auth" module.
+                                Log.e(TAG, "Missing provider configuration :: ${error.message}")
+                            }
+                            is CreateCredentialCustomException -> {
+                                // You have encountered an error from a 3rd-party SDK. If you
+                                // make the API call with a request object that's a subclass of
+                                // CreateCustomCredentialRequest using a 3rd-party SDK, then you
+                                // should check for any custom exception type constants within
+                                // that SDK to match with e.type. Otherwise, drop or log the
+                                // exception.
+                                Log.e(TAG, "Custom error :: ${error.message}")
+                            }
+                            else -> {
+                                Log.e(TAG, "Unexpected exception type ${error::class.java.name} :: ${error.message}")
+                            }
+                        }
+                    }
+                }
+                is ChefResult.Error -> {
+                    recipeError = passkeyOptionsResult.recipeError
+                    showAlert = job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+    fun deletePasskey(id: String) {
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val deletePasskeyResult = if (token != null) {
+                chefRepository.deletePasskey(id, token)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+
+            when (deletePasskeyResult) {
+                is ChefResult.Success -> {
+                    val tokenResponse = deletePasskeyResult.response
+                    recipeError = null
+                    showAlert = false
+
+                    val newToken = tokenResponse.token
+                    if (newToken == null) {
+                        isLoading = false
+                        return@launch
+                    }
+                    saveToken(newToken)
+
+                    // Get the chef's updated passkey list
+                    val chefResult = chefRepository.getChef(newToken)
+                    isLoading = false
+
+                    when (chefResult) {
+                        is ChefResult.Success -> {
+                            chef = chefResult.response
+                        }
+                        is ChefResult.Error -> {
+                            recipeError = chefResult.recipeError
+                            showAlert = job?.isCancelled == false
+                        }
+                    }
+                }
+                is ChefResult.Error -> {
+                    isLoading = false
+                    recipeError = deletePasskeyResult.recipeError
                     showAlert = token != null && job?.isCancelled == false
                 }
             }
