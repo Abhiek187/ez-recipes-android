@@ -1,11 +1,11 @@
 package com.abhiek.ezrecipes.data.models
 
-data class PasskeyClientResponse(
+data class PasskeyClientResponse<R: PasskeyClientResponse.Response>(
     val authenticatorAttachment: String,
     val clientExtensionResults: Map<String, Any>,
     val id: String,
     val rawId: String,
-    val response: Response,
+    val response: R,
     val type: String
 ) {
     interface Response {
@@ -29,3 +29,8 @@ data class PasskeyClientResponse(
         val userHandle: String
     ): Response
 }
+
+typealias NewPasskeyClientResponse = PasskeyClientResponse<
+        PasskeyClientResponse.NewPasskeyResponse>
+typealias ExistingPasskeyClientResponse = PasskeyClientResponse<
+        PasskeyClientResponse.ExistingPasskeyResponse>

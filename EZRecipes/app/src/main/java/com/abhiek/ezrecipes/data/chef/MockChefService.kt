@@ -144,8 +144,8 @@ object MockChefService: ChefService {
         }
     }
 
-    override suspend fun validatePasskey(
-        passkeyResponse: PasskeyClientResponse,
+    override suspend fun <R: PasskeyClientResponse.Response> validatePasskey(
+        passkeyResponse: PasskeyClientResponse<R>,
         email: String?,
         token: String?
     ): Response<Token> {

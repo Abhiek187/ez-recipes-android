@@ -78,8 +78,8 @@ interface ChefService {
     ): Response<PasskeyRequestOptions>
 
     @POST("passkey/verify")
-    suspend fun validatePasskey(
-        @Body passkeyResponse: PasskeyClientResponse,
+    suspend fun <R: PasskeyClientResponse.Response> validatePasskey(
+        @Body passkeyResponse: PasskeyClientResponse<R>,
         @Query("email") email: String? = null,
         @Header("Authorization") token: String? = null
     ): Response<Token>

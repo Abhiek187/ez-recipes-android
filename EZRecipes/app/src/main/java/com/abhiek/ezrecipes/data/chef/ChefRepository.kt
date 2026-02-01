@@ -149,8 +149,8 @@ class ChefRepository(private val chefService: ChefService) {
         }
     }
 
-    suspend fun validatePasskey(
-        passkeyResponse: PasskeyClientResponse,
+    suspend fun <R: PasskeyClientResponse.Response> validatePasskey(
+        passkeyResponse: PasskeyClientResponse<R>,
         email: String? = null,
         token: String? = null
     ): ChefResult<Token> {

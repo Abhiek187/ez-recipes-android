@@ -15,12 +15,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.PublicKeyCredential
 import androidx.credentials.exceptions.CreateCredentialCancellationException
-import androidx.credentials.exceptions.CreateCredentialCustomException
-import androidx.credentials.exceptions.CreateCredentialException
-import androidx.credentials.exceptions.CreateCredentialInterruptedException
-import androidx.credentials.exceptions.CreateCredentialProviderConfigurationException
-import androidx.credentials.exceptions.GetCredentialException
-import androidx.credentials.exceptions.publickeycredential.CreatePublicKeyCredentialDomException
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.abhiek.ezrecipes.R
@@ -82,7 +77,7 @@ class ProfileViewModel(
             dataStoreService.saveToken(encryptedToken)
             Log.d(TAG, "Saved ID token to the DataStore")
         } catch (error: Exception) {
-            Log.e(TAG, "Error saving token: ${error.printStackTrace()}")
+            Log.e(TAG, "Error saving token: $error")
         }
     }
 
@@ -100,7 +95,7 @@ class ProfileViewModel(
                 null
             }
         } catch (error: Exception) {
-            Log.e(TAG, "Error getting token: ${error.printStackTrace()}")
+            Log.e(TAG, "Error getting token: $error")
             return null
         }
     }
@@ -462,30 +457,43 @@ class ProfileViewModel(
 
             when (passkeyOptionsResult) {
                 is ChefResult.Success -> {
-                    val passkeyRequestOptions = passkeyOptionsResult.response
+                    val serverPasskeyOptions = passkeyOptionsResult.response
                     val credentialManager = CredentialManager.create(context)
 
                     try {
-                        val request = GetPublicKeyCredentialOption(
-                            Gson().toJson(passkeyRequestOptions)
+                        // Convert the standard WebAuthn options to a Credential Manager request
+                        val androidPasskeyOptions = GetPublicKeyCredentialOption(
+                            Gson().toJson(serverPasskeyOptions)
                         )
-                        val getCredentialRequest = GetCredentialRequest(
-                            listOf(request)
+                        val androidPasskeyRequest = GetCredentialRequest(
+                            listOf(androidPasskeyOptions)
                         )
-                        val credentialResult = credentialManager.getCredential(
+                        // Triggers the device to prompt for a passkey
+                        val androidPasskeyResponse = credentialManager.getCredential(
                             context,
-                            getCredentialRequest
+                            androidPasskeyRequest
+                        ).credential as PublicKeyCredential
+
+                        // Convert the Credential Manager response to a standard WebAuthn response
+                        val serverPasskeyResponse = Gson().fromJson(
+                            androidPasskeyResponse.authenticationResponseJson,
+                            ExistingPasskeyClientResponse::class.java
                         )
-                        val credentialResponse = (credentialResult.credential as PublicKeyCredential).authenticationResponseJson
+                        isLoading = true
                         val passkeyValidateResult = chefRepository.validatePasskey(
-                            Gson().fromJson(credentialResponse, PasskeyClientResponse::class.java),
+                            serverPasskeyResponse,
                             email
                         )
+                        isLoading = false
 
                         when (passkeyValidateResult) {
                             is ChefResult.Success -> {
                                 recipeError = null
                                 showAlert = false
+
+                                passkeyValidateResult.response.token?.let { newToken ->
+                                    saveToken(newToken)
+                                }
                             }
                             is ChefResult.Error -> {
                                 recipeError = passkeyValidateResult.recipeError
@@ -493,14 +501,13 @@ class ProfileViewModel(
                             }
                         }
                     } catch (error: Exception) {
-                        error.printStackTrace()
-                        when (error) {
-                            is GetCredentialException -> {
-                                Log.e(TAG, "Get credential error :: ${error.message}")
-                            }
-                            else -> {
-                                Log.e(TAG, "Unexpected exception type ${error::class.java.name} :: ${error.message}")
-                            }
+                        Log.e(TAG, "Error signing in with a passkey: $error")
+
+                        // Don't show an error if the user dismissed the passkey prompt
+                        if (error !is GetCredentialCancellationException) {
+                            recipeError =
+                                RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+                            showAlert = job?.isCancelled == false
                         }
                     }
                 }
@@ -533,69 +540,56 @@ class ProfileViewModel(
 
             when (passkeyOptionsResult) {
                 is ChefResult.Success -> {
-                    val passkeyCreationOptions = passkeyOptionsResult.response
+                    val serverPasskeyOptions = passkeyOptionsResult.response
                     val credentialManager = CredentialManager.create(context)
 
                     try {
-                        val request = CreatePublicKeyCredentialRequest(
-                            Gson().toJson(passkeyCreationOptions)
+                        // Convert the standard WebAuthn options to a Credential Manager request
+                        val androidPasskeyRequest = CreatePublicKeyCredentialRequest(
+                            Gson().toJson(serverPasskeyOptions)
                         )
-                        val credential = credentialManager.createCredential(
+                        // Triggers the device to prompt for a passkey
+                        val androidPasskeyResponse = credentialManager.createCredential(
                             context,
-                            request
+                            androidPasskeyRequest
+                        ) as CreatePublicKeyCredentialResponse
+
+                        // Convert the Credential Manager response to a standard WebAuthn response
+                        val serverPasskeyResponse = Gson().fromJson(
+                            androidPasskeyResponse.registrationResponseJson,
+                            NewPasskeyClientResponse::class.java
                         )
-                        val credentialResponse = (credential as CreatePublicKeyCredentialResponse).registrationResponseJson
+                        isLoading = true
                         val passkeyValidateResult = chefRepository.validatePasskey(
-                            Gson().fromJson(credentialResponse, PasskeyClientResponse::class.java),
+                            serverPasskeyResponse,
                             email = null,
                             token
                         )
+                        isLoading = false
 
                         when (passkeyValidateResult) {
                             is ChefResult.Success -> {
                                 recipeError = null
                                 showAlert = false
+
+                                passkeyValidateResult.response.token?.let { newToken ->
+                                    saveToken(newToken)
+                                }
                             }
                             is ChefResult.Error -> {
                                 recipeError = passkeyValidateResult.recipeError
                                 showAlert = job?.isCancelled == false
                             }
                         }
-                    } catch (error: CreateCredentialException) {
-                        error.printStackTrace()
-                        when (error) {
-                            is CreatePublicKeyCredentialDomException -> {
-                                // Handle the passkey DOM errors thrown according to the
-                                // WebAuthn spec.
-                                Log.e(TAG, "Passkey DOM error :: ${error.message}")
-                            }
-                            is CreateCredentialCancellationException -> {
-                                // The user intentionally canceled the operation and chose not
-                                // to register the credential.
-                                Log.e(TAG, "User cancelled the operation :: ${error.message}")
-                            }
-                            is CreateCredentialInterruptedException -> {
-                                // Retry-able error. Consider retrying the call.
-                                Log.e(TAG, "Retry-able error :: ${error.message}")
-                            }
-                            is CreateCredentialProviderConfigurationException -> {
-                                // Your app is missing the provider configuration dependency.
-                                // Most likely, you're missing the
-                                // "credentials-play-services-auth" module.
-                                Log.e(TAG, "Missing provider configuration :: ${error.message}")
-                            }
-                            is CreateCredentialCustomException -> {
-                                // You have encountered an error from a 3rd-party SDK. If you
-                                // make the API call with a request object that's a subclass of
-                                // CreateCustomCredentialRequest using a 3rd-party SDK, then you
-                                // should check for any custom exception type constants within
-                                // that SDK to match with e.type. Otherwise, drop or log the
-                                // exception.
-                                Log.e(TAG, "Custom error :: ${error.message}")
-                            }
-                            else -> {
-                                Log.e(TAG, "Unexpected exception type ${error::class.java.name} :: ${error.message}")
-                            }
+                    } catch (error: Exception) {
+                        // Handling create credential exceptions:
+                        // https://developer.android.com/identity/passkeys/create-passkeys#handle-response
+                        Log.e(TAG, "Error creating a new passkey: $error")
+
+                        if (error !is CreateCredentialCancellationException) {
+                            recipeError =
+                                RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+                            showAlert = job?.isCancelled == false
                         }
                     }
                 }
