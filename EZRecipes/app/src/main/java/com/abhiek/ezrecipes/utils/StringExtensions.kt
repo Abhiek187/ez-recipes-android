@@ -6,6 +6,10 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import java.text.SimpleDateFormat
 import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.*
 
 /**
@@ -73,5 +77,44 @@ fun String.toUnixTimestamp(): Long? {
         }
     } catch (_: Exception) {
         null
+    }
+}
+
+/**
+ * Converts an ISO 8601 date string to a human-readable date string based on the current locale
+ *
+ * Supported formats:
+ * - Short = 1/18/26, 10:37 PM
+ * - Medium = Jan 18, 2026, 10:37:48 PM
+ * - Long = January 18, 2026, 10:37:48 PM EST
+ * - Full = Sunday, January 18, 2026, 10:37:48 PM Eastern Standard Time
+ *
+ * @return the human-readable date string, or the same string if it can't be converted
+ */
+fun String.toDateTime(): String {
+    return try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val instant = Instant.parse(this)
+            val zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
+            val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(
+                FormatStyle.LONG
+            )
+            zonedDateTime.format(dateFormatter)
+        } else {
+            val dateFormat = SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                Locale.getDefault()
+            )
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val date = dateFormat.parse(this)
+            val outputFormat = SimpleDateFormat.getDateTimeInstance(
+                SimpleDateFormat.LONG,
+                SimpleDateFormat.LONG,
+                Locale.getDefault()
+            )
+            date?.let { outputFormat.format(it) } ?: this
+        }
+    } catch (_: Exception) {
+        this
     }
 }

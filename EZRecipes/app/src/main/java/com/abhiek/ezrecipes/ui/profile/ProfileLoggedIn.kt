@@ -1,11 +1,13 @@
 package com.abhiek.ezrecipes.ui.profile
 
 import android.widget.Toast
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +22,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
@@ -36,7 +39,9 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.ui.util.OAuthButton
+import com.abhiek.ezrecipes.ui.util.PasskeyButton
 import com.abhiek.ezrecipes.utils.Routes
+import com.abhiek.ezrecipes.utils.toDateTime
 import com.abhiek.ezrecipes.utils.toShorthand
 
 @Composable
@@ -265,6 +270,55 @@ fun ProfileLoggedIn(
                     }
                 }
             }
+        }
+
+        HorizontalDivider()
+        Text(
+            text = stringResource(R.string.passkey_title),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.fillMaxWidth()
+        )
+        chef.passkeys.forEach { passkey ->
+            key(passkey.id) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(
+                        8.dp,
+                        Alignment.CenterHorizontally
+                    ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    AsyncImage(
+                        model = if (isSystemInDarkTheme()) passkey.iconDark else passkey.iconLight,
+                        contentDescription = null,
+                        modifier = Modifier.size(50.dp)
+                    )
+                    Text(
+                        text = passkey.name
+                    )
+                    IconButton(
+                        onClick = {
+                            profileViewModel.deletePasskey(passkey.id)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = stringResource(R.string.passkey_delete),
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+                Text(
+                    text = stringResource(
+                        R.string.last_used,
+                        passkey.lastUsed.toDateTime()
+                    )
+                )
+            }
+        }
+        PasskeyButton(stringResource(R.string.passkey_create)) {
+            profileViewModel.createNewPasskey(context)
         }
 
         if (profileViewModel.showAlert && !showUnlinkConfirmation) {

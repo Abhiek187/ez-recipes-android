@@ -67,6 +67,8 @@ fun LoginForm(
     val usernameEmpty = username.isEmpty()
     val passwordEmpty = password.isEmpty()
 
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         profileViewModel.getAuthUrls()
     }
@@ -222,7 +224,9 @@ fun LoginForm(
                 }
             }
         }
-        PasskeyButton(profileViewModel)
+        PasskeyButton(stringResource(R.string.passkey_sign_in)) {
+            profileViewModel.loginWithPasskey(context, "abhishek.chaudhuri@rutgers.edu")
+        }
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,

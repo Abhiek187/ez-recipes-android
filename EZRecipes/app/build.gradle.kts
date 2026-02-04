@@ -85,6 +85,7 @@ dependencies {
     val activityVersion = "1.12.3"
     val coroutineVersion = "1.10.2"
     val credentialsVersion = "1.5.0"
+    val coilVersion = "3.3.0"
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.4"
     val googlePlayVersion = "2.0.2"
@@ -111,7 +112,8 @@ dependencies {
     implementation("androidx.credentials:credentials-play-services-auth:$credentialsVersion")
 
     // AsyncImage
-    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+    implementation("io.coil-kt.coil3:coil-compose:$coilVersion")
+    implementation("io.coil-kt.coil3:coil-svg:$coilVersion")
     // Retrofit
     implementation(platform("com.squareup.retrofit2:retrofit-bom:$retrofitVersion"))
     implementation("com.squareup.retrofit2:retrofit")
