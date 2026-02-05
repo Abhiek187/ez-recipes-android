@@ -77,11 +77,17 @@ interface ChefService {
         @Query("email") email: String
     ): Response<PasskeyRequestOptions>
 
+    // Creating separate methods due to type erasure :(
     @POST("passkey/verify")
-    suspend fun <R: PasskeyClientResponse.Response> validatePasskey(
-        @Body passkeyResponse: PasskeyClientResponse<R>,
-        @Query("email") email: String? = null,
-        @Header("Authorization") token: String? = null
+    suspend fun validateNewPasskey(
+        @Body passkeyResponse: NewPasskeyClientResponse,
+        @Header("Authorization") token: String
+    ): Response<Token>
+
+    @POST("passkey/verify")
+    suspend fun validateExistingPasskey(
+        @Body passkeyResponse: ExistingPasskeyClientResponse,
+        @Query("email") email: String
     ): Response<Token>
 
     @DELETE("passkey")

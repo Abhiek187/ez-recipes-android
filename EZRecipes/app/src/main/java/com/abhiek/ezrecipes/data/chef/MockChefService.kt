@@ -144,10 +144,20 @@ object MockChefService: ChefService {
         }
     }
 
-    override suspend fun <R: PasskeyClientResponse.Response> validatePasskey(
-        passkeyResponse: PasskeyClientResponse<R>,
-        email: String?,
-        token: String?
+    override suspend fun validateNewPasskey(
+        passkeyResponse: NewPasskeyClientResponse,
+        token: String
+    ): Response<Token> {
+        return if (isSuccess) {
+            Response.success(mockToken)
+        } else {
+            Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
+        }
+    }
+
+    override suspend fun validateExistingPasskey(
+        passkeyResponse: ExistingPasskeyClientResponse,
+        email: String
     ): Response<Token> {
         return if (isSuccess) {
             Response.success(mockToken)

@@ -29,6 +29,7 @@ import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Encryptor
 import com.abhiek.ezrecipes.utils.toISODateString
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -65,6 +66,8 @@ class ProfileViewModel(
     val favoriteRecipes = _favoriteRecipes.asStateFlow()
     val recentRecipes = _recentRecipes.asStateFlow()
     val ratedRecipes = _ratedRecipes.asStateFlow()
+
+    private val gson = Gson()
 
     companion object {
         private const val TAG = "ProfileViewModel"
@@ -466,7 +469,7 @@ class ProfileViewModel(
                     try {
                         // Convert the standard WebAuthn options to a Credential Manager request
                         val androidPasskeyOptions = GetPublicKeyCredentialOption(
-                            Gson().toJson(serverPasskeyOptions)
+                            gson.toJson(serverPasskeyOptions)
                         )
                         val androidPasskeyRequest = GetCredentialRequest(
                             listOf(androidPasskeyOptions)
@@ -478,12 +481,12 @@ class ProfileViewModel(
                         ).credential as PublicKeyCredential
 
                         // Convert the Credential Manager response to a standard WebAuthn response
-                        val serverPasskeyResponse = Gson().fromJson(
+                        val serverPasskeyResponse = gson.fromJson(
                             androidPasskeyResponse.authenticationResponseJson,
-                            ExistingPasskeyClientResponse::class.java
+                            object: TypeToken<ExistingPasskeyClientResponse>() {}
                         )
                         isLoading = true
-                        val passkeyValidateResult = chefRepository.validatePasskey(
+                        val passkeyValidateResult = chefRepository.validateExistingPasskey(
                             serverPasskeyResponse,
                             email
                         )
@@ -549,7 +552,7 @@ class ProfileViewModel(
                     try {
                         // Convert the standard WebAuthn options to a Credential Manager request
                         val androidPasskeyRequest = CreatePublicKeyCredentialRequest(
-                            Gson().toJson(serverPasskeyOptions)
+                            gson.toJson(serverPasskeyOptions)
                         )
                         // Triggers the device to prompt for a passkey
                         val androidPasskeyResponse = credentialManager.createCredential(
@@ -558,15 +561,14 @@ class ProfileViewModel(
                         ) as CreatePublicKeyCredentialResponse
 
                         // Convert the Credential Manager response to a standard WebAuthn response
-                        val serverPasskeyResponse = Gson().fromJson(
+                        val serverPasskeyResponse = gson.fromJson(
                             androidPasskeyResponse.registrationResponseJson,
-                            NewPasskeyClientResponse::class.java
+                            object: TypeToken<NewPasskeyClientResponse>() {}
                         )
                         isLoading = true
-                        val passkeyValidateResult = chefRepository.validatePasskey(
+                        val passkeyValidateResult = chefRepository.validateNewPasskey(
                             serverPasskeyResponse,
-                            email = null,
-                            token
+                            token!!
                         )
                         isLoading = false
 

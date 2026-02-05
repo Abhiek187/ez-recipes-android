@@ -149,13 +149,25 @@ class ChefRepository(private val chefService: ChefService) {
         }
     }
 
-    suspend fun <R: PasskeyClientResponse.Response> validatePasskey(
-        passkeyResponse: PasskeyClientResponse<R>,
-        email: String? = null,
-        token: String? = null
+    suspend fun validateNewPasskey(
+        passkeyResponse: NewPasskeyClientResponse,
+        token: String
     ): ChefResult<Token> {
         return try {
-            val response = chefService.validatePasskey(passkeyResponse, email, token)
+            val response = chefService.validateNewPasskey(passkeyResponse, token)
+            parseResponse(response)
+        } catch (error: Exception) {
+            val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+            ChefResult.Error(recipeError)
+        }
+    }
+
+    suspend fun validateExistingPasskey(
+        passkeyResponse: ExistingPasskeyClientResponse,
+        email: String
+    ): ChefResult<Token> {
+        return try {
+            val response = chefService.validateExistingPasskey(passkeyResponse, email)
             parseResponse(response)
         } catch (error: Exception) {
             val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)

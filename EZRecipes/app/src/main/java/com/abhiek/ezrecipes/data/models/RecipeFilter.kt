@@ -34,8 +34,9 @@ data class RecipeFilter(
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
             .create()
         val json = gson.toJson(this)
-        val map = gson.fromJson<Map<String, Any>>(
-            json, object: TypeToken<Map<String, Any>>() {}.type
+        // TypeToken is required for generic types
+        val map = gson.fromJson(
+            json, object: TypeToken<Map<String, Any>>() {}
         )
         return map.filter { (key, _) -> !omittedKeys.contains(key) }
             .entries.associate { (key, value) ->
