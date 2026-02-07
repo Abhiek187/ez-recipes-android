@@ -518,9 +518,28 @@ class ProfileViewModel(
                                 recipeError = null
                                 showAlert = false
 
-                                passkeyValidateResult.response.token?.let { newToken ->
+                                val newToken = passkeyValidateResult.response.token
+                                isLoading = true
+                                val chefResult = if (newToken != null) {
                                     saveToken(newToken)
+                                    chefRepository.getChef(newToken)
+                                } else {
+                                    ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
                                 }
+                                isLoading = false
+
+                                when (chefResult) {
+                                    is ChefResult.Success -> {
+                                        chef = chefResult.response
+                                    }
+                                    is ChefResult.Error -> {
+                                        recipeError = chefResult.recipeError
+                                        showAlert = job?.isCancelled == false
+                                    }
+                                }
+
+                                authState = AuthState.AUTHENTICATED
+                                openLoginDialog = false
                             }
                             is ChefResult.Error -> {
                                 recipeError = passkeyValidateResult.recipeError
@@ -598,8 +617,24 @@ class ProfileViewModel(
                                 recipeError = null
                                 showAlert = false
 
-                                passkeyValidateResult.response.token?.let { newToken ->
+                                val newToken = passkeyValidateResult.response.token
+                                isLoading = true
+                                val chefResult = if (newToken != null) {
                                     saveToken(newToken)
+                                    chefRepository.getChef(newToken)
+                                } else {
+                                    ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+                                }
+                                isLoading = false
+
+                                when (chefResult) {
+                                    is ChefResult.Success -> {
+                                        chef = chefResult.response
+                                    }
+                                    is ChefResult.Error -> {
+                                        recipeError = chefResult.recipeError
+                                        showAlert = job?.isCancelled == false
+                                    }
                                 }
                             }
                             is ChefResult.Error -> {
