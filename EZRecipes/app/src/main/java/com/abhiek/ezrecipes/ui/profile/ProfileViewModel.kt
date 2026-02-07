@@ -475,10 +475,31 @@ class ProfileViewModel(
                             listOf(androidPasskeyOptions)
                         )
                         // Triggers the device to prompt for a passkey
-                        val androidPasskeyResponse = credentialManager.getCredential(
-                            context,
-                            androidPasskeyRequest
-                        ).credential as PublicKeyCredential
+                        val androidPasskeyResponse = if (
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+                            ) {
+                            // Pre-warm the sign-in request
+                            val pendingAndroidPasskeyHandle = credentialManager.prepareGetCredential(
+                                androidPasskeyRequest
+                            ).pendingGetCredentialHandle
+
+                            if (pendingAndroidPasskeyHandle != null) {
+                                credentialManager.getCredential(
+                                    context,
+                                    pendingAndroidPasskeyHandle
+                                ).credential as PublicKeyCredential
+                            } else {
+                                credentialManager.getCredential(
+                                    context,
+                                    androidPasskeyRequest
+                                ).credential as PublicKeyCredential
+                            }
+                        } else {
+                            credentialManager.getCredential(
+                                context,
+                                androidPasskeyRequest
+                            ).credential as PublicKeyCredential
+                        }
 
                         // Convert the Credential Manager response to a standard WebAuthn response
                         val serverPasskeyResponse = gson.fromJson(
