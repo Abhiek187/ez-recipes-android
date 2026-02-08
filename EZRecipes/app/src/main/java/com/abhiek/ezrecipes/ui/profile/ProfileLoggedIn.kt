@@ -1,18 +1,12 @@
 package com.abhiek.ezrecipes.ui.profile
 
-import android.widget.Toast
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
@@ -22,12 +16,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.AsyncImage
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Chef
-import com.abhiek.ezrecipes.data.models.Provider
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -38,10 +30,7 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
-import com.abhiek.ezrecipes.ui.util.OAuthButton
-import com.abhiek.ezrecipes.ui.util.PasskeyButton
 import com.abhiek.ezrecipes.utils.Routes
-import com.abhiek.ezrecipes.utils.toDateTime
 import com.abhiek.ezrecipes.utils.toShorthand
 
 @Composable
@@ -50,54 +39,11 @@ fun ProfileLoggedIn(
     profileViewModel: ProfileViewModel
 ) {
     val resources = LocalResources.current
-    val context = LocalContext.current
 
     var dialogToShow by remember { mutableStateOf<String?>(null) }
-    var selectedProvider by remember { mutableStateOf(Provider.GOOGLE) }
-    var showUnlinkConfirmation by remember { mutableStateOf(false) }
-
-    val linkedAccounts = remember(chef.providerData) {
-        // Start with all the supported providers
-        val initialResult = Provider.entries.associateWith { mutableListOf<String>() }
-        // A chef can link 0 or more emails with a provider
-        chef.providerData.fold(initialResult) { result, providerData ->
-            Provider.valueOfOrNull(providerData.providerId)?.let { providerId ->
-                result[providerId]?.add(providerData.email)
-            }
-
-            return@fold result
-        }
-    }
 
     val onDismiss = {
         dialogToShow = null
-    }
-    val dismissUnlinkConfirmation = {
-        showUnlinkConfirmation = false
-    }
-
-    LaunchedEffect(Unit) {
-        profileViewModel.getAuthUrls()
-    }
-    LaunchedEffect(profileViewModel.accountLinked) {
-        if (profileViewModel.accountLinked) {
-            Toast.makeText(
-                context,
-                resources.getString(R.string.link_success, selectedProvider),
-                Toast.LENGTH_SHORT
-            ).show()
-            profileViewModel.accountLinked = false
-        }
-    }
-    LaunchedEffect(profileViewModel.accountUnlinked) {
-        if (profileViewModel.accountUnlinked) {
-            Toast.makeText(
-                context,
-                resources.getString(R.string.unlink_success, selectedProvider),
-                Toast.LENGTH_SHORT
-            ).show()
-            profileViewModel.accountUnlinked = false
-        }
     }
 
     Column(
@@ -197,175 +143,17 @@ fun ProfileLoggedIn(
         }
 
         HorizontalDivider()
-        Text(
-            text = stringResource(R.string.linked_accounts),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.fillMaxWidth()
-        )
-        linkedAccounts.entries.forEach { (provider, emails) ->
-            key(provider) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(
-                        8.dp,
-                        Alignment.CenterHorizontally
-                    ),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    OAuthButton(
-                        provider = provider,
-                        authUrl = profileViewModel.authUrls[provider],
-                        profileViewModel = profileViewModel
-                    )
-                    Button(
-                        onClick = {
-                            // Confirm before unlinking
-                            selectedProvider = provider
-                            showUnlinkConfirmation = true
-                        },
-                        enabled = emails.isNotEmpty() && !profileViewModel.isLoading,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
-                        )
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = stringResource(R.string.unlink),
-                                color = if (emails.isEmpty() || profileViewModel.isLoading) {
-                                    Color.Unspecified
-                                } else {
-                                    MaterialTheme.colorScheme.onError
-                                }
-                            )
-                            if (profileViewModel.isLoading) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(30.dp)
-                                )
-                            }
-                        }
-                    }
-                }
-                if (emails.isNotEmpty()) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(
-                            8.dp,
-                            Alignment.CenterHorizontally
-                        ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = null,
-                            tint = Color.Green
-                        )
-                        Text(
-                            text = emails.joinToString(", "),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
-            }
-        }
+        LinkedAccounts(chef, profileViewModel)
 
         HorizontalDivider()
-        Text(
-            text = stringResource(R.string.passkey_title),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.fillMaxWidth()
-        )
-        chef.passkeys.forEach { passkey ->
-            key(passkey.id) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(
-                        8.dp,
-                        Alignment.CenterHorizontally
-                    ),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    AsyncImage(
-                        model = if (isSystemInDarkTheme()) passkey.iconDark else passkey.iconLight,
-                        contentDescription = null,
-                        modifier = Modifier.size(50.dp)
-                    )
-                    Text(
-                        text = passkey.name
-                    )
-                    IconButton(
-                        onClick = {
-                            profileViewModel.deletePasskey(passkey.id)
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = stringResource(R.string.passkey_delete),
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                    }
-                }
-                Text(
-                    text = stringResource(
-                        R.string.last_used,
-                        passkey.lastUsed.toDateTime()
-                    )
-                )
-            }
-        }
-        PasskeyButton(stringResource(R.string.passkey_create)) {
-            profileViewModel.createNewPasskey(context)
-        }
+        Passkeys(chef, profileViewModel)
 
-        if (profileViewModel.showAlert && !showUnlinkConfirmation) {
+        if (profileViewModel.showAlert) {
             ErrorAlert(
                 message = profileViewModel.recipeError?.error,
                 onDismiss = {
                     profileViewModel.showAlert = false
                 }
-            )
-        }
-        if (showUnlinkConfirmation) {
-            AlertDialog(
-                onDismissRequest = dismissUnlinkConfirmation,
-                text = {
-                    Text(
-                        text = stringResource(
-                            R.string.unlink_confirmation,
-                            selectedProvider.toString()
-                        )
-                    )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            profileViewModel.unlinkOAuthProvider(selectedProvider)
-                            dismissUnlinkConfirmation()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
-                        )
-                    ) {
-                        Text(
-                            text = stringResource(R.string.yes_button),
-                            color = MaterialTheme.colorScheme.onError
-                        )
-                    }
-                },
-                dismissButton = {
-                    Button(
-                        onClick = dismissUnlinkConfirmation
-                    ) {
-                        Text(
-                            text = stringResource(R.string.no_button)
-                        )
-                    }
-                },
-                modifier = Modifier.padding(horizontal = 8.dp)
             )
         }
 
@@ -417,7 +205,8 @@ fun ProfileLoggedIn(
 private data class ProfileLoggedInState(
     val isLoading: Boolean = false,
     val accountLinked: Boolean = false,
-    val accountUnlinked: Boolean = false
+    val accountUnlinked: Boolean = false,
+    val passkeyDeleted: Boolean = false
 )
 
 private class ProfileLoggedInPreviewParameterProvider:
@@ -426,7 +215,8 @@ private class ProfileLoggedInPreviewParameterProvider:
         ProfileLoggedInState(),
         ProfileLoggedInState(isLoading = true),
         ProfileLoggedInState(accountLinked = true),
-        ProfileLoggedInState(accountUnlinked = true)
+        ProfileLoggedInState(accountUnlinked = true),
+        ProfileLoggedInState(passkeyDeleted = true)
     )
 }
 
@@ -453,6 +243,7 @@ private fun ProfileLoggedInPreview(
     profileViewModel.isLoading = state.isLoading
     profileViewModel.accountLinked = state.accountLinked
     profileViewModel.accountUnlinked = state.accountUnlinked
+    profileViewModel.passkeyDeleted = state.passkeyDeleted
 
     EZRecipesTheme {
         Surface {

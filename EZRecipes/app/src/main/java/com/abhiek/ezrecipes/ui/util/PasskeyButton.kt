@@ -8,6 +8,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -19,9 +20,16 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
-fun PasskeyButton(text: String, onClick: () -> Unit) {
+fun PasskeyButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) {
     Button(
-        onClick = onClick
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -31,9 +39,7 @@ fun PasskeyButton(text: String, onClick: () -> Unit) {
                 painter = painterResource(R.drawable.passkey_24px),
                 contentDescription = null
             )
-            Text(
-                text = text
-            )
+            Text(text = text)
         }
     }
 }

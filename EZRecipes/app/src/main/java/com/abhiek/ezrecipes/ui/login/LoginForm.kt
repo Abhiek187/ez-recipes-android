@@ -224,9 +224,13 @@ fun LoginForm(
                 }
             }
         }
-        PasskeyButton(stringResource(R.string.passkey_sign_in)) {
-            profileViewModel.loginWithPasskey(context, "abhishek.chaudhuri@rutgers.edu")
-        }
+        PasskeyButton(
+            text = stringResource(R.string.passkey_sign_in),
+            enabled = username.isNotEmpty(),
+            onClick = {
+                profileViewModel.loginWithPasskey(context, username)
+            }
+        )
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
