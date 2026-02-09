@@ -187,6 +187,7 @@
     <string name="password_hide">Hide password</string>
     <string name="password_forget">Forgot password?</string>
     <string name="passkey_sign_in">Sign in with a passkey</string>
+    <string name="passkey_hint">Username is required to sign in with a passkey</string>
     <string name="passkey_unsupported">
         Passkeys are only supported on Android Pie (9.0) or later
     </string>

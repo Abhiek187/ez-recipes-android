@@ -231,6 +231,12 @@ fun LoginForm(
                 profileViewModel.loginWithPasskey(context, username)
             }
         )
+        if (username.isEmpty()) {
+            Text(
+                text = stringResource(R.string.passkey_hint),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
