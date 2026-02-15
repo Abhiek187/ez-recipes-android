@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui.profile
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Build
@@ -27,6 +28,7 @@ import com.abhiek.ezrecipes.data.recipe.RecipeResult
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Encryptor
+import com.abhiek.ezrecipes.utils.buildVersion
 import com.abhiek.ezrecipes.utils.toISODateString
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -448,8 +450,9 @@ class ProfileViewModel(
         }
     }
 
+    @SuppressLint("NewApi")
     fun loginWithPasskey(context: Context, email: String) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+        if (buildVersion() < Build.VERSION_CODES.P) {
             recipeError = RecipeError(
                 context.getString(R.string.passkey_unsupported)
             )
@@ -477,7 +480,7 @@ class ProfileViewModel(
                         )
                         // Triggers the device to prompt for a passkey
                         val androidPasskeyResponse = if (
-                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+                            buildVersion() >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
                             ) {
                             // Pre-warm the sign-in request
                             val pendingAndroidPasskeyHandle = credentialManager.prepareGetCredential(
@@ -548,6 +551,7 @@ class ProfileViewModel(
                             }
                         }
                     } catch (error: Exception) {
+                        println(error.printStackTrace())
                         Log.e(TAG, "Error signing in with a passkey: $error")
 
                         // Don't show an error if the user dismissed the passkey prompt
@@ -566,8 +570,9 @@ class ProfileViewModel(
         }
     }
 
+    @SuppressLint("PublicKeyCredential")
     fun createNewPasskey(context: Context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+        if (buildVersion() < Build.VERSION_CODES.P) {
             recipeError = RecipeError(
                 context.getString(R.string.passkey_unsupported)
             )

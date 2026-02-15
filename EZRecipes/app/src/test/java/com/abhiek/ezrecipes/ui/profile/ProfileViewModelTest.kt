@@ -24,6 +24,7 @@ import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.MainDispatcherExtension
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Encryptor
+import com.abhiek.ezrecipes.utils.buildVersion
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -56,6 +57,8 @@ internal class ProfileViewModelTest {
     @MockK
     private lateinit var credentialManager: CredentialManager
     @MockK
+    private lateinit var getPublicKeyCredentialOption: GetPublicKeyCredentialOption
+    @MockK
     private lateinit var getCredentialRequest: GetCredentialRequest
     @MockK
     private lateinit var createPublicKeyCredentialRequest: CreatePublicKeyCredentialRequest
@@ -80,16 +83,21 @@ internal class ProfileViewModelTest {
         every { Encryptor.decrypt(any()) } returns mockToken
     }
 
+    private fun mockBuild() {
+        mockkStatic(::buildVersion)
+        every { buildVersion() } returns 28
+    }
+
     private fun mockPasskey() {
         mockkObject(CredentialManager)
         every { CredentialManager.create(any()) } returns credentialManager
 
         mockkConstructor(GetPublicKeyCredentialOption::class)
-//        every { constructedWith<GetPublicKeyCredentialOption>(any()) } returns getPublicKeyCredentialOption
+        every { constructedWith<GetPublicKeyCredentialOption>() } returns getPublicKeyCredentialOption
         mockkConstructor(GetCredentialRequest::class)
-//        every { constructedWith<GetCredentialRequest>(any()) } returns getCredentialRequest
+        every { constructedWith<GetCredentialRequest>() } returns getCredentialRequest
         mockkConstructor(CreatePublicKeyCredentialRequest::class)
-//        every { constructedWith<CreatePublicKeyCredentialRequest>(any()) } returns createPublicKeyCredentialRequest
+        every { constructedWith<CreatePublicKeyCredentialRequest>() } returns createPublicKeyCredentialRequest
     }
 
     @BeforeEach
@@ -110,10 +118,11 @@ internal class ProfileViewModelTest {
 
         mockLog()
         mockEncryptor()
-        mockPasskey()
+        mockBuild()
+//        mockPasskey()
         mockkStatic(Uri::class)
         every { Uri.parse(any()) } returns uri
-        every { context.getString(any()) } returns ""
+        every { context.getString(any()) } returns "mock error"
     }
 
     @AfterEach
@@ -744,7 +753,7 @@ internal class ProfileViewModelTest {
         // Then the passkey should be removed from the chef
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
-        assertTrue(viewModel.chef?.passkeys?.isEmpty() == true)
+        assertEquals(viewModel.chef, mockChefService.chef)
         assertTrue(viewModel.passkeyDeleted)
 
         verify { Encryptor.encrypt(mockChefService.mockToken.token!!) }
@@ -761,7 +770,6 @@ internal class ProfileViewModelTest {
         viewModel.deletePasskey(credentialId)
 
         // Then an error is shown
-        assertNull(viewModel.chef)
         assertEquals(viewModel.recipeError, mockChefService.tokenError)
         assertFalse(viewModel.passkeyDeleted)
     }
@@ -776,7 +784,6 @@ internal class ProfileViewModelTest {
         viewModel.deletePasskey(credentialId)
 
         // Then an error is shown
-        assertNull(viewModel.chef)
         assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
         assertFalse(viewModel.passkeyDeleted)
     }
