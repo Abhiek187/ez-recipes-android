@@ -1,6 +1,7 @@
 package com.abhiek.ezrecipes.ui.login
 
 import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -34,7 +35,6 @@ import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Provider
-import com.abhiek.ezrecipes.data.models.RecipeError
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -71,6 +71,7 @@ fun LoginForm(
     val usernameEmpty = username.isEmpty()
     val passwordEmpty = password.isEmpty()
 
+    val context = LocalContext.current
     val resources = LocalResources.current
 
     LaunchedEffect(Unit) {
@@ -233,10 +234,11 @@ fun LoginForm(
             enabled = username.isNotEmpty(),
             onClick = {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                    profileViewModel.recipeError = RecipeError(
-                        resources.getString(R.string.passkey_unsupported)
-                    )
-                    profileViewModel.showAlert = true
+                    Toast.makeText(
+                        context,
+                        resources.getString(R.string.passkey_unsupported),
+                        Toast.LENGTH_LONG
+                    ).show()
                     return@PasskeyButton
                 }
 

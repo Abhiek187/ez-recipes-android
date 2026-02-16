@@ -40,7 +40,6 @@ import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Chef
 import com.abhiek.ezrecipes.data.models.Passkey
-import com.abhiek.ezrecipes.data.models.RecipeError
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -136,10 +135,11 @@ fun Passkeys(
             .padding(top = 8.dp),
         onClick = {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                profileViewModel.recipeError = RecipeError(
-                    resources.getString(R.string.passkey_unsupported)
-                )
-                profileViewModel.showAlert = true
+                Toast.makeText(
+                    context,
+                    resources.getString(R.string.passkey_unsupported),
+                    Toast.LENGTH_LONG
+                ).show()
                 return@PasskeyButton
             }
 
