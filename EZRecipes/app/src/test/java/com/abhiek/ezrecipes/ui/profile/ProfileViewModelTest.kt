@@ -3,7 +3,9 @@ package com.abhiek.ezrecipes.ui.profile
 import android.net.Uri
 import android.util.Log
 import androidx.credentials.exceptions.CreateCredentialCancellationException
+import androidx.credentials.exceptions.CreateCredentialProviderConfigurationException
 import androidx.credentials.exceptions.GetCredentialCancellationException
+import androidx.credentials.exceptions.GetCredentialProviderConfigurationException
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.AuthState
@@ -658,6 +660,22 @@ internal class ProfileViewModelTest {
     }
 
     @Test
+    fun loginWithPasskeyTooOld() = runTest {
+        // Given the user has an out-of-date Google Play Services version
+        coEvery { mockPasskeyManager.getPasskey(any()) } throws
+                GetCredentialProviderConfigurationException()
+
+        // When logging in with a passkey
+        viewModel.loginWithPasskey(mockChefService.chef.email)
+
+        // Then the error is shown
+        assertEquals(
+            viewModel.recipeError,
+            RecipeError(Constants.PLAY_SERVICES_TOO_OLD)
+        )
+    }
+
+    @Test
     fun createNewPasskeySuccess() = runTest {
         // Given a valid passkey
         coEvery { mockPasskeyManager.createPasskey(any()) } returns mockk()
@@ -713,6 +731,22 @@ internal class ProfileViewModelTest {
         // Then the error shouldn't be shown
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
+    }
+
+    @Test
+    fun createNewPasskeyTooOld() = runTest {
+        // Given the user has an out-of-date Google Play Services version
+        coEvery { mockPasskeyManager.createPasskey(any()) } throws
+                CreateCredentialProviderConfigurationException()
+
+        // When creating a new passkey
+        viewModel.createNewPasskey()
+
+        // Then the error is shown
+        assertEquals(
+            viewModel.recipeError,
+            RecipeError(Constants.PLAY_SERVICES_TOO_OLD)
+        )
     }
 
     @Test
