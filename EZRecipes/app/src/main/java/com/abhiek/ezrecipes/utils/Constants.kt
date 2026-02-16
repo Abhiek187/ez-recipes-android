@@ -21,6 +21,8 @@ object Constants {
             "https://github.com/Abhiek187/ez-recipes-android/issues"
     const val NO_TOKEN_FOUND = "No token found"
     const val CREDENTIAL_TOO_OLD_ERROR = "CREDENTIAL_TOO_OLD_LOGIN_AGAIN"
+    const val PLAY_SERVICES_TOO_OLD = "Google Play Services is out of date to support passkeys. " +
+            "Please update to the latest version and try again."
 
     const val MIN_CALS = 0
     const val MAX_CALS = 2000

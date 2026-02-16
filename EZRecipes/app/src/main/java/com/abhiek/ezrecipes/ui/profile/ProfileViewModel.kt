@@ -9,7 +9,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
 import androidx.credentials.exceptions.CreateCredentialCancellationException
+import androidx.credentials.exceptions.CreateCredentialProviderConfigurationException
 import androidx.credentials.exceptions.GetCredentialCancellationException
+import androidx.credentials.exceptions.GetCredentialProviderConfigurationException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.abhiek.ezrecipes.data.chef.ChefRepository
@@ -496,8 +498,11 @@ class ProfileViewModel(
                     } catch (error: Exception) {
                         Log.e(TAG, "Error signing in with a passkey: $error")
 
-                        // Don't show an error if the user dismissed the passkey prompt
-                        if (error !is GetCredentialCancellationException) {
+                        if (error is GetCredentialProviderConfigurationException) {
+                            recipeError = RecipeError(Constants.PLAY_SERVICES_TOO_OLD)
+                            showAlert = job?.isCancelled == false
+                        } else if (error !is GetCredentialCancellationException) {
+                            // Don't show an error if the user dismissed the passkey prompt
                             recipeError =
                                 RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
                             showAlert = job?.isCancelled == false
@@ -574,7 +579,10 @@ class ProfileViewModel(
                         // https://developer.android.com/identity/passkeys/create-passkeys#handle-response
                         Log.e(TAG, "Error creating a new passkey: $error")
 
-                        if (error !is CreateCredentialCancellationException) {
+                        if (error is CreateCredentialProviderConfigurationException) {
+                            recipeError = RecipeError(Constants.PLAY_SERVICES_TOO_OLD)
+                            showAlert = job?.isCancelled == false
+                        } else if (error !is CreateCredentialCancellationException) {
                             recipeError =
                                 RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
                             showAlert = job?.isCancelled == false

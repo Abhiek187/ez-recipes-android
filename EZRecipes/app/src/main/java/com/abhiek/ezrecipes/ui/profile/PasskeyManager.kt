@@ -19,6 +19,10 @@ import com.google.gson.reflect.TypeToken
 
 /**
  * Helper class to manage passkey creation and retrieval using the Credential Manager
+ *
+ * Minimum Google Play Services version required: 23.08.15 (230815045)
+ *
+ * Check by running: `adb shell pm dump com.google.android.gms | grep version`
  */
 class PasskeyManager(private val context: Context) {
     private val credentialManager = CredentialManager.create(context)
