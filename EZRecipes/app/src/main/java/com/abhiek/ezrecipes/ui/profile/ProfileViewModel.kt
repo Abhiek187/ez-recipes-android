@@ -494,7 +494,6 @@ class ProfileViewModel(
                             }
                         }
                     } catch (error: Exception) {
-                        println(error.printStackTrace())
                         Log.e(TAG, "Error signing in with a passkey: $error")
 
                         // Don't show an error if the user dismissed the passkey prompt

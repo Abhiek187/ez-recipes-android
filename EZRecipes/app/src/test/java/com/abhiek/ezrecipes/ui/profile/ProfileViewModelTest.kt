@@ -2,6 +2,8 @@ package com.abhiek.ezrecipes.ui.profile
 
 import android.net.Uri
 import android.util.Log
+import androidx.credentials.exceptions.CreateCredentialCancellationException
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.AuthState
@@ -32,7 +34,6 @@ internal class ProfileViewModelTest {
     private lateinit var mockChefService: MockChefService
     private lateinit var mockRecipeService: MockRecipeService
     private lateinit var mockDataStoreService: DataStoreService
-    private lateinit var mockPasskeyManager: PasskeyManager
     private lateinit var viewModel: ProfileViewModel
 
     private val mockToken = Constants.Mocks.CHEF.token
@@ -42,6 +43,8 @@ internal class ProfileViewModelTest {
     private lateinit var keyStore: KeyStore
     @MockK
     private lateinit var uri: Uri
+    @MockK
+    private lateinit var mockPasskeyManager: PasskeyManager
 
     private fun mockLog() {
         mockkStatic(Log::class)
@@ -72,10 +75,6 @@ internal class ProfileViewModelTest {
             coEvery { getToken() } returns mockEncryptedToken
             coJustRun { saveToken(any()) }
             coJustRun { deleteToken() }
-        }
-        mockPasskeyManager = mockkClass(PasskeyManager::class) {
-            coEvery { getPasskey(any()) } returns mockk()
-            coEvery { createPasskey(any()) } returns mockk()
         }
         viewModel = ProfileViewModel(
             chefRepository = ChefRepository(mockChefService),
@@ -600,7 +599,8 @@ internal class ProfileViewModelTest {
 
     @Test
     fun loginWithPasskeySuccess() = runTest {
-        // Given a successful passkey login
+        // Given a valid passkey
+        coEvery { mockPasskeyManager.getPasskey(any()) } returns mockk()
 
         // When logging in with a passkey
         viewModel.loginWithPasskey(mockChefService.chef.email)
@@ -608,17 +608,7 @@ internal class ProfileViewModelTest {
         // Then the user should be authenticated
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
-        assertEquals(viewModel.chef, Chef(
-            uid = mockChefService.loginResponse.uid,
-            email = mockChefService.chef.email,
-            emailVerified = mockChefService.loginResponse.emailVerified,
-            providerData = mockChefService.chef.providerData,
-            passkeys = mockChefService.chef.passkeys,
-            ratings = mockChefService.chef.ratings,
-            recentRecipes = mockChefService.chef.recentRecipes,
-            favoriteRecipes = mockChefService.chef.favoriteRecipes,
-            token = mockChefService.loginResponse.token
-        ))
+        assertEquals(viewModel.chef, mockChefService.chef)
         assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
         assertFalse(viewModel.openLoginDialog)
 
@@ -627,71 +617,100 @@ internal class ProfileViewModelTest {
     }
 
     @Test
-    fun loginWithPasskeyError() = runTest {
-        // Given an error during passkey login
+    fun loginWithPasskeyServerError() = runTest {
+        // Given a valid passkey
+        coEvery { mockPasskeyManager.getPasskey(any()) } returns mockk()
 
-        // When logging in with a passkey
+        // When logging in with a passkey and an error occurs
         mockChefService.isSuccess = false
         viewModel.loginWithPasskey(mockChefService.chef.email)
 
         // Then an error is shown
-        assertNull(viewModel.chef)
-        assertEquals(viewModel.recipeError, RecipeError("Error"))
-        assertTrue(viewModel.showAlert)
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+    }
+
+    @Test
+    fun loginWithPasskeyClientError() = runTest {
+        // Given an invalid passkey
+        val mockError = "mock error"
+        coEvery { mockPasskeyManager.getPasskey(any()) } throws
+                Exception(mockError)
+
+        // When logging in with a passkey
+        viewModel.loginWithPasskey(mockChefService.chef.email)
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, RecipeError(mockError))
     }
 
     @Test
     fun loginWithPasskeyCanceled() = runTest {
-        // Given the user cancels passkey login
+        // Given the user canceled the passkey prompt
+        coEvery { mockPasskeyManager.getPasskey(any()) } throws
+                GetCredentialCancellationException()
 
         // When logging in with a passkey
         viewModel.loginWithPasskey(mockChefService.chef.email)
 
         // Then the error shouldn't be shown
-        assertNull(viewModel.chef)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
     }
 
     @Test
     fun createNewPasskeySuccess() = runTest {
-        // Given a successful passkey creation
+        // Given a valid passkey
+        coEvery { mockPasskeyManager.createPasskey(any()) } returns mockk()
 
         // When creating a new passkey
         viewModel.createNewPasskey()
 
-        // Then the chef should have a new passkey
+        // Then the passkey should be saved with the chef
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
-        assertEquals(viewModel.chef?.passkeys?.size, 1)
+        assertEquals(viewModel.chef, mockChefService.chef)
 
         verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
         coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
     }
 
     @Test
-    fun createNewPasskeyError() = runTest {
-        // Given an error during passkey creation
+    fun createNewPasskeyServerError() = runTest {
+        // Given a valid passkey
+        coEvery { mockPasskeyManager.createPasskey(any()) } returns mockk()
 
-        // When creating a new passkey
+        // When creating a new passkey and an error occurs
         mockChefService.isSuccess = false
         viewModel.createNewPasskey()
 
         // Then an error is shown
-        assertNull(viewModel.chef)
-        assertEquals(viewModel.recipeError, RecipeError("Error"))
-        assertTrue(viewModel.showAlert)
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+    }
+
+    @Test
+    fun createNewPasskeyClientError() = runTest {
+        // Given an invalid passkey
+        val mockError = "mock error"
+        coEvery { mockPasskeyManager.createPasskey(any()) } throws
+                Exception(mockError)
+
+        // When creating a new passkey
+        viewModel.createNewPasskey()
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, RecipeError(mockError))
     }
 
     @Test
     fun createNewPasskeyCanceled() = runTest {
-        // Given the user cancels passkey creation
+        // Given the user canceled the passkey prompt
+        coEvery { mockPasskeyManager.createPasskey(any()) } throws
+                CreateCredentialCancellationException()
 
         // When creating a new passkey
         viewModel.createNewPasskey()
 
         // Then the error shouldn't be shown
-        assertNull(viewModel.chef)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
     }
