@@ -142,7 +142,8 @@ private fun DeleteAccountDialogPreview(
         ProfileViewModel(
             chefRepository = ChefRepository(chefService),
             recipeRepository = RecipeRepository(recipeService),
-            dataStoreService = DataStoreService(context)
+            dataStoreService = DataStoreService(context),
+            passkeyManager = PasskeyManager(context)
         )
     }
     profileViewModel.isLoading = state.isLoading

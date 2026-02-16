@@ -1,25 +1,17 @@
 package com.abhiek.ezrecipes.ui.profile
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
-import androidx.credentials.CreatePublicKeyCredentialRequest
-import androidx.credentials.CreatePublicKeyCredentialResponse
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
-import androidx.credentials.GetPublicKeyCredentialOption
-import androidx.credentials.PublicKeyCredential
 import androidx.credentials.exceptions.CreateCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.ChefResult
 import com.abhiek.ezrecipes.data.models.*
@@ -28,10 +20,7 @@ import com.abhiek.ezrecipes.data.recipe.RecipeResult
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Encryptor
-import com.abhiek.ezrecipes.utils.buildVersion
 import com.abhiek.ezrecipes.utils.toISODateString
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,7 +29,8 @@ import kotlinx.coroutines.flow.update
 class ProfileViewModel(
     private val chefRepository: ChefRepository,
     private val recipeRepository: RecipeRepository,
-    private val dataStoreService: DataStoreService
+    private val dataStoreService: DataStoreService,
+    private val passkeyManager: PasskeyManager
 ): ViewModel() {
     var job by mutableStateOf<Job?>(null)
         private set
@@ -69,8 +59,6 @@ class ProfileViewModel(
     val favoriteRecipes = _favoriteRecipes.asStateFlow()
     val recentRecipes = _recentRecipes.asStateFlow()
     val ratedRecipes = _ratedRecipes.asStateFlow()
-
-    private val gson = Gson()
 
     companion object {
         private const val TAG = "ProfileViewModel"
@@ -450,16 +438,8 @@ class ProfileViewModel(
         }
     }
 
-    @SuppressLint("NewApi")
-    fun loginWithPasskey(context: Context, email: String) {
-        if (buildVersion() < Build.VERSION_CODES.P) {
-            recipeError = RecipeError(
-                context.getString(R.string.passkey_unsupported)
-            )
-            showAlert = true
-            return
-        }
-
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun loginWithPasskey(email: String) {
         job = viewModelScope.launch {
             isLoading = true
             val passkeyOptionsResult = chefRepository.getExistingPasskeyChallenge(email)
@@ -468,47 +448,10 @@ class ProfileViewModel(
             when (passkeyOptionsResult) {
                 is ChefResult.Success -> {
                     val serverPasskeyOptions = passkeyOptionsResult.response
-                    val credentialManager = CredentialManager.create(context)
 
                     try {
-                        // Convert the standard WebAuthn options to a Credential Manager request
-                        val androidPasskeyOptions = GetPublicKeyCredentialOption(
-                            gson.toJson(serverPasskeyOptions)
-                        )
-                        val androidPasskeyRequest = GetCredentialRequest(
-                            listOf(androidPasskeyOptions)
-                        )
-                        // Triggers the device to prompt for a passkey
-                        val androidPasskeyResponse = if (
-                            buildVersion() >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
-                            ) {
-                            // Pre-warm the sign-in request
-                            val pendingAndroidPasskeyHandle = credentialManager.prepareGetCredential(
-                                androidPasskeyRequest
-                            ).pendingGetCredentialHandle
-
-                            if (pendingAndroidPasskeyHandle != null) {
-                                credentialManager.getCredential(
-                                    context,
-                                    pendingAndroidPasskeyHandle
-                                ).credential as PublicKeyCredential
-                            } else {
-                                credentialManager.getCredential(
-                                    context,
-                                    androidPasskeyRequest
-                                ).credential as PublicKeyCredential
-                            }
-                        } else {
-                            credentialManager.getCredential(
-                                context,
-                                androidPasskeyRequest
-                            ).credential as PublicKeyCredential
-                        }
-
-                        // Convert the Credential Manager response to a standard WebAuthn response
-                        val serverPasskeyResponse = gson.fromJson(
-                            androidPasskeyResponse.authenticationResponseJson,
-                            object: TypeToken<ExistingPasskeyClientResponse>() {}
+                        val serverPasskeyResponse = passkeyManager.getPasskey(
+                            serverPasskeyOptions
                         )
                         isLoading = true
                         val passkeyValidateResult = chefRepository.validateExistingPasskey(
@@ -570,16 +513,8 @@ class ProfileViewModel(
         }
     }
 
-    @SuppressLint("PublicKeyCredential")
-    fun createNewPasskey(context: Context) {
-        if (buildVersion() < Build.VERSION_CODES.P) {
-            recipeError = RecipeError(
-                context.getString(R.string.passkey_unsupported)
-            )
-            showAlert = true
-            return
-        }
-
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun createNewPasskey() {
         job = viewModelScope.launch {
             isLoading = true
             val token = getToken()
@@ -593,23 +528,10 @@ class ProfileViewModel(
             when (passkeyOptionsResult) {
                 is ChefResult.Success -> {
                     val serverPasskeyOptions = passkeyOptionsResult.response
-                    val credentialManager = CredentialManager.create(context)
 
                     try {
-                        // Convert the standard WebAuthn options to a Credential Manager request
-                        val androidPasskeyRequest = CreatePublicKeyCredentialRequest(
-                            gson.toJson(serverPasskeyOptions)
-                        )
-                        // Triggers the device to prompt for a passkey
-                        val androidPasskeyResponse = credentialManager.createCredential(
-                            context,
-                            androidPasskeyRequest
-                        ) as CreatePublicKeyCredentialResponse
-
-                        // Convert the Credential Manager response to a standard WebAuthn response
-                        val serverPasskeyResponse = gson.fromJson(
-                            androidPasskeyResponse.registrationResponseJson,
-                            object: TypeToken<NewPasskeyClientResponse>() {}
+                        val serverPasskeyResponse = passkeyManager.createPasskey(
+                            serverPasskeyOptions
                         )
                         isLoading = true
                         val passkeyValidateResult = chefRepository.validateNewPasskey(

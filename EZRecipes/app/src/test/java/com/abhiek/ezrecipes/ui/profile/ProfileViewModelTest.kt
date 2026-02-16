@@ -1,17 +1,7 @@
 package com.abhiek.ezrecipes.ui.profile
 
-import android.content.Context
 import android.net.Uri
 import android.util.Log
-import androidx.credentials.CreatePublicKeyCredentialRequest
-import androidx.credentials.CreatePublicKeyCredentialResponse
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
-import androidx.credentials.GetCredentialResponse
-import androidx.credentials.GetPublicKeyCredentialOption
-import androidx.credentials.PublicKeyCredential
-import androidx.credentials.exceptions.CreateCredentialCancellationException
-import androidx.credentials.exceptions.GetCredentialCancellationException
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.AuthState
@@ -24,7 +14,6 @@ import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.MainDispatcherExtension
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Encryptor
-import com.abhiek.ezrecipes.utils.buildVersion
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -43,6 +32,7 @@ internal class ProfileViewModelTest {
     private lateinit var mockChefService: MockChefService
     private lateinit var mockRecipeService: MockRecipeService
     private lateinit var mockDataStoreService: DataStoreService
+    private lateinit var mockPasskeyManager: PasskeyManager
     private lateinit var viewModel: ProfileViewModel
 
     private val mockToken = Constants.Mocks.CHEF.token
@@ -52,16 +42,6 @@ internal class ProfileViewModelTest {
     private lateinit var keyStore: KeyStore
     @MockK
     private lateinit var uri: Uri
-    @MockK
-    private lateinit var context: Context
-    @MockK
-    private lateinit var credentialManager: CredentialManager
-    @MockK
-    private lateinit var getPublicKeyCredentialOption: GetPublicKeyCredentialOption
-    @MockK
-    private lateinit var getCredentialRequest: GetCredentialRequest
-    @MockK
-    private lateinit var createPublicKeyCredentialRequest: CreatePublicKeyCredentialRequest
 
     private fun mockLog() {
         mockkStatic(Log::class)
@@ -83,23 +63,6 @@ internal class ProfileViewModelTest {
         every { Encryptor.decrypt(any()) } returns mockToken
     }
 
-    private fun mockBuild() {
-        mockkStatic(::buildVersion)
-        every { buildVersion() } returns 28
-    }
-
-    private fun mockPasskey() {
-        mockkObject(CredentialManager)
-        every { CredentialManager.create(any()) } returns credentialManager
-
-        mockkConstructor(GetPublicKeyCredentialOption::class)
-        every { constructedWith<GetPublicKeyCredentialOption>() } returns getPublicKeyCredentialOption
-        mockkConstructor(GetCredentialRequest::class)
-        every { constructedWith<GetCredentialRequest>() } returns getCredentialRequest
-        mockkConstructor(CreatePublicKeyCredentialRequest::class)
-        every { constructedWith<CreatePublicKeyCredentialRequest>() } returns createPublicKeyCredentialRequest
-    }
-
     @BeforeEach
     fun setUp() {
         mockChefService = MockChefService
@@ -110,19 +73,21 @@ internal class ProfileViewModelTest {
             coJustRun { saveToken(any()) }
             coJustRun { deleteToken() }
         }
+        mockPasskeyManager = mockkClass(PasskeyManager::class) {
+            coEvery { getPasskey(any()) } returns mockk()
+            coEvery { createPasskey(any()) } returns mockk()
+        }
         viewModel = ProfileViewModel(
             chefRepository = ChefRepository(mockChefService),
             recipeRepository = RecipeRepository(mockRecipeService),
-            dataStoreService = mockDataStoreService
+            dataStoreService = mockDataStoreService,
+            passkeyManager = mockPasskeyManager
         )
 
         mockLog()
         mockEncryptor()
-        mockBuild()
-//        mockPasskey()
         mockkStatic(Uri::class)
         every { Uri.parse(any()) } returns uri
-        every { context.getString(any()) } returns "mock error"
     }
 
     @AfterEach
@@ -636,13 +601,9 @@ internal class ProfileViewModelTest {
     @Test
     fun loginWithPasskeySuccess() = runTest {
         // Given a successful passkey login
-        val publicKeyCredential = mockk<PublicKeyCredential>()
-        every { publicKeyCredential.authenticationResponseJson } returns """{"rawId": "test-raw-id", "authenticatorAttachment": "platform", "clientDataJSON": "test-client-data-json", "signature": "test-signature", "userHandle": "test-user-handle"}"""
-        val getCredentialResponse = GetCredentialResponse(publicKeyCredential)
-        coEvery { credentialManager.getCredential(context, getCredentialRequest) } returns getCredentialResponse
 
         // When logging in with a passkey
-        viewModel.loginWithPasskey(context, mockChefService.chef.email)
+        viewModel.loginWithPasskey(mockChefService.chef.email)
 
         // Then the user should be authenticated
         assertNull(viewModel.recipeError)
@@ -668,11 +629,10 @@ internal class ProfileViewModelTest {
     @Test
     fun loginWithPasskeyError() = runTest {
         // Given an error during passkey login
-        coEvery { credentialManager.getCredential(context, getCredentialRequest) } throws Exception("Error")
 
         // When logging in with a passkey
         mockChefService.isSuccess = false
-        viewModel.loginWithPasskey(context, mockChefService.chef.email)
+        viewModel.loginWithPasskey(mockChefService.chef.email)
 
         // Then an error is shown
         assertNull(viewModel.chef)
@@ -683,10 +643,9 @@ internal class ProfileViewModelTest {
     @Test
     fun loginWithPasskeyCanceled() = runTest {
         // Given the user cancels passkey login
-        coEvery { credentialManager.getCredential(context, getCredentialRequest) } throws GetCredentialCancellationException("Canceled")
 
         // When logging in with a passkey
-        viewModel.loginWithPasskey(context, mockChefService.chef.email)
+        viewModel.loginWithPasskey(mockChefService.chef.email)
 
         // Then the error shouldn't be shown
         assertNull(viewModel.chef)
@@ -697,12 +656,9 @@ internal class ProfileViewModelTest {
     @Test
     fun createNewPasskeySuccess() = runTest {
         // Given a successful passkey creation
-        val createPublicKeyCredentialResponse = mockk<CreatePublicKeyCredentialResponse>()
-        every { createPublicKeyCredentialResponse.registrationResponseJson } returns """{"rawId": "test-raw-id", "authenticatorAttachment": "platform", "clientDataJSON": "test-client-data-json"}"""
-        coEvery { credentialManager.createCredential(context, createPublicKeyCredentialRequest) } returns createPublicKeyCredentialResponse
 
         // When creating a new passkey
-        viewModel.createNewPasskey(context)
+        viewModel.createNewPasskey()
 
         // Then the chef should have a new passkey
         assertNull(viewModel.recipeError)
@@ -716,11 +672,10 @@ internal class ProfileViewModelTest {
     @Test
     fun createNewPasskeyError() = runTest {
         // Given an error during passkey creation
-        coEvery { credentialManager.createCredential(context, createPublicKeyCredentialRequest) } throws Exception("Error")
 
         // When creating a new passkey
         mockChefService.isSuccess = false
-        viewModel.createNewPasskey(context)
+        viewModel.createNewPasskey()
 
         // Then an error is shown
         assertNull(viewModel.chef)
@@ -731,10 +686,9 @@ internal class ProfileViewModelTest {
     @Test
     fun createNewPasskeyCanceled() = runTest {
         // Given the user cancels passkey creation
-        coEvery { credentialManager.createCredential(context, createPublicKeyCredentialRequest) } throws CreateCredentialCancellationException("Canceled")
 
         // When creating a new passkey
-        viewModel.createNewPasskey(context)
+        viewModel.createNewPasskey()
 
         // Then the error shouldn't be shown
         assertNull(viewModel.chef)

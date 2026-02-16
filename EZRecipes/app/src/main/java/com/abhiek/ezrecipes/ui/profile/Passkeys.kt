@@ -1,5 +1,6 @@
 package com.abhiek.ezrecipes.ui.profile
 
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +40,7 @@ import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.Chef
 import com.abhiek.ezrecipes.data.models.Passkey
+import com.abhiek.ezrecipes.data.models.RecipeError
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -133,7 +135,15 @@ fun Passkeys(
             .wrapContentWidth(Alignment.CenterHorizontally)
             .padding(top = 8.dp),
         onClick = {
-            profileViewModel.createNewPasskey(context)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                profileViewModel.recipeError = RecipeError(
+                    resources.getString(R.string.passkey_unsupported)
+                )
+                profileViewModel.showAlert = true
+                return@PasskeyButton
+            }
+
+            profileViewModel.createNewPasskey()
         }
     )
 
@@ -180,7 +190,8 @@ private fun PasskeysPreview(
         ProfileViewModel(
             chefRepository = ChefRepository(chefService),
             recipeRepository = RecipeRepository(recipeService),
-            dataStoreService = DataStoreService(context)
+            dataStoreService = DataStoreService(context),
+            passkeyManager = PasskeyManager(context)
         )
     }
     profileViewModel.chef = chefService.chef
