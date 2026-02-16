@@ -8,7 +8,7 @@ data class PasskeyCreationOptions(
     val timeout: Int,
     val attestation: String,
     val excludeCredentials: List<Credential>,
-    val authenticatorSelection: Map<String, String>,
+    val authenticatorSelection: AuthenticatorSelection,
     val extensions: Map<String, Boolean>,
     val hints: List<String>
 ) {
@@ -32,5 +32,11 @@ data class PasskeyCreationOptions(
         val id: String,
         val transports: List<String>,
         val type: String
+    )
+
+    data class AuthenticatorSelection(
+        val requireResidentKey: Boolean,
+        val residentKey: String,
+        val userVerification: String
     )
 }

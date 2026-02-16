@@ -648,8 +648,10 @@ object Constants {
                     type = "public-key"
                 )
             ),
-            authenticatorSelection = mapOf(
-                "userVerification" to "required"
+            authenticatorSelection = PasskeyCreationOptions.AuthenticatorSelection(
+                requireResidentKey = true,
+                residentKey = "required",
+                userVerification = "required"
             ),
             extensions = mapOf(
                 "credProps" to true
