@@ -67,6 +67,35 @@ interface ChefService {
         @Header("Authorization") token: String
     ): Response<Token>
 
+    @GET("passkey/create")
+    suspend fun getNewPasskeyChallenge(
+        @Header("Authorization") token: String
+    ): Response<PasskeyCreationOptions>
+
+    @GET("passkey/auth")
+    suspend fun getExistingPasskeyChallenge(
+        @Query("email") email: String
+    ): Response<PasskeyRequestOptions>
+
+    // Creating separate methods due to type erasure :(
+    @POST("passkey/verify")
+    suspend fun validateNewPasskey(
+        @Body passkeyResponse: NewPasskeyClientResponse,
+        @Header("Authorization") token: String
+    ): Response<Token>
+
+    @POST("passkey/verify")
+    suspend fun validateExistingPasskey(
+        @Body passkeyResponse: ExistingPasskeyClientResponse,
+        @Query("email") email: String
+    ): Response<Token>
+
+    @DELETE("passkey")
+    suspend fun deletePasskey(
+        @Query("id") id: String,
+        @Header("Authorization") token: String
+    ): Response<Token>
+
     companion object {
         private lateinit var chefService: ChefService
 

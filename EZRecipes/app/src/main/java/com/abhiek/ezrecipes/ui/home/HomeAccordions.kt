@@ -40,6 +40,7 @@ import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.profile.PasskeyManager
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.search.RecipeCard
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
@@ -216,7 +217,8 @@ private fun HomeAccordionsPreview(
         ProfileViewModel(
             chefRepository = ChefRepository(chefService),
             recipeRepository = RecipeRepository(recipeService),
-            dataStoreService = DataStoreService(context)
+            dataStoreService = DataStoreService(context),
+            passkeyManager = PasskeyManager(context)
         )
     }
 

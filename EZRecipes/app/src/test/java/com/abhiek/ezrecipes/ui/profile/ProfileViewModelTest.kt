@@ -2,6 +2,10 @@ package com.abhiek.ezrecipes.ui.profile
 
 import android.net.Uri
 import android.util.Log
+import androidx.credentials.exceptions.CreateCredentialCancellationException
+import androidx.credentials.exceptions.CreateCredentialProviderConfigurationException
+import androidx.credentials.exceptions.GetCredentialCancellationException
+import androidx.credentials.exceptions.GetCredentialProviderConfigurationException
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
 import com.abhiek.ezrecipes.data.models.AuthState
@@ -41,6 +45,8 @@ internal class ProfileViewModelTest {
     private lateinit var keyStore: KeyStore
     @MockK
     private lateinit var uri: Uri
+    @MockK
+    private lateinit var mockPasskeyManager: PasskeyManager
 
     private fun mockLog() {
         mockkStatic(Log::class)
@@ -75,7 +81,8 @@ internal class ProfileViewModelTest {
         viewModel = ProfileViewModel(
             chefRepository = ChefRepository(mockChefService),
             recipeRepository = RecipeRepository(mockRecipeService),
-            dataStoreService = mockDataStoreService
+            dataStoreService = mockDataStoreService,
+            passkeyManager = mockPasskeyManager
         )
 
         mockLog()
@@ -109,6 +116,7 @@ internal class ProfileViewModelTest {
             email = username,
             emailVerified = mockChefService.loginResponse.emailVerified,
             providerData = listOf(),
+            passkeys = listOf(),
             ratings = mapOf(),
             recentRecipes = mapOf(),
             favoriteRecipes = listOf(),
@@ -281,6 +289,7 @@ internal class ProfileViewModelTest {
             email = mockChefService.chef.email,
             emailVerified = mockChefService.loginResponse.emailVerified,
             providerData = mockChefService.chef.providerData,
+            passkeys = mockChefService.chef.passkeys,
             ratings = mockChefService.chef.ratings,
             recentRecipes = mockChefService.chef.recentRecipes,
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
@@ -311,6 +320,7 @@ internal class ProfileViewModelTest {
             email = mockChefService.chef.email,
             emailVerified = false,
             providerData = mockChefService.chef.providerData,
+            passkeys = mockChefService.chef.passkeys,
             ratings = mockChefService.chef.ratings,
             recentRecipes = mockChefService.chef.recentRecipes,
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
@@ -432,6 +442,7 @@ internal class ProfileViewModelTest {
             email = mockChefService.chef.email,
             emailVerified = mockChefService.loginResponse.emailVerified,
             providerData = mockChefService.chef.providerData,
+            passkeys = mockChefService.chef.passkeys,
             ratings = mockChefService.chef.ratings,
             recentRecipes = mockChefService.chef.recentRecipes,
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
@@ -484,6 +495,7 @@ internal class ProfileViewModelTest {
             email = mockChefService.chef.email,
             emailVerified = mockChefService.loginResponse.emailVerified,
             providerData = mockChefService.chef.providerData,
+            passkeys = mockChefService.chef.passkeys,
             ratings = mockChefService.chef.ratings,
             recentRecipes = mockChefService.chef.recentRecipes,
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
@@ -504,7 +516,7 @@ internal class ProfileViewModelTest {
         val provider = Provider.GOOGLE
         coEvery { mockDataStoreService.getToken() } returns null
 
-        // When logging in with the provider and the email isn't verified
+        // When logging in with the provider, and the email isn't verified
         mockChefService.isEmailVerified = false
         viewModel.loginWithOAuth(code, provider)
 
@@ -516,6 +528,7 @@ internal class ProfileViewModelTest {
             email = mockChefService.chef.email,
             emailVerified = false,
             providerData = mockChefService.chef.providerData,
+            passkeys = mockChefService.chef.passkeys,
             ratings = mockChefService.chef.ratings,
             recentRecipes = mockChefService.chef.recentRecipes,
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
@@ -544,6 +557,7 @@ internal class ProfileViewModelTest {
             email = mockChefService.chef.email,
             emailVerified = mockChefService.loginResponse.emailVerified,
             providerData = mockChefService.chef.providerData,
+            passkeys = mockChefService.chef.passkeys,
             ratings = mockChefService.chef.ratings,
             recentRecipes = mockChefService.chef.recentRecipes,
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
@@ -583,6 +597,202 @@ internal class ProfileViewModelTest {
         assertNull(viewModel.chef)
         assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
         assertFalse(viewModel.accountUnlinked)
+    }
+
+    @Test
+    fun loginWithPasskeySuccess() = runTest {
+        // Given a valid passkey
+        coEvery { mockPasskeyManager.getPasskey(any()) } returns mockk()
+
+        // When logging in with a passkey
+        viewModel.loginWithPasskey(mockChefService.chef.email)
+
+        // Then the user should be authenticated
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertEquals(viewModel.chef, mockChefService.chef)
+        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertFalse(viewModel.openLoginDialog)
+
+        verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun loginWithPasskeyServerError() = runTest {
+        // Given a valid passkey
+        coEvery { mockPasskeyManager.getPasskey(any()) } returns mockk()
+
+        // When logging in with a passkey and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.loginWithPasskey(mockChefService.chef.email)
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+    }
+
+    @Test
+    fun loginWithPasskeyClientError() = runTest {
+        // Given an invalid passkey
+        val mockError = "mock error"
+        coEvery { mockPasskeyManager.getPasskey(any()) } throws
+                Exception(mockError)
+
+        // When logging in with a passkey
+        viewModel.loginWithPasskey(mockChefService.chef.email)
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, RecipeError(mockError))
+    }
+
+    @Test
+    fun loginWithPasskeyCanceled() = runTest {
+        // Given the user canceled the passkey prompt
+        coEvery { mockPasskeyManager.getPasskey(any()) } throws
+                GetCredentialCancellationException()
+
+        // When logging in with a passkey
+        viewModel.loginWithPasskey(mockChefService.chef.email)
+
+        // Then the error shouldn't be shown
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+    }
+
+    @Test
+    fun loginWithPasskeyTooOld() = runTest {
+        // Given the user has an out-of-date Google Play Services version
+        coEvery { mockPasskeyManager.getPasskey(any()) } throws
+                GetCredentialProviderConfigurationException()
+
+        // When logging in with a passkey
+        viewModel.loginWithPasskey(mockChefService.chef.email)
+
+        // Then the error is shown
+        assertEquals(
+            viewModel.recipeError,
+            RecipeError(Constants.PLAY_SERVICES_TOO_OLD)
+        )
+    }
+
+    @Test
+    fun createNewPasskeySuccess() = runTest {
+        // Given a valid passkey
+        coEvery { mockPasskeyManager.createPasskey(any()) } returns mockk()
+
+        // When creating a new passkey
+        viewModel.createNewPasskey()
+
+        // Then the passkey should be saved with the chef
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertEquals(viewModel.chef, mockChefService.chef)
+
+        verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun createNewPasskeyServerError() = runTest {
+        // Given a valid passkey
+        coEvery { mockPasskeyManager.createPasskey(any()) } returns mockk()
+
+        // When creating a new passkey and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.createNewPasskey()
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+    }
+
+    @Test
+    fun createNewPasskeyClientError() = runTest {
+        // Given an invalid passkey
+        val mockError = "mock error"
+        coEvery { mockPasskeyManager.createPasskey(any()) } throws
+                Exception(mockError)
+
+        // When creating a new passkey
+        viewModel.createNewPasskey()
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, RecipeError(mockError))
+    }
+
+    @Test
+    fun createNewPasskeyCanceled() = runTest {
+        // Given the user canceled the passkey prompt
+        coEvery { mockPasskeyManager.createPasskey(any()) } throws
+                CreateCredentialCancellationException()
+
+        // When creating a new passkey
+        viewModel.createNewPasskey()
+
+        // Then the error shouldn't be shown
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+    }
+
+    @Test
+    fun createNewPasskeyTooOld() = runTest {
+        // Given the user has an out-of-date Google Play Services version
+        coEvery { mockPasskeyManager.createPasskey(any()) } throws
+                CreateCredentialProviderConfigurationException()
+
+        // When creating a new passkey
+        viewModel.createNewPasskey()
+
+        // Then the error is shown
+        assertEquals(
+            viewModel.recipeError,
+            RecipeError(Constants.PLAY_SERVICES_TOO_OLD)
+        )
+    }
+
+    @Test
+    fun deletePasskeySuccess() = runTest {
+        // Given a passkey to delete
+        val credentialId = "test-credential-id"
+
+        // When deleting the passkey
+        viewModel.deletePasskey(credentialId)
+
+        // Then the passkey should be removed from the chef
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertEquals(viewModel.chef, mockChefService.chef)
+        assertTrue(viewModel.passkeyDeleted)
+
+        verify { Encryptor.encrypt(mockChefService.mockToken.token!!) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun deletePasskeyError() = runTest {
+        // Given a passkey to delete
+        val credentialId = "test-credential-id"
+
+        // When deleting the passkey and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.deletePasskey(credentialId)
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+        assertFalse(viewModel.passkeyDeleted)
+    }
+
+    @Test
+    fun deletePasskeyNoToken() = runTest {
+        // Given a passkey to delete and no token
+        val credentialId = "test-credential-id"
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When deleting the passkey
+        viewModel.deletePasskey(credentialId)
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
+        assertFalse(viewModel.passkeyDeleted)
     }
 
     @Test

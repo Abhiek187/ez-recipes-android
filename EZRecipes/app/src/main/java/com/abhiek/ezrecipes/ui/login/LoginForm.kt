@@ -1,5 +1,7 @@
 package com.abhiek.ezrecipes.ui.login
 
+import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -19,6 +21,7 @@ import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentType
@@ -39,10 +42,12 @@ import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
+import com.abhiek.ezrecipes.ui.profile.PasskeyManager
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.ui.util.OAuthButton
+import com.abhiek.ezrecipes.ui.util.PasskeyButton
 
 @Composable
 fun LoginForm(
@@ -65,6 +70,9 @@ fun LoginForm(
     // Errors
     val usernameEmpty = username.isEmpty()
     val passwordEmpty = password.isEmpty()
+
+    val context = LocalContext.current
+    val resources = LocalResources.current
 
     LaunchedEffect(Unit) {
         profileViewModel.getAuthUrls()
@@ -221,6 +229,28 @@ fun LoginForm(
                 }
             }
         }
+        PasskeyButton(
+            text = stringResource(R.string.passkey_sign_in),
+            enabled = username.isNotEmpty(),
+            onClick = {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                    Toast.makeText(
+                        context,
+                        resources.getString(R.string.passkey_unsupported),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@PasskeyButton
+                }
+
+                profileViewModel.loginWithPasskey(username)
+            }
+        )
+        if (username.isEmpty()) {
+            Text(
+                text = stringResource(R.string.passkey_hint),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -282,7 +312,8 @@ private fun LoginFormPreview(
         ProfileViewModel(
             chefRepository = ChefRepository(chefService),
             recipeRepository = RecipeRepository(recipeService),
-            dataStoreService = DataStoreService(context)
+            dataStoreService = DataStoreService(context),
+            passkeyManager = PasskeyManager(context)
         )
     }
     profileViewModel.isLoading = state.isLoading

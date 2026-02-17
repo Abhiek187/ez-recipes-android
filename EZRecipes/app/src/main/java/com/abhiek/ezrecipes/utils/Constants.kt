@@ -21,6 +21,8 @@ object Constants {
             "https://github.com/Abhiek187/ez-recipes-android/issues"
     const val NO_TOKEN_FOUND = "No token found"
     const val CREDENTIAL_TOO_OLD_ERROR = "CREDENTIAL_TOO_OLD_LOGIN_AGAIN"
+    const val PLAY_SERVICES_TOO_OLD = "Google Play Services is out of date to support passkeys. " +
+            "Please update to the latest version and try again."
 
     const val MIN_CALS = 0
     const val MAX_CALS = 2000
@@ -560,6 +562,51 @@ object Constants {
                 ProviderData(email = "test@email.com", providerId = Provider.GOOGLE.toString(), uid = "111444254381322957655"),
                 ProviderData(email = "test2@email2.com", providerId = Provider.GOOGLE.toString(), uid = "100853917476273280774")
             ),
+            passkeys = listOf(
+                Passkey(
+                    webAuthnUserID = "tgPWAI3qZg2Fpy2USU0s2B5TGeoNg3XeaoNmnzyIKXk",
+                    id = "maixhQnppPzK4cOySLxXfA",
+                    publicKey = "pQECAyYgASFYIGOmskty53DP+KNGrIxCVizp+rp8WReliMavPe7PFBsuIlggb6b5zDKjL3T1NdX2TWING3MCuz6C7V1aHcE71hh1XWY=",
+                    counter = 0,
+                    transports = listOf("hybrid", "internal"),
+                    deviceType = "multiDevice",
+                    backedUp = true,
+                    name = "Google Password Manager",
+                    lastUsed = "2026-01-19T03:37:48.876Z",
+                    iconLight = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vc" +
+                            "mcvMjAwMC9zdmciIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDE5MiAxOTIiIGhl" +
+                            "aWdodD0iMjRweCIgdmlld0JveD0iMCAwIDE5MiAxOTIiIHdpZHRoPSIyNHB4Ij48cmV" +
+                            "jdCBmaWxsPSJub25lIiBoZWlnaHQ9IjE5MiIgd2lkdGg9IjE5MiIgeT0iMCIvPjxnPj" +
+                            "xwYXRoIGQ9Ik02OS4yOSwxMDZjLTMuNDYsNS45Ny05LjkxLDEwLTE3LjI5LDEwYy0xM" +
+                            "S4wMywwLTIwLTguOTctMjAtMjBzOC45Ny0yMCwyMC0yMCBjNy4zOCwwLDEzLjgzLDQu" +
+                            "MDMsMTcuMjksMTBoMjUuNTVDOTAuMyw2Ni41NCw3Mi44Miw1Miw1Miw1MkMyNy43NCw" +
+                            "1Miw4LDcxLjc0LDgsOTZzMTkuNzQsNDQsNDQsNDRjMjAuODIsMCwzOC4zLTE0LjU0LD" +
+                            "QyLjg0LTM0IEg2OS4yOXoiIGZpbGw9IiM0Mjg1RjQiLz48cmVjdCBmaWxsPSIjRkJCQ" +
+                            "zA0IiBoZWlnaHQ9IjI0IiB3aWR0aD0iNDQiIHg9Ijk0IiB5PSI4NCIvPjxwYXRoIGQ9" +
+                            "Ik05NC4zMiw4NEg2OHYwLjA1YzIuNSwzLjM0LDQsNy40Nyw0LDExLjk1cy0xLjUsOC4" +
+                            "2MS00LDExLjk1VjEwOGgyNi4zMiBjMS4wOC0zLjgyLDEuNjgtNy44NCwxLjY4LTEyUz" +
+                            "k1LjQxLDg3LjgyLDk0LjMyLDg0eiIgZmlsbD0iI0VBNDMzNSIvPjxwYXRoIGQ9Ik0xO" +
+                            "DQsMTA2djI2aC0xNnYtOGMwLTQuNDItMy41OC04LTgtOHMtOCwzLjU4LTgsOHY4aC0x" +
+                            "NnYtMjZIMTg0eiIgZmlsbD0iIzM0QTg1MyIvPjxyZWN0IGZpbGw9IiMxODgwMzgiIGh" +
+                            "laWdodD0iMjQiIHdpZHRoPSI0OCIgeD0iMTM2IiB5PSI4NCIvPjwvZz48L3N2Zz4=",
+                    iconDark = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcm" +
+                            "cvMjAwMC9zdmciIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDE5MiAxOTIiIGhla" +
+                            "WdodD0iMjRweCIgdmlld0JveD0iMCAwIDE5MiAxOTIiIHdpZHRoPSIyNHB4Ij48cmVj" +
+                            "dCBmaWxsPSJub25lIiBoZWlnaHQ9IjE5MiIgd2lkdGg9IjE5MiIgeT0iMCIvPjxnPjx" +
+                            "wYXRoIGQ9Ik02OS4yOSwxMDZjLTMuNDYsNS45Ny05LjkxLDEwLTE3LjI5LDEwYy0xMS" +
+                            "4wMywwLTIwLTguOTctMjAtMjBzOC45Ny0yMCwyMC0yMCBjNy4zOCwwLDEzLjgzLDQuM" +
+                            "DMsMTcuMjksMTBoMjUuNTVDOTAuMyw2Ni41NCw3Mi44Miw1Miw1Miw1MkMyNy43NCw1" +
+                            "Miw4LDcxLjc0LDgsOTZzMTkuNzQsNDQsNDQsNDRjMjAuODIsMCwzOC4zLTE0LjU0LDQ" +
+                            "yLjg0LTM0IEg2OS4yOXoiIGZpbGw9IiM0Mjg1RjQiLz48cmVjdCBmaWxsPSIjRkJCQz" +
+                            "A0IiBoZWlnaHQ9IjI0IiB3aWR0aD0iNDQiIHg9Ijk0IiB5PSI4NCIvPjxwYXRoIGQ9I" +
+                            "k05NC4zMiw4NEg2OHYwLjA1YzIuNSwzLjM0LDQsNy40Nyw0LDExLjk1cy0xLjUsOC42" +
+                            "MS00LDExLjk1VjEwOGgyNi4zMiBjMS4wOC0zLjgyLDEuNjgtNy44NCwxLjY4LTEyUzk" +
+                            "1LjQxLDg3LjgyLDk0LjMyLDg0eiIgZmlsbD0iI0VBNDMzNSIvPjxwYXRoIGQ9Ik0xOD" +
+                            "QsMTA2djI2aC0xNnYtOGMwLTQuNDItMy41OC04LTgtOHMtOCwzLjU4LTgsOHY4aC0xN" +
+                            "nYtMjZIMTg0eiIgZmlsbD0iIzM0QTg1MyIvPjxyZWN0IGZpbGw9IiMxODgwMzgiIGhl" +
+                            "aWdodD0iMjQiIHdpZHRoPSI0OCIgeD0iMTM2IiB5PSI4NCIvPjwvZz48L3N2Zz4="
+                )
+            ),
             ratings = mapOf(
                 "641024" to 5,
                 "663849" to 3
@@ -575,6 +622,54 @@ object Constants {
             AuthUrl(providerId = Provider.GOOGLE, authUrl = "https://www.google.com"),
             AuthUrl(providerId = Provider.FACEBOOK, authUrl = "https://www.facebook.com"),
             AuthUrl(providerId = Provider.GITHUB, authUrl = "https://www.github.com")
+        )
+        val PASSKEY_CREATION_OPTIONS = PasskeyCreationOptions(
+            challenge = "u6R7q8xK3eCCmCUpx1HR-WtuV9z2d4FCVlntZFDrsbQ",
+            rp = PasskeyCreationOptions.RelyingParty(
+                name = "EZ Recipes Web",
+                id = RECIPE_WEB_ORIGIN
+            ),
+            user = PasskeyCreationOptions.User(
+                id = "ccr9dy6B7OXMyeDW0KPEuPZ9MfKkHLtFPbhnscTXhbM",
+                name = "test@email.com",
+                displayName = ""
+            ),
+            pubKeyCredParams = listOf(
+                PasskeyCreationOptions.PubKeyCredParam(-8, "public-key"),
+                PasskeyCreationOptions.PubKeyCredParam(-7, "public-key"),
+                PasskeyCreationOptions.PubKeyCredParam(-257, "public-key")
+            ),
+            timeout = 60_000,
+            attestation = "none",
+            excludeCredentials = listOf(
+                PasskeyCreationOptions.Credential(
+                    id = "Xfo96lb073r7xKvCF3fTEg",
+                    transports = listOf("hybrid", "internal"),
+                    type = "public-key"
+                )
+            ),
+            authenticatorSelection = PasskeyCreationOptions.AuthenticatorSelection(
+                requireResidentKey = true,
+                residentKey = "required",
+                userVerification = "required"
+            ),
+            extensions = mapOf(
+                "credProps" to true
+            ),
+            hints = listOf()
+        )
+        val PASSKEY_REQUEST_OPTIONS = PasskeyRequestOptions(
+            rpId = RECIPE_WEB_ORIGIN,
+            challenge = "5Hl-eJcWE1L0G-6hOrCY2vMWIjzwBjbqn5T91DtSKbw",
+            allowCredentials = listOf(
+                PasskeyRequestOptions.Credential(
+                    id = "Xfo96lb073r7xKvCF3fTEg",
+                    transports = listOf("hybrid", "internal"),
+                    type = "public-key"
+                )
+            ),
+            timeout = 60_000,
+            userVerification = "required"
         )
     }
 }

@@ -84,7 +84,8 @@ private fun ProfileLoggedOutPreview() {
         ProfileViewModel(
             chefRepository = ChefRepository(chefService),
             recipeRepository = RecipeRepository(recipeService),
-            dataStoreService = DataStoreService(context)
+            dataStoreService = DataStoreService(context),
+            passkeyManager = PasskeyManager(context)
         )
     }
 

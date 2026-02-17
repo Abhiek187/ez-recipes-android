@@ -123,4 +123,57 @@ object MockChefService: ChefService {
             Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
         }
     }
+
+    override suspend fun getNewPasskeyChallenge(
+        token: String
+    ): Response<PasskeyCreationOptions> {
+        return if (isSuccess) {
+            Response.success(Constants.Mocks.PASSKEY_CREATION_OPTIONS)
+        } else {
+            Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
+        }
+    }
+
+    override suspend fun getExistingPasskeyChallenge(
+        email: String
+    ): Response<PasskeyRequestOptions> {
+        return if (isSuccess) {
+            Response.success(Constants.Mocks.PASSKEY_REQUEST_OPTIONS)
+        } else {
+            Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
+        }
+    }
+
+    override suspend fun validateNewPasskey(
+        passkeyResponse: NewPasskeyClientResponse,
+        token: String
+    ): Response<Token> {
+        return if (isSuccess) {
+            Response.success(mockToken)
+        } else {
+            Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
+        }
+    }
+
+    override suspend fun validateExistingPasskey(
+        passkeyResponse: ExistingPasskeyClientResponse,
+        email: String
+    ): Response<Token> {
+        return if (isSuccess) {
+            Response.success(mockToken)
+        } else {
+            Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
+        }
+    }
+
+    override suspend fun deletePasskey(
+        id: String,
+        token: String
+    ): Response<Token> {
+        return if (isSuccess) {
+            Response.success(mockToken)
+        } else {
+            Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
+        }
+    }
 }

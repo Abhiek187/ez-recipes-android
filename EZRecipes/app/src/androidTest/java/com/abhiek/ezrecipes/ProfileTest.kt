@@ -36,6 +36,12 @@ internal class ProfileTest(
         signUpNode
             .assertExists()
             .assertHasClickAction()
+        val passkeyButton = composeTestRule
+            .onNodeWithText(activity.getString(R.string.passkey_sign_in))
+        passkeyButton.assertIsNotEnabled()
+        val passkeyHint = composeTestRule
+            .onNodeWithText(activity.getString(R.string.passkey_hint))
+        passkeyHint.assertExists()
         // Distinguish the login button in the dialog from the one on the profile screen
         val loginDialogButton = composeTestRule
             .onNodeWithTag("login_dialog_button")
@@ -56,6 +62,8 @@ internal class ProfileTest(
         usernameField.requestFocus()
         usernameRequiredError.assertExists()
         usernameField.performTextInput("test@example.com")
+        passkeyButton.assertIsEnabled()
+        passkeyHint.assertDoesNotExist()
         loginDialogButton.assertIsNotEnabled()
 
         /*

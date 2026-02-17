@@ -22,7 +22,8 @@ class ProfileViewModelFactory(private val context: Context): ViewModelProvider.F
                     recipeService = RecipeService.getInstance(context),
                     recentRecipeDao = AppDatabase.getInstance(context).recentRecipeDao()
                 ),
-                dataStoreService = DataStoreService(context)
+                dataStoreService = DataStoreService(context),
+                passkeyManager = PasskeyManager(context)
             ) as T
         }
 

@@ -168,6 +168,15 @@
     <string name="link_success">Successfully linked %1$s!</string>
     <string name="unlink_confirmation">Are you sure you want to unlink %1$s?</string>
     <string name="unlink_success">Successfully unlinked %1$s!</string>
+    <string name="passkey_title">Passkeys</string>
+    <string name="passkey_create">Create a passkey</string>
+    <string name="passkey_created">Passkey created</string>
+    <string name="last_used">Last used: %1$s</string>
+    <string name="passkey_delete">Delete passkey</string>
+    <string name="passkey_delete_confirmation">
+        Are you sure you want to delete this passkey? %1$s
+    </string>
+    <string name="passkey_deleted">Passkey deleted</string>
 
     <!-- Login Screen -->
     <string name="sign_in_header">Sign In</string>
@@ -177,6 +186,11 @@
     <string name="password_show">Show password</string>
     <string name="password_hide">Hide password</string>
     <string name="password_forget">Forgot password?</string>
+    <string name="passkey_sign_in">Sign in with a passkey</string>
+    <string name="passkey_hint">Username is required to sign in with a passkey</string>
+    <string name="passkey_unsupported">
+        Passkeys are only supported on Android Pie (9.0) or later
+    </string>
     <string name="oauth_header">Or sign in using:</string>
     <string name="sign_in_success">Signed in successfully!</string>
     <string name="sign_out_success">Signed out successfully!</string>
