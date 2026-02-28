@@ -12,7 +12,8 @@ object Constants {
     const val TIMEOUT_SECONDS = 60L
     const val EMAIL_COOLDOWN_SECONDS = 30
 
-    const val RECIPE_WEB_ORIGIN = "https://ez-recipes-web.onrender.com"
+    const val RECIPE_WEB_HOST = "ez-recipes-web.onrender.com"
+    const val RECIPE_WEB_ORIGIN = "https://$RECIPE_WEB_HOST"
     const val REDIRECT_URL = "$RECIPE_WEB_ORIGIN/oauth/callback"
     val REDIRECT_URI = REDIRECT_URL.toUri()
 
@@ -627,7 +628,7 @@ object Constants {
             challenge = "u6R7q8xK3eCCmCUpx1HR-WtuV9z2d4FCVlntZFDrsbQ",
             rp = PasskeyCreationOptions.RelyingParty(
                 name = "EZ Recipes Web",
-                id = RECIPE_WEB_ORIGIN
+                id = RECIPE_WEB_HOST
             ),
             user = PasskeyCreationOptions.User(
                 id = "ccr9dy6B7OXMyeDW0KPEuPZ9MfKkHLtFPbhnscTXhbM",
@@ -635,9 +636,9 @@ object Constants {
                 displayName = ""
             ),
             pubKeyCredParams = listOf(
-                PasskeyCreationOptions.PubKeyCredParam(-8, "public-key"),
-                PasskeyCreationOptions.PubKeyCredParam(-7, "public-key"),
-                PasskeyCreationOptions.PubKeyCredParam(-257, "public-key")
+                PasskeyCreationOptions.PubKeyCredParam(alg = -8, type = "public-key"),
+                PasskeyCreationOptions.PubKeyCredParam(alg = -7, type = "public-key"),
+                PasskeyCreationOptions.PubKeyCredParam(alg = -257, type = "public-key")
             ),
             timeout = 60_000,
             attestation = "none",
@@ -659,7 +660,7 @@ object Constants {
             hints = listOf()
         )
         val PASSKEY_REQUEST_OPTIONS = PasskeyRequestOptions(
-            rpId = RECIPE_WEB_ORIGIN,
+            rpId = RECIPE_WEB_HOST,
             challenge = "5Hl-eJcWE1L0G-6hOrCY2vMWIjzwBjbqn5T91DtSKbw",
             allowCredentials = listOf(
                 PasskeyRequestOptions.Credential(

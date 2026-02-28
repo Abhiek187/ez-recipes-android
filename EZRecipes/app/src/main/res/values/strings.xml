@@ -176,7 +176,9 @@
     <string name="passkey_delete_confirmation">
         Are you sure you want to delete this passkey? %1$s
     </string>
-    <string name="passkey_deleted">Passkey deleted</string>
+    <string name="passkey_deleted">
+        Passkey deleted. Make sure to also delete the passkey from your device.
+    </string>
 
     <!-- Login Screen -->
     <string name="sign_in_header">Sign In</string>
