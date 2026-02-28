@@ -687,6 +687,7 @@ internal class ProfileViewModelTest {
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
         assertEquals(viewModel.chef, mockChefService.chef)
+        assertTrue(viewModel.passkeyCreated)
 
         verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
         coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
@@ -703,6 +704,7 @@ internal class ProfileViewModelTest {
 
         // Then an error is shown
         assertEquals(viewModel.recipeError, mockChefService.tokenError)
+        assertFalse(viewModel.passkeyCreated)
     }
 
     @Test
@@ -717,6 +719,7 @@ internal class ProfileViewModelTest {
 
         // Then an error is shown
         assertEquals(viewModel.recipeError, RecipeError(mockError))
+        assertFalse(viewModel.passkeyCreated)
     }
 
     @Test
@@ -731,6 +734,7 @@ internal class ProfileViewModelTest {
         // Then the error shouldn't be shown
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
+        assertFalse(viewModel.passkeyCreated)
     }
 
     @Test
@@ -747,6 +751,7 @@ internal class ProfileViewModelTest {
             viewModel.recipeError,
             RecipeError(Constants.PLAY_SERVICES_TOO_OLD)
         )
+        assertFalse(viewModel.passkeyCreated)
     }
 
     @Test

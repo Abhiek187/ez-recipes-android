@@ -53,6 +53,7 @@ class ProfileViewModel(
     var provider by mutableStateOf<Provider?>(null)
     var accountLinked by mutableStateOf(false)
     var accountUnlinked by mutableStateOf(false)
+    var passkeyCreated by mutableStateOf(false)
     var passkeyDeleted by mutableStateOf(false)
 
     private val _favoriteRecipes = MutableStateFlow(listOf<Recipe?>())
@@ -562,6 +563,7 @@ class ProfileViewModel(
                                 when (chefResult) {
                                     is ChefResult.Success -> {
                                         chef = chefResult.response
+                                        passkeyCreated = true
                                     }
                                     is ChefResult.Error -> {
                                         recipeError = chefResult.recipeError

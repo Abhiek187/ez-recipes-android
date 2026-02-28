@@ -66,6 +66,17 @@ fun Passkeys(
         selectedPasskey = null
     }
 
+    LaunchedEffect(profileViewModel.passkeyCreated) {
+        if (profileViewModel.passkeyCreated) {
+            Toast.makeText(
+                context,
+                resources.getString(R.string.passkey_created),
+                Toast.LENGTH_SHORT
+            ).show()
+            profileViewModel.passkeyCreated = false
+        }
+    }
+
     LaunchedEffect(profileViewModel.passkeyDeleted) {
         if (profileViewModel.passkeyDeleted) {
             Toast.makeText(
