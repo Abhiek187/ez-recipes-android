@@ -177,7 +177,7 @@
         Are you sure you want to delete this passkey? %1$s
     </string>
     <string name="passkey_deleted">
-        Passkey deleted successfully. Make sure to also delete the passkey from your device.
+        Passkey deleted. Make sure to also delete the passkey from your device.
     </string>
 
     <!-- Login Screen -->
