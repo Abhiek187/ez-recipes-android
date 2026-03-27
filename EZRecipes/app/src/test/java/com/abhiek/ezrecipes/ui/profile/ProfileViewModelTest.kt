@@ -758,6 +758,7 @@ internal class ProfileViewModelTest {
     fun deletePasskeySuccess() = runTest {
         // Given a passkey to delete
         val credentialId = "test-credential-id"
+        coJustRun { mockPasskeyManager.deletePasskeyFromAuthenticators(any()) }
 
         // When deleting the passkey
         viewModel.deletePasskey(credentialId)
