@@ -59,6 +59,7 @@ fun Passkeys(
 ) {
     val context = LocalContext.current
     val resources = LocalResources.current
+    val passkeyManager = PasskeyManager(context)
 
     var selectedPasskey by remember { mutableStateOf<Passkey?>(null) }
 
@@ -66,6 +67,17 @@ fun Passkeys(
         selectedPasskey = null
     }
 
+    LaunchedEffect(Unit) {
+        passkeyManager.syncPasskeysWithServer(
+            ids = chef.passkeys.map { it.id },
+            userId = chef.uid
+        )
+        // In case the chef signed in after updating their email
+        passkeyManager.updateUsername(
+            username = chef.email,
+            userId = chef.uid
+        )
+    }
     LaunchedEffect(profileViewModel.passkeyCreated) {
         if (profileViewModel.passkeyCreated) {
             Toast.makeText(
@@ -76,7 +88,6 @@ fun Passkeys(
             profileViewModel.passkeyCreated = false
         }
     }
-
     LaunchedEffect(profileViewModel.passkeyDeleted) {
         if (profileViewModel.passkeyDeleted) {
             Toast.makeText(

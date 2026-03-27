@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
 
 internal class StringExtensionsTest {
     @Test
@@ -73,5 +74,19 @@ internal class StringExtensionsTest {
         // Then it shouldn't match the original string
         // Due to locale differences, we can't check for specific output strings
         assertEquals(isValid, isoString != datetime)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = [
+        "",
+        "Hello, World!",
+        "oJG5PZ8KIIfvQMDsQzOwDbu2m6O2"
+    ])
+    fun base64UrlEncode(str: String) {
+        // Given an input string
+        // When it is base64 URL-encoded
+        val base64Str = str.base64UrlEncode()
+        // Then it should contain valid characters
+        assertFalse(base64Str.contains("+|/|="))
     }
 }

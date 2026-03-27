@@ -80,11 +80,11 @@ java {
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2026.02.01"
+    val composeBomVersion = "2026.03.01"
     val lifecycleVersion = "2.10.0"
-    val activityVersion = "1.12.4"
+    val activityVersion = "1.13.0"
     val coroutineVersion = "1.10.2"
-    val credentialsVersion = "1.5.0"
+    val credentialsVersion = "1.6.0-rc02"
     val coilVersion = "3.4.0"
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.4"
@@ -93,7 +93,7 @@ dependencies {
     val espressoVersion = "3.7.0"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
-    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.core:core-ktx:1.18.0")
     implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
@@ -105,9 +105,9 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.navigation:navigation-compose:2.9.7")
-    implementation("androidx.datastore:datastore-preferences:1.2.0")
+    implementation("androidx.datastore:datastore-preferences:1.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
-    implementation("androidx.browser:browser:1.9.0")
+    implementation("androidx.browser:browser:1.10.0")
     implementation("androidx.credentials:credentials:$credentialsVersion")
     implementation("androidx.credentials:credentials-play-services-auth:$credentialsVersion")
 

@@ -11,6 +11,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
+import kotlin.io.encoding.Base64
 
 /**
  * Capitalizes the first letter of each word in a string.
@@ -118,3 +119,10 @@ fun String.toDateTime(): String {
         this
     }
 }
+
+/**
+ * Base64 URL-encode a string
+ *
+ * @return a base64 URL-encoded string
+ */
+fun String.base64UrlEncode(): String = Base64.UrlSafe.encode(this.toByteArray())
