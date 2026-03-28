@@ -572,6 +572,11 @@ class ProfileViewModel(
                                 }
                             }
                             is ChefResult.Error -> {
+                                // Attempt to delete the passkey saved in the authenticator
+                                passkeyManager.deletePasskeyFromAuthenticators(
+                                    id = serverPasskeyResponse.id,
+                                    rpId = serverPasskeyOptions.rp.id
+                                )
                                 recipeError = passkeyValidateResult.recipeError
                                 showAlert = job?.isCancelled == false
                             }
@@ -611,6 +616,7 @@ class ProfileViewModel(
 
             when (deletePasskeyResult) {
                 is ChefResult.Success -> {
+                    passkeyManager.deletePasskeyFromAuthenticators(id)
                     val tokenResponse = deletePasskeyResult.response
                     recipeError = null
                     showAlert = false

@@ -1,12 +1,9 @@
 package com.abhiek.ezrecipes.ui.util
 
-import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.browser.auth.AuthTabIntent
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
@@ -47,29 +44,6 @@ import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
 
-// AuthResult is private, so create a custom data class with the same fields
-private data class AppAuthResult(val resultCode: Int, val resultUri: Uri?)
-
-// Based on the AuthTabIntent source code:
-// https://android.googlesource.com/platform/frameworks/support/+/androidx-main/browser/browser/src/main/java/androidx/browser/auth/AuthTabIntent.java
-private class AppAuthContract: ActivityResultContract<Intent, AppAuthResult>() {
-    override fun createIntent(context: Context, input: Intent): Intent {
-        return input
-    }
-
-    override fun parseResult(resultCode: Int, intent: Intent?): AppAuthResult {
-        val resultUri = if (resultCode == AuthTabIntent.RESULT_OK) intent?.data else null
-        val finalResultCode = when (resultCode) {
-            AuthTabIntent.RESULT_OK,
-            AuthTabIntent.RESULT_CANCELED,
-            AuthTabIntent.RESULT_VERIFICATION_FAILED,
-            AuthTabIntent.RESULT_VERIFICATION_TIMED_OUT -> resultCode
-            else -> AuthTabIntent.RESULT_UNKNOWN_CODE
-        }
-        return AppAuthResult(finalResultCode, resultUri)
-    }
-}
-
 // Inspired by https://github.com/firebase/FirebaseUI-Android/blob/master/auth/src/main/java/com/firebase/ui/auth/ui/components/AuthProviderButton.kt
 @Composable
 fun OAuthButton(
@@ -93,9 +67,9 @@ fun OAuthButton(
     }
 
     // Auth Tab handler
-    // TODO: Once 1.10.0 is stable, we can reference AuthenticateUserResultContract directly
-    // https://developer.android.com/jetpack/androidx/releases/browser#1.10.0-alpha02
-    val launcher = rememberLauncherForActivityResult(AppAuthContract()) { result ->
+    val launcher = rememberLauncherForActivityResult(
+        AuthTabIntent.AuthenticateUserResultContract()
+    ) { result ->
         val authResult = when (result.resultCode) {
             AuthTabIntent.RESULT_OK -> "Success, Uri: ${result.resultUri}"
             AuthTabIntent.RESULT_CANCELED -> "AuthTab canceled"

@@ -565,7 +565,6 @@ object Constants {
             ),
             passkeys = listOf(
                 Passkey(
-                    webAuthnUserID = "tgPWAI3qZg2Fpy2USU0s2B5TGeoNg3XeaoNmnzyIKXk",
                     id = "maixhQnppPzK4cOySLxXfA",
                     publicKey = "pQECAyYgASFYIGOmskty53DP+KNGrIxCVizp+rp8WReliMavPe7PFBsuIlggb6b5zDKjL3T1NdX2TWING3MCuz6C7V1aHcE71hh1XWY=",
                     counter = 0,

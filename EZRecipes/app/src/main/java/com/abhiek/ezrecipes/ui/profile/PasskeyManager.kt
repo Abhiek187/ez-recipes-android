@@ -3,6 +3,7 @@ package com.abhiek.ezrecipes.ui.profile
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.credentials.CreatePublicKeyCredentialRequest
 import androidx.credentials.CreatePublicKeyCredentialResponse
@@ -10,12 +11,20 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.PublicKeyCredential
+import androidx.credentials.SignalAllAcceptedCredentialIdsRequest
+import androidx.credentials.SignalCurrentUserDetailsRequest
+import androidx.credentials.SignalUnknownCredentialRequest
+import androidx.credentials.exceptions.publickeycredential.SignalCredentialStateException
 import com.abhiek.ezrecipes.data.models.ExistingPasskeyClientResponse
 import com.abhiek.ezrecipes.data.models.NewPasskeyClientResponse
 import com.abhiek.ezrecipes.data.models.PasskeyCreationOptions
 import com.abhiek.ezrecipes.data.models.PasskeyRequestOptions
+import com.abhiek.ezrecipes.utils.Constants
+import com.abhiek.ezrecipes.utils.base64UrlEncode
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * Helper class to manage passkey creation and retrieval using the Credential Manager
@@ -27,6 +36,10 @@ import com.google.gson.reflect.TypeToken
 class PasskeyManager(private val context: Context) {
     private val credentialManager = CredentialManager.create(context)
     private val gson = Gson()
+
+    companion object {
+        private const val TAG = "PasskeyManager"
+    }
 
     @RequiresApi(Build.VERSION_CODES.P)
     suspend fun getPasskey(
@@ -93,5 +106,77 @@ class PasskeyManager(private val context: Context) {
             androidPasskeyResponse.registrationResponseJson,
             object: TypeToken<NewPasskeyClientResponse>() {}
         )
+    }
+
+    suspend fun deletePasskeyFromAuthenticators(
+        id: String,
+        rpId: String = Constants.RECIPE_WEB_HOST
+    ) {
+        try {
+            credentialManager.signalCredentialState(
+                SignalUnknownCredentialRequest(
+                    requestJson = JSONObject().apply {
+                        put("rpId", rpId)
+                        put("credentialId", id)
+                    }.toString()
+                )
+            )
+            Log.d(TAG, "Signaled all authenticators to delete passkey $id with RP ID $rpId")
+        } catch (ex: SignalCredentialStateException) {
+            Log.w(TAG, "Failed to delete the passkey from all authenticators " +
+                    "(ID: $id, RP ID: $rpId). Please delete them manually. :: " +
+                    "error: ${ex.localizedMessage}")
+        }
+    }
+
+    suspend fun syncPasskeysWithServer(
+        ids: List<String>,
+        rpId: String = Constants.RECIPE_WEB_HOST,
+        userId: String
+    ) {
+        try {
+            credentialManager.signalCredentialState(
+                SignalAllAcceptedCredentialIdsRequest(
+                    requestJson = JSONObject().apply {
+                        put("rpId", rpId)
+                        put("userId", userId.base64UrlEncode())
+                        // The passkey IDs are already base64 URL-encoded
+                        put("allAcceptedCredentialIds", JSONArray(ids))
+                    }.toString()
+                )
+            )
+            Log.d(TAG, "Signaled all authenticators to sync ${ids.size} ${
+                if (ids.size == 1) "passkey" else "passkeys"
+            } for user $userId and RP ID $rpId: [${ids.joinToString(", ")}]")
+        } catch (ex: SignalCredentialStateException) {
+            Log.w(TAG, "Failed to sync all passkeys with all authenticators " +
+                    "(User ID: $userId, RP ID: $rpId). Please delete the rest manually. :: " +
+                    "error: ${ex.localizedMessage}")
+        }
+    }
+
+    suspend fun updateUsername(
+        username: String,
+        rpId: String = Constants.RECIPE_WEB_HOST,
+        userId: String
+    ) {
+        try {
+            credentialManager.signalCredentialState(
+                SignalCurrentUserDetailsRequest(
+                    requestJson = JSONObject().apply {
+                        put("rpId", rpId)
+                        put("userId", userId.base64UrlEncode())
+                        put("name", username)
+                        put("displayName", "")
+                    }.toString()
+                )
+            )
+            Log.d(TAG, "Signaled all authenticators to set the username for user ID " +
+                    "$userId and RP ID $rpId to $username")
+        } catch (ex: SignalCredentialStateException) {
+            Log.w(TAG, "Failed to update the username to $username for all authenticators " +
+                    "(User ID: $userId, RP ID: $rpId). Please update manually. :: " +
+                    "error: ${ex.localizedMessage}")
+        }
     }
 }
