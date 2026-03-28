@@ -113,6 +113,7 @@ dependencies {
 
     // AsyncImage
     implementation("io.coil-kt.coil3:coil-compose:$coilVersion")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:$coilVersion")
     implementation("io.coil-kt.coil3:coil-svg:$coilVersion")
     // Retrofit
     implementation(platform("com.squareup.retrofit2:retrofit-bom:$retrofitVersion"))
