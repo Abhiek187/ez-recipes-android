@@ -1,0 +1,4 @@
+New ways to sign in are here!
+- Login using Google, Facebook, or GitHub
+- Login using passkeys (Android Pie or later)
+- Fixed the BBQ cuisine filter

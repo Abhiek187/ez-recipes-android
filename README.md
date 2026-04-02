@@ -36,7 +36,7 @@ Creating an account is free and unlocks more exciting features for chefs. This i
 - Material Design UI
 - Responsive and accessible mobile design
 - REST APIs to a custom [server](https://github.com/Abhiek187/ez-recipes-server) using Retrofit, which fetches recipe information from [spoonacular](https://spoonacular.com/food-api) and MongoDB
-- Account management using Firebase Authentication
+- Account management using Firebase Authentication, OAuth, and passkeys
 - Offline data storage using DataStore and Room
 - Encryption of sensitive data using the Android Keystore
 - App Links to open recipes from the web app to the mobile app
