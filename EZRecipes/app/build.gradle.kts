@@ -19,8 +19,8 @@ android {
         applicationId = "com.abhiek.ezrecipes"
         minSdk = 23
         targetSdk = 36
-        versionCode = 13
-        versionName = "3.1.0"
+        versionCode = 14
+        versionName = "3.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -113,6 +113,7 @@ dependencies {
 
     // AsyncImage
     implementation("io.coil-kt.coil3:coil-compose:$coilVersion")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:$coilVersion")
     implementation("io.coil-kt.coil3:coil-svg:$coilVersion")
     // Retrofit
     implementation(platform("com.squareup.retrofit2:retrofit-bom:$retrofitVersion"))
