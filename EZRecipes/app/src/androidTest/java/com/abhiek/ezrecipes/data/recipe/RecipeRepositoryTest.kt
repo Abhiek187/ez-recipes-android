@@ -7,6 +7,8 @@ import com.abhiek.ezrecipes.MainDispatcherRule
 import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.data.storage.RecentRecipeDao
 import com.abhiek.ezrecipes.utils.Constants
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.*
@@ -39,11 +41,10 @@ internal class RecipeRepositoryTest {
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = AppDatabase.getInstance(context, inMemory = true)
-        // Clear any data stored from previous instrumented tests
-        if (db.isOpen) {
-            db.clearAllTables()
-        }
+        val testScheduler = TestCoroutineScheduler()
+        val dispatcher = StandardTestDispatcher(testScheduler)
+
+        db = AppDatabase.getInstance(context, inMemory = true, dispatcher)
         recentRecipeDao = db.recentRecipeDao()
 
         mockService = MockRecipeService
@@ -52,9 +53,8 @@ internal class RecipeRepositoryTest {
 
     @After
     fun tearDown() {
-        if (db.isOpen) {
-            db.clearAllTables()
-        }
+        // Clear any data stored between each test
+        db.close()
     }
 
     @Test
