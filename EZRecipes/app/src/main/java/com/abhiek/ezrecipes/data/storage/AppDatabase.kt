@@ -46,8 +46,10 @@ abstract class AppDatabase: RoomDatabase() {
             } else if (inMemory) {
                 db = Room.inMemoryDatabaseBuilder(
                     context.applicationContext, AppDatabase::class.java
-                ).setQueryExecutor(dispatcher.asExecutor())
+                )
+                    .setQueryExecutor(dispatcher.asExecutor())
                     .setTransactionExecutor(dispatcher.asExecutor())
+                    .allowMainThreadQueries()
                     .build()
                 db
             } else {
