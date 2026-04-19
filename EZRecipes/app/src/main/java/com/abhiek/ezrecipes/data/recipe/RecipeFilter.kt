@@ -35,7 +35,8 @@ data class RecipeFilter(
         val omittedKeys = listOf("vegetarian", "vegan", "gluten-free", "healthy", "cheap",
             "sustainable", "spice-level", "type", "culture", "asc")
         val map = Properties.encodeToMap(this)
-        return map.filter { (key, _) -> !omittedKeys.contains(key) }
+        // Lists contain separate keys named <key>.0, <key>.1, etc.
+        return map.filter { (key, _) -> !omittedKeys.contains(key.split(".")[0]) }
             .entries.associate { (key, value) ->
                 if (key == "sort") {
                     key to (value as String).replace("_", "-").lowercase()

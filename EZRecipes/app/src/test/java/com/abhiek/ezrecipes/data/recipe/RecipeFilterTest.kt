@@ -29,9 +29,9 @@ internal class RecipeFilterTest {
         // Then it should omit certain keys
         assertEquals(mapOf(
             "query" to recipeFilter.query,
-            "min-cals" to recipeFilter.minCals?.toLong(),
-            "max-cals" to recipeFilter.maxCals?.toLong(),
-            "rating" to recipeFilter.rating?.toLong()
+            "min-cals" to recipeFilter.minCals,
+            "max-cals" to recipeFilter.maxCals,
+            "rating" to recipeFilter.rating
         ), recipeFilterMap)
     }
 }

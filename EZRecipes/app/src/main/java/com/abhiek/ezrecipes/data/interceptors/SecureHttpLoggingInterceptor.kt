@@ -19,7 +19,7 @@ class SecureHttpLoggingInterceptor: Interceptor {
         private const val MASK = "██"
     }
 
-    // Header checks should be case insensitive
+    // Header checks should be case-insensitive
     private val headersToRedact = listOf("authorization", "cookie")
     private val fieldsToRedact = listOf("password")
 
