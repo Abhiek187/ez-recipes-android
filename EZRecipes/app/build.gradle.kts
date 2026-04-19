@@ -5,6 +5,7 @@ plugins {
     id("com.android.application")
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
+    kotlin("plugin.serialization")
 }
 
 val okHttpVersion = "5.3.2"
@@ -84,7 +85,7 @@ dependencies {
     val lifecycleVersion = "2.10.0"
     val activityVersion = "1.13.0"
     val coroutineVersion = "1.10.2"
-    val credentialsVersion = "1.6.0-rc02"
+    val credentialsVersion = "1.6.0"
     val coilVersion = "3.4.0"
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.4"
@@ -107,6 +108,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.7")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
     implementation("androidx.browser:browser:1.10.0")
     implementation("androidx.credentials:credentials:$credentialsVersion")
     implementation("androidx.credentials:credentials-play-services-auth:$credentialsVersion")
@@ -119,6 +121,7 @@ dependencies {
     implementation(platform("com.squareup.retrofit2:retrofit-bom:$retrofitVersion"))
     implementation("com.squareup.retrofit2:retrofit")
     implementation("com.squareup.retrofit2:converter-gson")
+    implementation("com.squareup.retrofit2:converter-kotlinx-serialization")
     implementation("com.squareup.okhttp3:logging-interceptor:$okHttpVersion")
     // Room
     implementation("androidx.room:room-runtime:$roomVersion")

@@ -4,11 +4,13 @@ import android.content.Context
 import com.abhiek.ezrecipes.data.interceptors.UserAgentInterceptor
 import com.abhiek.ezrecipes.data.models.Term
 import com.abhiek.ezrecipes.utils.Constants
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.http.GET
 import java.util.concurrent.TimeUnit
 
@@ -41,7 +43,9 @@ interface TermsService {
             // Convert responses to GSON (Google JSON)
             val retrofit = Retrofit.Builder()
                 .baseUrl(Constants.SERVER_BASE_URL + Constants.TERMS_PATH)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(
+                    Json.asConverterFactory("application/json".toMediaType())
+                )
                 .client(httpClient)
                 .build()
 

@@ -2,29 +2,32 @@ package com.abhiek.ezrecipes.data.chef
 
 import com.abhiek.ezrecipes.data.models.*
 import com.abhiek.ezrecipes.utils.Constants
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
+import kotlinx.serialization.json.Json
 import retrofit2.Response
 
 class ChefRepository(private val chefService: ChefService) {
     private fun <T> parseResponse(response: Response<T>): ChefResult<T> {
+        val errorBody = response.errorBody()
+
         // Empty bodies are ok as long as a 2xx response is returned
         return if (response.isSuccessful) {
             // Unit:Kotlin::Void:Java
             @Suppress("UNCHECKED_CAST")
             ChefResult.Success(response.body() ?: Unit as T)
-        } else {
-            val errorString = response.errorBody()?.string()
+        } else if (errorBody != null) {
+            val errorString = errorBody.string()
 
             val recipeError = try {
                 // Try to parse the response as a RecipeError
-                Gson().fromJson(errorString, RecipeError::class.java)
-            } catch (_: JsonSyntaxException) {
+                Json.decodeFromString<RecipeError>(errorString)
+            } catch (_: Exception) {
                 // Otherwise, set the error property as the raw error string
-                RecipeError(errorString ?: Constants.UNKNOWN_ERROR)
+                RecipeError(errorString)
             }
 
-            return ChefResult.Error(recipeError)
+            ChefResult.Error(recipeError)
+        } else {
+            ChefResult.Error(RecipeError(Constants.UNKNOWN_ERROR))
         }
     }
 
