@@ -4,6 +4,9 @@ import androidx.core.net.toUri
 import com.abhiek.ezrecipes.data.chef.*
 import com.abhiek.ezrecipes.data.recipe.*
 import com.abhiek.ezrecipes.data.terms.Term
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 object Constants {
     // In Retrofit, base URLs must end with a /
@@ -13,6 +16,10 @@ object Constants {
     const val CHEFS_PATH = "/api/chefs/"
     const val TIMEOUT_SECONDS = 60L
     const val EMAIL_COOLDOWN_SECONDS = 30
+    private val relaxedJson = Json {
+        ignoreUnknownKeys = true // parse JSON with extra fields missing from the data classes
+    }
+    val jsonConverter = relaxedJson.asConverterFactory("application/json".toMediaType())
 
     const val RECIPE_WEB_HOST = "ez-recipes-web.onrender.com"
     const val RECIPE_WEB_ORIGIN = "https://$RECIPE_WEB_HOST"

@@ -1,8 +1,10 @@
 package com.abhiek.ezrecipes.data.recipe
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.properties.Properties
+import kotlinx.serialization.properties.encodeToMap
 
 @Serializable
 data class RecipeFilter(
@@ -27,12 +29,12 @@ data class RecipeFilter(
     var sort: RecipeSortField? = null,
     var asc: Boolean = false
 ) {
+    @OptIn(ExperimentalSerializationApi::class)
     fun toMap(): Map<String, Any> {
         // Filter all the keys that aren't defined separately in the service
         val omittedKeys = listOf("vegetarian", "vegan", "gluten-free", "healthy", "cheap",
             "sustainable", "spice-level", "type", "culture", "asc")
-        val json = Json.encodeToString(this)
-        val map = Json.decodeFromString<Map<String, Any>>(json)
+        val map = Properties.encodeToMap(this)
         return map.filter { (key, _) -> !omittedKeys.contains(key) }
             .entries.associate { (key, value) ->
                 if (key == "sort") {

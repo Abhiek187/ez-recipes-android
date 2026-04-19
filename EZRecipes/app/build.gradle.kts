@@ -85,6 +85,7 @@ dependencies {
     val lifecycleVersion = "2.10.0"
     val activityVersion = "1.13.0"
     val coroutineVersion = "1.10.2"
+    val serializationVersion = "1.11.0"
     val credentialsVersion = "1.6.0"
     val coilVersion = "3.4.0"
     val retrofitVersion = "3.0.0"
@@ -108,7 +109,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.7")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:$serializationVersion")
     implementation("androidx.browser:browser:1.10.0")
     implementation("androidx.credentials:credentials:$credentialsVersion")
     implementation("androidx.credentials:credentials-play-services-auth:$credentialsVersion")
