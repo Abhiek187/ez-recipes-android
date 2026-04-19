@@ -17,6 +17,7 @@ data class PasskeyClientResponse<R: PasskeyClientResponse.Response>(
         val clientDataJSON: String
     }
 
+    @Serializable
     data class NewPasskeyResponse(
         val attestationObject: String,
         override val authenticatorData: String,
@@ -26,6 +27,7 @@ data class PasskeyClientResponse<R: PasskeyClientResponse.Response>(
         val transports: List<String>
     ): Response
 
+    @Serializable
     data class ExistingPasskeyResponse(
         override val authenticatorData: String,
         override val clientDataJSON: String,

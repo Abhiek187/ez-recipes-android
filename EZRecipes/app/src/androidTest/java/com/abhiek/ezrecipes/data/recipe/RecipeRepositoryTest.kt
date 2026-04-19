@@ -50,7 +50,9 @@ internal class RecipeRepositoryTest {
 
     @After
     fun tearDown() {
-        db.clearAllTables()
+        if (db.isOpen) {
+            db.clearAllTables()
+        }
     }
 
     @Test
