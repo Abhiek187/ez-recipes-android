@@ -49,7 +49,6 @@ abstract class AppDatabase: RoomDatabase() {
                 )
                     .setQueryExecutor(dispatcher.asExecutor())
                     .setTransactionExecutor(dispatcher.asExecutor())
-                    .allowMainThreadQueries()
                     .build()
                 db
             } else {
