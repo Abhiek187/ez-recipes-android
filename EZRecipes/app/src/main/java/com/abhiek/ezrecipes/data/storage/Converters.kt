@@ -2,22 +2,19 @@ package com.abhiek.ezrecipes.data.storage
 
 import android.util.Log
 import androidx.room.TypeConverter
-import com.abhiek.ezrecipes.data.models.Recipe
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
+import com.abhiek.ezrecipes.data.recipe.Recipe
+import kotlinx.serialization.json.Json
 
 class Converters {
-    val gson = Gson()
-
     companion object {
         private const val TAG = "Converters"
     }
 
     @TypeConverter
-    fun fromRecipeString(recipeStr: String?): Recipe? {
+    fun fromRecipeString(recipeStr: String): Recipe? {
         try {
-            return gson.fromJson(recipeStr, Recipe::class.java)
-        } catch (error: JsonSyntaxException) {
+            return Json.decodeFromString<Recipe>(recipeStr)
+        } catch (error: Exception) {
             Log.w(TAG, "Failed to parse recipe string: $recipeStr")
             Log.w(TAG, "Error: ${error.localizedMessage}")
             return null
@@ -25,7 +22,7 @@ class Converters {
     }
 
     @TypeConverter
-    fun recipeToString(recipe: Recipe?): String? {
-        return gson.toJson(recipe)
+    fun recipeToString(recipe: Recipe): String {
+        return Json.encodeToString(recipe)
     }
 }

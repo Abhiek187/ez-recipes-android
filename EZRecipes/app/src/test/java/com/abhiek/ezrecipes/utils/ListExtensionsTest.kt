@@ -1,8 +1,8 @@
 package com.abhiek.ezrecipes.utils
 
-import com.abhiek.ezrecipes.data.models.Cuisine
-import com.abhiek.ezrecipes.data.models.MealType
-import com.abhiek.ezrecipes.data.models.SpiceLevel
+import com.abhiek.ezrecipes.data.recipe.Cuisine
+import com.abhiek.ezrecipes.data.recipe.MealType
+import com.abhiek.ezrecipes.data.recipe.SpiceLevel
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 

@@ -8,9 +8,9 @@ import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialProviderConfigurationException
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
-import com.abhiek.ezrecipes.data.models.AuthState
-import com.abhiek.ezrecipes.data.models.Chef
-import com.abhiek.ezrecipes.data.models.Provider
+import com.abhiek.ezrecipes.data.chef.AuthState
+import com.abhiek.ezrecipes.data.chef.Chef
+import com.abhiek.ezrecipes.data.chef.Provider
 import com.abhiek.ezrecipes.data.models.RecipeError
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository

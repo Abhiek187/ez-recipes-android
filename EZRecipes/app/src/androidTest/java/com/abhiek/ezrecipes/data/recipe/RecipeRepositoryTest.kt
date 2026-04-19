@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.abhiek.ezrecipes.MainDispatcherRule
-import com.abhiek.ezrecipes.data.models.RecentRecipe
-import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.data.storage.RecentRecipeDao
 import com.abhiek.ezrecipes.utils.Constants

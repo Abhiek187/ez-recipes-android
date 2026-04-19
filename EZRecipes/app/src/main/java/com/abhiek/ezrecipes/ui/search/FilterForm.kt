@@ -25,9 +25,9 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
-import com.abhiek.ezrecipes.data.models.Cuisine
-import com.abhiek.ezrecipes.data.models.MealType
-import com.abhiek.ezrecipes.data.models.SpiceLevel
+import com.abhiek.ezrecipes.data.recipe.Cuisine
+import com.abhiek.ezrecipes.data.recipe.MealType
+import com.abhiek.ezrecipes.data.recipe.SpiceLevel
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews

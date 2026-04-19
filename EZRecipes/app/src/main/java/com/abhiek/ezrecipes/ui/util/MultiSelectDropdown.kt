@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.toSize
 import com.abhiek.ezrecipes.R
-import com.abhiek.ezrecipes.data.models.SpiceLevel
+import com.abhiek.ezrecipes.data.recipe.SpiceLevel
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews

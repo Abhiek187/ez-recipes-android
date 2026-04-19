@@ -1,0 +1,17 @@
+package com.abhiek.ezrecipes.data.chef
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Passkey(
+    val id: String,
+    val publicKey: String,
+    val counter: Int,
+    val transports: List<String>? = null,
+    val deviceType: String,
+    val backedUp: Boolean,
+    val name: String,
+    val lastUsed: String,
+    val iconLight: String? = null,
+    val iconDark: String? = null
+)

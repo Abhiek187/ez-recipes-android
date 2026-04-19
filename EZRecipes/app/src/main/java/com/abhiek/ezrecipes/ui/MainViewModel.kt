@@ -8,10 +8,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.abhiek.ezrecipes.BuildConfig
-import com.abhiek.ezrecipes.data.models.RecentRecipe
+import com.abhiek.ezrecipes.data.recipe.RecentRecipe
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.recipe.RecipeResult
-import com.abhiek.ezrecipes.data.models.Recipe
+import com.abhiek.ezrecipes.data.recipe.Recipe
 import com.abhiek.ezrecipes.data.models.RecipeError
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.utils.Constants
@@ -62,7 +62,7 @@ class MainViewModel(
                 recipe = null
                 recipeError = result.recipeError
                 isRecipeLoaded = false
-                // Don't show an alert if the request was intentionally cancelled
+                // Don't show an alert if the request was intentionally canceled
                 showRecipeAlert = job?.isCancelled == false
             }
         }

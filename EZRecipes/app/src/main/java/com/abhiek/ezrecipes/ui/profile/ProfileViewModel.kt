@@ -14,11 +14,12 @@ import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialProviderConfigurationException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.abhiek.ezrecipes.data.chef.ChefRepository
-import com.abhiek.ezrecipes.data.chef.ChefResult
-import com.abhiek.ezrecipes.data.models.*
+import com.abhiek.ezrecipes.data.chef.*
+import com.abhiek.ezrecipes.data.models.RecipeError
+import com.abhiek.ezrecipes.data.recipe.Recipe
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.recipe.RecipeResult
+import com.abhiek.ezrecipes.data.recipe.RecipeUpdate
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Encryptor
@@ -335,7 +336,7 @@ class ProfileViewModel(
     fun loginWithOAuth(code: String, provider: Provider) {
         val oAuthRequest = OAuthRequest(
             code = code,
-            providerId = provider.toString(),
+            providerId = provider,
             redirectUrl = Constants.REDIRECT_URL
         )
 

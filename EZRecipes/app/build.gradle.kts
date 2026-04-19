@@ -120,7 +120,6 @@ dependencies {
     // Retrofit
     implementation(platform("com.squareup.retrofit2:retrofit-bom:$retrofitVersion"))
     implementation("com.squareup.retrofit2:retrofit")
-    implementation("com.squareup.retrofit2:converter-gson")
     implementation("com.squareup.retrofit2:converter-kotlinx-serialization")
     implementation("com.squareup.okhttp3:logging-interceptor:$okHttpVersion")
     // Room

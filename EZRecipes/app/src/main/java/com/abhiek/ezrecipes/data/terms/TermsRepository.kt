@@ -1,7 +1,6 @@
 package com.abhiek.ezrecipes.data.terms
 
 import com.abhiek.ezrecipes.data.models.RecipeError
-import com.abhiek.ezrecipes.data.models.Term
 import com.abhiek.ezrecipes.utils.Constants
 import kotlinx.serialization.json.Json
 import retrofit2.Response

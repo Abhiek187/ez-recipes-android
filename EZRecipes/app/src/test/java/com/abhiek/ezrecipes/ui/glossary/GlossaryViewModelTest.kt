@@ -1,7 +1,7 @@
 package com.abhiek.ezrecipes.ui.glossary
 
 import android.util.Log
-import com.abhiek.ezrecipes.data.models.Term
+import com.abhiek.ezrecipes.data.terms.Term
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.data.terms.MockTermsService
 import com.abhiek.ezrecipes.data.terms.TermsRepository

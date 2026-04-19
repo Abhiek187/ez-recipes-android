@@ -1,8 +1,5 @@
 package com.abhiek.ezrecipes.data.chef
 
-import com.abhiek.ezrecipes.data.models.ChefUpdate
-import com.abhiek.ezrecipes.data.models.ChefUpdateType
-import com.abhiek.ezrecipes.data.models.LoginCredentials
 import com.abhiek.ezrecipes.utils.Constants
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals

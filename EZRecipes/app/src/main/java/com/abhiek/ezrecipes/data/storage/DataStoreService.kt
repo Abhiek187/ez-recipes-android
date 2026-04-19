@@ -6,13 +6,13 @@ import androidx.datastore.preferences.core.byteArrayPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.abhiek.ezrecipes.data.models.Term
-import com.abhiek.ezrecipes.data.models.TermStore
+import com.abhiek.ezrecipes.data.terms.Term
+import com.abhiek.ezrecipes.data.terms.TermStore
 import com.abhiek.ezrecipes.utils.dataStore
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.json.Json
 
 /**
  * Helper class to interface with the DataStore
@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.map
  */
 class DataStoreService(context: Context) {
     private val dataStore = context.dataStore
-    private val gson = Gson()
 
     companion object {
         private const val TAG = "DataStoreService"
@@ -33,8 +32,8 @@ class DataStoreService(context: Context) {
 
     suspend fun getTerms(): List<Term>? {
         val termStoreFlow = dataStore.data.map { preferences ->
-            val termStoreStr = preferences[KEY_TERMS]
-            val termStore = gson.fromJson(termStoreStr, TermStore::class.java) ?: return@map null
+            val termStoreStr = preferences[KEY_TERMS] ?: return@map null
+            val termStore = Json.decodeFromString<TermStore>(termStoreStr)
 
             // Replace the terms if they're expired
             if (System.currentTimeMillis() >= termStore.expireAt) {
@@ -65,7 +64,7 @@ class DataStoreService(context: Context) {
                 terms = terms,
                 expireAt = System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000 // 1 week
             )
-            val termStoreStr = gson.toJson(termStore)
+            val termStoreStr = Json.encodeToString(termStore)
             preferences[KEY_TERMS] = termStoreStr
             Log.i(TAG, "Saved terms to DataStore!")
         }

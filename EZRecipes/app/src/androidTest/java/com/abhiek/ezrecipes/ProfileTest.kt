@@ -3,7 +3,7 @@ package com.abhiek.ezrecipes
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.abhiek.ezrecipes.data.models.Provider
+import com.abhiek.ezrecipes.data.chef.Provider
 import com.abhiek.ezrecipes.ui.MainActivity
 
 internal class ProfileTest(
@@ -76,7 +76,7 @@ internal class ProfileTest(
         passwordField.requestFocus()
         passwordRequiredError.assertExists()
         passwordField.performTextInput("password")
-        // The eye icon appears twice on the sign up form
+        // The eye icon appears twice on the sign-up form
         composeTestRule
             .onAllNodesWithContentDescription(activity.getString(R.string.password_hide))
             .assertCountEquals(0)
