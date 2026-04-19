@@ -1,7 +1,12 @@
 package com.abhiek.ezrecipes.utils
 
 import androidx.core.net.toUri
-import com.abhiek.ezrecipes.data.models.*
+import com.abhiek.ezrecipes.data.chef.*
+import com.abhiek.ezrecipes.data.recipe.*
+import com.abhiek.ezrecipes.data.terms.Term
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 object Constants {
     // In Retrofit, base URLs must end with a /
@@ -11,6 +16,10 @@ object Constants {
     const val CHEFS_PATH = "/api/chefs/"
     const val TIMEOUT_SECONDS = 60L
     const val EMAIL_COOLDOWN_SECONDS = 30
+    private val relaxedJson = Json {
+        ignoreUnknownKeys = true // parse JSON with extra fields missing from the data classes
+    }
+    val jsonConverter = relaxedJson.asConverterFactory("application/json".toMediaType())
 
     const val RECIPE_WEB_HOST = "ez-recipes-web.onrender.com"
     const val RECIPE_WEB_ORIGIN = "https://$RECIPE_WEB_HOST"
@@ -121,8 +130,16 @@ object Constants {
                                     name = "fruit juice",
                                     image = "apple-juice.jpg"
                                 ),
-                                StepItem(id = 19177, name = "gelatin", image = "gelatin-powder.jpg"),
-                                StepItem(id = 9431, name = "fruit", image = "mixed-fresh-fruit.jpg"),
+                                StepItem(
+                                    id = 19177,
+                                    name = "gelatin",
+                                    image = "gelatin-powder.jpg"
+                                ),
+                                StepItem(
+                                    id = 9431,
+                                    name = "fruit",
+                                    image = "mixed-fresh-fruit.jpg"
+                                ),
                                 StepItem(id = 14412, name = "water", image = "water.png")
                             ),
                             equipment = listOf()
@@ -214,7 +231,11 @@ object Constants {
                             number = 2,
                             step = "Bring the water to a boil. Stir in the cocoa until melted and set aside until it comes to room temperature.",
                             ingredients = listOf(
-                                StepItem(id = 19165, name = "cocoa powder", image = "cocoa-powder.png"),
+                                StepItem(
+                                    id = 19165,
+                                    name = "cocoa powder",
+                                    image = "cocoa-powder.png"
+                                ),
                                 StepItem(id = 14412, name = "water", image = "water.png")
                             ),
                             equipment = listOf()
@@ -228,8 +249,16 @@ object Constants {
                                     name = "coconut flour",
                                     image = "coconut-flour-or-other-gluten-free-flour.jpg"
                                 ),
-                                StepItem(id = 93626, name = "xanthan gum", image = "white-powder.jpg"),
-                                StepItem(id = 20027, name = "corn starch", image = "white-powder.jpg"),
+                                StepItem(
+                                    id = 93626,
+                                    name = "xanthan gum",
+                                    image = "white-powder.jpg"
+                                ),
+                                StepItem(
+                                    id = 20027,
+                                    name = "corn starch",
+                                    image = "white-powder.jpg"
+                                ),
                                 StepItem(id = 2047, name = "salt", image = "salt.jpg"),
                                 StepItem(id = 0, name = "pop", image = "")
                             ),
@@ -244,8 +273,16 @@ object Constants {
                                     name = "coconut flour",
                                     image = "coconut-flour-or-other-gluten-free-flour.jpg"
                                 ),
-                                StepItem(id = 18139, name = "cupcakes", image = "plain-cupcake.jpg"),
-                                StepItem(id = 20081, name = "all purpose flour", image = "flour.png")
+                                StepItem(
+                                    id = 18139,
+                                    name = "cupcakes",
+                                    image = "plain-cupcake.jpg"
+                                ),
+                                StepItem(
+                                    id = 20081,
+                                    name = "all purpose flour",
+                                    image = "flour.png"
+                                )
                             ),
                             equipment = listOf(
                                 StepItem(id = 404708, name = "sifter", image = "sifter.jpg")
@@ -275,7 +312,11 @@ object Constants {
                             number = 7,
                             step = "Add the flour mixture and beat until incorporated. Again, you might need to scrape down the bowl.",
                             ingredients = listOf(
-                                StepItem(id = 20081, name = "all purpose flour", image = "flour.png")
+                                StepItem(
+                                    id = 20081,
+                                    name = "all purpose flour",
+                                    image = "flour.png"
+                                )
                             ),
                             equipment = listOf(
                                 StepItem(id = 404783, name = "bowl", image = "bowl.jpg")
@@ -285,7 +326,11 @@ object Constants {
                             number = 8,
                             step = "Add in the cocoa mixture and beat until smooth. Batter will be thin.",
                             ingredients = listOf(
-                                StepItem(id = 19165, name = "cocoa powder", image = "cocoa-powder.png")
+                                StepItem(
+                                    id = 19165,
+                                    name = "cocoa powder",
+                                    image = "cocoa-powder.png"
+                                )
                             ),
                             equipment = listOf()
                         ),
@@ -293,10 +338,18 @@ object Constants {
                             number = 9,
                             step = "Line a muffin tin with baking cups or spray generously with oil.",
                             ingredients = listOf(
-                                StepItem(id = 4582, name = "cooking oil", image = "vegetable-oil.jpg")
+                                StepItem(
+                                    id = 4582,
+                                    name = "cooking oil",
+                                    image = "vegetable-oil.jpg"
+                                )
                             ),
                             equipment = listOf(
-                                StepItem(id = 404671, name = "muffin tray", image = "muffin-tray.jpg")
+                                StepItem(
+                                    id = 404671,
+                                    name = "muffin tray",
+                                    image = "muffin-tray.jpg"
+                                )
                             )
                         ),
                         Step(
@@ -304,7 +357,11 @@ object Constants {
                             step = "Fill each cup almost to the top and bake 16-20 minutes, or until a toothpick inserted in the middle of muffin comes out clean.",
                             ingredients = listOf(),
                             equipment = listOf(
-                                StepItem(id = 404644, name = "toothpicks", image = "toothpicks.jpg"),
+                                StepItem(
+                                    id = 404644,
+                                    name = "toothpicks",
+                                    image = "toothpicks.jpg"
+                                ),
                                 StepItem(id = 404784, name = "oven", image = "oven.jpg")
                             )
                         )
@@ -344,7 +401,11 @@ object Constants {
                             number = 3,
                             step = "Pour the warm creamer over the chocolate and coffee, whisk until smooth.",
                             ingredients = listOf(
-                                StepItem(id = 19081, name = "chocolate", image = "milk-chocolate.jpg"),
+                                StepItem(
+                                    id = 19081,
+                                    name = "chocolate",
+                                    image = "milk-chocolate.jpg"
+                                ),
                                 StepItem(id = 0, name = "coffee creamer", image = ""),
                                 StepItem(id = 14209, name = "coffee", image = "brewed-coffee.jpg")
                             ),
@@ -356,7 +417,11 @@ object Constants {
                             number = 4,
                             step = "Dip the top of the cupcakes in the ganache and place in refrigerator until set- 30-60 minutes.",
                             ingredients = listOf(
-                                StepItem(id = 18139, name = "cupcakes", image = "plain-cupcake.jpg"),
+                                StepItem(
+                                    id = 18139,
+                                    name = "cupcakes",
+                                    image = "plain-cupcake.jpg"
+                                ),
                                 StepItem(id = 0, name = "dip", image = "")
                             ),
                             equipment = listOf()
@@ -382,7 +447,12 @@ object Constants {
             time = 45,
             servings = 4,
             summary = "Thai Basil Chicken With Green Curry might be just the main course you are searching for. This gluten free and dairy free recipe serves 4 and costs <b>$2.5 per serving</b>. One portion of this dish contains around <b>28g of protein</b>, <b>34g of fat</b>, and a total of <b>491 calories</b>. Only a few people made this recipe, and 1 would say it hit the spot. A mixture of chicken stock, fish sauce, curry paste, and a handful of other ingredients are all it takes to make this recipe so scrumptious. From preparation to the plate, this recipe takes roughly <b>45 minutes</b>. It is an <b>affordable</b> recipe for fans of Indian food. It is brought to you by Foodista. Taking all factors into account, this recipe <b>earns a spoonacular score of 60%</b>, which is good. Users who liked this recipe also liked <a href=\"https://spoonacular.com/recipes/thai-basil-chicken-with-green-curry-1522541\">Thai Basil Chicken With Green Curry</a>, <a href=\"https://spoonacular.com/recipes/thai-basil-chicken-with-green-curry-1531093\">Thai Basil Chicken With Green Curry</a>, and <a href=\"https://spoonacular.com/recipes/homemade-thai-green-curry-paste-and-an-easy-thai-green-curry-909057\">Homemade Thai Green Curry Paste (And An Easy Thai Green Curry)</a>.",
-            types = listOf(MealType.LUNCH, MealType.MAIN_COURSE, MealType.MAIN_DISH, MealType.DINNER),
+            types = listOf(
+                MealType.LUNCH,
+                MealType.MAIN_COURSE,
+                MealType.MAIN_DISH,
+                MealType.DINNER
+            ),
             spiceLevel = SpiceLevel.SPICY,
             isVegetarian = false,
             isVegan = false,
@@ -427,7 +497,11 @@ object Constants {
                             ingredients = listOf(
                                 StepItem(id = 1002030, name = "pepper", image = "pepper.jpg"),
                                 StepItem(id = 11282, name = "onion", image = "brown-onion.png"),
-                                StepItem(id = 4582, name = "cooking oil", image = "vegetable-oil.jpg")
+                                StepItem(
+                                    id = 4582,
+                                    name = "cooking oil",
+                                    image = "vegetable-oil.jpg"
+                                )
                             ),
                             equipment = listOf(
                                 StepItem(id = 404645, name = "frying pan", image = "pan.png"),
@@ -452,7 +526,11 @@ object Constants {
                                     image = "salt-and-pepper.jpg"
                                 ),
                                 StepItem(id = 0, name = "chicken", image = "whole-chicken.jpg"),
-                                StepItem(id = 4582, name = "cooking oil", image = "vegetable-oil.jpg")
+                                StepItem(
+                                    id = 4582,
+                                    name = "cooking oil",
+                                    image = "vegetable-oil.jpg"
+                                )
                             ),
                             equipment = listOf(
                                 StepItem(id = 404645, name = "frying pan", image = "pan.png")
@@ -472,9 +550,21 @@ object Constants {
                                     name = "salt and pepper",
                                     image = "salt-and-pepper.jpg"
                                 ),
-                                StepItem(id = 12118, name = "coconut milk", image = "coconut-milk.png"),
-                                StepItem(id = 19334, name = "brown sugar", image = "dark-brown-sugar.png"),
-                                StepItem(id = 6179, name = "fish sauce", image = "asian-fish-sauce.jpg"),
+                                StepItem(
+                                    id = 12118,
+                                    name = "coconut milk",
+                                    image = "coconut-milk.png"
+                                ),
+                                StepItem(
+                                    id = 19334,
+                                    name = "brown sugar",
+                                    image = "dark-brown-sugar.png"
+                                ),
+                                StepItem(
+                                    id = 6179,
+                                    name = "fish sauce",
+                                    image = "asian-fish-sauce.jpg"
+                                ),
                                 StepItem(id = 14084, name = "wine", image = "red-wine.jpg")
                             ),
                             equipment = listOf(
@@ -557,11 +647,31 @@ object Constants {
             email = "test@email.com",
             emailVerified = true,
             providerData = listOf(
-                ProviderData(email = "test@email.com", providerId = "password", uid = "test@email.com"),
-                ProviderData(email = "test@email.com", providerId = Provider.GITHUB.toString(), uid = "29958092"),
-                ProviderData(email = "test@email.com", providerId = Provider.FACEBOOK.toString(), uid = "4260456714231215"),
-                ProviderData(email = "test@email.com", providerId = Provider.GOOGLE.toString(), uid = "111444254381322957655"),
-                ProviderData(email = "test2@email2.com", providerId = Provider.GOOGLE.toString(), uid = "100853917476273280774")
+                ProviderData(
+                    email = "test@email.com",
+                    providerId = "password",
+                    uid = "test@email.com"
+                ),
+                ProviderData(
+                    email = "test@email.com",
+                    providerId = Provider.GITHUB.toString(),
+                    uid = "29958092"
+                ),
+                ProviderData(
+                    email = "test@email.com",
+                    providerId = Provider.FACEBOOK.toString(),
+                    uid = "4260456714231215"
+                ),
+                ProviderData(
+                    email = "test@email.com",
+                    providerId = Provider.GOOGLE.toString(),
+                    uid = "111444254381322957655"
+                ),
+                ProviderData(
+                    email = "test2@email2.com",
+                    providerId = Provider.GOOGLE.toString(),
+                    uid = "100853917476273280774"
+                )
             ),
             passkeys = listOf(
                 Passkey(

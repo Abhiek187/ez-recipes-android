@@ -31,8 +31,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
-import com.abhiek.ezrecipes.data.models.Recipe
-import com.abhiek.ezrecipes.data.models.RecipeSortField
+import com.abhiek.ezrecipes.data.recipe.Recipe
+import com.abhiek.ezrecipes.data.recipe.RecipeSortField
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService

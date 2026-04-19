@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.abhiek.ezrecipes.data.models.Recipe
 import com.abhiek.ezrecipes.data.models.RecipeError
-import com.abhiek.ezrecipes.data.models.RecipeFilter
+import com.abhiek.ezrecipes.data.recipe.Recipe
+import com.abhiek.ezrecipes.data.recipe.RecipeFilter
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.recipe.RecipeResult
 import kotlinx.coroutines.Job

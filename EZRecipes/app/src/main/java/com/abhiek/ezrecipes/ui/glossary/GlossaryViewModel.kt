@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.abhiek.ezrecipes.data.models.Term
+import com.abhiek.ezrecipes.data.terms.Term
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.data.terms.TermsRepository
 import com.abhiek.ezrecipes.data.terms.TermsResult

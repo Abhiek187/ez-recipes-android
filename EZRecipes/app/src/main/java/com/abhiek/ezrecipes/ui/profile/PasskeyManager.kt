@@ -15,14 +15,13 @@ import androidx.credentials.SignalAllAcceptedCredentialIdsRequest
 import androidx.credentials.SignalCurrentUserDetailsRequest
 import androidx.credentials.SignalUnknownCredentialRequest
 import androidx.credentials.exceptions.publickeycredential.SignalCredentialStateException
-import com.abhiek.ezrecipes.data.models.ExistingPasskeyClientResponse
-import com.abhiek.ezrecipes.data.models.NewPasskeyClientResponse
-import com.abhiek.ezrecipes.data.models.PasskeyCreationOptions
-import com.abhiek.ezrecipes.data.models.PasskeyRequestOptions
+import com.abhiek.ezrecipes.data.chef.ExistingPasskeyClientResponse
+import com.abhiek.ezrecipes.data.chef.NewPasskeyClientResponse
+import com.abhiek.ezrecipes.data.chef.PasskeyCreationOptions
+import com.abhiek.ezrecipes.data.chef.PasskeyRequestOptions
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.base64UrlEncode
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -35,7 +34,6 @@ import org.json.JSONObject
  */
 class PasskeyManager(private val context: Context) {
     private val credentialManager = CredentialManager.create(context)
-    private val gson = Gson()
 
     companion object {
         private const val TAG = "PasskeyManager"
@@ -47,7 +45,7 @@ class PasskeyManager(private val context: Context) {
     ): ExistingPasskeyClientResponse {
         // Convert the standard WebAuthn options to a Credential Manager request
         val androidPasskeyOptions = GetPublicKeyCredentialOption(
-            gson.toJson(serverPasskeyOptions)
+            Json.encodeToString(serverPasskeyOptions)
         )
         val androidPasskeyRequest = GetCredentialRequest(
             listOf(androidPasskeyOptions)
@@ -80,10 +78,7 @@ class PasskeyManager(private val context: Context) {
         }
 
         // Convert the Credential Manager response to a standard WebAuthn response
-        return gson.fromJson(
-            androidPasskeyResponse.authenticationResponseJson,
-            object: TypeToken<ExistingPasskeyClientResponse>() {}
-        )
+        return Json.decodeFromString(androidPasskeyResponse.authenticationResponseJson)
     }
 
     @SuppressLint("PublicKeyCredential")
@@ -93,7 +88,7 @@ class PasskeyManager(private val context: Context) {
     ): NewPasskeyClientResponse {
         // Convert the standard WebAuthn options to a Credential Manager request
         val androidPasskeyRequest = CreatePublicKeyCredentialRequest(
-            gson.toJson(serverPasskeyOptions)
+            Json.encodeToString(serverPasskeyOptions)
         )
         // Triggers the device to prompt for a passkey
         val androidPasskeyResponse = credentialManager.createCredential(
@@ -102,10 +97,7 @@ class PasskeyManager(private val context: Context) {
         ) as CreatePublicKeyCredentialResponse
 
         // Convert the Credential Manager response to a standard WebAuthn response
-        return gson.fromJson(
-            androidPasskeyResponse.registrationResponseJson,
-            object: TypeToken<NewPasskeyClientResponse>() {}
-        )
+        return Json.decodeFromString(androidPasskeyResponse.registrationResponseJson)
     }
 
     suspend fun deletePasskeyFromAuthenticators(

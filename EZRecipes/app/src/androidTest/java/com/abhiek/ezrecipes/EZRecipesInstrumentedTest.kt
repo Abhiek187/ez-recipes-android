@@ -105,7 +105,6 @@ internal class EZRecipesInstrumentedTest {
         // Take screenshots along the way
         var shotNum = 1
         screenshot("home-screen", shotNum)
-        shotNum += 1
 
         // The accordions should be present, but not display any recipes
         val favoriteAccordion = composeTestRule
@@ -209,7 +208,7 @@ internal class EZRecipesInstrumentedTest {
         )) {
             /* More than one match may exist in places like the ingredients list,
              * but the first match should be in the nutrition label since these matchers
-             * match full strings in EditTexts and TextViews and are case sensitive
+             * match full strings in EditTexts and TextViews and are case-sensitive
              */
             composeTestRule
                 .onAllNodesWithText(label)
@@ -246,7 +245,6 @@ internal class EZRecipesInstrumentedTest {
             .performScrollTo()
             .assertExists()
         screenshot(screenshotName, shotNum)
-        shotNum += 1
 
         // Check that clicking the show another recipe button disables the button
         showRecipeButton
@@ -452,7 +450,6 @@ internal class EZRecipesInstrumentedTest {
             }
         }
         screenshot(screenshotName, shotNum)
-        shotNum += 1
     }
 
     @SmallTest

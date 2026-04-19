@@ -1,29 +1,32 @@
 package com.abhiek.ezrecipes.data.terms
 
 import com.abhiek.ezrecipes.data.models.RecipeError
-import com.abhiek.ezrecipes.data.models.Term
 import com.abhiek.ezrecipes.utils.Constants
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
+import kotlinx.serialization.json.Json
 import retrofit2.Response
 
 class TermsRepository(private val termsService: TermsService) {
     private fun <T> parseResponse(response: Response<T>): TermsResult<T> {
         // isSuccessful means a 2xx response code
-        return if (response.isSuccessful && response.body() != null) {
-            TermsResult.Success(response.body()!!)
-        } else {
-            val errorString = response.errorBody()?.string()
+        val responseBody = response.body()
+        val errorBody = response.errorBody()
+
+        return if (response.isSuccessful && responseBody != null) {
+            TermsResult.Success(responseBody)
+        } else if (errorBody != null) {
+            val errorString = errorBody.string()
 
             val recipeError = try {
                 // Try to parse the response as a RecipeError
-                Gson().fromJson(errorString, RecipeError::class.java)
-            } catch (_: JsonSyntaxException) {
+                Json.decodeFromString<RecipeError>(errorString)
+            } catch (_: Exception) {
                 // Otherwise, set the error property as the raw error string
-                RecipeError(errorString ?: Constants.UNKNOWN_ERROR)
+                RecipeError(errorString)
             }
 
-            return TermsResult.Error(recipeError)
+            TermsResult.Error(recipeError)
+        } else {
+            TermsResult.Error(RecipeError(Constants.UNKNOWN_ERROR))
         }
     }
 

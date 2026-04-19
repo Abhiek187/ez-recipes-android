@@ -1,6 +1,7 @@
 package com.abhiek.ezrecipes.data.chef
 
-import com.abhiek.ezrecipes.data.models.*
+import com.abhiek.ezrecipes.data.models.RecipeError
+import com.abhiek.ezrecipes.data.models.Token
 import com.abhiek.ezrecipes.utils.Constants
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response

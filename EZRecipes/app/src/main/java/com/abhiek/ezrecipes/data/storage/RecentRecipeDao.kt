@@ -1,7 +1,7 @@
 package com.abhiek.ezrecipes.data.storage
 
 import androidx.room.*
-import com.abhiek.ezrecipes.data.models.RecentRecipe
+import com.abhiek.ezrecipes.data.recipe.RecentRecipe
 import com.abhiek.ezrecipes.utils.Constants
 
 @Dao

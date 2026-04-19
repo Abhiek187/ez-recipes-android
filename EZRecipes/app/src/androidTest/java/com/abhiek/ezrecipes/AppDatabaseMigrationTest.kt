@@ -8,7 +8,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.abhiek.ezrecipes.data.models.Recipe
+import com.abhiek.ezrecipes.data.recipe.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.data.storage.Converters
@@ -16,13 +16,11 @@ import com.abhiek.ezrecipes.utils.Constants
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
 
-@Ignore("Room 2.8.0+ fails due to abstract method error with kotlinx.serialization")
 @RunWith(AndroidJUnit4::class)
 internal class AppDatabaseMigrationTest {
     companion object {

@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
-import com.abhiek.ezrecipes.data.models.Step
+import com.abhiek.ezrecipes.data.recipe.Step
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews

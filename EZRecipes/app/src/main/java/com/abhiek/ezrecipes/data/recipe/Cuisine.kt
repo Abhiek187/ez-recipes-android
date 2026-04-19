@@ -1,0 +1,51 @@
+package com.abhiek.ezrecipes.data.recipe
+
+import com.abhiek.ezrecipes.data.serializers.CuisineSerializer
+import com.abhiek.ezrecipes.utils.capitalizeWords
+import kotlinx.serialization.Serializable
+
+@Serializable(with = CuisineSerializer::class)
+enum class Cuisine {
+    AFRICAN,
+    ASIAN,
+    AMERICAN,
+    BRITISH,
+    CAJUN,
+    CARIBBEAN,
+    CHINESE,
+    EASTERN_EUROPEAN,
+    EUROPEAN,
+    FRENCH,
+    GERMAN,
+    GREEK,
+    INDIAN,
+    IRISH,
+    ITALIAN,
+    JAPANESE,
+    JEWISH,
+    KOREAN,
+    LATIN_AMERICAN,
+    MEDITERRANEAN,
+    MEXICAN,
+    MIDDLE_EASTERN,
+    NORDIC,
+    SOUTHERN,
+    SPANISH,
+    THAI,
+    VIETNAMESE,
+    ENGLISH,
+    SCOTTISH,
+    SOUTH_AMERICAN,
+    CREOLE,
+    CENTRAL_AMERICAN,
+    BBQ,
+    BARBECUE,
+    SCANDINAVIAN,
+    UNKNOWN;
+
+    override fun toString(): String {
+        if (this == BBQ) return "bbq"
+
+        return name.replace("_", " ").lowercase().capitalizeWords()
+    }
+}

@@ -21,7 +21,7 @@
 #-renamesourcefileattribute SourceFile
 # Don't obfuscate data class fields parsed using GSON from API calls
 # See https://stackoverflow.com/a/74615092 & https://stackoverflow.com/a/46156695
--keep class com.abhiek.ezrecipes.data.models.** { *; }
+#-keep class com.abhiek.ezrecipes.data.models.** { *; }
 
 # Suppress warnings from minifyReleaseWithR8
 -dontwarn org.bouncycastle.jsse.BCSSLParameters
@@ -44,6 +44,6 @@
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
 # Fixes "Missing type parameter": https://stackoverflow.com/a/72520577
--keep class com.google.gson.reflect.TypeToken
--keep class * extends com.google.gson.reflect.TypeToken
--keep public class * implements java.lang.reflect.Type
+#-keep class com.google.gson.reflect.TypeToken
+#-keep class * extends com.google.gson.reflect.TypeToken
+#-keep public class * implements java.lang.reflect.Type

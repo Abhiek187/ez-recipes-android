@@ -21,10 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.abhiek.ezrecipes.R
-import com.abhiek.ezrecipes.data.models.Cuisine
-import com.abhiek.ezrecipes.data.models.MealType
+import com.abhiek.ezrecipes.data.recipe.Cuisine
+import com.abhiek.ezrecipes.data.recipe.MealType
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
-import com.abhiek.ezrecipes.data.models.Recipe
+import com.abhiek.ezrecipes.data.recipe.Recipe
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews

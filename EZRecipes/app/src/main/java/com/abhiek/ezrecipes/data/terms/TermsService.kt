@@ -2,13 +2,11 @@ package com.abhiek.ezrecipes.data.terms
 
 import android.content.Context
 import com.abhiek.ezrecipes.data.interceptors.UserAgentInterceptor
-import com.abhiek.ezrecipes.data.models.Term
 import com.abhiek.ezrecipes.utils.Constants
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import java.util.concurrent.TimeUnit
 
@@ -38,10 +36,9 @@ interface TermsService {
                 .connectTimeout(Constants.TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .build()
 
-            // Convert responses to GSON (Google JSON)
             val retrofit = Retrofit.Builder()
                 .baseUrl(Constants.SERVER_BASE_URL + Constants.TERMS_PATH)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(Constants.jsonConverter)
                 .client(httpClient)
                 .build()
 

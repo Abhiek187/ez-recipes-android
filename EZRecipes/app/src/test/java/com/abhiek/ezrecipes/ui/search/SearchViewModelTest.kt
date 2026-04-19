@@ -1,6 +1,6 @@
 package com.abhiek.ezrecipes.ui.search
 
-import com.abhiek.ezrecipes.data.models.Recipe
+import com.abhiek.ezrecipes.data.recipe.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.ui.MainDispatcherExtension
