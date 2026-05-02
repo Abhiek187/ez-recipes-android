@@ -12,14 +12,14 @@ val okHttpVersion = "5.3.2"
 
 android {
     namespace = "com.abhiek.ezrecipes"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         // GITHUB_ACTIONS = true if running in a workflow
         testInstrumentationRunnerArguments["ci"] = System.getenv("GITHUB_ACTIONS") ?: "null"
         applicationId = "com.abhiek.ezrecipes"
         minSdk = 23
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 14
         versionName = "3.2.0"
 
@@ -81,7 +81,7 @@ java {
 
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2026.03.01"
+    val composeBomVersion = "2026.04.01"
     val lifecycleVersion = "2.10.0"
     val activityVersion = "1.13.0"
     val coroutineVersion = "1.10.2"
@@ -106,7 +106,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
-    implementation("androidx.navigation:navigation-compose:2.9.7")
+    implementation("androidx.navigation:navigation-compose:2.9.8")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
