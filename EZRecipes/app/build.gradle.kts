@@ -79,9 +79,10 @@ java {
     }
 }
 
+//noinspection LoginCredentials
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2026.05.00"
+    val composeBomVersion = "2026.05.01"
     val lifecycleVersion = "2.10.0"
     val activityVersion = "1.13.0"
     val coroutineVersion = "1.11.0"
@@ -91,7 +92,7 @@ dependencies {
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.4"
     val googlePlayVersion = "2.0.2"
-    val jupiterVersion = "6.0.3"
+    val jupiterVersion = "6.1.0"
     val espressoVersion = "3.7.0"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
@@ -139,7 +140,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion")
-    testImplementation("io.mockk:mockk:1.14.9")
+    testImplementation("io.mockk:mockk:1.14.11")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
