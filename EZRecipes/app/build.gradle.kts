@@ -91,7 +91,7 @@ dependencies {
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.4"
     val googlePlayVersion = "2.0.2"
-    val jupiterVersion = "6.0.3"
+    val jupiterVersion = "6.1.0"
     val espressoVersion = "3.7.0"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
