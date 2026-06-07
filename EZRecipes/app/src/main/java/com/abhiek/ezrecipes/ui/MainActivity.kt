@@ -59,12 +59,13 @@ class MainActivity : ComponentActivity() {
             Log.d(TAG, "action = $action")
 
             val code = appLinkData?.getQueryParameter("code")
-            Log.d(TAG, "code = $code")
+            val state = appLinkData?.getQueryParameter("state")
+            Log.d(TAG, "code = $code, state = $state")
             // Only update the ViewModel if the deep link matches the OAuth callback
             if (appLinkData?.scheme == Constants.REDIRECT_URI.scheme &&
                 appLinkData?.host == Constants.REDIRECT_URI.host &&
                 appLinkData?.path == Constants.REDIRECT_URI.path) {
-                profileViewModel.authCode = code
+                profileViewModel.oAuthResponse = Pair(code, state)
             }
         }
     }

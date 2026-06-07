@@ -50,7 +50,7 @@ class ProfileViewModel(
     var authUrls by mutableStateOf<Map<Provider, Uri>>(mapOf())
         private set
     // "" = auth code not used, null = auth code missing
-    var authCode by mutableStateOf<String?>("")
+    var oAuthResponse by mutableStateOf<Pair<String?, String?>>(Pair("", ""))
     var provider by mutableStateOf<Provider?>(null)
     var accountLinked by mutableStateOf(false)
     var accountUnlinked by mutableStateOf(false)
@@ -333,9 +333,10 @@ class ProfileViewModel(
         }
     }
 
-    fun loginWithOAuth(code: String, provider: Provider) {
+    fun loginWithOAuth(code: String, state: String, provider: Provider) {
         val oAuthRequest = OAuthRequest(
             code = code,
+            state = state,
             providerId = provider,
             redirectUrl = Constants.REDIRECT_URL
         )

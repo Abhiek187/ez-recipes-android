@@ -8,12 +8,7 @@ import androidx.browser.auth.AuthTabIntent
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
@@ -54,15 +49,24 @@ fun OAuthButton(
     val context = LocalContext.current
     val tag = "OAuthButton"
 
-    fun handleAuthCode(authCode: String?) {
+    fun handleAuth(authCode: String?, authState: String?) {
+        val expectedState = authUrl?.getQueryParameter("state")
+
         if (authCode == null) {
             profileViewModel.recipeError = RecipeError("No auth code received")
             profileViewModel.showAlert = true
+        } else if (authState == null || authState != expectedState) {
+            profileViewModel.recipeError = RecipeError("Invalid auth state received")
+            profileViewModel.showAlert = true
         } else {
-            profileViewModel.loginWithOAuth(authCode, profileViewModel.provider ?: provider)
+            profileViewModel.loginWithOAuth(
+                authCode,
+                authState,
+                profileViewModel.provider ?: provider
+            )
         }
 
-        profileViewModel.authCode = ""
+        profileViewModel.oAuthResponse = Pair("", "")
         profileViewModel.provider = null
     }
 
@@ -88,15 +92,18 @@ fun OAuthButton(
             return@rememberLauncherForActivityResult
         }
 
-        // Extract the authorization code from the redirect and then exchange it for an ID token
+        // Extract the authorization code from the redirect URL and then exchange it for an ID token
         val authCode = result.resultUri?.getQueryParameter("code")
-        handleAuthCode(authCode)
+        val authState = result.resultUri?.getQueryParameter("state")
+        handleAuth(authCode, authState)
     }
 
     // Custom Tab handler
-    LaunchedEffect(profileViewModel.authCode) {
-        if (profileViewModel.authCode != "" && profileViewModel.provider == provider) {
-            handleAuthCode(profileViewModel.authCode)
+    LaunchedEffect(profileViewModel.oAuthResponse) {
+        val (code, state) = profileViewModel.oAuthResponse
+
+        if (profileViewModel.provider == provider && code != "" && state != "") {
+            handleAuth(code, state)
         }
     }
 

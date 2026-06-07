@@ -6,11 +6,7 @@ import androidx.credentials.exceptions.CreateCredentialCancellationException
 import androidx.credentials.exceptions.CreateCredentialProviderConfigurationException
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialProviderConfigurationException
-import com.abhiek.ezrecipes.data.chef.ChefRepository
-import com.abhiek.ezrecipes.data.chef.MockChefService
-import com.abhiek.ezrecipes.data.chef.AuthState
-import com.abhiek.ezrecipes.data.chef.Chef
-import com.abhiek.ezrecipes.data.chef.Provider
+import com.abhiek.ezrecipes.data.chef.*
 import com.abhiek.ezrecipes.data.models.RecipeError
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
@@ -427,12 +423,13 @@ internal class ProfileViewModelTest {
 
     @Test
     fun loginWithOAuthSuccess() = runTest {
-        // Given a code, provider, and token
+        // Given a code, state, provider, and token
         val code = "abc123"
+        val state = "state"
         val provider = Provider.GOOGLE
 
         // When linking the provider
-        viewModel.loginWithOAuth(code, provider)
+        viewModel.loginWithOAuth(code, state, provider)
 
         // Then the chef should be updated
         assertNull(viewModel.recipeError)
@@ -461,13 +458,14 @@ internal class ProfileViewModelTest {
 
     @Test
     fun loginWithOAuthError() = runTest {
-        // Given a code, provider, and token
+        // Given a code, state, provider, and token
         val code = "abc123"
+        val state = "state"
         val provider = Provider.GOOGLE
 
         // When linking the provider and an error occurs
         mockChefService.isSuccess = false
-        viewModel.loginWithOAuth(code, provider)
+        viewModel.loginWithOAuth(code, state, provider)
 
         // Then an error is shown
         assertNull(viewModel.chef)
@@ -479,13 +477,14 @@ internal class ProfileViewModelTest {
 
     @Test
     fun loginWithOAuthNoToken() = runTest {
-        // Given a code, provider, and no token
+        // Given a code, state, provider, and no token
         val code = "abc123"
+        val state = "state"
         val provider = Provider.GOOGLE
         coEvery { mockDataStoreService.getToken() } returns null
 
         // When logging in with the provider
-        viewModel.loginWithOAuth(code, provider)
+        viewModel.loginWithOAuth(code, state, provider)
 
         // Then the user should be authenticated
         assertNull(viewModel.recipeError)
@@ -511,14 +510,15 @@ internal class ProfileViewModelTest {
 
     @Test
     fun loginWithOAuthEmailNotVerified() = runTest {
-        // Given a code, provider, and no token
+        // Given a code, state, provider, and no token
         val code = "abc123"
+        val state = "state"
         val provider = Provider.GOOGLE
         coEvery { mockDataStoreService.getToken() } returns null
 
         // When logging in with the provider, and the email isn't verified
         mockChefService.isEmailVerified = false
-        viewModel.loginWithOAuth(code, provider)
+        viewModel.loginWithOAuth(code, state, provider)
 
         // Then a new chef should be created, but the user shouldn't be authenticated
         assertNull(viewModel.recipeError)
