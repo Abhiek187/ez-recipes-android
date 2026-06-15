@@ -9,14 +9,19 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
@@ -49,18 +54,17 @@ fun TopBar(
     val resources = LocalResources.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-    val isRecipeRoute = currentRoute == Routes.RECIPE
-    val recipeId = navBackStackEntry?.arguments?.getString("id")
+    val isRecipeRoute = navBackStackEntry?.destination?.hasRoute(Routes.Recipe::class) == true
+    val recipeId = if (isRecipeRoute) navBackStackEntry?.toRoute<Routes.Recipe>()?.id else null
 
-    val isFavorite = profileViewModel.chef?.favoriteRecipes?.contains(recipeId) == true
+    val isFavorite = profileViewModel.chef?.favoriteRecipes?.contains(recipeId.toString()) == true
 
     // Check if the recipe is one of the chef's favorites
     LaunchedEffect(Unit) {
         profileViewModel.getChef()
     }
 
-    fun shareRecipe(id: String) {
+    fun shareRecipe(id: Int) {
         // Create a Sharesheet to share the recipe with others
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
@@ -92,10 +96,10 @@ fun TopBar(
         },
         // Add a favorite and share button on the right side if we're on the recipe screen
         actions = {
-            if (isRecipeRoute && recipeId?.toIntOrNull() != null) {
+            if (isRecipeRoute && recipeId != null) {
                 IconButton(
                     onClick = {
-                        profileViewModel.toggleFavoriteRecipe(recipeId.toInt(), !isFavorite)
+                        profileViewModel.toggleFavoriteRecipe(recipeId, !isFavorite)
                     },
                     enabled = profileViewModel.chef != null
                 ) {

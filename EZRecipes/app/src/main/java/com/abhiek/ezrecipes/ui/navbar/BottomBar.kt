@@ -4,6 +4,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -29,7 +30,9 @@ fun BottomBar(navController: NavHostController) {
                 icon = { Icon(tab.icon, contentDescription = null) },
                 label = { Text(stringResource(tab.resourceId)) },
                 // Keep the tab selected as long as it matches one of the parent routes
-                selected = currentDestination?.hierarchy?.any { it.route == tab.route } == true,
+                selected = currentDestination?.hierarchy?.any {
+                    it.hasRoute(tab.route::class)
+                } == true,
                 colors = NavigationBarItemDefaults.colors().copy(
                     selectedTextColor = MaterialTheme.colorScheme.onPrimary,
                     unselectedIconColor = MaterialTheme.colorScheme.onPrimary,

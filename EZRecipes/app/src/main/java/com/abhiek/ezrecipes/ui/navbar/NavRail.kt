@@ -4,6 +4,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -18,14 +19,13 @@ import com.abhiek.ezrecipes.utils.Constants
 @Composable
 fun NavRail(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationRail {
         Constants.TABS.forEach { tab ->
             NavigationRailItem(
                 label = { Text(stringResource(tab.resourceId)) },
                 icon = { Icon(tab.icon, contentDescription = null) },
-                selected = currentRoute == tab.route,
+                selected = navBackStackEntry?.destination?.hasRoute(tab.route::class) == true,
                 onClick = {
                     navController.navigate(tab.route) {
                         popUpTo(navController.graph.findStartDestination().id) {

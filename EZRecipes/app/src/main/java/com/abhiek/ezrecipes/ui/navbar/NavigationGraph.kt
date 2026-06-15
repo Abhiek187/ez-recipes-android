@@ -17,6 +17,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
+import androidx.navigation.toRoute
+import androidx.navigation3.runtime.NavKey
 import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.MainViewModelFactory
 import com.abhiek.ezrecipes.ui.glossary.Glossary
@@ -42,7 +44,7 @@ import com.abhiek.ezrecipes.utils.*
 fun NavigationGraph(
     navController: NavHostController,
     widthSizeClass: WindowWidthSizeClass,
-    startDestination: String = Routes.HOME
+    startDestination: NavKey = Routes.Home
 ) {
     val context = LocalContext.current
     val isWideScreen = widthSizeClass == WindowWidthSizeClass.Expanded
@@ -71,8 +73,7 @@ fun NavigationGraph(
         navController = navController,
         startDestination = startDestination
     ) {
-        composable(
-            Routes.HOME,
+        composable<Routes.Home>(
             // Fading in is ok when switching tabs
             exitTransition = if (mainViewModel.recipe != null) {
                 { slideLeftExit() }
@@ -83,20 +84,18 @@ fun NavigationGraph(
         ) {
             Home(mainViewModel, profileViewModel) { recipe ->
                 mainViewModel.recipe = recipe
-                navController.navigate(
-                    Routes.RECIPE.replace("{id}", recipe.id.toString())
-                ) {
+                navController.navigate(Routes.Recipe(recipe.id)) {
                     // Only have one copy of the recipe destination in the back stack
                     launchSingleTop = true
                 }
             }
         }
-        composable(
-            Routes.RECIPE,
+        composable<Routes.Recipe>(
             deepLinks = listOf(
-                navDeepLink {
-                    uriPattern = "${Constants.RECIPE_WEB_ORIGIN}/${Routes.RECIPE}"
-                }
+                navDeepLink<Routes.Recipe>(
+                    // Automatically adds /{id} to the base path
+                    basePath = "${Constants.RECIPE_WEB_ORIGIN}/recipe"
+                )
             ),
             // Mimic sliding transitions on iOS
             enterTransition = { slideLeftEnter() },
@@ -108,11 +107,10 @@ fun NavigationGraph(
                 mainViewModel,
                 profileViewModel,
                 isWideScreen,
-                backStackEntry.arguments?.getString("id")
+                backStackEntry.toRoute<Routes.Recipe>().id
             )
         }
-        composable(
-            Routes.SEARCH,
+        composable<Routes.Search>(
             exitTransition = if (searchViewModel.recipes.isNotEmpty()) {
                 { slideLeftExit() }
             } else null,
@@ -123,7 +121,7 @@ fun NavigationGraph(
             // On large screens, show the form and results side-by-side
             if (widthSizeClass == WindowWidthSizeClass.Compact) {
                 FilterForm(searchViewModel) {
-                    navController.navigate(Routes.RESULTS)
+                    navController.navigate(Routes.Results)
                 }
             } else {
                 Row(
@@ -141,19 +139,14 @@ fun NavigationGraph(
                         )
                     ) { recipe ->
                         mainViewModel.recipe = recipe
-                        navController.navigate(
-                            Routes.RECIPE.replace(
-                                "{id}", recipe.id.toString()
-                            )
-                        ) {
+                        navController.navigate(Routes.Recipe(recipe.id)) {
                             launchSingleTop = true
                         }
                     }
                 }
             }
         }
-        composable(
-            Routes.RESULTS,
+        composable<Routes.Results>(
             enterTransition = { slideLeftEnter() },
             exitTransition = { slideLeftExit() },
             popEnterTransition = { slideRightEnter() },
@@ -161,26 +154,19 @@ fun NavigationGraph(
         ) {
             SearchResults(searchViewModel, profileViewModel) { recipe ->
                 mainViewModel.recipe = recipe
-                navController.navigate(
-                    Routes.RECIPE.replace(
-                        "{id}", recipe.id.toString()
-                    )
-                ) {
+                navController.navigate(Routes.Recipe(recipe.id)) {
                     launchSingleTop = true
                 }
             }
         }
-        composable(
-            Routes.GLOSSARY
-        ) {
+        composable<Routes.Glossary> {
             Glossary(glossaryViewModel.terms)
         }
-        composable(
-            Routes.PROFILE,
+        composable<Routes.Profile>(
             deepLinks = listOf(
-                navDeepLink {
-                    uriPattern = "${Constants.RECIPE_WEB_ORIGIN}/${Routes.PROFILE}"
-                }
+                navDeepLink<Routes.Profile>(
+                    basePath = "${Constants.RECIPE_WEB_ORIGIN}/profile"
+                )
             ),
             exitTransition = if (mainViewModel.recipe != null) {
                 { slideLeftExit() }
@@ -191,20 +177,20 @@ fun NavigationGraph(
         ) { backStackEntry ->
             Profile(
                 profileViewModel,
-                deepLinkAction = backStackEntry.arguments?.getString("action")
+                deepLinkAction = backStackEntry.toRoute<Routes.Profile>().action
             )
         }
     }
 }
 
-private class NavigationGraphPreviewParameterProvider: PreviewParameterProvider<String> {
+private class NavigationGraphPreviewParameterProvider: PreviewParameterProvider<NavKey> {
     override val values = sequenceOf(
-        Routes.HOME,
-        Routes.RECIPE,
-        Routes.SEARCH,
-        Routes.RESULTS,
-        Routes.GLOSSARY,
-        Routes.PROFILE
+        Routes.Home,
+        Routes.Recipe(Constants.Mocks.CHOCOLATE_CUPCAKE.id),
+        Routes.Search,
+        Routes.Results,
+        Routes.Glossary,
+        Routes.Profile()
     )
 }
 
@@ -214,7 +200,7 @@ private class NavigationGraphPreviewParameterProvider: PreviewParameterProvider<
 @OrientationPreviews
 @Composable
 private fun NavigationGraphPreview(
-    @PreviewParameter(NavigationGraphPreviewParameterProvider::class) route: String
+    @PreviewParameter(NavigationGraphPreviewParameterProvider::class) route: NavKey
 ) {
     val navController = rememberNavController()
     val windowSize = currentWindowSize()

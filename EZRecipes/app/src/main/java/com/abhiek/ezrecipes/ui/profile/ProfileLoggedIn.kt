@@ -16,10 +16,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation3.runtime.NavKey
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.chef.Chef
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
-import com.abhiek.ezrecipes.data.chef.Chef
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -40,7 +41,7 @@ fun ProfileLoggedIn(
 ) {
     val resources = LocalResources.current
 
-    var dialogToShow by remember { mutableStateOf<String?>(null) }
+    var dialogToShow by remember { mutableStateOf<NavKey?>(null) }
 
     val onDismiss = {
         dialogToShow = null
@@ -113,7 +114,7 @@ fun ProfileLoggedIn(
         }
         Button(
             onClick = {
-                dialogToShow = Routes.UPDATE_EMAIL
+                dialogToShow = Routes.UpdateEmail
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
@@ -121,7 +122,7 @@ fun ProfileLoggedIn(
         }
         Button(
             onClick = {
-                dialogToShow = Routes.UPDATE_PASSWORD
+                dialogToShow = Routes.UpdatePassword
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
@@ -129,7 +130,7 @@ fun ProfileLoggedIn(
         }
         Button(
             onClick = {
-                dialogToShow = Routes.DELETE_ACCOUNT
+                dialogToShow = Routes.DeleteAccount
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.error
@@ -166,13 +167,13 @@ fun ProfileLoggedIn(
                         color = MaterialTheme.colorScheme.background
                     ) {
                         when (dialog) {
-                            Routes.UPDATE_EMAIL ->
+                            Routes.UpdateEmail ->
                                 UpdateEmailForm(profileViewModel)
 
-                            Routes.UPDATE_PASSWORD ->
+                            Routes.UpdatePassword ->
                                 UpdatePasswordForm(profileViewModel, onDismiss)
 
-                            Routes.DELETE_ACCOUNT ->
+                            Routes.DeleteAccount ->
                                 DeleteAccountForm(profileViewModel, onDismiss)
                         }
                     }
@@ -193,7 +194,7 @@ fun ProfileLoggedIn(
                         onLogin = {
                             // After logging in, go back to the previous dialog
                             profileViewModel.openLoginDialog = false
-                            dialogToShow = Routes.UPDATE_EMAIL
+                            dialogToShow = Routes.UpdateEmail
                         }
                     )
                 }

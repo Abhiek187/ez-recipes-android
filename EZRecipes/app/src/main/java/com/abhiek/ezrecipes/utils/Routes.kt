@@ -1,22 +1,25 @@
 package com.abhiek.ezrecipes.utils
 
+import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
+
 object Routes {
     // tabs = user-facing labels, routes = internal "pretend" URL paths
     // All tabs have routes, but not all routes have tabs
-    const val HOME = "home"
-    const val RECIPE = "recipe/{id}"
+    @Serializable data object Home: NavKey
+    @Serializable data class Recipe(val id: Int): NavKey
 
-    const val SEARCH = "search"
-    const val RESULTS = "search/results"
+    @Serializable data object Search: NavKey
+    @Serializable data object Results: NavKey
 
-    const val GLOSSARY = "glossary"
+    @Serializable data object Glossary: NavKey
 
-    const val PROFILE = "profile?action={action}"
-    const val LOGIN = "login"
-    const val SIGN_UP = "sign-up"
-    const val VERIFY_EMAIL = "verify/{email}"
-    const val FORGOT_PASSWORD = "forgot-password"
-    const val UPDATE_EMAIL = "update-email"
-    const val UPDATE_PASSWORD = "update-password"
-    const val DELETE_ACCOUNT = "delete-account"
+    @Serializable data class Profile(val action: String? = null): NavKey
+    @Serializable data object Login: NavKey
+    @Serializable data object SignUp: NavKey
+    @Serializable data class VerifyEmail(val email: String): NavKey
+    @Serializable data object ForgotPassword: NavKey
+    @Serializable data object UpdateEmail: NavKey
+    @Serializable data object UpdatePassword: NavKey
+    @Serializable data object DeleteAccount: NavKey
 }

@@ -4,7 +4,10 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +33,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.profile.PasskeyManager
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.currentWindowSize
 import com.google.android.play.core.review.testing.FakeReviewManager
 
@@ -38,7 +42,7 @@ fun Recipe(
     mainViewModel: MainViewModel,
     profileViewModel: ProfileViewModel,
     isWideScreen: Boolean,
-    recipeIdString: String? = null
+    recipeId: Int
 ) {
     val context = LocalContext.current
     val resources = LocalResources.current
@@ -65,9 +69,7 @@ fun Recipe(
 
     if (mainViewModel.recipe == null) {
         // If this composable was opened due to a deep link, use the recipeId to load the recipe
-        recipeIdString?.toIntOrNull()?.let { recipeId ->
-            mainViewModel.getRecipeById(recipeId)
-        }
+        mainViewModel.getRecipeById(recipeId)
 
         // Shouldn't be seen normally
         Column {
@@ -204,7 +206,8 @@ private fun RecipePreview() {
             Recipe(
                 viewModel,
                 profileViewModel,
-                windowSize.widthSizeClass == WindowWidthSizeClass.Expanded
+                windowSize.widthSizeClass == WindowWidthSizeClass.Expanded,
+                Constants.Mocks.CHOCOLATE_CUPCAKE.id
             )
         }
     }

@@ -1,6 +1,8 @@
 package com.abhiek.ezrecipes.ui.login
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -45,19 +47,18 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
             // Use a NavHost to manage navigation within the dialog
             val navController = rememberNavController()
 
-            NavHost(navController = navController, startDestination = Routes.LOGIN) {
-                composable(
-                    Routes.LOGIN,
+            NavHost(navController = navController, startDestination = Routes.Login) {
+                composable<Routes.Login>(
                     deepLinks = listOf(
-                        navDeepLink {
-                            uriPattern = Constants.REDIRECT_URL
-                        }
+                        navDeepLink<Routes.Login>(
+                            basePath = Constants.REDIRECT_URL
+                        )
                     )
                 ) {
                     LoginForm(
                         profileViewModel = profileViewModel,
                         onSignup = {
-                            navController.navigate(Routes.SIGN_UP) {
+                            navController.navigate(Routes.SignUp) {
                                 // Close the modal whenever the user navigates back
                                 popUpTo(
                                     navController.currentBackStackEntry?.destination?.route
@@ -69,7 +70,7 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
                             }
                         },
                         onForgotPassword = {
-                            navController.navigate(Routes.FORGOT_PASSWORD) {
+                            navController.navigate(Routes.ForgotPassword) {
                                 popUpTo(
                                     navController.currentBackStackEntry?.destination?.route
                                         ?: return@navigate
@@ -80,9 +81,7 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
                             }
                         },
                         onVerifyEmail = { email ->
-                            navController.navigate(
-                                Routes.VERIFY_EMAIL.replace("{email}", email)
-                            ) {
+                            navController.navigate(Routes.VerifyEmail(email)) {
                                 popUpTo(
                                     navController.currentBackStackEntry?.destination?.route
                                         ?: return@navigate
@@ -94,11 +93,11 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
                         }
                     )
                 }
-                composable(Routes.SIGN_UP) {
+                composable<Routes.SignUp> {
                     SignUpForm(
                         profileViewModel = profileViewModel,
                         onLogin = {
-                            navController.navigate(Routes.LOGIN) {
+                            navController.navigate(Routes.Login) {
                                 popUpTo(
                                     navController.currentBackStackEntry?.destination?.route
                                         ?: return@navigate
@@ -109,9 +108,7 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
                             }
                         },
                         onVerifyEmail = { email ->
-                            navController.navigate(
-                                Routes.VERIFY_EMAIL.replace("{email}", email)
-                            ) {
+                            navController.navigate(Routes.VerifyEmail(email)) {
                                 popUpTo(
                                     navController.currentBackStackEntry?.destination?.route
                                         ?: return@navigate
@@ -123,7 +120,7 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
                         }
                     )
                 }
-                composable(Routes.VERIFY_EMAIL) { backStackEntry ->
+                composable<Routes.VerifyEmail> { backStackEntry ->
                     VerifyEmail(
                         email = backStackEntry.arguments?.getString("email"),
                         onResend = {
@@ -134,7 +131,7 @@ fun LoginDialog(profileViewModel: ProfileViewModel, onDismiss: () -> Unit) {
                         }
                     )
                 }
-                composable(Routes.FORGOT_PASSWORD) {
+                composable<Routes.ForgotPassword> {
                     ForgotPasswordForm(profileViewModel)
                 }
             }

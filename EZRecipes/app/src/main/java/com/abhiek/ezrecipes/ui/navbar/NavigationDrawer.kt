@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -48,7 +49,6 @@ fun NavigationDrawer(
     val drawerState = rememberDrawerState(initialDrawerValue)
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
 
     // Keep the logo centered within the drawer (left padding <-> logo <-> right padding)
     val logoWidth = 100
@@ -98,7 +98,8 @@ fun NavigationDrawer(
                         DrawerListItem(
                             item = tab,
                             // Highlight the drawer item corresponding to the current route on screen
-                            selected = currentRoute == tab.route,
+                            selected =
+                                navBackStackEntry?.destination?.hasRoute(tab.route::class) == true,
                             onItemClick = {
                                 navController.navigate(tab.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
