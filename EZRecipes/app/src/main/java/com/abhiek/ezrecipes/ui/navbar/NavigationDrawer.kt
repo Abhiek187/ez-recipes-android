@@ -88,7 +88,7 @@ fun NavigationDrawer(
                         DrawerListItem(
                             item = tab,
                             // Highlight the drawer item corresponding to the current route on screen
-                            selected = tab.route == navigationState.topLevelRoute,
+                            selected = tab.route::class == navigationState.topLevelRoute::class,
                             onItemClick = {
                                 navigator.navigate(tab.route)
                             }

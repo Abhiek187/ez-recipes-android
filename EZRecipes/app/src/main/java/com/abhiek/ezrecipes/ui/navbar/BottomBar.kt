@@ -29,7 +29,7 @@ fun BottomBar() {
                 icon = { Icon(tab.icon, contentDescription = null) },
                 label = { Text(stringResource(tab.resourceId)) },
                 // Keep the tab selected as long as it matches one of the parent routes
-                selected = tab.route == navigationState.topLevelRoute,
+                selected = tab.route::class == navigationState.topLevelRoute::class,
                 colors = NavigationBarItemDefaults.colors().copy(
                     selectedTextColor = MaterialTheme.colorScheme.onPrimary,
                     unselectedIconColor = MaterialTheme.colorScheme.onPrimary,

@@ -26,7 +26,7 @@ fun NavRail() {
             NavigationRailItem(
                 label = { Text(stringResource(tab.resourceId)) },
                 icon = { Icon(tab.icon, contentDescription = null) },
-                selected = tab.route == navigationState.topLevelRoute,
+                selected = tab.route::class == navigationState.topLevelRoute::class,
                 onClick = {
                     navigator.navigate(tab.route)
                 }

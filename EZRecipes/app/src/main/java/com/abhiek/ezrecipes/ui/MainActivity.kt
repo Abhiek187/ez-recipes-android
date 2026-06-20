@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation3.runtime.NavKey
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
     )
 
     private var startRoute: NavKey = Routes.Home
+    private var deepLinkRoute: NavKey? = null
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +44,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navigationState = rememberNavigationState(startRoute)
             val navigator = remember { Navigator(navigationState) }
+
+            LaunchedEffect(deepLinkRoute) {
+                (deepLinkRoute as? Routes.Recipe)?.let { route ->
+                    navigator.navigate(route)
+                }
+            }
 
             // Share state with child composables without prop drilling,
             // similar to EnvironmentObjects or Context Providers
@@ -85,7 +93,8 @@ class MainActivity : ComponentActivity() {
                 Log.w(TAG, "Invalid recipe ID: $recipeIdString")
             } else {
                 Log.d(TAG, "recipe ID = $recipeId")
-                startRoute = Routes.Recipe(recipeId)
+                // The recipe route is a child of the home route, not a top-level route
+                deepLinkRoute = Routes.Recipe(recipeId)
             }
         } else if (appLinkData?.path?.contains("/profile") == true) {
             val action = appLinkData.getQueryParameter("action")
