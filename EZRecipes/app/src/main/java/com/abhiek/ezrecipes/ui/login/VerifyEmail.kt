@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.abhiek.ezrecipes.R
@@ -20,11 +21,11 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.boldAnnotatedString
 import kotlinx.coroutines.delay
-import java.util.Locale
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun VerifyEmail(
-    email: String? = null,
+    email: String,
     onResend: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
@@ -32,7 +33,6 @@ fun VerifyEmail(
     var enableResend by remember { mutableStateOf(false) }
     var secondsRemaining by remember { mutableIntStateOf(Constants.EMAIL_COOLDOWN_SECONDS) }
 
-    val emailText = email ?: "your email address"
     val emailStartIndex = 114 // don't change the string and make me recount ;P
 
     LaunchedEffect(enableResend) {
@@ -40,7 +40,7 @@ fun VerifyEmail(
             secondsRemaining = Constants.EMAIL_COOLDOWN_SECONDS
 
             while (secondsRemaining > 0) {
-                delay(1000)
+                delay(1000.milliseconds)
                 secondsRemaining--
             }
             enableResend = true
@@ -61,10 +61,10 @@ fun VerifyEmail(
             text = boldAnnotatedString(
                 text = stringResource(
                     R.string.email_verify_body,
-                    emailText
+                    email
                 ),
                 startIndex = emailStartIndex,
-                endIndex = emailStartIndex + emailText.length
+                endIndex = emailStartIndex + email.length
             ),
             style = MaterialTheme.typography.bodyLarge
         )
@@ -99,7 +99,7 @@ fun VerifyEmail(
                     )
                     Text(
                         text = String.format(
-                            Locale.getDefault(),
+                            LocalLocale.current.platformLocale,
                             "%02d:%02d",
                             secondsRemaining / 60, secondsRemaining % 60
                         ),
@@ -134,7 +134,6 @@ private fun VerifyEmailPreview() {
         Surface {
             Column {
                 VerifyEmail("test@example.com")
-                VerifyEmail()
             }
         }
     }

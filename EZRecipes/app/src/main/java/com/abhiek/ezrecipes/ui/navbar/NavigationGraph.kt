@@ -1,24 +1,23 @@
 package com.abhiek.ezrecipes.ui.navbar
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navDeepLink
-import androidx.navigation.toRoute
-import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.metadata
+import androidx.navigation3.ui.NavDisplay
 import com.abhiek.ezrecipes.ui.MainViewModel
 import com.abhiek.ezrecipes.ui.MainViewModelFactory
 import com.abhiek.ezrecipes.ui.glossary.Glossary
@@ -38,16 +37,19 @@ import com.abhiek.ezrecipes.ui.search.SearchResults
 import com.abhiek.ezrecipes.ui.search.SearchViewModel
 import com.abhiek.ezrecipes.ui.search.SearchViewModelFactory
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.ui.util.LocalNavigationState
+import com.abhiek.ezrecipes.ui.util.rememberNavigationState
+import com.abhiek.ezrecipes.ui.util.toEntries
 import com.abhiek.ezrecipes.utils.*
 
 @Composable
 fun NavigationGraph(
-    navController: NavHostController,
-    widthSizeClass: WindowWidthSizeClass,
-    startDestination: NavKey = Routes.Home
+    widthSizeClass: WindowWidthSizeClass
 ) {
     val context = LocalContext.current
     val isWideScreen = widthSizeClass == WindowWidthSizeClass.Expanded
+    val navigationState = LocalNavigationState.current
+    val navigator = LocalNavigator.current
 
     val mainViewModel = viewModel<MainViewModel>(
         factory = MainViewModelFactory(context)
@@ -67,61 +69,59 @@ fun NavigationGraph(
         glossaryViewModel.checkCachedTerms()
     }
 
-    // Show the appropriate composable based on the current route, starting at the home screen
-    // NavHostController is a subclass of NavController
-    NavHost(
-        navController = navController,
-        startDestination = startDestination
-    ) {
-        composable<Routes.Home>(
-            // Fading in is ok when switching tabs
-            exitTransition = if (mainViewModel.recipe != null) {
-                { slideLeftExit() }
-            } else null,
-            popEnterTransition = if (mainViewModel.recipe != null) {
-                { slideRightEnter() }
-            } else null
+    val entryProvider = entryProvider {
+        entry<Routes.Home>(
+            metadata = metadata {
+                // Fading in is ok when switching tabs
+                if (mainViewModel.recipe != null) {
+                    put(NavDisplay.TransitionKey) {
+                        EnterTransition.None togetherWith slideLeftExit()
+                    }
+                    put(NavDisplay.PopTransitionKey) {
+                        slideRightEnter() togetherWith ExitTransition.None
+                    }
+                }
+            }
         ) {
             Home(mainViewModel, profileViewModel) { recipe ->
                 mainViewModel.recipe = recipe
-                navController.navigate(Routes.Recipe(recipe.id)) {
-                    // Only have one copy of the recipe destination in the back stack
-                    launchSingleTop = true
-                }
+                navigator.navigate(Routes.Recipe(recipe.id))
             }
         }
-        composable<Routes.Recipe>(
-            deepLinks = listOf(
-                navDeepLink<Routes.Recipe>(
-                    // Automatically adds /{id} to the base path
-                    basePath = "${Constants.RECIPE_WEB_ORIGIN}/recipe"
-                )
-            ),
+        entry<Routes.Recipe>(
             // Mimic sliding transitions on iOS
-            enterTransition = { slideLeftEnter() },
-            exitTransition = { slideLeftExit() },
-            popEnterTransition = { slideRightEnter() },
-            popExitTransition = { slideRightExit() }
-        ) { backStackEntry ->
+            metadata = metadata {
+                put(NavDisplay.TransitionKey) {
+                    slideLeftEnter() togetherWith slideLeftExit()
+                }
+                put(NavDisplay.PopTransitionKey) {
+                    slideRightEnter() togetherWith slideRightExit()
+                }
+            }
+        ) { key ->
             Recipe(
                 mainViewModel,
                 profileViewModel,
                 isWideScreen,
-                backStackEntry.toRoute<Routes.Recipe>().id
+                key.id
             )
         }
-        composable<Routes.Search>(
-            exitTransition = if (searchViewModel.recipes.isNotEmpty()) {
-                { slideLeftExit() }
-            } else null,
-            popEnterTransition = if (searchViewModel.recipes.isNotEmpty()) {
-                { slideRightEnter() }
-            } else null
+        entry<Routes.Search>(
+            metadata = metadata {
+                if (searchViewModel.recipes.isNotEmpty()) {
+                    put(NavDisplay.TransitionKey) {
+                        EnterTransition.None togetherWith slideLeftExit()
+                    }
+                    put(NavDisplay.PopTransitionKey) {
+                        slideRightEnter() togetherWith ExitTransition.None
+                    }
+                }
+            }
         ) {
             // On large screens, show the form and results side-by-side
             if (widthSizeClass == WindowWidthSizeClass.Compact) {
                 FilterForm(searchViewModel) {
-                    navController.navigate(Routes.Results)
+                    navigator.navigate(Routes.Results)
                 }
             } else {
                 Row(
@@ -139,58 +139,52 @@ fun NavigationGraph(
                         )
                     ) { recipe ->
                         mainViewModel.recipe = recipe
-                        navController.navigate(Routes.Recipe(recipe.id)) {
-                            launchSingleTop = true
-                        }
+                        navigator.navigate(Routes.Recipe(recipe.id))
                     }
                 }
             }
         }
-        composable<Routes.Results>(
-            enterTransition = { slideLeftEnter() },
-            exitTransition = { slideLeftExit() },
-            popEnterTransition = { slideRightEnter() },
-            popExitTransition = { slideRightExit() }
+        entry<Routes.Results>(
+            metadata = metadata {
+                put(NavDisplay.TransitionKey) {
+                    slideLeftEnter() togetherWith slideLeftExit()
+                }
+                put(NavDisplay.PopTransitionKey) {
+                    slideRightEnter() togetherWith slideRightExit()
+                }
+            }
         ) {
             SearchResults(searchViewModel, profileViewModel) { recipe ->
                 mainViewModel.recipe = recipe
-                navController.navigate(Routes.Recipe(recipe.id)) {
-                    launchSingleTop = true
-                }
+                navigator.navigate(Routes.Recipe(recipe.id))
             }
         }
-        composable<Routes.Glossary> {
+        entry<Routes.Glossary> {
             Glossary(glossaryViewModel.terms)
         }
-        composable<Routes.Profile>(
-            deepLinks = listOf(
-                navDeepLink<Routes.Profile>(
-                    basePath = "${Constants.RECIPE_WEB_ORIGIN}/profile"
-                )
-            ),
-            exitTransition = if (mainViewModel.recipe != null) {
-                { slideLeftExit() }
-            } else null,
-            popEnterTransition = if (mainViewModel.recipe != null) {
-                { slideRightEnter() }
-            } else null
-        ) { backStackEntry ->
+        entry<Routes.Profile>(
+            metadata = metadata {
+                if (mainViewModel.recipe != null) {
+                    put(NavDisplay.TransitionKey) {
+                        EnterTransition.None togetherWith slideLeftExit()
+                    }
+                    put(NavDisplay.PopTransitionKey) {
+                        slideRightEnter() togetherWith ExitTransition.None
+                    }
+                }
+            }
+        ) { key ->
             Profile(
                 profileViewModel,
-                deepLinkAction = backStackEntry.toRoute<Routes.Profile>().action
+                deepLinkAction = key.action
             )
         }
     }
-}
 
-private class NavigationGraphPreviewParameterProvider: PreviewParameterProvider<NavKey> {
-    override val values = sequenceOf(
-        Routes.Home,
-        Routes.Recipe(Constants.Mocks.CHOCOLATE_CUPCAKE.id),
-        Routes.Search,
-        Routes.Results,
-        Routes.Glossary,
-        Routes.Profile()
+    // Show the appropriate composable based on the current route, starting at the home screen
+    NavDisplay(
+        entries = navigationState.toEntries(entryProvider),
+        onBack = { navigator.goBack() }
     )
 }
 
@@ -199,15 +193,19 @@ private class NavigationGraphPreviewParameterProvider: PreviewParameterProvider<
 @FontPreviews
 @OrientationPreviews
 @Composable
-private fun NavigationGraphPreview(
-    @PreviewParameter(NavigationGraphPreviewParameterProvider::class) route: NavKey
-) {
-    val navController = rememberNavController()
+private fun NavigationGraphPreview() {
     val windowSize = currentWindowSize()
+    val navigationState = rememberNavigationState()
+    val navigator = remember { Navigator(navigationState) }
 
-    EZRecipesTheme {
-        Surface {
-            NavigationGraph(navController, windowSize.widthSizeClass, route)
+    CompositionLocalProvider(
+        LocalNavigationState provides navigationState,
+        LocalNavigator provides navigator
+    ) {
+        EZRecipesTheme {
+            Surface {
+                NavigationGraph(windowSize.widthSizeClass)
+            }
         }
     }
 }

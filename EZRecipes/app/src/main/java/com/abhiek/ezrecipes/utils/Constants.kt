@@ -46,6 +46,8 @@ object Constants {
      * so list each tab manually
      */
     val TABS = listOf(Tab.Home, Tab.Search, Tab.Glossary, Tab.Profile)
+    val TOP_ROUTES = setOf(Routes.Home, Routes.Search, Routes.Glossary, Routes.Profile())
+    val LOGIN_ROUTES = setOf(Routes.Login, Routes.SignUp, Routes.VerifyEmail(""), Routes.ForgotPassword)
 
     object Room {
         const val DATABASE_NAME = "AppDatabase"

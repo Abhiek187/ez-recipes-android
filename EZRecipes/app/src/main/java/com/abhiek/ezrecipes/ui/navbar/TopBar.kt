@@ -10,18 +10,13 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
@@ -35,6 +30,8 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.profile.PasskeyManager
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.ui.util.LocalNavigationState
+import com.abhiek.ezrecipes.ui.util.rememberNavigationState
 import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.Routes
 import com.abhiek.ezrecipes.utils.currentWindowSize
@@ -45,17 +42,17 @@ import kotlinx.coroutines.launch
 @Composable
 fun TopBar(
     scope: CoroutineScope,
-    navController: NavHostController,
     widthSizeClass: WindowWidthSizeClass,
     drawerState: DrawerState? = null,
     profileViewModel: ProfileViewModel
 ) {
     val context = LocalContext.current
     val resources = LocalResources.current
+    val navigationState = LocalNavigationState.current
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val isRecipeRoute = navBackStackEntry?.destination?.hasRoute(Routes.Recipe::class) == true
-    val recipeId = if (isRecipeRoute) navBackStackEntry?.toRoute<Routes.Recipe>()?.id else null
+    val navBackStackEntry = navigationState.backStacks[navigationState.topLevelRoute]?.last()
+    val isRecipeRoute = navBackStackEntry is Routes.Recipe
+    val recipeId = if (isRecipeRoute) navBackStackEntry.id else null
 
     val isFavorite = profileViewModel.chef?.favoriteRecipes?.contains(recipeId.toString()) == true
 
@@ -139,9 +136,9 @@ fun TopBar(
 @Composable
 fun TopBarPreview() {
     val scope = rememberCoroutineScope()
-    val navController = rememberNavController()
     val windowSize = currentWindowSize()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val navigationState = rememberNavigationState()
 
     val context = LocalContext.current
     val chefService = MockChefService
@@ -155,7 +152,9 @@ fun TopBarPreview() {
         )
     }
 
-    EZRecipesTheme {
-        TopBar(scope, navController, windowSize.widthSizeClass, drawerState, profileViewModel)
+    CompositionLocalProvider(LocalNavigationState provides navigationState) {
+        EZRecipesTheme {
+            TopBar(scope, windowSize.widthSizeClass, drawerState, profileViewModel)
+        }
     }
 }

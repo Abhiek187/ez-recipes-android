@@ -82,10 +82,10 @@ java {
 //noinspection LoginCredentials
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2026.05.01"
-    val lifecycleVersion = "2.10.0"
+    val composeBomVersion = "2026.06.00"
+    val lifecycleVersion = "2.11.0"
     val activityVersion = "1.13.0"
-    val navigationVersion = "1.1.2"
+    val navigationVersion = "1.1.3"
     val coroutineVersion = "1.11.0"
     val serializationVersion = "1.11.0"
     val credentialsVersion = "1.6.0"
@@ -108,7 +108,6 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
-    implementation("androidx.navigation:navigation-compose:2.9.8")
     implementation("androidx.navigation3:navigation3-runtime:$navigationVersion")
     implementation("androidx.navigation3:navigation3-ui:$navigationVersion")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
