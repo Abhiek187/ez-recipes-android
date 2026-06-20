@@ -7,6 +7,8 @@ import android.content.Intent
 import androidx.activity.compose.setContent
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.test.espresso.intent.Intents
@@ -19,6 +21,10 @@ import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.abhiek.ezrecipes.ui.MainActivity
 import com.abhiek.ezrecipes.ui.MainLayout
+import com.abhiek.ezrecipes.ui.util.LocalNavigationState
+import com.abhiek.ezrecipes.ui.util.rememberNavigationState
+import com.abhiek.ezrecipes.utils.LocalNavigator
+import com.abhiek.ezrecipes.utils.Navigator
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -69,8 +75,16 @@ internal class EZRecipesInstrumentedTest {
         }
 
         activity.setContent {
-            val widthSizeClass = calculateWindowSizeClass(activity).widthSizeClass
-            MainLayout(widthSizeClass)
+            val navigationState = rememberNavigationState()
+            val navigator = remember { Navigator(navigationState) }
+
+            CompositionLocalProvider(
+                LocalNavigationState provides navigationState,
+                LocalNavigator provides navigator
+            ) {
+                val widthSizeClass = calculateWindowSizeClass(activity).widthSizeClass
+                MainLayout(widthSizeClass)
+            }
         }
     }
 
