@@ -9,10 +9,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation3.runtime.NavKey
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModelFactory
+import com.abhiek.ezrecipes.ui.util.LocalNavigationState
+import com.abhiek.ezrecipes.ui.util.rememberNavigationState
 import com.abhiek.ezrecipes.utils.Constants
+import com.abhiek.ezrecipes.utils.LocalNavigator
+import com.abhiek.ezrecipes.utils.Navigator
+import com.abhiek.ezrecipes.utils.Routes
 
 class MainActivity : ComponentActivity() {
     companion object {
@@ -23,6 +32,9 @@ class MainActivity : ComponentActivity() {
         factoryProducer = { ProfileViewModelFactory(this) }
     )
 
+    private var startRoute: NavKey = Routes.Home
+    private var deepLinkRoute: NavKey? = null
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -30,8 +42,24 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
-            MainLayout(widthSizeClass)
+            val navigationState = rememberNavigationState(startRoute)
+            val navigator = remember { Navigator(navigationState) }
+
+            LaunchedEffect(deepLinkRoute) {
+                (deepLinkRoute as? Routes.Recipe)?.let { route ->
+                    navigator.navigate(route)
+                }
+            }
+
+            // Share state with child composables without prop drilling,
+            // similar to EnvironmentObjects or Context Providers
+            CompositionLocalProvider(
+                LocalNavigationState provides navigationState,
+                LocalNavigator provides navigator
+            ) {
+                val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
+                MainLayout(widthSizeClass)
+            }
         }
 
         // Handle app link when the app starts
@@ -49,24 +77,39 @@ class MainActivity : ComponentActivity() {
         // Check the app link URI from the intent
         val appLinkAction = appLinkIntent.action
         val appLinkData = appLinkIntent.data
+        if (appLinkAction != Intent.ACTION_VIEW) return
 
-        if (appLinkAction == Intent.ACTION_VIEW) {
-            val recipeId = appLinkData?.lastPathSegment
-            // The navigation graph will take care of the deep link ;)
-            Log.d(TAG, "recipe ID = $recipeId")
+        /* The navigation graph used to take care of the deep link ;)
+         * But in Navigation 3, we need to parse the deep link ourselves :'(
+         * Check all the path patterns in AndroidManifest.xml
+         */
+        Log.d(TAG, "Received deep link: $appLinkData")
 
-            val action = appLinkData?.getQueryParameter("action")
+        if (appLinkData?.path?.contains("/recipe/\\d+".toRegex()) == true) {
+            val recipeIdString = appLinkData.lastPathSegment
+            val recipeId = recipeIdString?.toIntOrNull()
+
+            if (recipeId == null) {
+                Log.w(TAG, "Invalid recipe ID: $recipeIdString")
+            } else {
+                Log.d(TAG, "recipe ID = $recipeId")
+                // The recipe route is a child of the home route, not a top-level route
+                deepLinkRoute = Routes.Recipe(recipeId)
+            }
+        } else if (appLinkData?.path?.contains("/profile") == true) {
+            val action = appLinkData.getQueryParameter("action")
+
             Log.d(TAG, "action = $action")
-
+            startRoute = Routes.Profile(action)
+        } else if (appLinkData?.scheme == Constants.REDIRECT_URI.scheme &&
+            appLinkData?.host == Constants.REDIRECT_URI.host &&
+            appLinkData?.path == Constants.REDIRECT_URI.path) {
             val code = appLinkData?.getQueryParameter("code")
             val state = appLinkData?.getQueryParameter("state")
+
             Log.d(TAG, "code = $code, state = $state")
-            // Only update the ViewModel if the deep link matches the OAuth callback
-            if (appLinkData?.scheme == Constants.REDIRECT_URI.scheme &&
-                appLinkData?.host == Constants.REDIRECT_URI.host &&
-                appLinkData?.path == Constants.REDIRECT_URI.path) {
-                profileViewModel.oAuthResponse = Pair(code, state)
-            }
+            profileViewModel.oAuthResponse = Pair(code, state)
+            startRoute = Routes.Profile()
         }
     }
 }

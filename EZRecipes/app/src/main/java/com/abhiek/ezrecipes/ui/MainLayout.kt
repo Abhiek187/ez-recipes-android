@@ -3,7 +3,6 @@ package com.abhiek.ezrecipes.ui
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.ui.navbar.NavigationDrawer
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -18,17 +17,15 @@ fun MainLayout(
 ) {
     // Remember functions can only be called in a composable, not an activity
     val scope = rememberCoroutineScope()
-    // The navigation controller shouldn't be recreated in other composables
-    val navController = rememberNavController()
 
     // Material Design layout guidelines:
     // https://developer.android.com/guide/topics/large-screens/navigation-for-responsive-uis#responsive_ui_navigation
     EZRecipesTheme {
         // Show the navigation drawer on large screens
         if (widthSizeClass == WindowWidthSizeClass.Expanded) {
-            NavigationDrawer(scope, navController, widthSizeClass)
+            NavigationDrawer(scope, widthSizeClass)
         } else {
-            MainScaffold(scope, navController, widthSizeClass)
+            MainScaffold(scope, widthSizeClass)
         }
     }
 }

@@ -10,8 +10,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.ui.navbar.*
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
@@ -26,7 +24,6 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun MainScaffold(
     scope: CoroutineScope,
-    navController: NavHostController,
     widthSizeClass: WindowWidthSizeClass,
     drawerState: DrawerState? = null
 ) {
@@ -41,12 +38,12 @@ fun MainScaffold(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            TopBar(scope, navController, widthSizeClass, drawerState, profileViewModel)
+            TopBar(scope, widthSizeClass, drawerState, profileViewModel)
         },
         // Show the navigation bar on small screens
         bottomBar = {
             if (widthSizeClass == WindowWidthSizeClass.Compact) {
-                BottomBar(navController)
+                BottomBar()
             }
         },
         // Content padding parameter is required: https://stackoverflow.com/a/72085218
@@ -59,10 +56,10 @@ fun MainScaffold(
                 Row {
                     // Show the navigation rail on medium screens
                     if (widthSizeClass == WindowWidthSizeClass.Medium) {
-                        NavRail(navController)
+                        NavRail()
                     }
 
-                    NavigationGraph(navController, widthSizeClass)
+                    NavigationGraph(widthSizeClass)
                 }
             }
         }
@@ -78,10 +75,9 @@ private fun MainScaffoldPreview() {
     val scope = rememberCoroutineScope()
     // Use the actual size of the device to show accurate previews
     val windowSize = currentWindowSize()
-    val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     EZRecipesTheme {
-        MainScaffold(scope, navController, windowSize.widthSizeClass, drawerState)
+        MainScaffold(scope, windowSize.widthSizeClass, drawerState)
     }
 }

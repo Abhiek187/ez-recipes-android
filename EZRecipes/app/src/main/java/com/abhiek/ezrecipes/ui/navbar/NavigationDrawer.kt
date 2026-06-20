@@ -4,10 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -20,10 +17,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.ui.MainScaffold
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
@@ -31,24 +24,21 @@ import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
-import com.abhiek.ezrecipes.utils.Constants
-import com.abhiek.ezrecipes.utils.currentWindowSize
-import com.abhiek.ezrecipes.utils.toPx
+import com.abhiek.ezrecipes.ui.util.LocalNavigationState
+import com.abhiek.ezrecipes.ui.util.rememberNavigationState
+import com.abhiek.ezrecipes.utils.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun NavigationDrawer(
     scope: CoroutineScope,
-    navController: NavHostController,
     widthSizeClass: WindowWidthSizeClass,
     width: Int = 300,
     initialDrawerValue: DrawerValue = DrawerValue.Closed
 ) {
     val drawerState = rememberDrawerState(initialDrawerValue)
-
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val navigationState = LocalNavigationState.current
+    val navigator = LocalNavigator.current
 
     // Keep the logo centered within the drawer (left padding <-> logo <-> right padding)
     val logoWidth = 100
@@ -98,18 +88,9 @@ fun NavigationDrawer(
                         DrawerListItem(
                             item = tab,
                             // Highlight the drawer item corresponding to the current route on screen
-                            selected = currentRoute == tab.route,
+                            selected = tab.route::class == navigationState.topLevelRoute::class,
                             onItemClick = {
-                                navController.navigate(tab.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                                scope.launch {
-                                    drawerState.close()
-                                }
+                                navigator.navigate(tab.route)
                             }
                         )
                     }
@@ -117,7 +98,7 @@ fun NavigationDrawer(
             }
         }
     ) {
-        MainScaffold(scope, navController, widthSizeClass, drawerState)
+        MainScaffold(scope, widthSizeClass, drawerState)
     }
 }
 
@@ -134,17 +115,22 @@ private fun NavigationDrawerPreview(
     @PreviewParameter(NavigationDrawerPreviewParameterProvider::class) drawerValue: DrawerValue
 ) {
     val scope = rememberCoroutineScope()
-    val navController = rememberNavController()
     val windowSize = currentWindowSize()
+    val navigationState = rememberNavigationState()
+    val navigator = remember { Navigator(navigationState) }
 
-    EZRecipesTheme {
-        Surface {
-            NavigationDrawer(
-                scope,
-                navController,
-                windowSize.widthSizeClass,
-                initialDrawerValue = drawerValue
-            )
+    CompositionLocalProvider(
+        LocalNavigationState provides navigationState,
+        LocalNavigator provides navigator
+    ) {
+        EZRecipesTheme {
+            Surface {
+                NavigationDrawer(
+                    scope,
+                    windowSize.widthSizeClass,
+                    initialDrawerValue = drawerValue
+                )
+            }
         }
     }
 }
