@@ -23,13 +23,14 @@ import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 fun CheckboxRow(
     @StringRes stringId: Int,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     // Make both the text and checkbox clickable for a11y
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable { onCheckedChange(!checked) }

@@ -39,6 +39,7 @@ class ProfileViewModel(
         private set
     var recipeError by mutableStateOf<RecipeError?>(null)
 
+    var savedUsername by mutableStateOf<String?>(null)
     var authState by mutableStateOf(AuthState.LOADING)
     var isLoading by mutableStateOf(false)
     var chef by mutableStateOf<Chef?>(null)
@@ -976,6 +977,18 @@ class ProfileViewModel(
                     }")
                 }
             }
+        }
+    }
+
+    fun getUsername() {
+        viewModelScope.launch {
+            savedUsername = dataStoreService.getUsername()
+        }
+    }
+
+    fun saveUsername(username: String?) {
+        viewModelScope.launch {
+            dataStoreService.saveUsername(username)
         }
     }
 }
