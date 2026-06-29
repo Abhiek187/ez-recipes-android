@@ -53,6 +53,7 @@ internal class ProfileTest(
          * Username Check:
          * - No error should be shown initially
          * - An error should be shown if the field is empty
+         * - The Remember Me toggle works
          */
         val usernameField = composeTestRule
             .onNodeWithText(activity.getString(R.string.username_field))
@@ -65,6 +66,11 @@ internal class ProfileTest(
         passkeyButton.assertIsEnabled()
         passkeyHint.assertDoesNotExist()
         loginDialogButton.assertIsNotEnabled()
+        val rememberMeToggle = composeTestRule
+            .onNodeWithText(activity.getString(R.string.remember_me))
+        rememberMeToggle.assertHasClickAction()
+        rememberMeToggle.performClick()
+        rememberMeToggle.performClick()
 
         /*
          * Password Check:
