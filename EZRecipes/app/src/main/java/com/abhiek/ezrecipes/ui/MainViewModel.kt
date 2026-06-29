@@ -8,17 +8,18 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.abhiek.ezrecipes.BuildConfig
+import com.abhiek.ezrecipes.data.models.RecipeError
 import com.abhiek.ezrecipes.data.recipe.RecentRecipe
+import com.abhiek.ezrecipes.data.recipe.Recipe
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.recipe.RecipeResult
-import com.abhiek.ezrecipes.data.recipe.Recipe
-import com.abhiek.ezrecipes.data.models.RecipeError
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.utils.Constants
 import com.google.android.play.core.review.ReviewManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 // Connects the View to the Repository
 class MainViewModel(
@@ -125,7 +126,7 @@ class MainViewModel(
                     Log.d(TAG, "Got the ReviewInfo object: $reviewInfo")
                     // Delay for two seconds to avoid interrupting the person using the app
                     viewModelScope.launch {
-                        delay(2000)
+                        delay(2000.milliseconds)
                         val flow = reviewManager.launchReviewFlow(activity, reviewInfo)
 
                         flow.addOnCompleteListener {

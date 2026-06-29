@@ -1,6 +1,9 @@
 package com.abhiek.ezrecipes.ui.home
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -19,12 +22,12 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.chef.AuthState
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
-import com.abhiek.ezrecipes.data.chef.AuthState
+import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecentRecipe
 import com.abhiek.ezrecipes.data.recipe.Recipe
-import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.data.storage.DataStoreService
@@ -41,6 +44,7 @@ import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.getActivity
 import com.google.android.play.core.review.testing.FakeReviewManager
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun Home(
@@ -75,7 +79,7 @@ fun Home(
         loadingMessage = defaultLoadingMessage
 
         while (mainViewModel.isLoading) {
-            delay(3000) // 3 seconds
+            delay(3000.milliseconds) // 3 seconds
             loadingMessage = resources.getStringArray(R.array.loading_messages).random()
         }
     }

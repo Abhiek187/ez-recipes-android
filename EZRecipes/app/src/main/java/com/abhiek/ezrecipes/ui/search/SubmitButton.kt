@@ -1,7 +1,13 @@
 package com.abhiek.ezrecipes.ui.search
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -14,13 +20,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
-import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun SubmitButton(searchViewModel: SearchViewModel, enabled: Boolean) {
@@ -34,7 +41,7 @@ fun SubmitButton(searchViewModel: SearchViewModel, enabled: Boolean) {
         loadingMessage = defaultLoadingMessage
 
         while (searchViewModel.isLoading) {
-            delay(3000) // 3 seconds
+            delay(3000.milliseconds) // 3 seconds
             loadingMessage = resources.getStringArray(R.array.loading_messages).random()
         }
     }

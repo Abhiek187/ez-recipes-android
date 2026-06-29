@@ -2,11 +2,7 @@ package com.abhiek.ezrecipes.ui.login
 
 import android.os.Build
 import android.widget.Toast
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -45,6 +41,7 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.profile.PasskeyManager
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
+import com.abhiek.ezrecipes.ui.util.CheckboxRow
 import com.abhiek.ezrecipes.ui.util.ErrorAlert
 import com.abhiek.ezrecipes.ui.util.OAuthButton
 import com.abhiek.ezrecipes.ui.util.PasskeyButton
@@ -59,9 +56,10 @@ fun LoginForm(
     onForgotPassword: () -> Unit = {},
     onVerifyEmail: (email: String) -> Unit = {}
 ) {
-    var username by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf(profileViewModel.savedUsername ?: "") }
     var password by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
+    var rememberMe by remember { mutableStateOf(false) }
 
     // Focus
     var usernameTouched by remember { mutableStateOf(false) }
@@ -76,6 +74,11 @@ fun LoginForm(
 
     LaunchedEffect(Unit) {
         profileViewModel.getAuthUrls()
+        profileViewModel.getUsername()
+    }
+
+    LaunchedEffect(profileViewModel.savedUsername) {
+        profileViewModel.savedUsername?.let { username = it }
     }
 
     LaunchedEffect(profileViewModel.chef) {
@@ -83,6 +86,9 @@ fun LoginForm(
         if (profileViewModel.chef?.emailVerified == false) {
             profileViewModel.sendVerificationEmail()
             onVerifyEmail(profileViewModel.chef!!.email)
+        } else if (profileViewModel.chef != null && rememberMe) {
+            // Autofill the username to make it easier to login in the future
+            profileViewModel.saveUsername(profileViewModel.chef?.email)
         }
     }
 
@@ -199,6 +205,14 @@ fun LoginForm(
                     if (it.isFocused) passwordTouched = true
                 }
         )
+        CheckboxRow(
+            stringId = R.string.remember_me,
+            checked = rememberMe,
+            onCheckedChange = {
+                rememberMe = it
+            },
+            modifier = Modifier.width(220.dp)
+        )
         if (!isStepUp) {
             TextButton(
                 onClick = {
@@ -211,6 +225,7 @@ fun LoginForm(
                 )
             }
         }
+        HorizontalDivider()
         Text(
             text = stringResource(R.string.oauth_header),
             style = MaterialTheme.typography.titleLarge
@@ -282,6 +297,7 @@ fun LoginForm(
 }
 
 private data class LoginFormState(
+    val rememberMe: Boolean = false,
     val isLoading: Boolean = false,
     val showAlert: Boolean = false,
     val isStepUp: Boolean = false
@@ -290,6 +306,7 @@ private data class LoginFormState(
 private class LoginFormPreviewParameterProvider: PreviewParameterProvider<LoginFormState> {
     override val values = sequenceOf(
         LoginFormState(),
+        LoginFormState(rememberMe = true),
         LoginFormState(isLoading = true),
         LoginFormState(showAlert = true),
         LoginFormState(isStepUp = true)
@@ -315,6 +332,9 @@ private fun LoginFormPreview(
             dataStoreService = DataStoreService(context),
             passkeyManager = PasskeyManager(context)
         )
+    }
+    if (state.rememberMe) {
+        profileViewModel.savedUsername = chefService.chef.email
     }
     profileViewModel.isLoading = state.isLoading
     profileViewModel.showAlert = state.showAlert
