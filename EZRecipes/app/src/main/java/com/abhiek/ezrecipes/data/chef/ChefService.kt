@@ -89,6 +89,12 @@ interface ChefService {
         @Query("email") email: String
     ): Response<Token>
 
+    @PATCH("passkey")
+    suspend fun updatePasskey(
+        @Body fields: PasskeyUpdate,
+        @Header("Authorization") token: String
+    ): Response<Token>
+
     @DELETE("passkey")
     suspend fun deletePasskey(
         @Query("id") id: String,

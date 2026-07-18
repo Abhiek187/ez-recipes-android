@@ -3,27 +3,12 @@ package com.abhiek.ezrecipes.ui.profile
 import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,9 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.abhiek.ezrecipes.R
+import com.abhiek.ezrecipes.data.chef.Chef
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
-import com.abhiek.ezrecipes.data.chef.Chef
 import com.abhiek.ezrecipes.data.chef.Passkey
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
@@ -49,6 +34,7 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.ConfirmationAlert
+import com.abhiek.ezrecipes.ui.util.InputAlert
 import com.abhiek.ezrecipes.ui.util.PasskeyButton
 import com.abhiek.ezrecipes.utils.toDateTime
 
@@ -62,9 +48,13 @@ fun Passkeys(
     val passkeyManager = PasskeyManager(context)
 
     var selectedPasskey by remember { mutableStateOf<Passkey?>(null) }
+    var showPasskeyRenameAlert by remember { mutableStateOf(false) }
+    var showPasskeyDeleteConfirmation by remember { mutableStateOf(false) }
 
-    val dismissDeletePasskeyConfirmation = {
+    val dismissAlert = {
         selectedPasskey = null
+        showPasskeyRenameAlert = false
+        showPasskeyDeleteConfirmation = false
     }
 
     LaunchedEffect(Unit) {
@@ -131,6 +121,18 @@ fun Passkeys(
                     IconButton(
                         onClick = {
                             selectedPasskey = passkey
+                            showPasskeyRenameAlert = true
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = stringResource(R.string.passkey_rename)
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            selectedPasskey = passkey
+                            showPasskeyDeleteConfirmation = true
                         }
                     ) {
                         Icon(
@@ -170,16 +172,27 @@ fun Passkeys(
     )
 
     selectedPasskey?.let { passkey ->
-        ConfirmationAlert(
-            message = stringResource(
-                R.string.passkey_delete_confirmation,
-                passkey.name
-            ),
-            onConfirm = {
-                profileViewModel.deletePasskey(passkey.id)
-            },
-            onDismiss = dismissDeletePasskeyConfirmation
-        )
+        if (showPasskeyRenameAlert) {
+            InputAlert(
+                inputLabel = stringResource(R.string.passkey_rename),
+                initialInput = passkey.name,
+                onConfirm = { newName ->
+                    profileViewModel.renamePasskey(passkey.id, newName)
+                },
+                onDismiss = dismissAlert
+            )
+        } else if (showPasskeyDeleteConfirmation) {
+            ConfirmationAlert(
+                message = stringResource(
+                    R.string.passkey_delete_confirmation,
+                    passkey.name
+                ),
+                onConfirm = {
+                    profileViewModel.deletePasskey(passkey.id)
+                },
+                onDismiss = dismissAlert
+            )
+        }
     }
 }
 
