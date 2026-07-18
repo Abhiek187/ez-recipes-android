@@ -179,6 +179,17 @@ class ChefRepository(private val chefService: ChefService) {
         }
     }
 
+    suspend fun updatePasskey(id: String, name: String, token: String): ChefResult<Token> {
+        return try {
+            val passkeyUpdate = PasskeyUpdate(id, name)
+            val response = chefService.updatePasskey(passkeyUpdate, token)
+            parseResponse(response)
+        } catch (error: Exception) {
+            val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+            ChefResult.Error(recipeError)
+        }
+    }
+
     suspend fun deletePasskey(id: String, token: String): ChefResult<Token> {
         return try {
             val response = chefService.deletePasskey(id, token)

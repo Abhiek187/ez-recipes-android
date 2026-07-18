@@ -2,7 +2,7 @@ package com.abhiek.ezrecipes.ui.util
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -14,29 +14,40 @@ import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 
 @Composable
-fun ConfirmationAlert(
-    message: String,
-    onConfirm: () -> Unit,
+fun InputAlert(
+    inputLabel: String,
+    initialInput: String,
+    onConfirm: (input: String) -> Unit,
     onDismiss: () -> Unit
 ) {
+    var input by remember { mutableStateOf(initialInput) }
+
+    val inputEmpty = input.isEmpty()
+
     AlertDialog(
         onDismissRequest = onDismiss,
         text = {
-            Text(text = message)
+            TextField(
+                value = input,
+                onValueChange = {
+                    input = it
+                },
+                label = {
+                    Text(text = inputLabel)
+                },
+                isError = inputEmpty
+            )
         },
         confirmButton = {
             Button(
                 onClick = {
-                    onConfirm()
+                    onConfirm(input)
                     onDismiss()
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error
-                )
+                enabled = !inputEmpty
             ) {
                 Text(
-                    text = stringResource(R.string.yes_button),
-                    color = MaterialTheme.colorScheme.onError
+                    text = stringResource(R.string.ok_button)
                 )
             }
         },
@@ -45,7 +56,7 @@ fun ConfirmationAlert(
                 onClick = onDismiss
             ) {
                 Text(
-                    text = stringResource(R.string.no_button)
+                    text = stringResource(R.string.cancel_button)
                 )
             }
         },
@@ -58,11 +69,12 @@ fun ConfirmationAlert(
 @FontPreviews
 @OrientationPreviews
 @Composable
-private fun ConfirmationAlertPreview() {
+private fun InputAlertPreview() {
     EZRecipesTheme {
         Surface {
-            ConfirmationAlert(
-                message = "Are you sure?",
+            InputAlert(
+                inputLabel = "Name",
+                initialInput = "Atul Shah",
                 onConfirm = {},
                 onDismiss = {}
             )

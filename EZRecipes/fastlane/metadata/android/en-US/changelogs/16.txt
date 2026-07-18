@@ -1,0 +1,2 @@
+- Added a Remember Me toggle to make signing in quicker and easier
+- Added the ability to rename passkeys

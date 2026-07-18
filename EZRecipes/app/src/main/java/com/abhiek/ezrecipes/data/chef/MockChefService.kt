@@ -167,6 +167,17 @@ object MockChefService: ChefService {
         }
     }
 
+    override suspend fun updatePasskey(
+        fields: PasskeyUpdate,
+        token: String
+    ): Response<Token> {
+        return if (isSuccess) {
+            Response.success(mockToken)
+        } else {
+            Response.error(401, TOKEN_ERROR_STRING.toResponseBody())
+        }
+    }
+
     override suspend fun deletePasskey(
         id: String,
         token: String

@@ -755,6 +755,52 @@ internal class ProfileViewModelTest {
     }
 
     @Test
+    fun renamePasskeySuccess() = runTest {
+        // Given a passkey to rename
+        val credentialId = "test-credential-id"
+        val newName = "test passkey"
+
+        // When renaming the passkey
+        viewModel.renamePasskey(credentialId, newName)
+
+        // Then the passkey name should be updated
+        assertNull(viewModel.recipeError)
+        assertFalse(viewModel.showAlert)
+        assertEquals(viewModel.chef, mockChefService.chef)
+
+        verify { Encryptor.encrypt(mockChefService.mockToken.token!!) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun renamePasskeyError() = runTest {
+        // Given a passkey to rename
+        val credentialId = "test-credential-id"
+        val newName = "test passkey"
+
+        // When renaming the passkey and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.renamePasskey(credentialId, newName)
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, mockChefService.tokenError)
+    }
+
+    @Test
+    fun renamePasskeyNoToken() = runTest {
+        // Given a passkey to rename and no token
+        val credentialId = "test-credential-id"
+        val newName = "test passkey"
+        coEvery { mockDataStoreService.getToken() } returns null
+
+        // When renaming the passkey
+        viewModel.renamePasskey(credentialId, newName)
+
+        // Then an error is shown
+        assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
+    }
+
+    @Test
     fun deletePasskeySuccess() = runTest {
         // Given a passkey to delete
         val credentialId = "test-credential-id"

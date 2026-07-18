@@ -607,6 +607,52 @@ class ProfileViewModel(
         }
     }
 
+    fun renamePasskey(id: String, newName: String) {
+        job = viewModelScope.launch {
+            isLoading = true
+            val token = getToken()
+            val updatePasskeyResult = if (token != null) {
+                chefRepository.updatePasskey(id, newName, token)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+
+            when (updatePasskeyResult) {
+                is ChefResult.Success -> {
+                    val tokenResponse = updatePasskeyResult.response
+                    recipeError = null
+                    showAlert = false
+
+                    val newToken = tokenResponse.token
+                    if (newToken == null) {
+                        isLoading = false
+                        return@launch
+                    }
+                    saveToken(newToken)
+
+                    // Get the chef's updated passkey list
+                    val chefResult = chefRepository.getChef(newToken)
+                    isLoading = false
+
+                    when (chefResult) {
+                        is ChefResult.Success -> {
+                            chef = chefResult.response
+                        }
+                        is ChefResult.Error -> {
+                            recipeError = chefResult.recipeError
+                            showAlert = job?.isCancelled == false
+                        }
+                    }
+                }
+                is ChefResult.Error -> {
+                    isLoading = false
+                    recipeError = updatePasskeyResult.recipeError
+                    showAlert = token != null && job?.isCancelled == false
+                }
+            }
+        }
+    }
+
     fun deletePasskey(id: String) {
         job = viewModelScope.launch {
             isLoading = true
