@@ -79,7 +79,7 @@ java {
     }
 }
 
-//noinspection LoginCredentials
+@Suppress("DuplicateDependency")
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
     val composeBomVersion = "2026.06.01"
