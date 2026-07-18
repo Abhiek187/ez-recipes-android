@@ -1,6 +1,6 @@
 package com.abhiek.ezrecipes.data.recipe
 
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class CuisineTest {
