@@ -8,7 +8,6 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.lang.IllegalArgumentException
 
 object MealTypeSerializer: KSerializer<MealType> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor(

@@ -8,12 +8,8 @@ import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.data.storage.RecentRecipeDao
 import com.abhiek.ezrecipes.utils.Constants
 import kotlinx.coroutines.test.runTest
-import org.junit.After
+import org.junit.*
 import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Ignore
-import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 
 @Ignore("Pipeline failure: kotlinx.coroutines.JobCancellationException: Job was cancelled")

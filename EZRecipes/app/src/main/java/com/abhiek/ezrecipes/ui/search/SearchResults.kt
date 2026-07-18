@@ -9,12 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,10 +26,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abhiek.ezrecipes.R
 import com.abhiek.ezrecipes.data.chef.ChefRepository
 import com.abhiek.ezrecipes.data.chef.MockChefService
-import com.abhiek.ezrecipes.data.recipe.Recipe
-import com.abhiek.ezrecipes.data.recipe.RecipeSortField
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.Recipe
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.recipe.RecipeSortField
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
