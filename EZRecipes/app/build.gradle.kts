@@ -82,10 +82,10 @@ java {
 //noinspection LoginCredentials
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2026.06.00"
+    val composeBomVersion = "2026.06.01"
     val lifecycleVersion = "2.11.0"
     val activityVersion = "1.13.0"
-    val navigationVersion = "1.1.3"
+    val navigationVersion = "1.1.4"
     val coroutineVersion = "1.11.0"
     val serializationVersion = "1.11.0"
     val credentialsVersion = "1.6.0"
@@ -93,7 +93,7 @@ dependencies {
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.4"
     val googlePlayVersion = "2.0.2"
-    val jupiterVersion = "6.1.1"
+    val jupiterVersion = "6.1.2"
     val espressoVersion = "3.7.0"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
