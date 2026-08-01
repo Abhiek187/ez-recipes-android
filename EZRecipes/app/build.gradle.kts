@@ -85,7 +85,7 @@ dependencies {
     val composeBomVersion = "2026.06.01"
     val lifecycleVersion = "2.11.0"
     val activityVersion = "1.13.0"
-    val navigationVersion = "1.1.4"
+    val navigationVersion = "1.1.5"
     val coroutineVersion = "1.11.0"
     val serializationVersion = "1.11.0"
     val credentialsVersion = "1.6.0"
