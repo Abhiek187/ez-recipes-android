@@ -89,11 +89,12 @@ dependencies {
     val coroutineVersion = "1.11.0"
     val serializationVersion = "1.11.0"
     val credentialsVersion = "1.6.0"
+    val appFunctionsVersion = "1.0.0-alpha10"
     val coilVersion = "3.5.0"
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.4"
     val googlePlayVersion = "2.0.2"
-    val jupiterVersion = "6.1.2"
+    val jupiterVersion = "6.1.3"
     val espressoVersion = "3.7.0"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
@@ -117,6 +118,8 @@ dependencies {
     implementation("androidx.browser:browser:1.10.0")
     implementation("androidx.credentials:credentials:$credentialsVersion")
     implementation("androidx.credentials:credentials-play-services-auth:$credentialsVersion")
+    implementation("androidx.appfunctions:appfunctions:$appFunctionsVersion")
+    ksp("androidx.appfunctions:appfunctions-compiler:$appFunctionsVersion")
 
     // AsyncImage
     implementation("io.coil-kt.coil3:coil-compose:$coilVersion")

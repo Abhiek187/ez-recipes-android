@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AppFunctionAppMetadata xmlns:appfn="http://schemas.android.com/apk/androidx.appfunctions"
+    appfn:description="These functions allow chefs to discover and learn how to cook simple recipes.
+    Operational Patterns:
+    - Use 'searchRecipes' to search for recipes using various filters.
+    - Use 'getRecipe' to get the details of a specific recipe by ID.
+    - Use 'getDefinition' to look up the definition of cooking-related terms.
+    Constraints:
+    - The recipe ID must be a valid, positive integer."
+    appfn:displayDescription="@string/app_description" />
