@@ -13,9 +13,9 @@ class GlossaryViewModelFactory(private val context: Context): ViewModelProvider.
         if (modelClass.isAssignableFrom(GlossaryViewModel::class.java)) {
             return GlossaryViewModel(
                 termsRepository = TermsRepository(
-                    termsService = TermsService.getInstance(context)
-                ),
-                dataStoreService = DataStoreService(context)
+                    termsService = TermsService.getInstance(context),
+                    dataStoreService = DataStoreService(context)
+                )
             ) as T
         }
 

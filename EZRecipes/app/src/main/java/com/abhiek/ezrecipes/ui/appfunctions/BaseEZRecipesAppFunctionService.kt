@@ -4,9 +4,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appfunctions.*
 import com.abhiek.ezrecipes.data.storage.DataStoreService
-import com.abhiek.ezrecipes.data.terms.Term
 import com.abhiek.ezrecipes.data.terms.TermsRepository
-import com.abhiek.ezrecipes.data.terms.TermsResult
 import com.abhiek.ezrecipes.data.terms.TermsService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -37,11 +35,9 @@ To test (API 36.1+):
 abstract class BaseEZRecipesAppFunctionService: AppFunctionService() {
     private val termsRepository by lazy {
         TermsRepository(
-            termsService = TermsService.getInstance(applicationContext)
+            termsService = TermsService.getInstance(applicationContext),
+            dataStoreService = DataStoreService(applicationContext)
         )
-    }
-    private val dataStoreService by lazy {
-        DataStoreService(applicationContext)
     }
 
     companion object {
@@ -69,33 +65,13 @@ abstract class BaseEZRecipesAppFunctionService: AppFunctionService() {
         if (word.isBlank()) {
             throw AppFunctionInvalidArgumentException("Word cannot be blank")
         }
-        val terms = getTerms()
+        val terms = termsRepository.getTerms()
 
         val definition = terms.find { it.word == word }?.definition
         if (definition == null) {
             throw AppFunctionElementNotFoundException("No definition found for word $word")
         } else {
             return@withContext definition
-        }
-    }
-
-    private suspend fun getTerms(): List<Term> {
-        // Check if terms need to be cached
-        val cachedTerms = dataStoreService.getTerms()
-        if (cachedTerms != null) {
-            return cachedTerms
-        }
-
-        return when (val result = termsRepository.getTerms()) {
-            is TermsResult.Success -> {
-                dataStoreService.saveTerms(result.response)
-                result.response
-            }
-            is TermsResult.Error -> {
-                // No need to handle errors besides logging
-                Log.w(TAG, "Failed to get terms :: error: ${result.recipeError}")
-                listOf()
-            }
         }
     }
 }
