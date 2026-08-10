@@ -79,4 +79,19 @@ data class Recipe(
             views = this.views
         )
     }
+
+    /**
+     * Converts a [Recipe] to an [AgentRecipePreview] with filtered fields
+     */
+    fun toAgentRecipePreview(): AgentRecipePreview {
+        return AgentRecipePreview(
+            id = this.id,
+            name = this.name,
+            time = this.time,
+            summary = this.summary,
+            nutrients = this.nutrients,
+            totalRatings = this.totalRatings,
+            averageRating = this.averageRating
+        )
+    }
 }

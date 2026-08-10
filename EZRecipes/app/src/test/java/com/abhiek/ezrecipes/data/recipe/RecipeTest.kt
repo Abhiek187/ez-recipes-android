@@ -55,4 +55,22 @@ internal class RecipeTest {
             views = recipe.views
         ))
     }
+
+    @Test
+    fun toAgentRecipePreview() {
+        // Given a recipe
+        val recipe = Constants.Mocks.CHOCOLATE_CUPCAKE
+        // When converted into an agent recipe preview
+        val agentRecipePreview = recipe.toAgentRecipePreview()
+        // Then it should map the correct fields
+        assertEquals(agentRecipePreview, AgentRecipePreview(
+            id = recipe.id,
+            name = recipe.name,
+            time = recipe.time,
+            summary = recipe.summary,
+            nutrients = recipe.nutrients,
+            totalRatings = recipe.totalRatings,
+            averageRating = recipe.averageRating
+        ))
+    }
 }

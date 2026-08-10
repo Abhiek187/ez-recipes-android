@@ -6,6 +6,10 @@
     - Use 'getRecipeDetails' to get the details of a specific recipe by ID.
     - Use 'getRecipeDefinition' to look up the definition of a cooking-related term.
     Constraints:
-    - The recipe ID must be a valid, positive integer.
+    - At least one filter must be provided when searching for recipes.
+    - If provided, the recipe query cannot be blank.
+    - If provided, the minimum and maximum calories must be between 0 and 2000.
+    - If provided, the recipe rating must be between 1 and 5.
+    - The recipe ID must be positive.
     - Recipe terms cannot be blank."
     appfn:displayDescription="@string/app_description" />
