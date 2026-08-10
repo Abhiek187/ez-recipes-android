@@ -3,8 +3,9 @@
     appfn:description="These functions allow chefs to discover and learn how to cook simple recipes.
     Operational Patterns:
     - Use 'searchRecipes' to search for recipes using various filters.
-    - Use 'getRecipe' to get the details of a specific recipe by ID.
-    - Use 'getDefinition' to look up the definition of cooking-related terms.
+    - Use 'getRecipeDetails' to get the details of a specific recipe by ID.
+    - Use 'getRecipeDefinition' to look up the definition of a cooking-related term.
     Constraints:
-    - The recipe ID must be a valid, positive integer."
+    - The recipe ID must be a valid, positive integer.
+    - Recipe terms cannot be blank."
     appfn:displayDescription="@string/app_description" />

@@ -3,18 +3,16 @@ package com.abhiek.ezrecipes.ui.appfunctions
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appfunctions.*
+import com.abhiek.ezrecipes.data.recipe.AgentRecipe
+import com.abhiek.ezrecipes.data.recipe.RecipeRepository
+import com.abhiek.ezrecipes.data.recipe.RecipeResult
+import com.abhiek.ezrecipes.data.recipe.RecipeService
+import com.abhiek.ezrecipes.data.storage.AppDatabase
 import com.abhiek.ezrecipes.data.storage.DataStoreService
 import com.abhiek.ezrecipes.data.terms.TermsRepository
 import com.abhiek.ezrecipes.data.terms.TermsService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-
-/*
-App Function ideas:
-- Search recipes by filters
-- Get more details about a recipe (summarize or show recipe page)
-- Ask what a recipe term means
- */
 
 /**
 To test (API 36.1+):
@@ -22,7 +20,7 @@ To test (API 36.1+):
 - adb shell cmd app_function list-app-functions | grep --after-context 10 com.abhiek.ezrecipes
 - adb shell cmd app_function execute-app-function \
   --package com.abhiek.ezrecipes \
-  --function 'com.abhiek.ezrecipes.ui.appfunctions.BaseEZRecipesAppFunctionService#getDefinition' \
+  --function 'com.abhiek.ezrecipes.ui.appfunctions.BaseEZRecipesAppFunctionService#getRecipeDefinition' \
   --parameters '{"word":"blanch"}'
  */
 @RequiresApi(36)
@@ -33,6 +31,12 @@ To test (API 36.1+):
     appFunctionXmlFileName = "ez_recipes_app_function_service",
 )
 abstract class BaseEZRecipesAppFunctionService: AppFunctionService() {
+    private val recipeRepository by lazy {
+        RecipeRepository(
+            recipeService = RecipeService.getInstance(applicationContext),
+            recentRecipeDao = AppDatabase.getInstance(applicationContext).recentRecipeDao()
+        )
+    }
     private val termsRepository by lazy {
         TermsRepository(
             termsService = TermsService.getInstance(applicationContext),
@@ -46,10 +50,44 @@ abstract class BaseEZRecipesAppFunctionService: AppFunctionService() {
 
     // The abstract class can't override onExecuteFunction
     private fun logAppFunction(method: String, vararg args: Pair<String, Any?>) {
-        Log.d(TAG, "Calling AppFunction $method with args: ${args.joinToString {
-            "${it.first}=${it.second}"
-        }
+        Log.d(TAG, "Calling AppFunction $method with args: ${
+            args.joinToString { "${it.first}=${it.second}" }
         }")
+    }
+
+    /**
+     * Search for recipes using various filters
+     */
+//    @AppFunction(isDescribedByKDoc = true)
+//    suspend fun searchRecipes(filter: RecipeFilter): List<Recipe> = withContext(Dispatchers.IO) {
+//        logAppFunction("searchRecipes", "filter" to filter)
+//        return@withContext listOf()
+//    }
+
+    /**
+     * Gets recipe details by ID
+     * @param id The ID of the recipe
+     * @return recipe information
+     * @throws AppFunctionInvalidArgumentException if [id] is negative
+     * @throws AppFunctionElementNotFoundException if the recipe couldn't be found
+     */
+    @AppFunction(isDescribedByKDoc = true)
+    suspend fun getRecipeDetails(id: Int): AgentRecipe = withContext(Dispatchers.IO) {
+        logAppFunction("getRecipeDetails", "id" to id)
+        if (id < 0) {
+            throw AppFunctionInvalidArgumentException("Recipe ID cannot be negative")
+        }
+
+        when (val result = recipeRepository.getRecipeById(id)) {
+            is RecipeResult.Success -> {
+                // Only return fields useful to an LLM to save on context & reduce hallucinations
+                return@withContext result.response.toAgentRecipe()
+            }
+            is RecipeResult.Error -> {
+                Log.e(TAG, "Failed to get recipe details :: ${result.recipeError}")
+                throw AppFunctionElementNotFoundException("Recipe with ID $id could not be found")
+            }
+        }
     }
 
     /**
@@ -60,14 +98,15 @@ abstract class BaseEZRecipesAppFunctionService: AppFunctionService() {
      * @throws AppFunctionElementNotFoundException if no definition is found for [word]
      */
     @AppFunction(isDescribedByKDoc = true)
-    suspend fun getDefinition(word: String): String = withContext(Dispatchers.IO) {
-        logAppFunction("getDefinition", "word" to word)
+    suspend fun getRecipeDefinition(word: String): String = withContext(Dispatchers.IO) {
+        logAppFunction("getRecipeDefinition", "word" to word)
         if (word.isBlank()) {
             throw AppFunctionInvalidArgumentException("Word cannot be blank")
         }
-        val terms = termsRepository.getTerms()
 
+        val terms = termsRepository.getTerms()
         val definition = terms.find { it.word == word }?.definition
+
         if (definition == null) {
             throw AppFunctionElementNotFoundException("No definition found for word $word")
         } else {
