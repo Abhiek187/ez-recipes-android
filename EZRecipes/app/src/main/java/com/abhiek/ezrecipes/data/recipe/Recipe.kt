@@ -7,7 +7,7 @@ data class Recipe(
     val _id: String?,
     val id: Int,
     val name: String,
-    val url: String?,
+    val url: String? = null,
     val image: String,
     val credit: String,
     val sourceUrl: String,
@@ -31,4 +31,67 @@ data class Recipe(
     val totalRatings: Int? = null,
     val averageRating: Double? = null,
     val views: Int? = null
-)
+) {
+    /**
+     * Converts a [Recipe] to an [AgentRecipe] with filtered fields
+     */
+    fun toAgentRecipe(): AgentRecipe {
+        return AgentRecipe(
+            id = this.id,
+            name = this.name,
+            url = this.url,
+            healthScore = this.healthScore,
+            time = this.time,
+            servings = this.servings,
+            summary = this.summary,
+            types = this.types.map { it.toString() },
+            spiceLevel = this.spiceLevel.toString(),
+            isVegetarian = this.isVegetarian,
+            isVegan = this.isVegan,
+            isGlutenFree = this.isGlutenFree,
+            isHealthy = this.isHealthy,
+            isCheap = this.isCheap,
+            isSustainable = this.isSustainable,
+            culture = this.culture.map { it.toString() },
+            nutrients = this.nutrients,
+            ingredients = this.ingredients.map { ingredient ->
+                AgentIngredient(
+                    name = ingredient.name,
+                    amount = ingredient.amount,
+                    unit = ingredient.unit
+                )
+            },
+            instructions = this.instructions.map { instruction ->
+                AgentInstruction(
+                    name = instruction.name,
+                    steps = instruction.steps.map { step ->
+                        AgentStep(
+                            number = step.number,
+                            step = step.step,
+                            ingredients = step.ingredients.map { it.name },
+                            equipment = step.equipment.map { it.name }
+                        )
+                    }
+                )
+            },
+            totalRatings = this.totalRatings,
+            averageRating = this.averageRating,
+            views = this.views
+        )
+    }
+
+    /**
+     * Converts a [Recipe] to an [AgentRecipePreview] with filtered fields
+     */
+    fun toAgentRecipePreview(): AgentRecipePreview {
+        return AgentRecipePreview(
+            id = this.id,
+            name = this.name,
+            time = this.time,
+            summary = this.summary,
+            nutrients = this.nutrients,
+            totalRatings = this.totalRatings,
+            averageRating = this.averageRating
+        )
+    }
+}

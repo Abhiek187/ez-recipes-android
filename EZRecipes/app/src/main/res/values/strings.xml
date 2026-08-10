@@ -1,6 +1,7 @@
 <resources>
     <!-- App Bar -->
     <string name="app_name">EZ Recipes</string>
+    <string name="app_description">Easy recipes finder app</string>
     <string name="app_logo_alt">Food cooking in a pot</string>
     <string name="hamburger_menu_alt">Open menu</string>
     <string name="favorite_alt">Favorite this recipe</string>
