@@ -82,7 +82,7 @@ java {
 @Suppress("DuplicateDependency")
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2026.06.01"
+    val composeBomVersion = "2026.08.00"
     val lifecycleVersion = "2.11.0"
     val activityVersion = "1.13.0"
     val navigationVersion = "1.1.5"
