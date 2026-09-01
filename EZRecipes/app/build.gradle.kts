@@ -90,7 +90,7 @@ dependencies {
     val serializationVersion = "1.11.0"
     val credentialsVersion = "1.6.0"
     val appFunctionsVersion = "1.0.0-alpha10"
-    val coilVersion = "3.5.0"
+    val coilVersion = "3.6.0"
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.4"
     val googlePlayVersion = "2.0.2"
