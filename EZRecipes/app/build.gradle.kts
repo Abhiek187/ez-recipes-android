@@ -8,7 +8,7 @@ plugins {
     kotlin("plugin.serialization")
 }
 
-val okHttpVersion = "5.4.0"
+val okHttpVersion = "5.5.0"
 
 android {
     namespace = "com.abhiek.ezrecipes"
@@ -18,7 +18,7 @@ android {
         // GITHUB_ACTIONS = true if running in a workflow
         testInstrumentationRunnerArguments["ci"] = System.getenv("GITHUB_ACTIONS") ?: "null"
         applicationId = "com.abhiek.ezrecipes"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 37
         versionCode = 16
         versionName = "3.2.2"
@@ -82,15 +82,15 @@ java {
 @Suppress("DuplicateDependency")
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBomVersion = "2026.06.01"
+    val composeBomVersion = "2026.08.00"
     val lifecycleVersion = "2.11.0"
     val activityVersion = "1.13.0"
-    val navigationVersion = "1.1.5"
+    val navigationVersion = "1.1.7"
     val coroutineVersion = "1.11.0"
     val serializationVersion = "1.11.0"
     val credentialsVersion = "1.6.0"
-    val appFunctionsVersion = "1.0.0-alpha10"
-    val coilVersion = "3.5.0"
+    val appFunctionsVersion = "1.0.0-alpha11"
+    val coilVersion = "3.6.1"
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.4"
     val googlePlayVersion = "2.0.2"
