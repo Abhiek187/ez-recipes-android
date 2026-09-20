@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 
 class GlossaryViewModel(private val termsRepository: TermsRepository): ViewModel() {
     var terms by mutableStateOf<List<Term>>(listOf())
-        private set
 
     fun checkCachedTerms() {
         viewModelScope.launch {

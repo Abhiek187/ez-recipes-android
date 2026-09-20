@@ -160,7 +160,7 @@ fun NavigationGraph(
             }
         }
         entry<Routes.Glossary> {
-            Glossary(glossaryViewModel.terms)
+            Glossary(glossaryViewModel)
         }
         entry<Routes.Profile>(
             metadata = metadata {

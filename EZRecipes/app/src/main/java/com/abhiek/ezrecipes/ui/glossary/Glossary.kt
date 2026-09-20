@@ -10,13 +10,19 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.abhiek.ezrecipes.data.storage.DataStoreService
+import com.abhiek.ezrecipes.data.terms.MockTermsService
 import com.abhiek.ezrecipes.data.terms.Term
+import com.abhiek.ezrecipes.data.terms.TermsRepository
 import com.abhiek.ezrecipes.ui.previews.DevicePreviews
 import com.abhiek.ezrecipes.ui.previews.DisplayPreviews
 import com.abhiek.ezrecipes.ui.previews.FontPreviews
@@ -26,11 +32,19 @@ import com.abhiek.ezrecipes.utils.Constants
 import com.abhiek.ezrecipes.utils.boldAnnotatedString
 
 @Composable
-fun Glossary(terms: List<Term>) {
+fun Glossary(viewModel: GlossaryViewModel) {
     // Sort all the terms alphabetically for ease of reference
-    val sortedTerms = remember(terms) { terms.sortedBy { term -> term.word } }
+    val sortedTerms = remember(viewModel.terms) {
+        viewModel.terms.sortedBy { term -> term.word }
+    }
 
-    if (terms.isEmpty()) {
+    LaunchedEffect(Unit) {
+        if (sortedTerms.isEmpty()) {
+            viewModel.checkCachedTerms()
+        }
+    }
+
+    if (sortedTerms.isEmpty()) {
         // Show that the terms are loading
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -54,7 +68,7 @@ fun Glossary(terms: List<Term>) {
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
 
-                if (index < terms.lastIndex) {
+                if (index < sortedTerms.lastIndex) {
                     HorizontalDivider()
                 }
             }
@@ -81,9 +95,20 @@ private class GlossaryPreviewParameterProvider: PreviewParameterProvider<Glossar
 private fun GlossaryPreview(
     @PreviewParameter(GlossaryPreviewParameterProvider::class) state: GlossaryState
 ) {
+    val context = LocalContext.current
+    val termsService = MockTermsService
+    val dataStoreService = DataStoreService(context)
+
+    val glossaryViewModel = viewModel {
+        GlossaryViewModel(
+            termsRepository = TermsRepository(termsService, dataStoreService)
+        )
+    }
+    glossaryViewModel.terms = state.terms
+
     EZRecipesTheme {
         Surface {
-            Glossary(state.terms)
+            Glossary(glossaryViewModel)
         }
     }
 }
