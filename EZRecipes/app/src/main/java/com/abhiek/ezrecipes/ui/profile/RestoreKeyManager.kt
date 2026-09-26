@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.credentials.*
 import androidx.credentials.exceptions.ClearCredentialException
+import androidx.credentials.exceptions.restorecredential.E2eeUnavailableException
 import com.abhiek.ezrecipes.data.chef.ExistingPasskeyClientResponse
 import com.abhiek.ezrecipes.data.chef.NewPasskeyClientResponse
 import com.abhiek.ezrecipes.data.chef.PasskeyCreationOptions
@@ -22,6 +23,38 @@ class RestoreKeyManager(private val context: Context) {
 
     companion object {
         private const val TAG = "RestoreKeyManager"
+    }
+
+    suspend fun createRestoreKey(
+        serverPasskeyOptions: PasskeyCreationOptions
+    ): NewPasskeyClientResponse {
+        // Convert the standard WebAuthn options to a Credential Manager request
+        val createRestoreRequest = CreateRestoreCredentialRequest(
+            Json.encodeToString(serverPasskeyOptions)
+        )
+
+        val createRestoreResponse = try {
+            credentialManager.createCredential(
+                context,
+                createRestoreRequest
+            ) as CreateRestoreCredentialResponse
+        } catch (ex: E2eeUnavailableException) {
+            // Try again without cloud backup
+            Log.w(TAG, "Failed to get restore key, retrying again without cloud backup " +
+                    ":: error: ${ex.localizedMessage}")
+
+            val createRestoreRequest = CreateRestoreCredentialRequest(
+                Json.encodeToString(serverPasskeyOptions),
+                isCloudBackupEnabled = false
+            )
+            credentialManager.createCredential(
+                context,
+                createRestoreRequest
+            ) as CreateRestoreCredentialResponse
+        }
+
+        // Convert the Credential Manager response to a standard WebAuthn response
+        return Json.decodeFromString(createRestoreResponse.responseJson)
     }
 
     suspend fun getRestoreKey(
@@ -43,22 +76,6 @@ class RestoreKeyManager(private val context: Context) {
 
         // Convert the Credential Manager response to a standard WebAuthn response
         return Json.decodeFromString(restoreCredential.authenticationResponseJson)
-    }
-
-    suspend fun createRestoreKey(
-        serverPasskeyOptions: PasskeyCreationOptions
-    ): NewPasskeyClientResponse {
-        // Convert the standard WebAuthn options to a Credential Manager request
-        val createRestoreRequest = CreateRestoreCredentialRequest(
-            Json.encodeToString(serverPasskeyOptions)
-        )
-        val createRestoreResponse = credentialManager.createCredential(
-            context,
-            createRestoreRequest
-        ) as CreateRestoreCredentialResponse
-
-        // Convert the Credential Manager response to a standard WebAuthn response
-        return Json.decodeFromString(createRestoreResponse.responseJson)
     }
 
     suspend fun deleteRestoreKey() {
