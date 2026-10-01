@@ -89,7 +89,7 @@ dependencies {
     val coroutineVersion = "1.11.0"
     val serializationVersion = "1.11.0"
     val credentialsVersion = "1.6.0"
-    val appFunctionsVersion = "1.0.0-alpha11"
+    val appFunctionsVersion = "1.0.0-alpha12"
     val coilVersion = "3.6.3"
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.5"
