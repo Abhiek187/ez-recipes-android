@@ -85,11 +85,11 @@ dependencies {
     val composeBomVersion = "2026.09.00"
     val lifecycleVersion = "2.11.0"
     val activityVersion = "1.13.0"
-    val navigationVersion = "1.1.7"
+    val navigationVersion = "1.2.0"
     val coroutineVersion = "1.11.0"
     val serializationVersion = "1.11.0"
     val credentialsVersion = "1.6.0"
-    val appFunctionsVersion = "1.0.0-alpha11"
+    val appFunctionsVersion = "1.0.0-alpha12"
     val coilVersion = "3.6.3"
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.5"
@@ -98,7 +98,7 @@ dependencies {
     val espressoVersion = "3.7.0"
 
     implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
-    implementation("androidx.core:core-ktx:1.19.0")
+    implementation("androidx.core:core-ktx:1.19.1")
     implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
