@@ -33,7 +33,8 @@ class ProfileViewModel(
     private val chefRepository: ChefRepository,
     private val recipeRepository: RecipeRepository,
     private val dataStoreService: DataStoreService,
-    private val passkeyManager: PasskeyManager
+    private val passkeyManager: PasskeyManager,
+    private val restoreKeyManager: RestoreKeyManager
 ): ViewModel() {
     var job by mutableStateOf<Job?>(null)
         private set
@@ -304,6 +305,7 @@ class ProfileViewModel(
                     chef = null
                     authState = AuthState.UNAUTHENTICATED
                     openLoginDialog = false
+                    deleteRestoreKey()
                 }
                 is ChefResult.Error -> {
                     recipeError = result.recipeError
@@ -1035,6 +1037,160 @@ class ProfileViewModel(
     fun saveUsername(username: String?) {
         viewModelScope.launch {
             dataStoreService.saveUsername(username)
+        }
+    }
+
+    fun createRestoreKey() {
+        job = viewModelScope.launch {
+            if (dataStoreService.hasRestoreKey()) {
+                Log.d(TAG, "Restore key already exists for the logged in user")
+                return@launch
+            }
+
+            isLoading = true
+            val token = getToken()
+            val passkeyOptionsResult = if (token != null) {
+                chefRepository.getNewPasskeyChallenge(token)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+            isLoading = false
+
+            when (passkeyOptionsResult) {
+                is ChefResult.Success -> {
+                    val serverPasskeyOptions = passkeyOptionsResult.response
+
+                    try {
+                        val serverPasskeyResponse = restoreKeyManager.createRestoreKey(
+                            serverPasskeyOptions
+                        )
+                        isLoading = true
+                        val passkeyValidateResult = chefRepository.validateNewPasskey(
+                            serverPasskeyResponse,
+                            token!!
+                        )
+                        isLoading = false
+
+                        when (passkeyValidateResult) {
+                            is ChefResult.Success -> {
+                                recipeError = null
+                                showAlert = false
+
+                                passkeyValidateResult.response.token?.let { newToken ->
+                                    saveToken(newToken)
+                                }
+
+                                dataStoreService.setHasRestoreKey(true)
+                                Log.d(TAG, "Restore key created with ID: ${
+                                    serverPasskeyResponse.id
+                                }")
+                            }
+                            is ChefResult.Error -> {
+                                recipeError = passkeyValidateResult.recipeError
+                                showAlert = job?.isCancelled == false
+                            }
+                        }
+                    } catch (error: Exception) {
+                        Log.e(TAG, "Error creating a restore key: $error")
+                        dataStoreService.setHasRestoreKey(false)
+
+                        if (error is CreateCredentialProviderConfigurationException) {
+                            recipeError = RecipeError(Constants.PLAY_SERVICES_TOO_OLD)
+                            showAlert = job?.isCancelled == false
+                        } else if (error !is CreateCredentialCancellationException) {
+                            recipeError =
+                                RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+                            showAlert = job?.isCancelled == false
+                        }
+                    }
+                }
+                is ChefResult.Error -> {
+                    recipeError = passkeyOptionsResult.recipeError
+                    showAlert = job?.isCancelled == false
+                }
+            }
+        }
+    }
+
+//    fun loginWithRestoreKey() {
+//        job = viewModelScope.launch {
+//            isLoading = true
+//            val passkeyOptionsResult = chefRepository.getExistingPasskeyChallenge()
+//            isLoading = false
+//
+//            when (passkeyOptionsResult) {
+//                is ChefResult.Success -> {
+//                    val serverPasskeyOptions = passkeyOptionsResult.response
+//
+//                    try {
+//                        val serverPasskeyResponse = restoreKeyManager.getRestoreKey(
+//                            serverPasskeyOptions
+//                        )
+//                        isLoading = true
+//                        val passkeyValidateResult = chefRepository.validateExistingPasskey(
+//                            serverPasskeyResponse
+//                        )
+//                        isLoading = false
+//
+//                        when (passkeyValidateResult) {
+//                            is ChefResult.Success -> {
+//                                recipeError = null
+//                                showAlert = false
+//
+//                                val newToken = passkeyValidateResult.response.token
+//                                isLoading = true
+//                                val chefResult = if (newToken != null) {
+//                                    saveToken(newToken)
+//                                    chefRepository.getChef(newToken)
+//                                } else {
+//                                    ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+//                                }
+//                                isLoading = false
+//
+//                                when (chefResult) {
+//                                    is ChefResult.Success -> {
+//                                        chef = chefResult.response
+//                                    }
+//                                    is ChefResult.Error -> {
+//                                        recipeError = chefResult.recipeError
+//                                        showAlert = job?.isCancelled == false
+//                                    }
+//                                }
+//
+//                                authState = AuthState.AUTHENTICATED
+//                                openLoginDialog = false
+//                            }
+//                            is ChefResult.Error -> {
+//                                recipeError = passkeyValidateResult.recipeError
+//                                showAlert = job?.isCancelled == false
+//                            }
+//                        }
+//                    } catch (error: Exception) {
+//                        Log.e(TAG, "Error signing in with a restore key: $error")
+//
+//                        if (error is GetCredentialProviderConfigurationException) {
+//                            recipeError = RecipeError(Constants.PLAY_SERVICES_TOO_OLD)
+//                            showAlert = job?.isCancelled == false
+//                        } else if (error !is GetCredentialCancellationException) {
+//                            // Don't show an error if the user dismissed the passkey prompt
+//                            recipeError =
+//                                RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
+//                            showAlert = job?.isCancelled == false
+//                        }
+//                    }
+//                }
+//                is ChefResult.Error -> {
+//                    recipeError = passkeyOptionsResult.recipeError
+//                    showAlert = job?.isCancelled == false
+//                }
+//            }
+//        }
+//    }
+
+    fun deleteRestoreKey() {
+        job = viewModelScope.launch {
+            restoreKeyManager.deleteRestoreKey()
+            dataStoreService.setHasRestoreKey(false)
         }
     }
 }

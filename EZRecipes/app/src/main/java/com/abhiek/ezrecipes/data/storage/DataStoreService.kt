@@ -2,10 +2,7 @@ package com.abhiek.ezrecipes.data.storage
 
 import android.content.Context
 import android.util.Log
-import androidx.datastore.preferences.core.byteArrayPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import com.abhiek.ezrecipes.data.chef.RememberMe
 import com.abhiek.ezrecipes.data.terms.Term
 import com.abhiek.ezrecipes.data.terms.TermStore
@@ -29,6 +26,7 @@ class DataStoreService(context: Context) {
         private val KEY_RECIPES_VIEWED = intPreferencesKey("recipes_viewed")
         private val KEY_LAST_VERSION_REVIEWED = intPreferencesKey("last_version_reviewed")
         private val KEY_TOKEN = byteArrayPreferencesKey("token")
+        private val KEY_RESTORE_KEY = booleanPreferencesKey("restore_key")
         private val KEY_REMEMBER_ME = stringPreferencesKey("remember_me")
     }
 
@@ -106,6 +104,16 @@ class DataStoreService(context: Context) {
     suspend fun deleteToken() {
         dataStore.edit { preferences ->
             preferences.remove(KEY_TOKEN)
+        }
+    }
+
+    suspend fun hasRestoreKey() = dataStore.data.map { preferences ->
+        preferences[KEY_RESTORE_KEY] ?: false
+    }.first()
+
+    suspend fun setHasRestoreKey(hasRestoreKey: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[KEY_RESTORE_KEY] = hasRestoreKey
         }
     }
 

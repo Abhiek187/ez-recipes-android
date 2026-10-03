@@ -149,7 +149,8 @@ private fun ProfilePreview(
             chefRepository = ChefRepository(chefService),
             recipeRepository = RecipeRepository(recipeService),
             dataStoreService = DataStoreService(context),
-            passkeyManager = PasskeyManager(context)
+            passkeyManager = PasskeyManager(context),
+            restoreKeyManager = RestoreKeyManager(context)
         )
     }
     profileViewModel.authState = state.authState

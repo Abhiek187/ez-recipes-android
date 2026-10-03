@@ -13,14 +13,14 @@ data class PasskeyClientResponse<R: PasskeyClientResponse.Response>(
     val type: String
 ) {
     interface Response {
-        val authenticatorData: String
+        val authenticatorData: String? // not included when creating restore keys
         val clientDataJSON: String
     }
 
     @Serializable
     data class NewPasskeyResponse(
         val attestationObject: String,
-        override val authenticatorData: String,
+        override val authenticatorData: String? = null,
         override val clientDataJSON: String,
         val publicKey: String,
         val publicKeyAlgorithm: Int,

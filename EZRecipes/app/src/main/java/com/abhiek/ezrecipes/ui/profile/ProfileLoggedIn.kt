@@ -47,6 +47,10 @@ fun ProfileLoggedIn(
         dialogToShow = null
     }
 
+    LaunchedEffect(Unit) {
+        profileViewModel.createRestoreKey()
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
@@ -238,7 +242,8 @@ private fun ProfileLoggedInPreview(
             chefRepository = ChefRepository(chefService),
             recipeRepository = RecipeRepository(recipeService),
             dataStoreService = DataStoreService(context),
-            passkeyManager = PasskeyManager(context)
+            passkeyManager = PasskeyManager(context),
+            restoreKeyManager = RestoreKeyManager(context)
         )
     }
     profileViewModel.chef = chefService.chef
