@@ -75,7 +75,7 @@ internal class MainViewModelTest {
         assertEquals(viewModel.recipe, mockService.recipes[1])
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.isLoading)
-        assertEquals(viewModel.isRecipeLoaded, fromHome)
+        assertEquals(fromHome, viewModel.isRecipeLoaded)
         assertFalse(viewModel.showRecipeAlert)
     }
 

@@ -100,6 +100,6 @@ internal class TermsRepositoryTest {
         val terms = termsRepository.getTerms()
 
         // Then the terms should be empty
-        assertEquals(terms, listOf<Term>())
+        assertEquals(listOf<Term>(), terms)
     }
 }

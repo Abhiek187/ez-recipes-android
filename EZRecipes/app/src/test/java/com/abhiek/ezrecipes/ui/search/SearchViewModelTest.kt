@@ -1,7 +1,7 @@
 package com.abhiek.ezrecipes.ui.search
 
-import com.abhiek.ezrecipes.data.recipe.Recipe
 import com.abhiek.ezrecipes.data.recipe.MockRecipeService
+import com.abhiek.ezrecipes.data.recipe.Recipe
 import com.abhiek.ezrecipes.data.recipe.RecipeRepository
 import com.abhiek.ezrecipes.ui.MainDispatcherExtension
 import kotlinx.coroutines.test.runTest
@@ -59,7 +59,7 @@ internal class SearchViewModelTest {
         viewModel.searchRecipes()
 
         // Then the recipes property should be empty
-        assertEquals(viewModel.recipes, listOf<Recipe>())
+        assertEquals(listOf<Recipe>(), viewModel.recipes)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.isLoading)
         assertFalse(viewModel.isRecipeLoaded)
@@ -75,7 +75,7 @@ internal class SearchViewModelTest {
         viewModel.searchRecipes()
 
         // Then the recipeError property should match the mock recipeError
-        assertEquals(viewModel.recipes, listOf<Recipe>())
+        assertEquals(listOf<Recipe>(), viewModel.recipes)
         assertEquals(viewModel.recipeError, mockService.recipeError)
         assertFalse(viewModel.isLoading)
         assertFalse(viewModel.isRecipeLoaded)

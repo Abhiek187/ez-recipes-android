@@ -43,6 +43,8 @@ internal class ProfileViewModelTest {
     private lateinit var uri: Uri
     @MockK
     private lateinit var mockPasskeyManager: PasskeyManager
+    @MockK
+    private lateinit var mockRestoreKeyManager: RestoreKeyManager
 
     private fun mockLog() {
         mockkStatic(Log::class)
@@ -78,7 +80,8 @@ internal class ProfileViewModelTest {
             chefRepository = ChefRepository(mockChefService),
             recipeRepository = RecipeRepository(mockRecipeService),
             dataStoreService = mockDataStoreService,
-            passkeyManager = mockPasskeyManager
+            passkeyManager = mockPasskeyManager,
+            restoreKeyManager = mockRestoreKeyManager
         )
 
         mockLog()
@@ -223,7 +226,7 @@ internal class ProfileViewModelTest {
         assertEquals(viewModel.chef, mockChefService.chef)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
-        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertEquals(AuthState.AUTHENTICATED, viewModel.authState)
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }
@@ -243,7 +246,7 @@ internal class ProfileViewModelTest {
         // Then the user is unauthenticated
         assertNull(viewModel.chef)
         assertEquals(viewModel.recipeError, mockChefService.tokenError)
-        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertEquals(AuthState.UNAUTHENTICATED, viewModel.authState)
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }
@@ -262,7 +265,7 @@ internal class ProfileViewModelTest {
         assertNull(viewModel.chef)
         assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
         assertFalse(viewModel.showAlert)
-        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertEquals(AuthState.UNAUTHENTICATED, viewModel.authState)
 
         coVerify { mockDataStoreService.getToken() }
         coVerify { mockDataStoreService.deleteToken() }
@@ -291,7 +294,7 @@ internal class ProfileViewModelTest {
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
             token = mockChefService.loginResponse.token
         ))
-        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertEquals(AuthState.AUTHENTICATED, viewModel.authState)
         assertFalse(viewModel.openLoginDialog)
 
         verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
@@ -353,7 +356,7 @@ internal class ProfileViewModelTest {
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
         assertNull(viewModel.chef)
-        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertEquals(AuthState.UNAUTHENTICATED, viewModel.authState)
         assertFalse(viewModel.openLoginDialog)
 
         coVerify { mockDataStoreService.getToken() }
@@ -387,7 +390,7 @@ internal class ProfileViewModelTest {
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
         assertNull(viewModel.chef)
-        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertEquals(AuthState.UNAUTHENTICATED, viewModel.authState)
         assertFalse(viewModel.openLoginDialog)
 
         coVerify { mockDataStoreService.getToken() }
@@ -445,7 +448,7 @@ internal class ProfileViewModelTest {
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
             token = mockChefService.loginResponse.token
         ))
-        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertEquals(AuthState.AUTHENTICATED, viewModel.authState)
         assertFalse(viewModel.openLoginDialog)
         assertTrue(viewModel.accountLinked)
 
@@ -500,7 +503,7 @@ internal class ProfileViewModelTest {
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
             token = mockChefService.loginResponse.token
         ))
-        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertEquals(AuthState.AUTHENTICATED, viewModel.authState)
         assertFalse(viewModel.openLoginDialog)
         assertFalse(viewModel.accountLinked)
 
@@ -611,7 +614,7 @@ internal class ProfileViewModelTest {
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
         assertEquals(viewModel.chef, mockChefService.chef)
-        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertEquals(AuthState.AUTHENTICATED, viewModel.authState)
         assertFalse(viewModel.openLoginDialog)
 
         verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
@@ -914,7 +917,7 @@ internal class ProfileViewModelTest {
         assertTrue(viewModel.passwordUpdated)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
-        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertEquals(AuthState.UNAUTHENTICATED, viewModel.authState)
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }
@@ -964,7 +967,7 @@ internal class ProfileViewModelTest {
 
         // Then the chef should be deleted and unauthenticated
         assertNull(viewModel.chef)
-        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertEquals(AuthState.UNAUTHENTICATED, viewModel.authState)
         assertTrue(viewModel.accountDeleted)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
@@ -1029,7 +1032,7 @@ internal class ProfileViewModelTest {
         viewModel.getAllFavoriteRecipes()
 
         // Then no recipes are fetched
-        assertEquals(viewModel.favoriteRecipes.value.size, 0)
+        assertEquals(0, viewModel.favoriteRecipes.value.size)
     }
 
     @Test
@@ -1055,7 +1058,7 @@ internal class ProfileViewModelTest {
         viewModel.getAllRecentRecipes()
 
         // Then no recipes are fetched
-        assertEquals(viewModel.recentRecipes.value.size, 0)
+        assertEquals(0, viewModel.recentRecipes.value.size)
     }
 
     @Test
@@ -1081,7 +1084,7 @@ internal class ProfileViewModelTest {
         viewModel.getAllRatedRecipes()
 
         // Then no recipes are fetched
-        assertEquals(viewModel.ratedRecipes.value.size, 0)
+        assertEquals(0, viewModel.ratedRecipes.value.size)
     }
 
     @Test
@@ -1094,7 +1097,7 @@ internal class ProfileViewModelTest {
         viewModel.updateRecipeViews(recipe)
 
         // Then the recipe views should be updated
-        assertEquals(viewModel.chef?.recentRecipes?.contains(recipe.id.toString()), true)
+        assertEquals(true, viewModel.chef?.recentRecipes?.contains(recipe.id.toString()))
 
         coVerify { mockDataStoreService.incrementRecipesViewed() }
         coVerify { mockDataStoreService.getToken() }
@@ -1214,7 +1217,7 @@ internal class ProfileViewModelTest {
         viewModel.rateRecipe(recipeId, rating)
 
         // Then the rating should be saved with the chef
-        assertEquals(viewModel.chef?.ratings?.get(recipeId.toString()), rating)
+        assertEquals(rating, viewModel.chef?.ratings?.get(recipeId.toString()))
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }

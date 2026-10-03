@@ -102,7 +102,7 @@ internal class RecipeRepositoryTest {
         recipeRepository.saveRecentRecipe(mockService.recipes[0])
 
         // Then the oldest recipe is deleted
-        assertEquals(recentRecipeDao.getAll().size, Constants.MAX_RECENT_RECIPES)
+        assertEquals(Constants.MAX_RECENT_RECIPES, recentRecipeDao.getAll().size)
     }
 
     @Test
