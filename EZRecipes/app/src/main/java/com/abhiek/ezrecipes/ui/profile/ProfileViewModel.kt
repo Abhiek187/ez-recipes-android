@@ -1050,7 +1050,7 @@ class ProfileViewModel(
             isLoading = true
             val token = getToken()
             val passkeyOptionsResult = if (token != null) {
-                chefRepository.getNewPasskeyChallenge(token)
+                chefRepository.getNewPasskeyChallenge(token, isRestoreKey = true)
             } else {
                 ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
             }
@@ -1067,7 +1067,8 @@ class ProfileViewModel(
                         isLoading = true
                         val passkeyValidateResult = chefRepository.validateNewPasskey(
                             serverPasskeyResponse,
-                            token!!
+                            token!!,
+                            isRestoreKey = true
                         )
                         isLoading = false
 

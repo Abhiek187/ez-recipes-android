@@ -126,6 +126,7 @@ object MockChefService: ChefService {
     }
 
     override suspend fun getNewPasskeyChallenge(
+        isRestoreKey: Boolean,
         token: String
     ): Response<PasskeyCreationOptions> {
         return if (isSuccess) {
@@ -147,6 +148,7 @@ object MockChefService: ChefService {
 
     override suspend fun validateNewPasskey(
         passkeyResponse: NewPasskeyClientResponse,
+        isRestoreKey: Boolean,
         token: String
     ): Response<Token> {
         return if (isSuccess) {

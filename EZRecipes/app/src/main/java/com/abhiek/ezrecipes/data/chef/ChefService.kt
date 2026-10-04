@@ -68,6 +68,7 @@ interface ChefService {
 
     @GET("passkey/create")
     suspend fun getNewPasskeyChallenge(
+        @Query("restore-key") isRestoreKey: Boolean,
         @Header("Authorization") token: String
     ): Response<PasskeyCreationOptions>
 
@@ -80,6 +81,7 @@ interface ChefService {
     @POST("passkey/verify")
     suspend fun validateNewPasskey(
         @Body passkeyResponse: NewPasskeyClientResponse,
+        @Query("restore-key") isRestoreKey: Boolean,
         @Header("Authorization") token: String
     ): Response<Token>
 
