@@ -126,7 +126,7 @@ object MockChefService: ChefService {
     }
 
     override suspend fun getNewPasskeyChallenge(
-        isRestoreKey: Boolean,
+        isRestoreKey: Boolean?,
         token: String
     ): Response<PasskeyCreationOptions> {
         return if (isSuccess) {
@@ -137,7 +137,7 @@ object MockChefService: ChefService {
     }
 
     override suspend fun getExistingPasskeyChallenge(
-        email: String
+        email: String?
     ): Response<PasskeyRequestOptions> {
         return if (isSuccess) {
             Response.success(Constants.Mocks.PASSKEY_REQUEST_OPTIONS)
@@ -148,7 +148,7 @@ object MockChefService: ChefService {
 
     override suspend fun validateNewPasskey(
         passkeyResponse: NewPasskeyClientResponse,
-        isRestoreKey: Boolean,
+        isRestoreKey: Boolean?,
         token: String
     ): Response<Token> {
         return if (isSuccess) {
@@ -160,7 +160,9 @@ object MockChefService: ChefService {
 
     override suspend fun validateExistingPasskey(
         passkeyResponse: ExistingPasskeyClientResponse,
-        email: String
+        email: String?,
+        isRestoreKey: Boolean?,
+        transactionId: String?
     ): Response<Token> {
         return if (isSuccess) {
             Response.success(mockToken)

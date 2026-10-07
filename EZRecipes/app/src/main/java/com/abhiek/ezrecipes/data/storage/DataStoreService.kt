@@ -28,6 +28,7 @@ class DataStoreService(context: Context) {
         private val KEY_TOKEN = byteArrayPreferencesKey("token")
         private val KEY_RESTORE_KEY = booleanPreferencesKey("restore_key")
         private val KEY_REMEMBER_ME = stringPreferencesKey("remember_me")
+        private val KEY_FIRST_LAUNCH = booleanPreferencesKey("first_launch")
     }
 
     suspend fun getTerms(): List<Term>? {
@@ -171,6 +172,16 @@ class DataStoreService(context: Context) {
     suspend fun clearUsername() {
         dataStore.edit { preferences ->
             preferences.remove(KEY_REMEMBER_ME)
+        }
+    }
+
+    suspend fun isFirstLaunch() = dataStore.data.map { preferences ->
+        preferences[KEY_FIRST_LAUNCH]
+    }.first()
+
+    suspend fun setFirstLaunch(isFirstLaunch: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[KEY_FIRST_LAUNCH] = isFirstLaunch
         }
     }
 }
