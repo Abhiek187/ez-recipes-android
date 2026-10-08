@@ -65,7 +65,7 @@ abstract class BaseEZRecipesAppFunctionService: AppFunctionService() {
      * @throws AppFunctionInvalidArgumentException if any of the filters provided are invalid
      * @throws AppFunctionAppUnknownException if an error occurred while searching for recipes
      */
-    @AppFunction(isDescribedByKDoc = true)
+    @AppFunctionDeclaration(isDescribedByKDoc = true)
     suspend fun searchRecipes(
         filter: AgentRecipeFilter
     ): List<AgentRecipePreview> = withContext(Dispatchers.IO) {
@@ -123,7 +123,7 @@ abstract class BaseEZRecipesAppFunctionService: AppFunctionService() {
      * @throws AppFunctionInvalidArgumentException if [id] is negative
      * @throws AppFunctionElementNotFoundException if the recipe couldn't be found
      */
-    @AppFunction(isDescribedByKDoc = true)
+    @AppFunctionDeclaration(isDescribedByKDoc = true)
     suspend fun getRecipeDetails(id: Int): AgentRecipe = withContext(Dispatchers.IO) {
         logAppFunction("getRecipeDetails", "id" to id)
         if (id < 0) {
@@ -149,7 +149,7 @@ abstract class BaseEZRecipesAppFunctionService: AppFunctionService() {
      * @throws AppFunctionInvalidArgumentException if [word] is blank
      * @throws AppFunctionElementNotFoundException if no definition is found for [word]
      */
-    @AppFunction(isDescribedByKDoc = true)
+    @AppFunctionDeclaration(isDescribedByKDoc = true)
     suspend fun getRecipeDefinition(word: String): String = withContext(Dispatchers.IO) {
         logAppFunction("getRecipeDefinition", "word" to word)
         if (word.isBlank()) {
