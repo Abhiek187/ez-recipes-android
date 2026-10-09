@@ -75,6 +75,8 @@ internal class ProfileViewModelTest {
             coEvery { getToken() } returns mockEncryptedToken
             coJustRun { saveToken(any()) }
             coJustRun { deleteToken() }
+            coJustRun { setHasRestoreKey(any()) }
+            coJustRun { setFirstLaunch(any()) }
         }
         viewModel = ProfileViewModel(
             chefRepository = ChefRepository(mockChefService),
@@ -88,6 +90,7 @@ internal class ProfileViewModelTest {
         mockEncryptor()
         mockkStatic(Uri::class)
         every { Uri.parse(any()) } returns uri
+        coJustRun { mockRestoreKeyManager.deleteRestoreKey() }
     }
 
     @AfterEach
@@ -1257,5 +1260,160 @@ internal class ProfileViewModelTest {
 
         // Then an error is logged
         coVerify { mockDataStoreService.getToken() }
+    }
+
+    @Test
+    fun createRestoreKeySuccess() = runTest {
+        // Given a valid restore key
+        coEvery { mockRestoreKeyManager.createRestoreKey(any()) } returns
+                mockk(relaxed = true)
+        coEvery { mockDataStoreService.hasRestoreKey() } returns false
+
+        // When creating a restore key
+        viewModel.createRestoreKey()
+
+        // Then the restore key should be saved on the device
+        verify {
+            Log.d(any<String>(), "Restore key created with ID: ") // relaxed = ""
+        }
+        verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
+        coVerify { mockDataStoreService.setHasRestoreKey(true) }
+    }
+
+    @Test
+    fun createRestoreKeyExists() = runTest {
+        // Given a restore key that already exists
+        coEvery { mockDataStoreService.hasRestoreKey() } returns true
+
+        // When creating a restore key
+        viewModel.createRestoreKey()
+
+        // Then the function should return immediately
+        verify {
+            Log.d(any<String>(), "Restore key already exists for the logged in user")
+        }
+    }
+
+    @Test
+    fun createRestoreKeyServerError() = runTest {
+        // Given a valid restore key
+        coEvery { mockRestoreKeyManager.createRestoreKey(any()) } returns mockk()
+        coEvery { mockDataStoreService.hasRestoreKey() } returns false
+
+        // When creating a restore key and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.createRestoreKey()
+
+        // Then the error is logged
+        verify {
+            Log.w(any<String>(), "Error creating a restore key: ${
+                mockChefService.tokenError
+            }")
+        }
+    }
+
+    @Test
+    fun createRestoreKeyClientError() = runTest {
+        // Given an invalid restore key
+        val mockError = "mock error"
+        coEvery { mockRestoreKeyManager.createRestoreKey(any()) } throws
+                Exception(mockError)
+        coEvery { mockDataStoreService.hasRestoreKey() } returns false
+
+        // When creating a restore key
+        viewModel.createRestoreKey()
+
+        // Then the error is logged
+        verify {
+            Log.w(any<String>(), "Error creating a restore key: ${
+                Exception(mockError)
+            }")
+        }
+        coVerify { mockDataStoreService.setHasRestoreKey(false) }
+    }
+
+    @Test
+    fun loginWithRestoreKeySuccess() = runTest {
+        // Given a valid restore key
+        coEvery { mockRestoreKeyManager.getRestoreKey(any()) } returns mockk()
+        coEvery { mockDataStoreService.isFirstLaunch() } returns true
+
+        // When logging in with a restore key
+        viewModel.loginWithRestoreKey()
+
+        // Then the user should be authenticated
+        assertEquals(viewModel.chef, mockChefService.chef)
+        assertEquals(AuthState.AUTHENTICATED, viewModel.authState)
+        assertFalse(viewModel.openLoginDialog)
+
+        verify {
+            Log.d(any<String>(), "First launch! Attempting to sign in with a restore key")
+        }
+        verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
+        coVerify { mockDataStoreService.setFirstLaunch(false) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun loginWithRestoreKeyAfterFirstLaunch() = runTest {
+        // Given a valid restore key
+        coEvery { mockRestoreKeyManager.getRestoreKey(any()) } returns mockk()
+        coEvery { mockDataStoreService.isFirstLaunch() } returns false
+
+        // When logging in with a restore key
+        viewModel.loginWithRestoreKey()
+
+        // Then the function should return immediately
+        verify(exactly = 0) {
+            Log.d(any<String>(), "First launch! Attempting to sign in with a restore key")
+        }
+    }
+
+    @Test
+    fun loginWithRestoreKeyServerError() = runTest {
+        // Given a valid restore key
+        coEvery { mockRestoreKeyManager.getRestoreKey(any()) } returns mockk()
+        coEvery { mockDataStoreService.isFirstLaunch() } returns true
+
+        // When logging in with a restore key and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.loginWithRestoreKey()
+
+        // Then the error is logged
+        verify {
+            Log.w(any<String>(), "Error signing in with a restore key: ${
+                mockChefService.tokenError
+            }")
+        }
+    }
+
+    @Test
+    fun loginWithRestoreKeyClientError() = runTest {
+        // Given an invalid restore key
+        val mockError = "mock error"
+        coEvery { mockRestoreKeyManager.getRestoreKey(any()) } throws
+                Exception(mockError)
+        coEvery { mockDataStoreService.isFirstLaunch() } returns true
+
+        // When logging in with a restore key
+        viewModel.loginWithRestoreKey()
+
+        // Then the error is logged
+        verify {
+            Log.w(any<String>(), "Error signing in with a restore key: ${
+                Exception(mockError)
+            }")
+        }
+    }
+
+    @Test
+    fun deleteRestoreKeySuccess() = runTest {
+        // Given a restore key to delete
+        // When deleting the restore key
+        viewModel.deleteRestoreKey()
+
+        // Then the restore key should be removed from the device
+        coVerify { mockRestoreKeyManager.deleteRestoreKey() }
+        coVerify { mockDataStoreService.setHasRestoreKey(false) }
     }
 }
