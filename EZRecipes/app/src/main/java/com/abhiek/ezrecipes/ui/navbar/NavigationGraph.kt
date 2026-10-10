@@ -67,6 +67,9 @@ fun NavigationGraph(
     // Only call once when composed
     LaunchedEffect(Unit) {
         glossaryViewModel.checkCachedTerms()
+
+        // Try authenticating with a restore key on first launch if transferred to a new device
+        profileViewModel.loginWithRestoreKey()
     }
 
     val entryProvider = entryProvider {

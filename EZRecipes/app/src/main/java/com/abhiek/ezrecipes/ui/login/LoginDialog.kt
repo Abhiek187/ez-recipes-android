@@ -26,6 +26,7 @@ import com.abhiek.ezrecipes.ui.previews.FontPreviews
 import com.abhiek.ezrecipes.ui.previews.OrientationPreviews
 import com.abhiek.ezrecipes.ui.profile.PasskeyManager
 import com.abhiek.ezrecipes.ui.profile.ProfileViewModel
+import com.abhiek.ezrecipes.ui.profile.RestoreKeyManager
 import com.abhiek.ezrecipes.ui.theme.EZRecipesTheme
 import com.abhiek.ezrecipes.ui.util.rememberNavigationState
 import com.abhiek.ezrecipes.ui.util.toEntries
@@ -118,7 +119,8 @@ private fun LoginDialogPreview() {
             chefRepository = ChefRepository(chefService),
             recipeRepository = RecipeRepository(recipeService),
             dataStoreService = DataStoreService(context),
-            passkeyManager = PasskeyManager(context)
+            passkeyManager = PasskeyManager(context),
+            restoreKeyManager = RestoreKeyManager(context)
         )
     }
 

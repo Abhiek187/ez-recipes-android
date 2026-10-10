@@ -43,6 +43,8 @@ internal class ProfileViewModelTest {
     private lateinit var uri: Uri
     @MockK
     private lateinit var mockPasskeyManager: PasskeyManager
+    @MockK
+    private lateinit var mockRestoreKeyManager: RestoreKeyManager
 
     private fun mockLog() {
         mockkStatic(Log::class)
@@ -73,18 +75,22 @@ internal class ProfileViewModelTest {
             coEvery { getToken() } returns mockEncryptedToken
             coJustRun { saveToken(any()) }
             coJustRun { deleteToken() }
+            coJustRun { setHasRestoreKey(any()) }
+            coJustRun { setFirstLaunch(any()) }
         }
         viewModel = ProfileViewModel(
             chefRepository = ChefRepository(mockChefService),
             recipeRepository = RecipeRepository(mockRecipeService),
             dataStoreService = mockDataStoreService,
-            passkeyManager = mockPasskeyManager
+            passkeyManager = mockPasskeyManager,
+            restoreKeyManager = mockRestoreKeyManager
         )
 
         mockLog()
         mockEncryptor()
         mockkStatic(Uri::class)
         every { Uri.parse(any()) } returns uri
+        coJustRun { mockRestoreKeyManager.deleteRestoreKey() }
     }
 
     @AfterEach
@@ -223,7 +229,7 @@ internal class ProfileViewModelTest {
         assertEquals(viewModel.chef, mockChefService.chef)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
-        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertEquals(AuthState.AUTHENTICATED, viewModel.authState)
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }
@@ -243,7 +249,7 @@ internal class ProfileViewModelTest {
         // Then the user is unauthenticated
         assertNull(viewModel.chef)
         assertEquals(viewModel.recipeError, mockChefService.tokenError)
-        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertEquals(AuthState.UNAUTHENTICATED, viewModel.authState)
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }
@@ -262,7 +268,7 @@ internal class ProfileViewModelTest {
         assertNull(viewModel.chef)
         assertEquals(viewModel.recipeError, RecipeError(Constants.NO_TOKEN_FOUND))
         assertFalse(viewModel.showAlert)
-        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertEquals(AuthState.UNAUTHENTICATED, viewModel.authState)
 
         coVerify { mockDataStoreService.getToken() }
         coVerify { mockDataStoreService.deleteToken() }
@@ -291,7 +297,7 @@ internal class ProfileViewModelTest {
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
             token = mockChefService.loginResponse.token
         ))
-        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertEquals(AuthState.AUTHENTICATED, viewModel.authState)
         assertFalse(viewModel.openLoginDialog)
 
         verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
@@ -353,7 +359,7 @@ internal class ProfileViewModelTest {
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
         assertNull(viewModel.chef)
-        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertEquals(AuthState.UNAUTHENTICATED, viewModel.authState)
         assertFalse(viewModel.openLoginDialog)
 
         coVerify { mockDataStoreService.getToken() }
@@ -387,7 +393,7 @@ internal class ProfileViewModelTest {
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
         assertNull(viewModel.chef)
-        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertEquals(AuthState.UNAUTHENTICATED, viewModel.authState)
         assertFalse(viewModel.openLoginDialog)
 
         coVerify { mockDataStoreService.getToken() }
@@ -445,7 +451,7 @@ internal class ProfileViewModelTest {
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
             token = mockChefService.loginResponse.token
         ))
-        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertEquals(AuthState.AUTHENTICATED, viewModel.authState)
         assertFalse(viewModel.openLoginDialog)
         assertTrue(viewModel.accountLinked)
 
@@ -500,7 +506,7 @@ internal class ProfileViewModelTest {
             favoriteRecipes = mockChefService.chef.favoriteRecipes,
             token = mockChefService.loginResponse.token
         ))
-        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertEquals(AuthState.AUTHENTICATED, viewModel.authState)
         assertFalse(viewModel.openLoginDialog)
         assertFalse(viewModel.accountLinked)
 
@@ -611,7 +617,7 @@ internal class ProfileViewModelTest {
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
         assertEquals(viewModel.chef, mockChefService.chef)
-        assertEquals(viewModel.authState, AuthState.AUTHENTICATED)
+        assertEquals(AuthState.AUTHENTICATED, viewModel.authState)
         assertFalse(viewModel.openLoginDialog)
 
         verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
@@ -914,7 +920,7 @@ internal class ProfileViewModelTest {
         assertTrue(viewModel.passwordUpdated)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
-        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertEquals(AuthState.UNAUTHENTICATED, viewModel.authState)
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }
@@ -964,7 +970,7 @@ internal class ProfileViewModelTest {
 
         // Then the chef should be deleted and unauthenticated
         assertNull(viewModel.chef)
-        assertEquals(viewModel.authState, AuthState.UNAUTHENTICATED)
+        assertEquals(AuthState.UNAUTHENTICATED, viewModel.authState)
         assertTrue(viewModel.accountDeleted)
         assertNull(viewModel.recipeError)
         assertFalse(viewModel.showAlert)
@@ -1029,7 +1035,7 @@ internal class ProfileViewModelTest {
         viewModel.getAllFavoriteRecipes()
 
         // Then no recipes are fetched
-        assertEquals(viewModel.favoriteRecipes.value.size, 0)
+        assertEquals(0, viewModel.favoriteRecipes.value.size)
     }
 
     @Test
@@ -1055,7 +1061,7 @@ internal class ProfileViewModelTest {
         viewModel.getAllRecentRecipes()
 
         // Then no recipes are fetched
-        assertEquals(viewModel.recentRecipes.value.size, 0)
+        assertEquals(0, viewModel.recentRecipes.value.size)
     }
 
     @Test
@@ -1081,7 +1087,7 @@ internal class ProfileViewModelTest {
         viewModel.getAllRatedRecipes()
 
         // Then no recipes are fetched
-        assertEquals(viewModel.ratedRecipes.value.size, 0)
+        assertEquals(0, viewModel.ratedRecipes.value.size)
     }
 
     @Test
@@ -1094,7 +1100,7 @@ internal class ProfileViewModelTest {
         viewModel.updateRecipeViews(recipe)
 
         // Then the recipe views should be updated
-        assertEquals(viewModel.chef?.recentRecipes?.contains(recipe.id.toString()), true)
+        assertEquals(true, viewModel.chef?.recentRecipes?.contains(recipe.id.toString()))
 
         coVerify { mockDataStoreService.incrementRecipesViewed() }
         coVerify { mockDataStoreService.getToken() }
@@ -1214,7 +1220,7 @@ internal class ProfileViewModelTest {
         viewModel.rateRecipe(recipeId, rating)
 
         // Then the rating should be saved with the chef
-        assertEquals(viewModel.chef?.ratings?.get(recipeId.toString()), rating)
+        assertEquals(rating, viewModel.chef?.ratings?.get(recipeId.toString()))
 
         coVerify { mockDataStoreService.getToken() }
         verify { Encryptor.decrypt(mockEncryptedToken) }
@@ -1254,5 +1260,160 @@ internal class ProfileViewModelTest {
 
         // Then an error is logged
         coVerify { mockDataStoreService.getToken() }
+    }
+
+    @Test
+    fun createRestoreKeySuccess() = runTest {
+        // Given a valid restore key
+        coEvery { mockRestoreKeyManager.createRestoreKey(any()) } returns
+                mockk(relaxed = true)
+        coEvery { mockDataStoreService.hasRestoreKey() } returns false
+
+        // When creating a restore key
+        viewModel.createRestoreKey()
+
+        // Then the restore key should be saved on the device
+        verify {
+            Log.d(any<String>(), "Restore key created with ID: ") // relaxed = ""
+        }
+        verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
+        coVerify { mockDataStoreService.setHasRestoreKey(true) }
+    }
+
+    @Test
+    fun createRestoreKeyExists() = runTest {
+        // Given a restore key that already exists
+        coEvery { mockDataStoreService.hasRestoreKey() } returns true
+
+        // When creating a restore key
+        viewModel.createRestoreKey()
+
+        // Then the function should return immediately
+        verify {
+            Log.d(any<String>(), "Restore key already exists for the logged in user")
+        }
+    }
+
+    @Test
+    fun createRestoreKeyServerError() = runTest {
+        // Given a valid restore key
+        coEvery { mockRestoreKeyManager.createRestoreKey(any()) } returns mockk()
+        coEvery { mockDataStoreService.hasRestoreKey() } returns false
+
+        // When creating a restore key and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.createRestoreKey()
+
+        // Then the error is logged
+        verify {
+            Log.w(any<String>(), "Error creating a restore key: ${
+                mockChefService.tokenError
+            }")
+        }
+    }
+
+    @Test
+    fun createRestoreKeyClientError() = runTest {
+        // Given an invalid restore key
+        val mockError = "mock error"
+        coEvery { mockRestoreKeyManager.createRestoreKey(any()) } throws
+                Exception(mockError)
+        coEvery { mockDataStoreService.hasRestoreKey() } returns false
+
+        // When creating a restore key
+        viewModel.createRestoreKey()
+
+        // Then the error is logged
+        verify {
+            Log.w(any<String>(), "Error creating a restore key: ${
+                Exception(mockError)
+            }")
+        }
+        coVerify { mockDataStoreService.setHasRestoreKey(false) }
+    }
+
+    @Test
+    fun loginWithRestoreKeySuccess() = runTest {
+        // Given a valid restore key
+        coEvery { mockRestoreKeyManager.getRestoreKey(any()) } returns mockk()
+        coEvery { mockDataStoreService.isFirstLaunch() } returns true
+
+        // When logging in with a restore key
+        viewModel.loginWithRestoreKey()
+
+        // Then the user should be authenticated
+        assertEquals(viewModel.chef, mockChefService.chef)
+        assertEquals(AuthState.AUTHENTICATED, viewModel.authState)
+        assertFalse(viewModel.openLoginDialog)
+
+        verify {
+            Log.d(any<String>(), "First launch! Attempting to sign in with a restore key")
+        }
+        verify { Encryptor.encrypt(mockChefService.loginResponse.token) }
+        coVerify { mockDataStoreService.setFirstLaunch(false) }
+        coVerify { mockDataStoreService.saveToken(mockEncryptedToken) }
+    }
+
+    @Test
+    fun loginWithRestoreKeyAfterFirstLaunch() = runTest {
+        // Given a valid restore key
+        coEvery { mockRestoreKeyManager.getRestoreKey(any()) } returns mockk()
+        coEvery { mockDataStoreService.isFirstLaunch() } returns false
+
+        // When logging in with a restore key
+        viewModel.loginWithRestoreKey()
+
+        // Then the function should return immediately
+        verify(exactly = 0) {
+            Log.d(any<String>(), "First launch! Attempting to sign in with a restore key")
+        }
+    }
+
+    @Test
+    fun loginWithRestoreKeyServerError() = runTest {
+        // Given a valid restore key
+        coEvery { mockRestoreKeyManager.getRestoreKey(any()) } returns mockk()
+        coEvery { mockDataStoreService.isFirstLaunch() } returns true
+
+        // When logging in with a restore key and an error occurs
+        mockChefService.isSuccess = false
+        viewModel.loginWithRestoreKey()
+
+        // Then the error is logged
+        verify {
+            Log.w(any<String>(), "Error signing in with a restore key: ${
+                mockChefService.tokenError
+            }")
+        }
+    }
+
+    @Test
+    fun loginWithRestoreKeyClientError() = runTest {
+        // Given an invalid restore key
+        val mockError = "mock error"
+        coEvery { mockRestoreKeyManager.getRestoreKey(any()) } throws
+                Exception(mockError)
+        coEvery { mockDataStoreService.isFirstLaunch() } returns true
+
+        // When logging in with a restore key
+        viewModel.loginWithRestoreKey()
+
+        // Then the error is logged
+        verify {
+            Log.w(any<String>(), "Error signing in with a restore key: ${
+                Exception(mockError)
+            }")
+        }
+    }
+
+    @Test
+    fun deleteRestoreKeySuccess() = runTest {
+        // Given a restore key to delete
+        // When deleting the restore key
+        viewModel.deleteRestoreKey()
+
+        // Then the restore key should be removed from the device
+        coVerify { mockRestoreKeyManager.deleteRestoreKey() }
+        coVerify { mockDataStoreService.setHasRestoreKey(false) }
     }
 }

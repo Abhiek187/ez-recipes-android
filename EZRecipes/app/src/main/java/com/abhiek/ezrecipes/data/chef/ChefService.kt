@@ -68,25 +68,29 @@ interface ChefService {
 
     @GET("passkey/create")
     suspend fun getNewPasskeyChallenge(
+        @Query("restore-key") isRestoreKey: Boolean?,
         @Header("Authorization") token: String
     ): Response<PasskeyCreationOptions>
 
     @GET("passkey/auth")
     suspend fun getExistingPasskeyChallenge(
-        @Query("email") email: String
+        @Query("email") email: String?
     ): Response<PasskeyRequestOptions>
 
     // Creating separate methods due to type erasure :(
     @POST("passkey/verify")
     suspend fun validateNewPasskey(
         @Body passkeyResponse: NewPasskeyClientResponse,
+        @Query("restore-key") isRestoreKey: Boolean?,
         @Header("Authorization") token: String
     ): Response<Token>
 
     @POST("passkey/verify")
     suspend fun validateExistingPasskey(
         @Body passkeyResponse: ExistingPasskeyClientResponse,
-        @Query("email") email: String
+        @Query("email") email: String?,
+        @Query("restore-key") isRestoreKey: Boolean?,
+        @Query("transaction-id") transactionId: String?
     ): Response<Token>
 
     @PATCH("passkey")

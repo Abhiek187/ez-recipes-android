@@ -33,7 +33,8 @@ class ProfileViewModel(
     private val chefRepository: ChefRepository,
     private val recipeRepository: RecipeRepository,
     private val dataStoreService: DataStoreService,
-    private val passkeyManager: PasskeyManager
+    private val passkeyManager: PasskeyManager,
+    private val restoreKeyManager: RestoreKeyManager
 ): ViewModel() {
     var job by mutableStateOf<Job?>(null)
         private set
@@ -304,6 +305,7 @@ class ProfileViewModel(
                     chef = null
                     authState = AuthState.UNAUTHENTICATED
                     openLoginDialog = false
+                    deleteRestoreKey()
                 }
                 is ChefResult.Error -> {
                     recipeError = result.recipeError
@@ -1035,6 +1037,150 @@ class ProfileViewModel(
     fun saveUsername(username: String?) {
         viewModelScope.launch {
             dataStoreService.saveUsername(username)
+        }
+    }
+
+    fun createRestoreKey() {
+        job = viewModelScope.launch {
+            if (dataStoreService.hasRestoreKey()) {
+                Log.d(TAG, "Restore key already exists for the logged in user")
+                return@launch
+            }
+
+            isLoading = true
+            val token = getToken()
+            val passkeyOptionsResult = if (token != null) {
+                chefRepository.getNewPasskeyChallenge(token, isRestoreKey = true)
+            } else {
+                ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+            }
+            isLoading = false
+
+            when (passkeyOptionsResult) {
+                is ChefResult.Success -> {
+                    val serverPasskeyOptions = passkeyOptionsResult.response
+
+                    try {
+                        val serverPasskeyResponse = restoreKeyManager.createRestoreKey(
+                            serverPasskeyOptions
+                        )
+                        isLoading = true
+                        val passkeyValidateResult = chefRepository.validateNewPasskey(
+                            serverPasskeyResponse,
+                            token!!,
+                            isRestoreKey = true
+                        )
+                        isLoading = false
+
+                        when (passkeyValidateResult) {
+                            is ChefResult.Success -> {
+                                passkeyValidateResult.response.token?.let { newToken ->
+                                    saveToken(newToken)
+                                }
+
+                                dataStoreService.setHasRestoreKey(true)
+                                Log.d(TAG, "Restore key created with ID: ${
+                                    serverPasskeyResponse.id
+                                }")
+                            }
+                            is ChefResult.Error -> {
+                                // No need to alert the user if an error occurred with restore keys
+                                Log.w(TAG, "Error creating a restore key: ${
+                                    passkeyValidateResult.recipeError
+                                }")
+                            }
+                        }
+                    } catch (error: Exception) {
+                        Log.w(TAG, "Error creating a restore key: $error")
+                        dataStoreService.setHasRestoreKey(false)
+                    }
+                }
+                is ChefResult.Error -> {
+                    Log.w(TAG, "Error creating a restore key: ${
+                        passkeyOptionsResult.recipeError
+                    }")
+                }
+            }
+        }
+    }
+
+    fun loginWithRestoreKey() {
+        job = viewModelScope.launch {
+            if (dataStoreService.isFirstLaunch() == false) return@launch
+
+            Log.d(TAG, "First launch! Attempting to sign in with a restore key")
+            isLoading = true
+            val passkeyOptionsResult = chefRepository.getExistingPasskeyChallenge()
+            isLoading = false
+
+            when (passkeyOptionsResult) {
+                is ChefResult.Success -> {
+                    val serverPasskeyOptions = passkeyOptionsResult.response
+
+                    try {
+                        val serverPasskeyResponse = restoreKeyManager.getRestoreKey(
+                            serverPasskeyOptions
+                        )
+                        // Once the Android device checks for a restore key,
+                        // it's no longer needed on subsequent launches
+                        dataStoreService.setFirstLaunch(false)
+                        isLoading = true
+                        val passkeyValidateResult = chefRepository.validateExistingPasskey(
+                            serverPasskeyResponse,
+                            isRestoreKey = true,
+                            transactionId = serverPasskeyOptions.extensions?.transactionId
+                        )
+                        isLoading = false
+
+                        when (passkeyValidateResult) {
+                            is ChefResult.Success -> {
+                                val newToken = passkeyValidateResult.response.token
+                                isLoading = true
+                                val chefResult = if (newToken != null) {
+                                    saveToken(newToken)
+                                    chefRepository.getChef(newToken)
+                                } else {
+                                    ChefResult.Error(RecipeError(Constants.NO_TOKEN_FOUND))
+                                }
+                                isLoading = false
+
+                                when (chefResult) {
+                                    is ChefResult.Success -> {
+                                        chef = chefResult.response
+                                    }
+                                    is ChefResult.Error -> {
+                                        Log.w(TAG, "Error signing in with a restore key: ${
+                                            chefResult.recipeError
+                                        }")
+                                    }
+                                }
+
+                                authState = AuthState.AUTHENTICATED
+                                openLoginDialog = false
+                            }
+                            is ChefResult.Error -> {
+                                Log.w(TAG, "Error signing in with a restore key: ${
+                                    passkeyValidateResult.recipeError
+                                }")
+                            }
+                        }
+                    } catch (error: Exception) {
+                        Log.w(TAG, "Error signing in with a restore key: $error")
+                    }
+                }
+                is ChefResult.Error -> {
+                    Log.w(TAG, "Error signing in with a restore key: ${
+                        passkeyOptionsResult.recipeError
+                    }")
+                }
+            }
+        }
+    }
+
+    fun deleteRestoreKey() {
+        job = viewModelScope.launch {
+            restoreKeyManager.deleteRestoreKey()
+            dataStoreService.setHasRestoreKey(false)
         }
     }
 }

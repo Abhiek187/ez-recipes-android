@@ -2,7 +2,8 @@ package com.abhiek.ezrecipes.data.recipe
 
 import com.abhiek.ezrecipes.utils.Constants
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -43,7 +44,7 @@ internal class RecipeRepositoryTest {
 
         // Then the response should be empty
         assertTrue(response is RecipeResult.Success)
-        assertEquals((response as RecipeResult.Success).response, listOf<Recipe>())
+        assertEquals(listOf<Recipe>(), (response as RecipeResult.Success).response)
     }
 
     @Test

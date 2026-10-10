@@ -133,9 +133,12 @@ class ChefRepository(private val chefService: ChefService) {
         }
     }
 
-    suspend fun getNewPasskeyChallenge(token: String): ChefResult<PasskeyCreationOptions> {
+    suspend fun getNewPasskeyChallenge(
+        token: String,
+        isRestoreKey: Boolean? = null
+    ): ChefResult<PasskeyCreationOptions> {
         return try {
-            val response = chefService.getNewPasskeyChallenge(token)
+            val response = chefService.getNewPasskeyChallenge(isRestoreKey, token)
             parseResponse(response)
         } catch (error: Exception) {
             val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
@@ -143,7 +146,7 @@ class ChefRepository(private val chefService: ChefService) {
         }
     }
 
-    suspend fun getExistingPasskeyChallenge(email: String): ChefResult<PasskeyRequestOptions> {
+    suspend fun getExistingPasskeyChallenge(email: String? = null): ChefResult<PasskeyRequestOptions> {
         return try {
             val response = chefService.getExistingPasskeyChallenge(email)
             parseResponse(response)
@@ -155,10 +158,11 @@ class ChefRepository(private val chefService: ChefService) {
 
     suspend fun validateNewPasskey(
         passkeyResponse: NewPasskeyClientResponse,
-        token: String
+        token: String,
+        isRestoreKey: Boolean? = null
     ): ChefResult<Token> {
         return try {
-            val response = chefService.validateNewPasskey(passkeyResponse, token)
+            val response = chefService.validateNewPasskey(passkeyResponse, isRestoreKey, token)
             parseResponse(response)
         } catch (error: Exception) {
             val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
@@ -168,10 +172,17 @@ class ChefRepository(private val chefService: ChefService) {
 
     suspend fun validateExistingPasskey(
         passkeyResponse: ExistingPasskeyClientResponse,
-        email: String
+        email: String? = null,
+        isRestoreKey: Boolean? = null,
+        transactionId: String? = null
     ): ChefResult<Token> {
         return try {
-            val response = chefService.validateExistingPasskey(passkeyResponse, email)
+            val response = chefService.validateExistingPasskey(
+                passkeyResponse,
+                email,
+                isRestoreKey,
+                transactionId
+            )
             parseResponse(response)
         } catch (error: Exception) {
             val recipeError = RecipeError(error.localizedMessage ?: Constants.UNKNOWN_ERROR)
