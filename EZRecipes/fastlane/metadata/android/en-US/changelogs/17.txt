@@ -1,0 +1,4 @@
+- When transferring data to a new device, chefs can stay signed in at launch
+- Fixed how glossary terms are loaded when idle
+- Increased the minimum Android version to 7 (Nougat)
+- Added support for AppFunctions

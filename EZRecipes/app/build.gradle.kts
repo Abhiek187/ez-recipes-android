@@ -20,8 +20,8 @@ android {
         applicationId = "com.abhiek.ezrecipes"
         minSdk = 24
         targetSdk = 37
-        versionCode = 16
-        versionName = "3.2.2"
+        versionCode = 17
+        versionName = "3.2.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -79,7 +79,7 @@ java {
     }
 }
 
-@Suppress("DuplicateDependency")
+@Suppress("LoginCredentials")
 dependencies {
     // BOM to version: https://developer.android.com/develop/ui/compose/bom/bom-mapping
     val composeBomVersion = "2026.09.00"
