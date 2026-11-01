@@ -8,7 +8,7 @@ plugins {
     kotlin("plugin.serialization")
 }
 
-val okHttpVersion = "5.5.0"
+val okHttpVersion = "5.5.1"
 
 android {
     namespace = "com.abhiek.ezrecipes"
@@ -87,9 +87,9 @@ dependencies {
     val activityVersion = "1.13.0"
     val navigationVersion = "1.2.0"
     val coroutineVersion = "1.11.0"
-    val serializationVersion = "1.11.0"
+    val serializationVersion = "1.12.0"
     val credentialsVersion = "1.6.0"
-    val appFunctionsVersion = "1.0.0-alpha13"
+    val appFunctionsVersion = "1.0.0-beta01"
     val coilVersion = "3.6.3"
     val retrofitVersion = "3.0.0"
     val roomVersion = "2.8.5"
@@ -111,7 +111,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.navigation3:navigation3-runtime:$navigationVersion")
     implementation("androidx.navigation3:navigation3-ui:$navigationVersion")
-    implementation("androidx.datastore:datastore-preferences:1.2.1")
+    implementation("androidx.datastore:datastore-preferences:1.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:$serializationVersion")
