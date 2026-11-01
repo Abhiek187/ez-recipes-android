@@ -87,7 +87,7 @@ dependencies {
     val activityVersion = "1.13.0"
     val navigationVersion = "1.2.0"
     val coroutineVersion = "1.11.0"
-    val serializationVersion = "1.11.0"
+    val serializationVersion = "1.12.0"
     val credentialsVersion = "1.6.0"
     val appFunctionsVersion = "1.0.0-alpha13"
     val coilVersion = "3.6.3"
