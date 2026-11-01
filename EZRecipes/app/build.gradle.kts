@@ -111,7 +111,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.navigation3:navigation3-runtime:$navigationVersion")
     implementation("androidx.navigation3:navigation3-ui:$navigationVersion")
-    implementation("androidx.datastore:datastore-preferences:1.2.1")
+    implementation("androidx.datastore:datastore-preferences:1.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:$serializationVersion")
