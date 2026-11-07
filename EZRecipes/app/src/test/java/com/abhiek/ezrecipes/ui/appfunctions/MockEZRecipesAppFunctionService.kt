@@ -12,7 +12,5 @@ internal class MockEZRecipesAppFunctionService: BaseEZRecipesAppFunctionService(
         metadata: AppFunctionMetadata,
         cancellationSignal: CancellationSignal,
         callback: Consumer<ExecuteAppFunctionResponse>
-    ) {
-        TODO("Not yet implemented")
-    }
+    ) {}
 }

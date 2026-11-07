@@ -165,7 +165,9 @@ abstract class BaseEZRecipesAppFunctionService: AppFunctionService() {
         }
 
         val terms = termsRepository.getTerms()
-        val definition = terms.find { it.word == word }?.definition
+        val definition = terms.find { term ->
+            term.word.equals(word, ignoreCase = true)
+        }?.definition
 
         if (definition == null) {
             throw AppFunctionElementNotFoundException("No definition found for word $word")
