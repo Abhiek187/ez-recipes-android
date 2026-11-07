@@ -4,8 +4,8 @@ import com.abhiek.ezrecipes.data.terms.MockTermsService
 import com.abhiek.ezrecipes.data.terms.TermsRepository
 import com.abhiek.ezrecipes.ui.MainDispatcherExtension
 import io.mockk.coEvery
+import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockkClass
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -15,12 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MainDispatcherExtension::class)
 @ExtendWith(MockKExtension::class)
 internal class GlossaryViewModelTest {
+    @MockK
     private lateinit var mockTermsRepository: TermsRepository
     private lateinit var viewModel: GlossaryViewModel
 
     @BeforeEach
     fun setUp() {
-        mockTermsRepository = mockkClass(TermsRepository::class)
         viewModel = GlossaryViewModel(mockTermsRepository)
     }
 

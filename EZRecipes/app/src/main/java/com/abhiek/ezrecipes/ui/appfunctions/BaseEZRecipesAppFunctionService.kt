@@ -21,8 +21,8 @@ To test (API 36.1+):
   --function 'com.abhiek.ezrecipes.ui.appfunctions.BaseEZRecipesAppFunctionService#getRecipeDefinition' \
   --parameters '{"word":"blanch"}'
  - adb shell 'cmd app_function execute-app-function \
-  --package com.abhiek.ezrecipes
-  --function "com.abhiek.ezrecipes.ui.appfunctions.BaseEZRecipesAppFunctionService#searchRecipes"
+  --package com.abhiek.ezrecipes \
+  --function "com.abhiek.ezrecipes.ui.appfunctions.BaseEZRecipesAppFunctionService#searchRecipes" \
   --parameters "{\"filter\":{\"query\":\"pizza\",\"maxCals\":800,\"vegetarian\":true,\"glutenFree\":true,\"type\":[\"main course\",\"lunch\",\"hor d'\''oeuvre\"],\"culture\":[\"Indian\",\"Mexican\",\"Latin American\",\"bbq\"]}}"'
  */
 @RequiresApi(36)
@@ -33,21 +33,29 @@ To test (API 36.1+):
     appFunctionXmlFileName = "ez_recipes_app_function_service",
 )
 abstract class BaseEZRecipesAppFunctionService: AppFunctionService() {
-    private val recipeRepository by lazy {
-        RecipeRepository(
-            recipeService = RecipeService.getInstance(applicationContext),
-            recentRecipeDao = AppDatabase.getInstance(applicationContext).recentRecipeDao()
-        )
-    }
-    private val termsRepository by lazy {
-        TermsRepository(
-            termsService = TermsService.getInstance(applicationContext),
-            dataStoreService = DataStoreService(applicationContext)
-        )
-    }
+    lateinit var recipeRepository: RecipeRepository
+    lateinit var termsRepository: TermsRepository
 
     companion object {
         private const val TAG = "EZRecipesAppFunctionService"
+    }
+
+    override fun onCreate() {
+        // Only called on real devices, allows manual DI for testing
+        super.onCreate()
+
+        if (!::recipeRepository.isInitialized) {
+            recipeRepository = RecipeRepository(
+                recipeService = RecipeService.getInstance(applicationContext),
+                recentRecipeDao = AppDatabase.getInstance(applicationContext).recentRecipeDao()
+            )
+        }
+        if (!::termsRepository.isInitialized) {
+            termsRepository = TermsRepository(
+                termsService = TermsService.getInstance(applicationContext),
+                dataStoreService = DataStoreService(applicationContext)
+            )
+        }
     }
 
     // The abstract class can't override onExecuteFunction
@@ -157,7 +165,9 @@ abstract class BaseEZRecipesAppFunctionService: AppFunctionService() {
         }
 
         val terms = termsRepository.getTerms()
-        val definition = terms.find { it.word == word }?.definition
+        val definition = terms.find { term ->
+            term.word.equals(word, ignoreCase = true)
+        }?.definition
 
         if (definition == null) {
             throw AppFunctionElementNotFoundException("No definition found for word $word")
